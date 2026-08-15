@@ -1,6 +1,8 @@
 import { SourceAdapter } from './base';
 import { OfflineFixtureAdapter } from './offline_fixture';
 import { SerpAdapter } from './serp';
+import type { Source } from '../../../shared/types';
+import type { Source } from '../../../shared/types';
 
 export interface SourceRegistryEntry {
   adapter?: SourceAdapter;
@@ -22,9 +24,9 @@ export class SourceRegistry {
 
     this.register('serp_generic', {
       adapter: new SerpAdapter(),
-      status: 'implemented',
+      status: 'fixture',
       capabilities: ['result_count'],
-      description: 'SERP API for JH16 result counts'
+      description: 'SERP API fixture (mocked until real HTTP fetch is implemented)'
     });
 
     // Honest status for planned/blocked sources
@@ -82,8 +84,14 @@ export class SourceRegistry {
     return this.sources.get(id);
   }
 
-  public listSources(): Record<string, SourceRegistryEntry> {
-    return Object.fromEntries(this.sources);
+  public listSources(): Source[] {
+    return Array.from(this.sources.entries()).map(([id, entry]) => ({
+      source_id: id,
+      adapter: entry.adapter ? entry.adapter.constructor.name : 'Unknown',
+      status: entry.status,
+      capabilities: entry.capabilities,
+      description: entry.description
+    }));
   }
 }
 

@@ -79,30 +79,23 @@ export class JH16Analyzer implements Analyzer {
     });
 
     // 2. Correlations for Pi
-    if (piValues.length > 2) {
-      results.push({
-        metric_key: 'pearson_pi_ref',
-        value_numeric: pearson(piValues, refValues)
-      });
-      results.push({
-        metric_key: 'spearman_pi_ref',
-        value_numeric: spearman(piValues, refValues)
-      });
+    if (piValues.length >= 2) {
+      const p = pearson(piValues, refValues);
+      if (p !== null) results.push({ metric_key: 'pearson_pi_ref', value_numeric: p });
+      const s = spearman(piValues, refValues);
+      if (s !== null) results.push({ metric_key: 'spearman_pi_ref', value_numeric: s });
     }
 
     // 3. Correlations for Hi (filter NaN)
     const validHiIndices = hiValues.map((h, i) => Number.isNaN(h) ? -1 : i).filter(i => i !== -1);
-    if (validHiIndices.length > 2) {
+    if (validHiIndices.length >= 2) {
        const hiValid = validHiIndices.map(i => hiValues[i]);
        const refValid = validHiIndices.map(i => refValues[i]);
-       results.push({
-         metric_key: 'pearson_hi_ref',
-         value_numeric: pearson(hiValid, refValid)
-       });
-       results.push({
-         metric_key: 'spearman_hi_ref',
-         value_numeric: spearman(hiValid, refValid)
-       });
+       
+       const p = pearson(hiValid, refValid);
+       if (p !== null) results.push({ metric_key: 'pearson_hi_ref', value_numeric: p });
+       const s = spearman(hiValid, refValid);
+       if (s !== null) results.push({ metric_key: 'spearman_hi_ref', value_numeric: s });
     }
 
     return results;

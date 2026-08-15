@@ -45,6 +45,8 @@ beforeEach(() => {
       id TEXT PRIMARY KEY,
       run_id TEXT NOT NULL REFERENCES runs(id),
       source_id TEXT NOT NULL,
+      source_adapter_version TEXT,
+      provenance_metadata TEXT,
       raw_blob_id TEXT REFERENCES raw_blobs(id),
       status TEXT NOT NULL,
       created_at TEXT NOT NULL

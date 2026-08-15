@@ -7,7 +7,7 @@ import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 export class AcquisitionRepository {
   constructor(private db: BetterSQLite3Database<any>, private store: ObjectStore) {}
 
-  async recordFetch(runId: string, sourceId: string, payload: Buffer | null, status: string) {
+  async recordFetch(runId: string, sourceId: string, payload: Buffer | null, status: string, adapterVersion?: string, provenance?: Record<string, any>) {
     let rawBlobId: string | null = null;
 
     if (payload && payload.length > 0) {
@@ -36,6 +36,8 @@ export class AcquisitionRepository {
       id: fetchEventId,
       run_id: runId,
       source_id: sourceId,
+      source_adapter_version: adapterVersion,
+      provenance_metadata: provenance ? JSON.stringify(provenance) : undefined,
       raw_blob_id: rawBlobId,
       status,
       created_at: new Date().toISOString()

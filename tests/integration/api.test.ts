@@ -28,8 +28,9 @@ test('API GET /api/sources - Lists sources', async () => {
   assert.strictEqual(res.status, 200);
   const data: any = await res.json();
   assert.ok(data.sources);
-  assert.ok(data.sources['offline_fixture']);
-  assert.strictEqual(data.sources['offline_fixture'].status, 'fixture');
+  const offlineFixture = data.sources.find((s: any) => s.source_id === 'offline_fixture');
+  assert.ok(offlineFixture);
+  assert.strictEqual(offlineFixture.status, 'fixture');
 });
 
 test('API GET /api/analyzers - Lists analyzers', async () => {
@@ -78,17 +79,17 @@ test('API POST /api/runs - Submits PIPELINE job and retrieves results', async ()
   assert.ok(submitData.run_id);
   const runId = submitData.run_id;
 
-  // Since runs execute asynchronously, we need to poll until COMPLETED
+  // Since runs execute asynchronously, we need to poll until SUCCESS
   let runStatus = 'QUEUED';
   for (let i = 0; i < 20; i++) {
     const statusRes = await fetch(`${baseUrl}/api/runs/${runId}`);
     const statusData: any = await statusRes.json();
     runStatus = statusData.run.status;
-    if (runStatus === 'COMPLETED' || runStatus === 'FAILED') break;
+    if (runStatus === 'SUCCESS' || runStatus === 'FAILED') break;
     await new Promise(r => setTimeout(r, 50)); // wait 50ms
   }
   
-  assert.strictEqual(runStatus, 'COMPLETED');
+  assert.strictEqual(runStatus, 'SUCCESS');
 
   // Fetch results
   const resultsRes = await fetch(`${baseUrl}/api/runs/${runId}/results`);

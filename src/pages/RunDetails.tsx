@@ -109,7 +109,7 @@ export function RunDetails() {
                              <td className="px-4 py-3 font-medium">{r.analyzer_id}</td>
                              <td className="px-4 py-3">{r.entity_id}</td>
                              <td className="px-4 py-3 font-mono">{r.metric_key}</td>
-                             <td className="px-4 py-3 font-mono">{r.value_numeric ?? r.value_string}</td>
+                             <td className="px-4 py-3 font-mono">{r.value_numeric ?? r.value_text}</td>
                            </tr>
                          ))}
                        </tbody>
@@ -127,8 +127,8 @@ export function RunDetails() {
                         <tr>
                           <th className="px-4 py-3 text-left font-medium text-slate-500">Source</th>
                           <th className="px-4 py-3 text-left font-medium text-slate-500">Entity</th>
-                          <th className="px-4 py-3 text-left font-medium text-slate-500">Context</th>
-                          <th className="px-4 py-3 text-left font-medium text-slate-500">Text</th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-500">Dimension</th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-500">Query / Context</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-200">
@@ -136,8 +136,8 @@ export function RunDetails() {
                           <tr key={o.id}>
                             <td className="px-4 py-3">{o.source_id}</td>
                             <td className="px-4 py-3">{o.entity_id}</td>
-                            <td className="px-4 py-3 text-slate-500">{o.context_id || '-'}</td>
-                            <td className="px-4 py-3 truncate max-w-xs" title={o.raw_text}>{o.raw_text}</td>
+                            <td className="px-4 py-3 text-slate-500">{o.dimension || '-'}</td>
+                            <td className="px-4 py-3 truncate max-w-xs" title={o.query_text}>{o.query_text}</td>
                           </tr>
                         ))}
                       </tbody>

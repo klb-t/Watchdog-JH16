@@ -22,6 +22,8 @@ export const fetchEvents = sqliteTable('fetch_events', {
   id: text('id').primaryKey(),
   run_id: text('run_id').notNull().references(() => runs.id),
   source_id: text('source_id').notNull(),
+  source_adapter_version: text('source_adapter_version'),
+  provenance_metadata: text('provenance_metadata'),
   raw_blob_id: text('raw_blob_id').references(() => rawBlobs.id),
   status: text('status').notNull(),
   created_at: text('created_at').notNull(),

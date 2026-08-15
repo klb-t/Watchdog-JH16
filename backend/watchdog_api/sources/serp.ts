@@ -57,11 +57,10 @@ export class SerpAdapter implements SourceAdapter {
       }
 
       const q = String(params.query || '');
-      const isHarm = q.includes('harm') || q.includes('harmful');
-
+      const q = String(params.query || '');
       return [{
         entity_id: params.entity_id || 'unknown_entity', // Generic, should be resolved upstream
-        dimension: params.dimension || (isHarm ? 'harm' : 'popularity'),
+        dimension: params.dimension || 'popularity',
         query_text: q,
         result_count: count,
         retrieved_at: new Date().toISOString(),

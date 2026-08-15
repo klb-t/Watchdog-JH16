@@ -54,7 +54,8 @@ export class RunOrchestrator {
            
            stateAtFailure = 'ARCHIVING_RAW';
            // Archive raw response - preserves WORM evidence even if normalization fails
-           raw.raw_blob_id = await this.acqRepo.recordFetch(runId, config.source_id, raw.payload, raw.status);
+           const provenanceMetadata = adapter.provenance ? adapter.provenance(raw) : undefined;
+           raw.raw_blob_id = await this.acqRepo.recordFetch(runId, config.source_id, raw.payload, raw.status, adapter.adapter_version, provenanceMetadata);
            
            if (raw.status === 'SUCCESS') {
              this.runRepo.updateStatus(runId, 'NORMALIZING');

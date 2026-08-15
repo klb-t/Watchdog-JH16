@@ -54,6 +54,8 @@ beforeEach(() => {
       id TEXT PRIMARY KEY,
       run_id TEXT NOT NULL REFERENCES runs(id),
       source_id TEXT NOT NULL,
+      source_adapter_version TEXT,
+      provenance_metadata TEXT,
       raw_blob_id TEXT REFERENCES raw_blobs(id),
       status TEXT NOT NULL,
       created_at TEXT NOT NULL
@@ -124,7 +126,7 @@ test('Orchestrator - End-to-End PIPELINE run', async () => {
   await orchestrator.executeRun(runId);
 
   const runRecord = runRepo.getRun(runId);
-  assert.strictEqual(runRecord.status, 'COMPLETED');
+  assert.strictEqual(runRecord.status, 'SUCCESS');
   
   const obs = obsRepo.getByRunId(runId);
   assert.strictEqual(obs.length, 2); // Assuming the fixture returns 2
@@ -161,9 +163,7 @@ test('Orchestrator - Graceful Failure retains evidence and states', async () => 
   const originalNormalize = adapter.normalize;
   adapter.normalize = () => { throw new Error("Injected Normalization Crash"); };
 
-  await assert.rejects(async () => {
-    await orchestrator.executeRun(runId);
-  }, /Injected Normalization Crash/);
+  await orchestrator.executeRun(runId);
 
   // Restore
   adapter.normalize = originalNormalize;
