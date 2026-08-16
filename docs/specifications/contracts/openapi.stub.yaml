@@ -1,0 +1,59 @@
+openapi: 3.1.0
+info:
+  title: WatchDog API contract
+  version: 0.1.0
+paths:
+  /api/v1/runs:
+    get:
+      summary: List runs
+      responses:
+        '200': {description: OK}
+  /api/v1/runs/acquisition:
+    post:
+      summary: Create acquisition run
+      responses:
+        '202': {description: Run queued}
+  /api/v1/runs/analysis:
+    post:
+      summary: Create analysis run
+      responses:
+        '202': {description: Run queued}
+  /api/v1/runs/{run_id}:
+    get:
+      summary: Get run
+      parameters:
+        - in: path
+          name: run_id
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: OK}
+  /api/v1/runs/{run_id}/manifest:
+    get:
+      summary: Get immutable run manifest
+      parameters:
+        - in: path
+          name: run_id
+          required: true
+          schema: {type: string, format: uuid}
+      responses:
+        '200': {description: OK}
+  /api/v1/sources:
+    get:
+      summary: List sources
+      responses:
+        '200': {description: OK}
+  /api/v1/schedules:
+    get:
+      summary: List schedules
+      responses:
+        '200': {description: OK}
+    post:
+      summary: Create schedule
+      responses:
+        '201': {description: Created}
+  /api/v1/summaries:
+    post:
+      summary: Generate summary from immutable analysis runs
+      responses:
+        '202': {description: Summary queued}

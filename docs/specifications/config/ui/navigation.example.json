@@ -1,0 +1,64 @@
+{
+  "schema_version": "0.1.0",
+  "items": [
+    {
+      "id": "dashboard",
+      "label": "Dashboard",
+      "path": "/dashboard",
+      "capabilities_any": [
+        "runs.read"
+      ]
+    },
+    {
+      "id": "data",
+      "label": "Data",
+      "path": "/data",
+      "capabilities_any": [
+        "runs.create"
+      ]
+    },
+    {
+      "id": "schedules",
+      "label": "Schedules",
+      "path": "/schedules",
+      "capabilities_any": [
+        "schedules.read"
+      ]
+    },
+    {
+      "id": "analysis",
+      "label": "Analysis",
+      "path": "/analysis",
+      "capabilities_any": [
+        "analysis.run",
+        "runs.read"
+      ]
+    },
+    {
+      "id": "sources",
+      "label": "Sources",
+      "path": "/sources",
+      "capabilities_any": [
+        "sources.read"
+      ]
+    },
+    {
+      "id": "summary",
+      "label": "Summary",
+      "path": "/summary",
+      "capabilities_any": [
+        "summaries.create"
+      ]
+    },
+    {
+      "id": "settings",
+      "label": "Settings",
+      "path": "/settings",
+      "capabilities_any": [
+        "settings.read",
+        "sources.configure",
+        "users.manage"
+      ]
+    }
+  ]
+}

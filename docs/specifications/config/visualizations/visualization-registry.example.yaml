@@ -1,0 +1,30 @@
+schema_version: 1
+registry_policy:
+  examples_are_non_exhaustive: true
+visualizations:
+  - {id: line, status: required}
+  - {id: multi_series_line, status: required}
+  - {id: scatter, status: required}
+  - {id: bar, status: required}
+  - {id: ranking, status: required}
+  - {id: histogram, status: planned}
+  - {id: density, status: planned}
+  - {id: box, status: planned}
+  - {id: violin, status: planned}
+  - {id: correlation_heatmap, status: required}
+  - {id: lag_correlation, status: required}
+  - {id: residual_diagnostic, status: planned}
+  - {id: missingness, status: planned}
+  - {id: intervention_timeline, status: planned}
+  - {id: geographic_choropleth, status: planned}
+  - {id: table, status: required}
+  - {id: errorbar, status: planned}
+  - {id: ecdf, status: planned}
+  - {id: qq_plot, status: planned}
+  - {id: acf_pacf_plot, status: planned}
+  - {id: forest_plot, status: planned}
+  - {id: funnel_plot, status: optional}
+  - {id: dose_response_curve, status: optional}
+  - {id: symptom_system_heatmap, status: planned}
+  - {id: network_graph, status: optional}
+  - {id: lineage_dag, status: required}

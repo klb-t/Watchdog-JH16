@@ -1,0 +1,25 @@
+schema_version: 1
+pipeline:
+  candidate_only: true
+  preserve_source_span: true
+  require_extractor_version: true
+  require_confidence: true
+  canonical_promotion_requires_verification: true
+extractors:
+  - id: substance_alias_candidate
+    status: planned
+  - id: dose_candidate
+    status: planned
+  - id: route_candidate
+    status: planned
+  - id: temporal_candidate
+    status: planned
+  - id: symptom_candidate
+    status: planned
+  - id: attitude_sentiment_candidate
+    status: planned
+  - id: geography_candidate
+    status: planned
+privacy:
+  derived_geo_bucketing: true
+  minimum_count_suppression_configurable: true

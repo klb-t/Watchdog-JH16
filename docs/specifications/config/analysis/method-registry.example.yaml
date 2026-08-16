@@ -1,0 +1,56 @@
+schema_version: 1
+registry_policy:
+  examples_are_non_exhaustive: true
+  methods_must_declare_input_contracts: true
+  methods_must_expose_assumptions: true
+methods:
+  - {id: descriptive_summary, family: descriptive, status: required}
+  - {id: pearson_correlation, family: association, status: required}
+  - {id: spearman_correlation, family: association, status: required}
+  - {id: kendall_correlation, family: association, status: planned}
+  - {id: partial_correlation, family: association, status: planned}
+  - {id: cross_correlation, family: time_series, status: required}
+  - {id: lag_sweep, family: time_series, status: required}
+  - {id: t_test, family: comparison, status: planned}
+  - {id: welch_t_test, family: comparison, status: planned}
+  - {id: mann_whitney, family: comparison, status: planned}
+  - {id: wilcoxon, family: comparison, status: planned}
+  - {id: anova, family: comparison, status: planned}
+  - {id: chi_square, family: comparison, status: planned}
+  - {id: linear_regression, family: regression, status: planned}
+  - {id: robust_regression, family: regression, status: planned}
+  - {id: logistic_regression, family: regression, status: planned}
+  - {id: time_series_decomposition, family: time_series, status: planned}
+  - {id: acf_pacf, family: time_series, status: planned}
+  - {id: stationarity_diagnostics, family: time_series, status: planned}
+  - {id: granger_causality, family: time_series, status: planned}
+  - {id: var_model, family: time_series, status: planned}
+  - {id: intervention_analysis, family: causal_time_series, status: planned}
+  - {id: changepoint_detection, family: anomaly, status: planned}
+  - {id: anomaly_detection, family: anomaly, status: planned}
+  - {id: difference_in_differences, family: causal, status: planned}
+  - {id: synthetic_control, family: causal, status: planned}
+  - {id: instrumental_variables, family: causal, status: planned}
+  - {id: bootstrap, family: uncertainty, status: planned}
+  - {id: permutation_test, family: uncertainty, status: planned}
+  - {id: pca, family: exploratory, status: optional}
+  - {id: clustering, family: exploratory, status: optional}
+  - {id: effect_size, family: comparison, status: planned}
+  - {id: fisher_exact, family: comparison, status: planned}
+  - {id: kruskal_wallis, family: comparison, status: planned}
+  - {id: multiple_testing_correction, family: inference, status: planned}
+  - {id: poisson_regression, family: regression, status: planned}
+  - {id: negative_binomial_regression, family: regression, status: planned}
+  - {id: mixed_effects_model, family: regression, status: planned}
+  - {id: meta_analysis_fixed, family: evidence_synthesis, status: planned}
+  - {id: meta_analysis_random, family: evidence_synthesis, status: planned}
+  - {id: bayesian_hierarchical, family: bayesian, status: optional}
+  - {id: arima, family: forecasting, status: optional}
+  - {id: exponential_smoothing, family: forecasting, status: optional}
+  - {id: state_space_model, family: forecasting, status: optional}
+  - {id: mutual_information, family: association, status: optional}
+  - {id: survival_analysis, family: survival, status: optional}
+  - {id: dose_response_model, family: dose_response, status: optional}
+  - {id: semantic_frequency, family: text_semantic, status: planned}
+  - {id: symptom_cooccurrence, family: text_semantic, status: planned}
+  - {id: topic_clustering, family: text_semantic, status: optional}

@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "application": {
+    "name": "WatchDog",
+    "environment": "development",
+    "api_prefix": "/api/v1",
+    "default_timezone": "UTC"
+  },
+  "features": {
+    "jh16_faithful": true,
+    "jh16_enhanced": true,
+    "longitudinal": true,
+    "summaries": true,
+    "pills": false,
+    "medical_emergency": false,
+    "institutional_dashboard": false
+  },
+  "storage": {
+    "metadata": "postgresql",
+    "object_store": "s3_compatible",
+    "analytical_format": "parquet",
+    "development_object_store": "minio_local",
+    "archive_every_fetch_event": true,
+    "raw_content_addressed_sha256": true,
+    "logical_fetch_history_deduplicated": false,
+    "derived_table_format": "parquet"
+  },
+  "diagnostics": {
+    "mode": "TRACE",
+    "allow_runtime_override": true,
+    "allow_trace_single_run": true,
+    "persist_events": true,
+    "sink": "jsonl",
+    "flush_on_each_event_in_trace": true,
+    "flush_immediately_on_error": true,
+    "capture_state_snapshots": true,
+    "capture_frontend_events": true,
+    "max_snapshot_bytes": 262144,
+    "retention_days": 14,
+    "redaction_profile": "strict_secrets",
+    "debug_console_enabled": true
+  }
+}

@@ -1,6 +1,7 @@
 import { SourceAdapter } from './base';
 import { OfflineFixtureAdapter } from './offline_fixture';
 import { SerpAdapter } from './serp';
+import { GoogleTrendsAdapter } from './google_trends';
 import type { Source } from '../../../src/types';
 
 export interface SourceRegistryEntry {
@@ -28,13 +29,14 @@ export class SourceRegistry {
       description: 'SERP API fixture (mocked until real HTTP fetch is implemented)'
     });
 
-    // Honest status for planned/blocked sources
     this.register('google_trends', {
-      status: 'planned',
-      capabilities: ['interest_over_time', 'interest_by_region'],
-      description: 'Google Trends time-series index'
+      adapter: new GoogleTrendsAdapter(),
+      status: 'fixture',
+      capabilities: ['interest_over_time'],
+      description: 'Google Trends interest-over-time index (mocked until real HTTP fetch is implemented). A distinct signal from SERP result counts — not a substitute for JH16 FAITHFUL Ni/Ni_harm.'
     });
 
+    // Honest status for planned/blocked sources
     this.register('pubchem', {
       status: 'planned',
       capabilities: ['chemical_properties', 'entity_reference'],
