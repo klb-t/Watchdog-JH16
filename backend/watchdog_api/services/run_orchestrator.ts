@@ -40,7 +40,7 @@ export class RunOrchestrator {
         const config = JSON.parse(runRecord.config);
 
         if (runRecord.type === 'ACQUISITION' || runRecord.type === 'PIPELINE') {
-           this.runRepo.updateStatus(runId, 'RUNNING');
+           this.runRepo.updateStatus(runId, 'ACQUIRING');
            tracer.emit('START_ACQUISITION', { source: config.source_id });
            
            const adapter = sourceRegistry.getAdapter(config.source_id);
@@ -88,13 +88,12 @@ export class RunOrchestrator {
            this.anRepo.insertMany(runId, results);
         }
 
-        this.runRepo.updateStatus(runId, 'COMPLETED');
+        this.runRepo.updateStatus(runId, 'SUCCESS');
         tracer.emit('RUN_COMPLETED', { runId });
 
       } catch (err: any) {
         this.runRepo.updateStatus(runId, 'FAILED', err.message);
         tracer.emit('STATE_AT_FAILURE', { state: stateAtFailure, error: err.message });
-        throw err;
       }
     });
   }

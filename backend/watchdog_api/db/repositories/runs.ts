@@ -3,7 +3,7 @@ import { runs } from '../schema';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { randomUUID } from 'node:crypto';
 
-export type RunState = 'CREATED' | 'QUEUED' | 'RUNNING' | 'NORMALIZING' | 'ANALYZING' | 'EXPORTING' | 'COMPLETED' | 'FAILED' | 'CANCELLED';
+export type RunState = 'CREATED' | 'QUEUED' | 'ACQUIRING' | 'NORMALIZING' | 'ANALYZING' | 'SUCCESS' | 'FAILED';
 
 export class RunRepository {
   constructor(private db: BetterSQLite3Database<any>) {}
@@ -23,7 +23,7 @@ export class RunRepository {
   updateStatus(id: string, status: RunState, errorCode?: string) {
     const updateData: any = { status };
     if (errorCode) updateData.error_code = errorCode;
-    if (status === 'COMPLETED' || status === 'FAILED' || status === 'CANCELLED') {
+    if (status === 'SUCCESS' || status === 'FAILED') {
       updateData.completed_at = new Date().toISOString();
     }
     

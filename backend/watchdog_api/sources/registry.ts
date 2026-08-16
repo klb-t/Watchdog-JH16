@@ -1,8 +1,7 @@
 import { SourceAdapter } from './base';
 import { OfflineFixtureAdapter } from './offline_fixture';
 import { SerpAdapter } from './serp';
-import type { Source } from '../../../shared/types';
-import type { Source } from '../../../shared/types';
+import type { Source } from '../../../src/types';
 
 export interface SourceRegistryEntry {
   adapter?: SourceAdapter;
