@@ -1,0 +1,240 @@
+# Task ledger
+
+**This is the working document.** Tick a box only when its test passes. Commit the tick with
+the work. If the repository contradicts a tick, the repository wins — untick it and say so.
+
+Task IDs are stable. Do not renumber. Add new tasks with new numbers.
+
+---
+
+## E0 — Repository audit
+
+Nothing else starts until E0 is done. The specification describes intent; the repository is
+fact, and they are known to differ.
+
+- [ ] **E0.1 — Inventory**
+  Produce `docs/AUDIT.md` containing: the full source tree; for every file a verdict of
+  KEEP / REFACTOR / REPLACE / DELETE with a one-line reason; every command that actually runs;
+  every test and whether it passes; every declared dependency that is unused; every `TODO`,
+  `FIXME` and stub that returns a plausible value without doing the work.
+  *Done when:* `docs/AUDIT.md` exists and every source file appears in it exactly once.
+
+- [ ] **E0.2 — Fabrication sweep**
+  From the audit, list every function that returns a number or a scientific-looking result
+  without computing it from stored data. For each: either implement it, or make it throw
+  `NotImplementedError` and register its capability as `planned`. There is no third option.
+  *Done when:* no code path can return a fabricated measurement, and a test asserts the stubs
+  throw.
+
+- [ ] **E0.3 — Secrets scan**
+  Scan the full history, not just the working tree, for committed keys. If any are found, stop
+  and tell the maintainer immediately — this is one of the few genuine interrupts.
+  *Done when:* scan is clean or the maintainer has been told.
+
+- [ ] **E0.4 — Green baseline**
+  Get `npm run test:all` to pass, by fixing or by explicitly marking and listing skipped
+  tests in `docs/AUDIT.md`. A hidden failing test is worse than a listed skipped one.
+  *Done when:* the command exits zero and every skip is listed with a reason.
+
+- [ ] **E0.5 — Reconcile the ledger**
+  Compare the audit against E1 below. Tick any E1 task already genuinely complete. Add tasks
+  for anything the repository needs that this ledger missed.
+  *Done when:* ledger and repository agree.
+
+---
+
+## E1 — Vertical slice
+
+One narrow path, working completely, offline, on frozen fixtures:
+
+```
+fixture source → observations → method (proposed → approved) → deterministic compute
+              → chart → narrative (proposed → approved) → export → manifest
+```
+
+E1 is deliberately narrow. Resist widening it. The value of E1 is that it is *finished*.
+
+### Group 1 — Foundations
+
+- [ ] **E1.1 — Configuration loader**
+  Schema validation, canonicalisation, hashing. Invalid config fails at startup with the
+  failing path and rule.
+  *Test:* two semantically equal configs with different key order hash identically; an invalid
+  config fails with a precise message; a missing required field never silently defaults.
+
+- [ ] **E1.2 — Domain types**
+  Run state machine, `Observation` with explicit missingness, `Approvable`, error taxonomy,
+  `Principal`, `MethodSpec` types. Pure — no I/O, importable with no database.
+  *Test:* the whole `domain` module imports and its tests pass with no database, network or
+  filesystem available.
+
+- [ ] **E1.3 — Persistence**
+  SQLite schema per `02_DATA_MODEL.md`, including the empty datasets, transforms and
+  replication tables. Migrations. Repository interfaces with SQLite implementations. Local
+  content-addressed blob store.
+  *Test:* migration runs clean on an empty file; a blob round-trips by hash; two identical
+  payloads share one blob row while two fetch-event rows survive; no SQL exists outside
+  `src/repo`.
+
+### Group 2 — Diagnostics spine
+
+Before feature work. See `06_DIAGNOSTICS.md`.
+
+- [ ] **E1.4 — Tracer**
+  Central diagnostics API, correlation context, event vocabulary, four modes, context
+  propagation across the service and worker boundary.
+  *Test:* a traced call chain produces ordered events with consistent `trace_id` and
+  monotonic `sequence_no`.
+
+- [ ] **E1.5 — Redaction**
+  Central layer before every sink.
+  *Test:* the canary secret is absent from trace stream, logs, manifest, bundle and error
+  envelope.
+
+- [ ] **E1.6 — Error envelopes and cause chains**
+  Wrap at every boundary, preserve `cause` to the root.
+  *Test:* an error raised four layers down arrives with its full chain and the state at
+  failure.
+
+- [ ] **E1.7 — Diagnostic bundle**
+  One command or one click produces the redacted ZIP.
+  *Test:* a deliberately failed fixture run yields a bundle from which the direct cause is
+  identifiable without re-running. This is the E1 diagnostics acceptance test.
+
+### Group 3 — Acquisition
+
+- [ ] **E1.8 — SourceAdapter protocol and fixture adapter**
+  `FixtureSourceAdapter` reads frozen JSON from `fixtures/jh2016/`. No network in E1 at all.
+  *Test:* fetch → raw blob → normalize → observations, with the rendered query stored exactly
+  and a missing count arriving as missing rather than zero.
+
+- [ ] **E1.9 — Fixtures**
+  Frozen fixture set for all 32 JH2016 queries, plus deliberate edge cases: one missing count,
+  one zero `Ni`, one unparseable count, one count formatted with grouping separators.
+  *Test:* every fixture loads and the edge cases behave per `03_JH2016_CONTRACT.md`.
+
+- [ ] **E1.10 — Registry skeleton**
+  Capability, provider and credential registries per `05_PROVIDERS_AND_CAPABILITIES.md`, with
+  the fixture provider as the only `implemented` entry and the seed list registered as
+  `planned`.
+  *Test:* a `planned` provider cannot be selected for a run; the UI does not render it as
+  available.
+
+### Group 4 — Method and approval
+
+- [ ] **E1.11 — Primitive registry**
+  The seven primitives in `04_METHOD_COMPILER_AND_APPROVAL.md`, each with a declared contract
+  and explicit missing-value behaviour.
+  *Test:* each primitive against hand-computed values, including its missing and failure cases.
+
+- [ ] **E1.12 — MethodSpec validation and hashing**
+  Full validation: unknown primitive, unresolved reference, cycle, unit mismatch, undeclared
+  missing policy. Canonical hashing.
+  *Test:* each invalid case is rejected with a precise message; equal specs hash equally.
+
+- [ ] **E1.13 — Approval gate**
+  Domain-layer enforcement, hash-bound, with audit events.
+  *Test:* a `PROPOSED` spec reaching the executor throws `ApprovalRequiredError`; approving
+  then editing reverts to `PROPOSED` with no explicit action; there is no code path that
+  approves without a human action.
+
+- [ ] **E1.14 — TypeScript executor**
+  `MethodExecutor` implementation. Deterministic, ordered, no clock, no random.
+  *Test:* two executions of the same spec on the same inputs produce byte-identical artifacts.
+
+- [ ] **E1.15 — JH2016 FAITHFUL preset and analyzer**
+  The locked preset as configuration; Pi and Hi expressed as a `MethodSpec` over the
+  primitives, not as bespoke code.
+  *Test:* the full golden-fixture suite in `03_JH2016_CONTRACT.md`.
+
+### Group 5 — Output
+
+- [ ] **E1.16 — Charts**
+  Pi and Hi bar charts, and a scatter of Hi against the reference set. Missing values render
+  as visibly missing, never as zero or as a gap that reads as zero. A series carrying
+  `PROVIDER_DISCONTINUITY` shows it in the legend.
+  *Test:* a chart spec with a missing value renders it as missing; snapshot test on the golden
+  fixture.
+
+- [ ] **E1.17 — Narrative service**
+  Consumes a frozen payload and its hash. Cannot read the database. Output is `PROPOSED`,
+  visually distinct, recorded with provider, model and generation parameters.
+  *Test:* the service cannot alter any numeric value; unapproved narrative cannot reach an
+  export.
+
+- [ ] **E1.18 — Export**
+  CSV and JSON at minimum. Exports consume stored results; they never recompute and never
+  re-fetch. Generated prose is visually distinguishable in every format that supports it.
+  *Test:* exported values equal stored values byte-for-byte; an export attempted with an
+  unapproved artifact is refused.
+
+- [ ] **E1.19 — Manifest**
+  Every field in `02_DATA_MODEL.md` §manifest.
+  *Test:* the manifest of a golden run contains every required field, every quality flag
+  raised anywhere in the run, and an explicit list of missing observations.
+
+- [ ] **E1.20 — Replication target #1**
+  Register JH2016 as `replication_targets` row 1 with its published claims and tolerance
+  bands, per `08_REPLICATION_ENGINE.md`. Record a verdict for the fixture run.
+  *Test:* the fixture run produces verdicts against every registered claim, using the
+  vocabulary `reproduced` / `deviates` / `not_computable` / `method_unclear`.
+
+### Group 6 — Frontend slice
+
+Minimal. One workflow, end to end. No dashboard, no settings pages, no navigation framework.
+
+- [ ] **E1.21 — Study page**
+  Source selection, run trigger, run status with live trace link.
+  *Test:* a browser E2E test drives a full fixture run from the UI.
+
+- [ ] **E1.22 — Method review page**
+  Prose input, proposed spec rendered step by step in red with its rationale, per-step
+  approval, then green.
+  *Test:* E2E — a proposal cannot be executed until approved; editing an approved spec turns
+  it red again.
+
+- [ ] **E1.23 — Results page**
+  Charts, the results table, the manifest link, the export button, the narrative in its
+  approval state.
+  *Test:* E2E — results, approval states and export are all reachable and correct.
+
+### E1 exit
+
+- [ ] **E1.24 — `npm run demo:jh16`**
+  From a clean clone, with no credentials and no network, this command produces a complete run
+  directory: manifest, raw fixture copies, normalized observations, analysis output, charts,
+  exports, replication verdicts and the trace.
+  *Test:* run it twice; the two run directories are byte-identical apart from run id and
+  timestamps. Verify on a clean clone, not on the working tree.
+
+---
+
+## E2 — Compiler and validation
+
+Decompose when E1 exits. Contents: the LLM method compiler with its known-answer test on
+JH2016 prose; the reference score set loader; Pearson and Spearman against the reference;
+ambiguity surfacing in the compiler UI.
+
+## E3 — Live acquisition
+
+Contents: a real `search.result_count` provider; provider stamping and
+`PROVIDER_DISCONTINUITY` detection on live data; rate-limit and quota handling as an operating
+condition; PostgreSQL and S3 migration; a real worker process.
+
+## E4 — Identity
+
+Contents: OIDC behind `IdentityProvider`; RBAC capability matrix; migration of `local-user`
+rows; access requests and admin approval; per-source permissions.
+
+## E5 — Workbench and replication engine
+
+Contents: dataset import and the transform DAG; the generic method registry beyond the seven
+primitives; the Python sidecar executor; the replication engine per
+`08_REPLICATION_ENGINE.md`; the paper pipeline.
+
+---
+
+## Blocked
+
+*Nothing yet. Add entries here with enough detail that the maintainer can unblock in one
+action, then continue with the next unblocked task rather than waiting.*
