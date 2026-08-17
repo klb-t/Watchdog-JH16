@@ -121,7 +121,7 @@ that owns the file.
 | File | Verdict | Reason |
 |---|---|---|
 | `contract/sources.test.ts` | KEEP | exercises all 3 adapters + registry gating of `planned` status; becomes the seed of the E1.8 `SourceAdapter` conformance suite `09_TESTS.md` asks for |
-| `e2e/api_flow.test.ts` | **REPLACE — flagged defect** | **file is empty (0 bytes)**. `node:test` reports it as a passing subtest with zero assertions, so `npm run test` shows green while this test verifies nothing. This is exactly the "hidden failing test is worse than a listed skipped one" problem `07_EPICS_AND_TASKS.md` E0.4 warns about, in its inverse form: a hidden *vacuous pass*. Must become a real E2E (E1.21-23) or be deleted; leaving it empty is the one thing not allowed. |
+| `e2e/api_flow.test.ts` | REFACTOR (fixed E0.4) | was an empty file that `node:test` silently reported as a zero-assertion pass; replaced with an explicit `test(..., { skip: '<reason>' }, ...)` so the gap shows up as 1 skipped test instead of a phantom green. Becomes the real E1.21-23 browser E2E test once those pages exist. |
 | `integration/api.test.ts` | KEEP | full HTTP flow through `server.ts`'s `app`, tests source list, analyzer list, run submission, polling, results, fetch-events, raw artifact retrieval — good coverage of what exists |
 | `integration/orchestrator.test.ts` | KEEP | exercises graceful-failure path and evidence retention, correctly updated last session |
 | `integration/persistence.test.ts` | KEEP | blob dedup + WORM tests, both directions (manifest and object store) |
@@ -154,6 +154,21 @@ via `process.env`).
 codebase. This is good news with one caveat feeding into E0.2: absence of a `TODO` marker is not
 the same as absence of a fabrication — see the anti-fabrication sweep for the one real finding
 (`data.ts`'s hardcoded `'unknown'` provenance string on read).
+
+## Green baseline (E0.4)
+
+`npm run test:all` exits 0: **25 passing, 1 explicitly skipped, 0 failing**, `tsc --noEmit`
+clean, `vite build` succeeds (3 harmless `import.meta`-in-CJS warnings from `esbuild` bundling
+`server.ts` to `dist/server.cjs`, pre-existing, cosmetic only — `server.ts` isn't imported as
+CJS at runtime in a way that path executes).
+
+The one skip, with reason, per E0.4's "explicitly marking and listing skipped tests" clause:
+
+| Test | Reason skipped |
+|---|---|
+| `tests/e2e/api_flow.test.ts` — "E2E: full fixture run driven from the Study/Method Review/Results pages" | Requires E1.21-23 (those UI pages don't exist yet) and a browser driver. Was previously an empty file silently counted as a zero-assertion pass (see E0.1 finding); now an explicit skip so the gap is visible in `npm run test` output rather than hidden. |
+
+No other test in the suite is skipped, marked `.todo`, or conditionally disabled.
 
 ## Secrets scan (E0.3)
 

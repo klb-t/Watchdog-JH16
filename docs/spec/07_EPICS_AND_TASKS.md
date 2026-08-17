@@ -31,7 +31,7 @@ fact, and they are known to differ.
   and tell the maintainer immediately — this is one of the few genuine interrupts.
   *Done when:* scan is clean or the maintainer has been told.
 
-- [ ] **E0.4 — Green baseline**
+- [x] **E0.4 — Green baseline**
   Get `npm run test:all` to pass, by fixing or by explicitly marking and listing skipped
   tests in `docs/AUDIT.md`. A hidden failing test is worse than a listed skipped one.
   *Done when:* the command exits zero and every skip is listed with a reason.
