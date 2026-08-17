@@ -12,7 +12,7 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 Nothing else starts until E0 is done. The specification describes intent; the repository is
 fact, and they are known to differ.
 
-- [ ] **E0.1 — Inventory**
+- [x] **E0.1 — Inventory**
   Produce `docs/AUDIT.md` containing: the full source tree; for every file a verdict of
   KEEP / REFACTOR / REPLACE / DELETE with a one-line reason; every command that actually runs;
   every test and whether it passes; every declared dependency that is unused; every `TODO`,
