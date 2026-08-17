@@ -155,6 +155,24 @@ codebase. This is good news with one caveat feeding into E0.2: absence of a `TOD
 the same as absence of a fabrication — see the anti-fabrication sweep for the one real finding
 (`data.ts`'s hardcoded `'unknown'` provenance string on read).
 
+## Secrets scan (E0.3)
+
+Scanned `git log --all -p` (full history on every ref, not just the working tree) for:
+
+- known key-shaped patterns: `AIza…` (Google), `sk-…` (OpenAI-style), `ghp_…`/`github_pat_…`
+  (GitHub), `AKIA…` (AWS), `xox[baprs]-…` (Slack), `-----BEGIN … PRIVATE KEY-----` blocks
+- generic `*_KEY`/`*_SECRET`/`*_TOKEN`/`password`/`passwd` assignments to a quoted value of 12+
+  characters, excluding the known placeholder strings in `.env.example`
+- connection strings with embedded credentials (`postgres://user:pass@…` and similar)
+- npm/yarn registry auth tokens in lockfile history
+- every file ever added anywhere in history whose name matches `.env*`, `*.pem`, `*.key`,
+  `*.p12`, `*.pfx`, or contains `secret`/`credential`
+
+**Result: clean.** The only `.env*` file ever committed is `.env.example`, and it has always
+held only the placeholder values `GEMINI_API_KEY="MY_GEMINI_API_KEY"` and
+`APP_URL="MY_APP_URL"` (AI-Studio boilerplate, never a real value). No other pattern matched
+anywhere in history. No maintainer interrupt required.
+
 ## Fabrication sweep (E0.2)
 
 Searched every function in `backend/watchdog_api/analytics/` and `backend/watchdog_api/sources/`

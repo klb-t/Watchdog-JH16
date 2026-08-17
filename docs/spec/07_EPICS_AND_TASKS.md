@@ -26,7 +26,7 @@ fact, and they are known to differ.
   *Done when:* no code path can return a fabricated measurement, and a test asserts the stubs
   throw.
 
-- [ ] **E0.3 — Secrets scan**
+- [x] **E0.3 — Secrets scan**
   Scan the full history, not just the working tree, for committed keys. If any are found, stop
   and tell the maintainer immediately — this is one of the few genuine interrupts.
   *Done when:* scan is clean or the maintainer has been told.
