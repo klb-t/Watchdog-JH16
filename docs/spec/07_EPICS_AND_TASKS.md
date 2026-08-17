@@ -36,7 +36,7 @@ fact, and they are known to differ.
   tests in `docs/AUDIT.md`. A hidden failing test is worse than a listed skipped one.
   *Done when:* the command exits zero and every skip is listed with a reason.
 
-- [ ] **E0.5 — Reconcile the ledger**
+- [x] **E0.5 — Reconcile the ledger**
   Compare the audit against E1 below. Tick any E1 task already genuinely complete. Add tasks
   for anything the repository needs that this ledger missed.
   *Done when:* ledger and repository agree.
@@ -183,6 +183,14 @@ Before feature work. See `06_DIAGNOSTICS.md`.
 
 Minimal. One workflow, end to end. No dashboard, no settings pages, no navigation framework.
 
+*E0.5 note:* the repository already has a working, tested multi-page shell (`Layout` nav,
+Dashboard, Sources, Runs, Analyzers) from the AI-Studio passes. Per `CLAUDE.md` §0 ("if the
+ledger and the repository disagree, the repository wins") and the same reasoning as D1 in
+`00_STATE_AND_DECISIONS.md` (existing working code beats a spec assumption written before the
+code existed), E1.21-23 add the required pages/flows *into* that shell rather than removing it.
+"No dashboard" is read as "the vertical slice does not depend on one existing", not as
+permission to delete working, tested navigation. See D11.
+
 - [ ] **E1.21 — Study page**
   Source selection, run trigger, run status with live trace link.
   *Test:* a browser E2E test drives a full fixture run from the UI.
@@ -206,6 +214,39 @@ Minimal. One workflow, end to end. No dashboard, no settings pages, no navigatio
   exports, replication verdicts and the trace.
   *Test:* run it twice; the two run directories are byte-identical apart from run id and
   timestamps. Verify on a clean clone, not on the working tree.
+
+### E0.5 additions — found by the audit, not in the original ledger
+
+- [ ] **E1.25 — Wire `ConfigLoader` into the running server**
+  `backend/watchdog_api/config/{loader,schemas,canonicalize}.ts` pass all three tests in
+  `tests/unit/config.test.ts` in isolation, but nothing in `server.ts` or `api/routes.ts`
+  constructs a `ConfigLoader` or calls `loadEffectiveConfig`. Every run today executes whatever
+  the HTTP request body contains, unvalidated by this system.
+  *Test:* submitting a run whose config fails schema validation is rejected before the
+  orchestrator runs, with the failing path and rule in the error response.
+
+- [ ] **E1.26 — Persist `source_adapter_version` on observations**
+  `db/repositories/data.ts`'s `ObservationRepository.getByRunId` hardcodes
+  `source_adapter_version: 'unknown'` on read because the `observations` table has no such
+  column, even though adapters already stamp it on the `Observation` object at write time.
+  *Test:* an observation's real adapter version survives a write/read round-trip; `'unknown'`
+  only appears when the value was genuinely never recorded.
+
+- [ ] **E1.27 — Finalize a manifest at the end of a run**
+  `services/run_orchestrator.ts` constructs an `ArtifactRepository` but never calls
+  `finalizeManifest`. No run — including a fully successful one — currently produces a
+  manifest; `GET /api/runs/:id/manifest` 404s even after `SUCCESS`.
+  *Test:* after a run reaches `SUCCESS`, its manifest exists and is retrievable; a second
+  attempt to finalize the same run's manifest is rejected (already covered by the existing WORM
+  test in `persistence.test.ts` — this task is about actually calling it from the orchestrator).
+
+- [ ] **E1.28 — Remove dead dependencies and the stale lockfile**
+  `@google/genai`, `jstat`, `motion`, `uuid`, `recharts`, `drizzle-kit`, `cors` and `dotenv` are
+  declared in `package.json` but imported nowhere (`docs/AUDIT.md` "Unused declared
+  dependencies"). `bun.lock` is a second, unused lockfile alongside the real
+  `package-lock.json`.
+  *Test:* `npm run test:all` stays green after removal; `npm install` still reproduces
+  `package-lock.json` unchanged.
 
 ---
 
@@ -236,5 +277,18 @@ primitives; the Python sidecar executor; the replication engine per
 
 ## Blocked
 
-*Nothing yet. Add entries here with enough detail that the maintainer can unblock in one
-action, then continue with the next unblocked task rather than waiting.*
+- **E1.20 needs tolerance bands from the maintainer before it can be implemented.**
+  `08_REPLICATION_ENGINE.md`: "Setting tolerance before the attempt is the entire methodological
+  point — a tolerance chosen after seeing the result is not a tolerance." This is explicitly the
+  maintainer's call, not an agent default (unlike the Q1-Q4 defaults in
+  `00_STATE_AND_DECISIONS.md` §4, which are safe to proceed on). Needed, concretely:
+  1. The `rank_correlation_floor` for the harm-index-vs-reference-scores correlation claim.
+  2. Whether to also register the ordinal-ranking-by-`Pi` claim and specific reported `Pi`/`Hi`
+     values from the paper as `relative`-tolerance claims, or defer those to a later pass.
+  3. Confirmation that a `deviates` verdict (expected, per the paper's own honesty constraint —
+     2026 search-engine counts are not 2016 counts) is an acceptable E1 exit outcome, i.e. E1.24
+     does not require `reproduced` to ship.
+  One action to unblock: answer 1-3 (or say "use your judgement" for 2-3, since only 1 is
+  irreversible/scientific). Until answered, E1.20 stays undone and every other E1 task proceeds
+  around it — it does not block E1.24 in aggregate since a `not_computable`/`deviates` verdict
+  is itself a valid, honest outcome once *some* tolerance is on record.

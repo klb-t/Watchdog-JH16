@@ -1,27 +1,42 @@
 # State and binding decisions
 
-Last updated: 2026-08-16. Update this file whenever a decision changes or an epic completes.
+Last updated: 2026-08-17, after E0 (repository audit) completed. Update this file whenever a
+decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
 
-**Known from the archive, to be verified against the repository on first session:**
+**Superseded by E0.1's audit (`docs/AUDIT.md`) — kept below for lineage, resolved inline:**
 
-- A repository exists and is connected to GitHub.
-- An AI Studio Build-mode agent (Gemini) completed roughly three passes over it.
+- A repository exists and is connected to GitHub. ✓ still true.
+- An AI Studio Build-mode agent (Gemini) completed roughly three passes over it. ✓ consistent
+  with `git log`: an initial commit, a scaffolding commit, and a "feat: enhance data provenance
+  and analytic robustness" commit that introduced the defects described next.
 - Files observed by name in that agent's action history: `registry.ts`, `serp.ts`, an
   orchestrator, a schema/client pair, a repository module, and an orchestrator test.
-  This establishes the implementation language as **TypeScript**, not Python.
-- `npm run test:all` was the agent's test command.
-- The last pass was interrupted mid-repair by Gemini project quota exhaustion, with roughly
-  seven modified files left in the workspace. Whether those changes were committed and pushed
-  is **unknown** — verify with `git log` and `git status` before anything else.
+  This establishes the implementation language as **TypeScript**, not Python. ✓ confirmed.
+- `npm run test:all` was the agent's test command. ✓ confirmed, still the canonical command.
+- The last pass was interrupted mid-repair, with roughly seven modified files left in an
+  unclear state. **Resolved (Q1 below): `git log`/`git status` show a clean, fully-pushed
+  working tree.** The interrupted pass's actual defects — a duplicated/broken import in
+  `sources/registry.ts`, a duplicated `const q` in `sources/serp.ts`, a run-status vocabulary
+  mismatch between `run_orchestrator.ts` and its own tests, and a corrupted committed
+  `data/watchdog.sqlite` — were identified and fixed before this spec package was added.
 - A twelve-point review list was produced against the repository by an external reviewer and
-  partially applied. The list itself is not preserved. Do not attempt to reconstruct it;
-  instead run the audit in `07_EPICS_AND_TASKS.md` task E0.1, which supersedes it.
+  partially applied. The list itself is not preserved, and E0.1's audit (`docs/AUDIT.md`)
+  supersedes it as intended: full source tree, KEEP/REFACTOR/REPLACE verdicts per file, unused
+  dependencies, and the anti-fabrication sweep are all there now.
 
-**Therefore: the repository state is uncertain and the first job is an inventory, not a build.**
+**Current state, in one paragraph:** `npm run test:all` is green (25 passing, 1 explicitly
+skipped, 0 failing). No E1 task is genuinely complete against its literal stated test, but
+several have substantial, tested, reusable partial implementations already: the config loader
+(E1.1, not yet wired into the running server), the flight recorder and redaction layer
+(E1.4-E1.6, missing the full event vocabulary and the diagnostic bundle), the content-addressed
+WORM blob store (part of E1.3), and three fixture-status source adapters (E1.8's protocol,
+though fixture data is inline rather than file-based per E1.9). See `docs/AUDIT.md` for the
+complete per-file breakdown and `07_EPICS_AND_TASKS.md`'s E0.5 additions (E1.25-E1.28) for the
+concrete gaps the audit found that the original ledger didn't call out.
 
 ## 2. Lineage of this specification
 
@@ -175,13 +190,35 @@ feature work. Reason, stated by the maintainer: an agent debugging this system m
 actually happened, not infer probabilistically from a final exception. This is a direct
 investment in unsupervised agent work and it pays for itself the first time something breaks.
 
+### D11 — Keep the existing multi-page UI shell; add E1's pages into it (decided at E0.5)
+
+`07_EPICS_AND_TASKS.md` Group 6 describes E1's frontend as "minimal — one workflow, end to end,
+no dashboard, no settings pages, no navigation framework." The repository, per the E0.1 audit,
+already has a working, tested multi-page shell from the AI-Studio passes: a `Layout` with nav,
+plus Dashboard, Sources, Runs, RunDetails and Analyzers pages, exercised by
+`tests/integration/api.test.ts`.
+
+Chosen: E1.21-23 add the Study/Method-Review/Results flow as pages inside the existing shell,
+rather than deleting the shell to match the spec's literal "no dashboard" framing.
+
+Rejected: discarding the existing frontend to build the minimal single-workflow shell the spec
+describes. That spec text was written for an empty repository; this repository is not empty.
+Deleting tested, working navigation to satisfy a framing written before the code existed would
+be the exact "Rewrites" anti-pattern `CLAUDE.md` §2 warns against, and would violate §0's rule
+that the repository wins when it disagrees with what the specification assumed.
+
+Consequence: "no dashboard" is read as "the E1 vertical slice's own tests do not depend on the
+dashboard existing", not as permission to remove it. If the maintainer wants the dashboard
+actually removed for a leaner MVP, that is a rewrite-adjacent call per `CLAUDE.md` §4 and should
+be an explicit instruction, not an agent-initiated deletion.
+
 ## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.
 
 | # | Question | Default until answered |
 |---|---|---|
-| Q1 | Are the ~7 files from the interrupted AI Studio pass committed and pushed? | Assume unknown; audit in E0.1 |
+| Q1 | Are the ~7 files from the interrupted AI Studio pass committed and pushed? | **Answered by E0.1 (`docs/AUDIT.md`).** `git log`/`git status` show a clean working tree with every commit pushed; there is no uncommitted AI-Studio work sitting in the repository. The specific defects the interrupted pass left behind (a duplicated/broken import in `sources/registry.ts`, a duplicated `const q` in `sources/serp.ts`, a status-vocabulary mismatch between `run_orchestrator.ts` and its own tests, and a corrupted committed `data/watchdog.sqlite`) were identified and fixed in the commit immediately preceding this spec package. |
 | Q2 | Do SerpApi credits exist and on which plan? | Irrelevant to E1 and E2 — all work runs on frozen fixtures |
 | Q3 | Which LLM provider for the compiler in E2? | Any configured provider; the compiler is provider-neutral by D5 |
 | Q4 | Is the reference harm-score set (Nutt et al. 2010) available as data? | E2 loads it from a versioned config file; ship a fixture with a clear placeholder marker if the real scores are not to hand |

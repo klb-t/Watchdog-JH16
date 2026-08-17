@@ -242,6 +242,42 @@ schema validation). Nothing in `server.ts` or `api/routes.ts` calls `ConfigLoade
 running application never actually goes through it — every run today uses whatever the HTTP
 request body contains, unvalidated by this system. Flagged for E0.5/E1.1.
 
+## Ledger reconciliation (E0.5)
+
+Checked every E1 task's exact stated test against the repository, not against how close the
+code looks. Conclusion: **no E1 checkbox is ticked.** Several tasks have real, tested, reusable
+partial implementations, but none satisfies its full literal test yet:
+
+| Task | What exists | What's still missing against its stated test |
+|---|---|---|
+| E1.1 Config loader | canonical hashing + lock enforcement + fail-fast validation, all tested | no test for "a missing required field never silently defaults" (every top-level field currently has a default); not wired into `server.ts` (E1.25) |
+| E1.3 Persistence | blob dedup + WORM, tested (`persistence.test.ts`) | no test of `db/client.ts`'s own migration path in isolation; SQL lives in `backend/watchdog_api/db/`, not `src/repo/`; `02_DATA_MODEL.md`'s wider schema doesn't exist |
+| E1.4 Tracer | correlation context, parent/child span linkage, tested | `sequence_no` is implemented but never asserted by any test |
+| E1.5 Redaction | canary-style assertion against the TRACE event stream | not tested against logs, manifest, bundle, or error envelope specifically |
+| E1.6 Error envelopes | 2-level cause chain tested | not "four layers down"; `STATE_AT_FAILURE` emitted but not asserted |
+| E1.8 SourceAdapter + fixture | protocol shape close to spec's, 3 adapters, exact-query-string test passes | fixture data is inline in `.ts` files, not read from `fixtures/jh2016/*.json`; no test of a missing/unparseable count arriving as `null` rather than `0` |
+| E1.10 Registry skeleton | `NotImplementedError` now thrown server-side for `planned`/`blocked` (E0.2) | UI (`Sources.tsx`) still renders every source, including `planned` ones, with a clickable "Acquire" button |
+
+E1.2, E1.7, E1.9, E1.11-20, E1.21-24 have no implementation to credit — confirmed absent, not
+partially done.
+
+New tasks added for what the audit found and the original ledger missed: **E1.25** (wire config
+loader into the server), **E1.26** (stop losing `source_adapter_version` on read), **E1.27**
+(actually call `finalizeManifest` from the orchestrator), **E1.28** (remove dead dependencies
+and the stale `bun.lock`). One blocker recorded: **E1.20** needs the maintainer's tolerance
+bands before it can be implemented at all — recorded in `07_EPICS_AND_TASKS.md`'s `## Blocked`
+section with the exact three points needed to unblock it in one action.
+
+One architectural note resolved rather than left ambiguous: Group 6's "no dashboard, no
+navigation framework" framing conflicts with the repository's existing, working, tested
+multi-page UI. Recorded as **D11** in `00_STATE_AND_DECISIONS.md`: keep the shell, add E1's
+required pages into it — per `CLAUDE.md` §0's "the repository wins" rule and the same logic as
+D1 (existing working code beats a spec assumption written before the code existed).
+
+`00_STATE_AND_DECISIONS.md` §4 Q1 ("are the ~7 interrupted-pass files committed?") is now
+answered: yes, everything is committed and pushed, and the specific defects that pass left
+behind were identified and fixed. Updated in place rather than left as an open question.
+
 ## What E0.1 does not do
 
 Per the ledger, E0.1 is inventory, not repair. No source file was modified to produce this
