@@ -1,5 +1,23 @@
 import { randomUUID } from 'node:crypto';
 
+/**
+ * Thrown by any capability registered as 'planned' or 'blocked' when invoked.
+ * Per CLAUDE.md rule 1: a stub must never reach a code path that produces a
+ * number a human might read as a measurement. There is no fallback value.
+ */
+export class NotImplementedError extends Error {
+  readonly code = 'NOT_IMPLEMENTED';
+  readonly capabilityId: string;
+  readonly status: string;
+
+  constructor(capabilityId: string, status: string) {
+    super(`Capability '${capabilityId}' is not implemented. Status: ${status}`);
+    this.name = 'NotImplementedError';
+    this.capabilityId = capabilityId;
+    this.status = status;
+  }
+}
+
 export interface ErrorEnvelope {
   error_id: string;
   trace_id?: string;

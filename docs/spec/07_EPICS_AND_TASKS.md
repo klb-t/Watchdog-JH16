@@ -19,7 +19,7 @@ fact, and they are known to differ.
   `FIXME` and stub that returns a plausible value without doing the work.
   *Done when:* `docs/AUDIT.md` exists and every source file appears in it exactly once.
 
-- [ ] **E0.2 — Fabrication sweep**
+- [x] **E0.2 — Fabrication sweep**
   From the audit, list every function that returns a number or a scientific-looking result
   without computing it from stored data. For each: either implement it, or make it throw
   `NotImplementedError` and register its capability as `planned`. There is no third option.

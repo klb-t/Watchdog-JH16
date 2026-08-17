@@ -2,6 +2,7 @@ import { SourceAdapter } from './base';
 import { OfflineFixtureAdapter } from './offline_fixture';
 import { SerpAdapter } from './serp';
 import { GoogleTrendsAdapter } from './google_trends';
+import { NotImplementedError } from '../utils/errors';
 import type { Source } from '../../../src/types';
 
 export interface SourceRegistryEntry {
@@ -76,7 +77,7 @@ export class SourceRegistry {
     const entry = this.sources.get(id);
     if (!entry) throw new Error(`Source adapter not found: ${id}`);
     if (!entry.adapter || entry.status !== 'implemented' && entry.status !== 'fixture') {
-      throw new Error(`Source adapter '${id}' cannot be executed. Status: ${entry.status}`);
+      throw new NotImplementedError(id, entry.status);
     }
     return entry.adapter;
   }

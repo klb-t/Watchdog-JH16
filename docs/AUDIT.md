@@ -95,7 +95,7 @@ that owns the file.
 | `sources/serp.ts` | KEEP | fixture-status, mocked, harm-detection restored last session, tested — legitimate stand-in for the eventual `search.result_count` provider (E3), correctly *not* claiming to be live |
 | `storage/client.ts` | KEEP | thin composition-root wiring for the object store |
 | `storage/object_store/index.ts` | KEEP | WORM-enforcing content-addressed local blob store, tested — this **is** `02_DATA_MODEL.md`'s blob store requirement, already correct |
-| `utils/errors.ts` | KEEP | `ErrorEnvelope` + cause-chain builder, matches `06_DIAGNOSTICS.md` error-taxonomy intent closely |
+| `utils/errors.ts` | KEEP | `ErrorEnvelope` + cause-chain builder, matches `06_DIAGNOSTICS.md` error-taxonomy intent closely; now also exports `NotImplementedError` (added E0.2) |
 | `utils/redaction.ts` | REFACTOR | works and is tested (canary-style assertion in `tracer.test.ts`), but the sensitive-key list is small (`password, token, secret, api_key, apikey, authorization, client_secret`) — `06_DIAGNOSTICS.md` requires a redaction layer that "knows every credential-shaped key"; needs the canary-secret CI test called out explicitly in `09_TESTS.md`, not just an assertion embedded in another test |
 | `utils/tracer.ts` | KEEP | this is a real, working flight recorder: modes (`OFF/ERRORS/NORMAL/TRACE`), `AsyncLocalStorage` correlation context, `trace_id`/`span_id`/`parent_span_id`/`sequence_no`, JSONL persistence, redaction on every write. Substantially satisfies E1.4–E1.6 already. Gaps vs spec: no `STATE_BEFORE→INPUT→VALIDATION→DECISION→...` full vocabulary (has a subset), no diagnostic bundle (E1.7), no Debug Console. |
 
@@ -126,6 +126,7 @@ that owns the file.
 | `integration/orchestrator.test.ts` | KEEP | exercises graceful-failure path and evidence retention, correctly updated last session |
 | `integration/persistence.test.ts` | KEEP | blob dedup + WORM tests, both directions (manifest and object store) |
 | `scientific/jh16.test.ts` | KEEP | golden values for `Pi`/`Hi` and correlation presence; becomes the seed of the E1.15 golden-fixture suite, though it doesn't yet cover the full `03_JH2016_CONTRACT.md` test list (missing count, zero `Ni`, count-string parsing, faithful immutability, exact-32-query golden) |
+| `unit/anti_fabrication.test.ts` | KEEP | added E0.2; the anti-fabrication test `09_TESTS.md` requires from E0.2 |
 | `unit/config.test.ts` | KEEP | canonicalization, precedence, lock enforcement — real coverage of E1.1 |
 | `unit/tracer.test.ts` | KEEP | context propagation, redaction, cause chains — real coverage of E1.4-E1.6 |
 
@@ -153,6 +154,40 @@ via `process.env`).
 codebase. This is good news with one caveat feeding into E0.2: absence of a `TODO` marker is not
 the same as absence of a fabrication — see the anti-fabrication sweep for the one real finding
 (`data.ts`'s hardcoded `'unknown'` provenance string on read).
+
+## Fabrication sweep (E0.2)
+
+Searched every function in `backend/watchdog_api/analytics/` and `backend/watchdog_api/sources/`
+for a value returned without being computed from its inputs. Findings:
+
+- **No fabricated scientific value exists.** `analytics/stats.ts` (`pearson`, `spearman`,
+  `calculateRatio`, `normalizeMax`) and `analytics/jh16.ts` (`Pi`, `Hi`) all compute from their
+  arguments; none has a hardcoded numeric fallback. Verified by a new test asserting `pearson`/
+  `spearman` vary with their inputs and return `null` (never a fabricated `0`) on a zero-variance
+  input, and that `calculateRatio` returns `null` (never `0` or `Infinity`) for a non-positive
+  denominator — `tests/unit/anti_fabrication.test.ts`.
+- **Fixture adapters are not fabrication.** `offline_fixture.ts`, `serp.ts`, `google_trends.ts`
+  return hardcoded mock payloads, but each is registered with honest `status: 'fixture'` — never
+  `'implemented'` — matching `05_PROVIDERS_AND_CAPABILITIES.md`'s own model ("fixture is
+  offline-only"). This is the sanctioned pattern (see E1.8's `FixtureSourceAdapter`), not the
+  anti-pattern rule 1 is aimed at.
+- **Real gap found and fixed:** `sources/registry.ts`'s `getAdapter()` threw a plain `Error` for
+  `planned`/`blocked` sources, not the `NotImplementedError` CLAUDE.md rule 1 names explicitly.
+  Added `NotImplementedError` to `utils/errors.ts` and wired it into `getAdapter()`. Every
+  currently-registered `planned`/`blocked-by-license/auth` source (`pubchem`,
+  `scientific_literature`, `erowid`, `drug_checking`, `manual_dataset`) now throws it, asserted by
+  `tests/unit/anti_fabrication.test.ts`.
+- **Not a fabrication, but adjacent, left for E1.3:** `db/repositories/data.ts`'s
+  `source_adapter_version: 'unknown'` on read (already flagged above) is honest about not
+  knowing the value — it doesn't invent a fake version — so it doesn't violate rule 1, but the
+  underlying data loss (column missing from `observations`) is a real defect for E1.3.
+- **Not fixed here, deferred to E1.10:** the `Sources` page and `sourceRegistry.listSources()`
+  return `planned`/`blocked` entries alongside `fixture` ones with no adapter, and the frontend
+  renders an "Acquire" button for all of them uniformly; clicking one for a `planned` source
+  round-trips to the API and fails with `NotImplementedError` server-side rather than being
+  disabled client-side. E1.10's test ("a `planned` provider cannot be selected for a run; the UI
+  does not render it as available") owns this, not E0.2 — E0.2 is about fabricated *values*, and
+  no fabricated value is produced by this flow, only a clickable dead end.
 
 ## Diagnostics contract (`06_DIAGNOSTICS.md`) — closer to done than the ledger suggests
 

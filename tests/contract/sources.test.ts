@@ -4,6 +4,7 @@ import { sourceRegistry } from '../../backend/watchdog_api/sources/registry';
 import { OfflineFixtureAdapter } from '../../backend/watchdog_api/sources/offline_fixture';
 import { SerpAdapter } from '../../backend/watchdog_api/sources/serp';
 import { GoogleTrendsAdapter } from '../../backend/watchdog_api/sources/google_trends';
+import { NotImplementedError } from '../../backend/watchdog_api/utils/errors';
 
 test('SourceRegistry - Retrieves implemented adapters and blocks planned', () => {
   const offline = sourceRegistry.getAdapter('offline_fixture');
@@ -17,7 +18,7 @@ test('SourceRegistry - Retrieves implemented adapters and blocks planned', () =>
 
   assert.throws(() => {
     sourceRegistry.getAdapter('pubchem');
-  }, /cannot be executed\. Status: planned/);
+  }, NotImplementedError);
 });
 
 test('OfflineFixtureAdapter - Normalizes JSON properly', async () => {
