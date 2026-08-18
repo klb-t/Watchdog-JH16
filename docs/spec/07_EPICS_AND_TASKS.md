@@ -316,7 +316,68 @@ the same relationship E1 has to the replication and dataset tables it also seeds
 
 ## Blocked
 
-- **E1.20 needs tolerance bands from the maintainer before it can be implemented.**
+- **E1.20 — tolerance bands PROPOSED, awaiting approval. Everything else proceeds around it.**
+
+  Status: `PROPOSED` per the approval gate (D7). These numbers are **not** registered as
+  `replication_claims` rows and no replication attempt has been executed against them. One
+  maintainer line approves them, amends a number, or rejects them; on approval, E1.20 is
+  implemented as written and the claims enter the schema as `APPROVED`.
+
+  **Source-access limitation, stated plainly because it changes how much these are worth.**
+  Every scholarly domain is blocked by this environment's egress proxy — `jmir.org`,
+  `pmc.ncbi.nlm.nih.gov`, `pubmed`, Europe PMC, Crossref and Semantic Scholar all refused.
+  The reference values below therefore come from **two independent web-search summaries of the
+  paper, not from the paper's own text**, which I could not open. They agree with each other,
+  which is weak corroboration, not verification. Before any of these becomes an `APPROVED`
+  claim, the values must be read off the primary text by someone who can open it.
+
+  Reported by those summaries: correlation coefficient **81.6%** between "the harm score ranking
+  and the harm index", **p = 0.000143**, the authors' own significance level **α = 0.01**,
+  n = 16 substances.
+
+  Two ambiguities in that summary that are themselves findings, not obstacles to route around:
+  1. **Is 81.6% `r` or `R²`?** If `R² = 0.816` then `r ≈ 0.903`, a materially different claim.
+  2. **Pearson or Spearman?** The phrase "harm score *ranking*" points to a rank correlation,
+     which is what `tolerance_kind: rank_correlation_floor` assumes, but the paper may report
+     Pearson. `03_JH2016_CONTRACT.md` already requires reporting both; if the primary text turns
+     out not to determine which was used, that claim's verdict is `method_unclear` — the
+     vocabulary exists precisely for this and it is the honest outcome, not a failure.
+
+  **Proposed band 1 — harm index vs reference harm scores. `rank_correlation_floor: 0.70`.**
+  The paper's claim is qualitative — a crude Google-hit index "correlates very well" with Nutt's
+  MCDA — so the floor should test whether that relationship survives, not whether the coefficient
+  is reproduced to three digits. 0.70 is the conventional threshold for a *strong* correlation;
+  it sits well below the reported 0.816, leaving room for a decade of index drift, and well
+  above the ~0.64 needed for significance at n = 16 under the authors' own α = 0.01, so anything
+  clearing it is both strong and significant. A floor set at 0.816 would test numeric identity
+  rather than replication; a floor at 0.5 would let a substantially weaker relationship pass.
+
+  **Proposed band 2 — `Pi` ordinal ranking. `rank_correlation_floor: 0.60`.**
+  Deliberately looser than band 1, for a reason internal to the paper: the authors observed that
+  relative popularity indices *shifted over the months of their own study*. Popularity is the
+  less stable quantity, and it is compared against the paper's own snapshot rather than against a
+  fixed external reference the way harm is against Nutt. Demanding equal stability from the more
+  volatile measure would be a stricter test disguised as a consistent one.
+  Caveat: this band presupposes the paper publishes a per-substance `Pi` table to rank against.
+  I could not confirm one exists. If it does not, this claim is `not_computable` and should be
+  dropped rather than approximated from a figure.
+
+  **Proposed band 3 — specific stated `Pi`/`Hi` values. `relative: 0.50` (±50%).**
+  Search-engine hit counts are estimates that vary between requests, data centres and days —
+  `03_JH2016_CONTRACT.md` already mandates a `PROVIDER_ESTIMATE` flag on every one of them.
+  `Pi` and `Hi` are ratios, so multiplicative inflation partially cancels, which is much of the
+  point of using indices; but it cancels only partially, because numerator and denominator come
+  from different queries. ±50% admits that ratio-level drift while still failing a substance that
+  has moved by an order of magnitude. A ±10% band would fail universally and tell us nothing;
+  ±100% would pass almost anything.
+
+  **Expected outcome, recorded in advance so it cannot be rationalised afterwards:** `deviates`
+  on bands 2 and 3 is likely, and is a result, not a defect. Per `08_REPLICATION_ENGINE.md`,
+  these bands are versioned and must not be widened after seeing a verdict. E1.24 does not
+  require `reproduced` to ship.
+
+- **Original blocker text, retained for context:** E1.20 needs tolerance bands from the
+  maintainer before it can be implemented.
   `08_REPLICATION_ENGINE.md`: "Setting tolerance before the attempt is the entire methodological
   point — a tolerance chosen after seeing the result is not a tolerance." This is explicitly the
   maintainer's call, not an agent default (unlike the Q1-Q6 defaults in
