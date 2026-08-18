@@ -18,6 +18,35 @@ export class NotImplementedError extends Error {
   }
 }
 
+export interface ConfigIssue {
+  path: string;
+  rule: string;
+  message: string;
+}
+
+/**
+ * Thrown when configuration fails schema validation.
+ *
+ * 01_ARCHITECTURE.md §Configuration: "Invalid configuration fails at startup,
+ * loudly, with the failing path and the schema rule. Never fall back to a
+ * default when configuration is present but wrong." The raw ZodError message
+ * is a JSON blob; this renders the same information as one legible line per
+ * issue while keeping the structured `issues` for programmatic callers.
+ */
+export class ConfigValidationError extends Error {
+  readonly code = 'validation_error';
+  readonly issues: ConfigIssue[];
+
+  constructor(issues: ConfigIssue[]) {
+    const detail = issues
+      .map(i => `  at '${i.path}': ${i.message} [${i.rule}]`)
+      .join('\n');
+    super(`Configuration failed validation:\n${detail}`);
+    this.name = 'ConfigValidationError';
+    this.issues = issues;
+  }
+}
+
 export interface ErrorEnvelope {
   error_id: string;
   trace_id?: string;

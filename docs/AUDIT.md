@@ -250,7 +250,7 @@ partial implementations, but none satisfies its full literal test yet:
 
 | Task | What exists | What's still missing against its stated test |
 |---|---|---|
-| E1.1 Config loader | canonical hashing + lock enforcement + fail-fast validation, all tested | no test for "a missing required field never silently defaults" (every top-level field currently has a default); not wired into `server.ts` (E1.25) |
+| E1.1 Config loader | **done** — canonical hashing, lock enforcement, fail-fast validation with the failing path and schema rule, and required fields that no longer silently default | *(nothing for E1.1 itself; wiring it into `server.ts` remains E1.25, a separate task)* |
 | E1.3 Persistence | blob dedup + WORM, tested (`persistence.test.ts`) | no test of `db/client.ts`'s own migration path in isolation; SQL lives in `backend/watchdog_api/db/`, not `src/repo/`; `02_DATA_MODEL.md`'s wider schema doesn't exist |
 | E1.4 Tracer | correlation context, parent/child span linkage, tested | `sequence_no` is implemented but never asserted by any test |
 | E1.5 Redaction | canary-style assertion against the TRACE event stream | not tested against logs, manifest, bundle, or error envelope specifically |

@@ -56,7 +56,7 @@ E1 is deliberately narrow. Resist widening it. The value of E1 is that it is *fi
 
 ### Group 1 — Foundations
 
-- [ ] **E1.1 — Configuration loader**
+- [x] **E1.1 — Configuration loader**
   Schema validation, canonicalisation, hashing. Invalid config fails at startup with the
   failing path and rule.
   *Test:* two semantically equal configs with different key order hash identically; an invalid
