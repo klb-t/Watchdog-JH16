@@ -62,7 +62,7 @@ E1 is deliberately narrow. Resist widening it. The value of E1 is that it is *fi
   *Test:* two semantically equal configs with different key order hash identically; an invalid
   config fails with a precise message; a missing required field never silently defaults.
 
-- [ ] **E1.2 — Domain types**
+- [x] **E1.2 — Domain types**
   Run state machine, `Observation` with explicit missingness, `Approvable`, error taxonomy,
   `Principal`, `MethodSpec` types. Pure — no I/O, importable with no database.
   *Test:* the whole `domain` module imports and its tests pass with no database, network or

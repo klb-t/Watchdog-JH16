@@ -224,6 +224,28 @@ dashboard existing", not as permission to remove it. If the maintainer wants the
 actually removed for a leaner MVP, that is a rewrite-adjacent call per `CLAUDE.md` §4 and should
 be an explicit instruction, not an agent-initiated deletion.
 
+### D13 — `backend/watchdog_api/` stays the backend root; the layer *boundary* is what E1.3 tests, not the path (decided at E1.2)
+
+`01_ARCHITECTURE.md` §Repository layout specifies `src/{api,services,domain,analysis,adapters,repo,diag,ui}`
+and E1.3's test says "no SQL exists outside `src/repo`". The repository instead has its backend
+under `backend/watchdog_api/{api,services,analytics,config,db,sources,storage,utils}` and its
+React app under `src/`, and that same architecture file says to "adapt to what exists rather
+than forcing a move".
+
+Chosen: keep `backend/watchdog_api/` as the backend root and add new layers inside it
+(`domain/` at E1.2). The repository layer is `backend/watchdog_api/db/`. E1.3's boundary test
+asserts the *invariant* — no SQL and no `better-sqlite3`/`drizzle` import outside the repository
+layer — against that path.
+
+Rejected: relocating twenty-odd working, tested files to match the spec's example tree. The
+invariant D2 actually protects is "all persistence sits behind repository interfaces"; the
+directory name is incidental to it, and a large mechanical move would bury the E1 work it was
+supposed to enable in an unreviewable diff. The deviation is already recorded in `docs/AUDIT.md`.
+
+Consequence: read every `src/<layer>` reference in the specification as naming the layer, not
+the path. If the backend is ever relocated, that is a standalone task, not a side effect of
+whichever feature happens to touch it first.
+
 ### D12 — Evidence tier is a schema-level concept from E1; the field/clinical UI that exploits it is Epic E6
 
 Recovered, not invented: across six 2025-09 → 2026-04 conversations, the maintainer independently
