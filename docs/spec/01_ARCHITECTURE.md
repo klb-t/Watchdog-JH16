@@ -52,12 +52,38 @@ interface SourceAdapter {
   normalize(raw: RawFetchResult): Observation[];
   provenance(raw: RawFetchResult): ProvenanceMetadata;
 }
+
+interface SourceRequest {
+  renderedQuery: string;
+  dimension: string;          // e.g. "popularity" | "harm" — see note below
+  presetId: string;
+  presetVersion: string;
+}
 ```
 
 Provider SDK objects never escape the adapter boundary. `RawFetchResult` carries bytes and
 metadata, not vendor response objects.
 
-E1 ships exactly one: `FixtureSourceAdapter`, reading frozen JSON from `fixtures/`.
+**An adapter is semantically neutral by construction.** `dimension` — whether a query is
+measuring popularity, harm, or any other research axis a future preset defines — is decided
+once, upstream, by the preset/MethodSpec/query plan that renders `renderedQuery`, and is passed
+into the adapter as an explicit field on `SourceRequest`. `fetch` and `normalize` copy that
+field onto the resulting `Observation.query_role`; they never re-derive it by pattern-matching
+the query string (checking whether it contains "harm", for instance). This applies to every
+implementation of this protocol, present and future — the E1 `FixtureSourceAdapter` as much as
+any live SERP adapter added in E3 — because the failure mode is the same regardless of which
+concrete adapter it happens in: an adapter that infers meaning from the text it is asked to
+fetch has quietly taken over a decision that belongs to the preset, and two presets that
+happen to render similar-looking query text would then risk being silently misclassified.
+
+*Provenance: this constraint was flagged externally after the rest of this package was drafted
+and is recorded here because the catch was correct, not because of where it came from — verify
+independent suggestions on their merits and fold them into the durable spec, never only into a
+one-off prompt, or the next session never sees them.*
+
+E1 ships exactly one: `FixtureSourceAdapter`, reading frozen JSON from `fixtures/`. Its fixtures
+carry `dimension` as stored fixture metadata, not as something the adapter guesses from the
+fixture's query string, so the constraint is exercised even though E1 never calls a network.
 
 ### MethodExecutor
 

@@ -70,11 +70,13 @@ E1 is deliberately narrow. Resist widening it. The value of E1 is that it is *fi
 
 - [ ] **E1.3 — Persistence**
   SQLite schema per `02_DATA_MODEL.md`, including the empty datasets, transforms and
-  replication tables. Migrations. Repository interfaces with SQLite implementations. Local
-  content-addressed blob store.
+  replication tables, and the `evidence_tier` enum plus the empty E6 field-reference tables
+  (symptoms, pill_types, tested_samples, pill_type_composition, substance_symptom_associations,
+  batch_alert_rules, batch_alerts) per D12. Migrations. Repository interfaces with SQLite
+  implementations. Local content-addressed blob store.
   *Test:* migration runs clean on an empty file; a blob round-trips by hash; two identical
   payloads share one blob row while two fetch-event rows survive; no SQL exists outside
-  `src/repo`.
+  `src/repo`; every E6 table exists and is empty.
 
 ### Group 2 — Diagnostics spine
 
@@ -105,8 +107,11 @@ Before feature work. See `06_DIAGNOSTICS.md`.
 
 - [ ] **E1.8 — SourceAdapter protocol and fixture adapter**
   `FixtureSourceAdapter` reads frozen JSON from `fixtures/jh2016/`. No network in E1 at all.
+  `dimension` travels on `SourceRequest` from the preset; the adapter never infers it from
+  query text (`01_ARCHITECTURE.md` §SourceAdapter).
   *Test:* fetch → raw blob → normalize → observations, with the rendered query stored exactly
-  and a missing count arriving as missing rather than zero.
+  and a missing count arriving as missing rather than zero; the adapter-neutrality test in
+  `09_TESTS.md`.
 
 - [ ] **E1.9 — Fixtures**
   Frozen fixture set for all 32 JH2016 queries, plus deliberate edge cases: one missing count,
@@ -248,6 +253,26 @@ permission to delete working, tested navigation. See D11.
   *Test:* `npm run test:all` stays green after removal; `npm install` still reproduces
   `package-lock.json` unchanged.
 
+### v9 addition — existing code contradicts the tightened adapter contract
+
+- [ ] **E1.29 — Remove dimension inference from the three existing adapters**
+  v9 made adapter semantic neutrality binding (`01_ARCHITECTURE.md` §SourceAdapter): `dimension`
+  arrives on `SourceRequest` from the preset and is never re-derived from query text. All three
+  adapters in the repository today violate this — `sources/serp.ts` and
+  `sources/offline_fixture.ts` both compute `isHarm` by checking whether the query string
+  contains `"harm"`, and `sources/google_trends.ts` did until it was changed to a fixed
+  `interest_index`. Worse, `tests/contract/sources.test.ts` currently *asserts* the violating
+  behaviour ("should detect 'harm' in query"), so the anti-pattern is pinned in place by a
+  passing test.
+  Note on provenance, since it matters for trusting this entry: that inference was restored
+  deliberately in an earlier session, to make the then-existing contract test pass after an
+  AI-Studio commit had broken it. It was the right call against the spec as it stood then and
+  is the wrong behaviour against v9 — recorded here rather than quietly reverted so the reversal
+  is inspectable.
+  *Test:* the adapter-neutrality tests in `09_TESTS.md` §Adapter neutrality, run against every
+  registered adapter via the shared contract suite; the "detect harm in query" assertion is
+  deleted, not weakened.
+
 ---
 
 ## E2 — Compiler and validation
@@ -273,6 +298,20 @@ Contents: dataset import and the transform DAG; the generic method registry beyo
 primitives; the Python sidecar executor; the replication engine per
 `08_REPLICATION_ENGINE.md`; the paper pipeline.
 
+## E6 — Field and clinical interfaces
+
+Contents: symptom search (checklist and free-text) per `11_FIELD_AND_CLINICAL_INTERFACES.md`;
+pill and sample identification with the visual-match evidence ceiling; the responder card and
+its fixed content-category layout; adulterant and look-alike alerting via
+`batch_alert_rules`/`batch_alerts`; offline sync for field use; sourcing work against the seed
+list in `11_FIELD_AND_CLINICAL_INTERFACES.md` §Source seed list, starting with manual/versioned
+import rather than live fetch. Schema already exists from E1 task E1.3 per D12 — this epic does
+not start with a migration.
+
+Do not start E6 before E1 exits. The schema being present is not permission to build against it
+early; it exists early specifically so E6 can start clean when its turn comes, per D12 —
+the same relationship E1 has to the replication and dataset tables it also seeds without using.
+
 ---
 
 ## Blocked
@@ -280,7 +319,7 @@ primitives; the Python sidecar executor; the replication engine per
 - **E1.20 needs tolerance bands from the maintainer before it can be implemented.**
   `08_REPLICATION_ENGINE.md`: "Setting tolerance before the attempt is the entire methodological
   point — a tolerance chosen after seeing the result is not a tolerance." This is explicitly the
-  maintainer's call, not an agent default (unlike the Q1-Q4 defaults in
+  maintainer's call, not an agent default (unlike the Q1-Q6 defaults in
   `00_STATE_AND_DECISIONS.md` §4, which are safe to proceed on). Needed, concretely:
   1. The `rank_correlation_floor` for the harm-index-vs-reference-scores correlation claim.
   2. Whether to also register the ordinal-ranking-by-`Pi` claim and specific reported `Pi`/`Hi`

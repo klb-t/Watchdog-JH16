@@ -129,3 +129,5 @@ Never weaken a higher contract to make a lower one easier.
 | `docs/spec/07_EPICS_AND_TASKS.md` | **The ledger.** Current work, in order, with tests |
 | `docs/spec/08_REPLICATION_ENGINE.md` | Replication as a first-class object |
 | `docs/spec/09_TESTS.md` | Test taxonomy and required tests |
+| `docs/spec/10_EVIDENCE_TIER_AND_TRUST_UI.md` | Colour-coded evidence tiers; two-axis design; UI convention |
+| `docs/spec/11_FIELD_AND_CLINICAL_INTERFACES.md` | Epic E6: responder card, symptom search, pill ID |

@@ -90,9 +90,9 @@ that owns the file.
 | `services/run_orchestrator.ts` | REFACTOR | single fetch-per-run orchestration; correct graceful-failure behaviour (fixed last session — catches, marks FAILED, does not rethrow) but no approval-gate check (D7), no `MethodSpec` execution, no multi-entity FAITHFUL-preset acquisition loop (32 queries/run) |
 | `sources/base.ts` | REFACTOR | `SourceAdapter` interface is structurally close to spec's (`fetch/normalize/provenance/validate`) but `snake_case` methods, `capabilities()` plural vs spec's `capability()` singular |
 | `sources/google_trends.ts` | KEEP | added last session; fixture-status, deliberately uses `interest_index` dimension (not `popularity`/`harm`) per the explicit anti-conflation warning in the archive decisions — matches D4-style substitution rule ("no silent... substitution") |
-| `sources/offline_fixture.ts` | REFACTOR | works and is tested, but its fixture data is hardcoded inline in the `.ts` file, not read from `fixtures/jh2016/*.json` as `01_ARCHITECTURE.md`/E1.8/E1.9 require |
+| `sources/offline_fixture.ts` | REFACTOR | works and is tested, but its fixture data is hardcoded inline in the `.ts` file, not read from `fixtures/jh2016/*.json` as `01_ARCHITECTURE.md`/E1.8/E1.9 require; **also infers `dimension` from query text, which v9 made a contract violation — see E1.29** |
 | `sources/registry.ts` | REPLACE | conflates Source and Provider (D5 says these are orthogonal); no `ProviderRegistry`/`CredentialRegistry`, no `proposed`→approved discovery flow |
-| `sources/serp.ts` | KEEP | fixture-status, mocked, harm-detection restored last session, tested — legitimate stand-in for the eventual `search.result_count` provider (E3), correctly *not* claiming to be live |
+| `sources/serp.ts` | REFACTOR (was KEEP; changed by v9) | fixture-status, mocked, tested, correctly *not* claiming to be live. But its restored harm-detection infers `dimension` from query text, which v9's `01_ARCHITECTURE.md` §SourceAdapter makes a contract violation — **see E1.29** |
 | `storage/client.ts` | KEEP | thin composition-root wiring for the object store |
 | `storage/object_store/index.ts` | KEEP | WORM-enforcing content-addressed local blob store, tested — this **is** `02_DATA_MODEL.md`'s blob store requirement, already correct |
 | `utils/errors.ts` | KEEP | `ErrorEnvelope` + cause-chain builder, matches `06_DIAGNOSTICS.md` error-taxonomy intent closely; now also exports `NotImplementedError` (added E0.2) |
@@ -120,7 +120,7 @@ that owns the file.
 
 | File | Verdict | Reason |
 |---|---|---|
-| `contract/sources.test.ts` | KEEP | exercises all 3 adapters + registry gating of `planned` status; becomes the seed of the E1.8 `SourceAdapter` conformance suite `09_TESTS.md` asks for |
+| `contract/sources.test.ts` | REFACTOR (was KEEP; changed by v9) | exercises all 3 adapters + registry gating of `planned` status; becomes the seed of the E1.8 `SourceAdapter` conformance suite `09_TESTS.md` asks for. But its "should detect 'harm' in query" assertion actively pins the anti-pattern v9 now forbids — **see E1.29** |
 | `e2e/api_flow.test.ts` | REFACTOR (fixed E0.4) | was an empty file that `node:test` silently reported as a zero-assertion pass; replaced with an explicit `test(..., { skip: '<reason>' }, ...)` so the gap shows up as 1 skipped test instead of a phantom green. Becomes the real E1.21-23 browser E2E test once those pages exist. |
 | `integration/api.test.ts` | KEEP | full HTTP flow through `server.ts`'s `app`, tests source list, analyzer list, run submission, polling, results, fetch-events, raw artifact retrieval — good coverage of what exists |
 | `integration/orchestrator.test.ts` | KEEP | exercises graceful-failure path and evidence retention, correctly updated last session |
@@ -264,7 +264,8 @@ partially done.
 New tasks added for what the audit found and the original ledger missed: **E1.25** (wire config
 loader into the server), **E1.26** (stop losing `source_adapter_version` on read), **E1.27**
 (actually call `finalizeManifest` from the orchestrator), **E1.28** (remove dead dependencies
-and the stale `bun.lock`). One blocker recorded: **E1.20** needs the maintainer's tolerance
+and the stale `bun.lock`). **E1.29** was added later by the v9 merge — see that section below.
+One blocker recorded: **E1.20** needs the maintainer's tolerance
 bands before it can be implemented at all — recorded in `07_EPICS_AND_TASKS.md`'s `## Blocked`
 section with the exact three points needed to unblock it in one action.
 
@@ -277,6 +278,38 @@ D1 (existing working code beats a spec assumption written before the code existe
 `00_STATE_AND_DECISIONS.md` §4 Q1 ("are the ~7 interrupted-pass files committed?") is now
 answered: yes, everything is committed and pushed, and the specific defects that pass left
 behind were identified and fixed. Updated in place rather than left as an open question.
+
+## v9 spec merge (2026-08-18) — what it changed about this audit
+
+The v8→v9 spec package landed after E0 completed. Two additions bear on the findings above:
+
+1. **Adapter semantic neutrality is now binding** (`01_ARCHITECTURE.md` §SourceAdapter,
+   `09_TESTS.md` §Adapter neutrality). `dimension` travels on `SourceRequest` from the preset;
+   no adapter may re-derive it from query text. This **invalidates three KEEP verdicts above**,
+   now downgraded to REFACTOR and tracked as **E1.29**: `sources/serp.ts` and
+   `sources/offline_fixture.ts` both infer `isHarm` from the query string, and
+   `tests/contract/sources.test.ts` asserts that they do.
+
+   Worth stating plainly rather than burying, since it reverses an earlier judgement of mine:
+   that inference in `serp.ts` was something I *restored* in an earlier session, because an
+   AI-Studio commit had deleted it and left a contract test failing. Restoring it was correct
+   against the spec as it stood then and is wrong against v9. The v9 note calls the constraint
+   an externally-flagged catch folded into the durable spec rather than a one-off prompt; the
+   corresponding move here is to record the reversal in the ledger where the next session sees
+   it, not to quietly re-edit the file and leave the audit claiming the old verdict.
+
+   `sources/google_trends.ts` is unaffected — it already emits a fixed `interest_index` and
+   never inspected query text, so it happens to satisfy the new rule already.
+
+2. **`evidence_tier` and the E6 field-reference tables join the E1 schema** (D12,
+   `02_DATA_MODEL.md` §Evidence tier / §Field reference). This widens **E1.3** but changes no
+   existing verdict: the tables are new and empty, and nothing in the repository today touches
+   them. The `db/schema.ts` REPLACE verdict above already covered "the current 6 tables are a
+   fraction of what `02_DATA_MODEL.md` specifies" — v9 simply makes that fraction smaller.
+
+Nothing in the two new specification files (`10_EVIDENCE_TIER_AND_TRUST_UI.md`,
+`11_FIELD_AND_CLINICAL_INTERFACES.md`) requires E1-scope code beyond those two points; E6 is
+explicitly gated behind E1 exit.
 
 ## What E0.1 does not do
 

@@ -1,7 +1,7 @@
 # State and binding decisions
 
-Last updated: 2026-08-17, after E0 (repository audit) completed. Update this file whenever a
-decision changes or an epic completes.
+Last updated: 2026-08-18, on the v9 spec merge, after E0 (repository audit) completed. Update
+this file whenever a decision changes or an epic completes.
 
 ---
 
@@ -34,13 +34,15 @@ several have substantial, tested, reusable partial implementations already: the 
 (E1.1, not yet wired into the running server), the flight recorder and redaction layer
 (E1.4-E1.6, missing the full event vocabulary and the diagnostic bundle), the content-addressed
 WORM blob store (part of E1.3), and three fixture-status source adapters (E1.8's protocol,
-though fixture data is inline rather than file-based per E1.9). See `docs/AUDIT.md` for the
-complete per-file breakdown and `07_EPICS_AND_TASKS.md`'s E0.5 additions (E1.25-E1.28) for the
-concrete gaps the audit found that the original ledger didn't call out.
+though fixture data is inline rather than file-based per E1.9, and all three currently infer
+`dimension` from query text in violation of the v9 adapter-neutrality rule — see E1.29). See
+`docs/AUDIT.md` for the complete per-file breakdown and `07_EPICS_AND_TASKS.md`'s E0.5 and v9
+additions (E1.25-E1.29) for the concrete gaps the audit and the v9 merge found that the original
+ledger didn't call out.
 
 ## 2. Lineage of this specification
 
-Four sources were reconciled into this package. Where they conflict, this file governs.
+Five sources were reconciled into this package. Where they conflict, this file governs.
 
 | Source | Status |
 |---|---|
@@ -48,6 +50,16 @@ Four sources were reconciled into this package. Where they conflict, this file g
 | Package v5 (auth deferral, provider abstraction, method compiler, approval gate) | **Binding.** Carried forward in full. |
 | Conversation archive, 156 threads, 2024-11 → 2026-04 | Historical seed. Already distilled; do not re-mine without a specific question. |
 | AI Studio build session, 2026-08 | Source of the repository facts in §1 and of decision D9. |
+| Six Claude-side conversations, 2025-09 → 2026-04, recovered 2026-08 (see D12) | Source of the field/clinical evidence-tier and responder-interface design in `10_EVIDENCE_TIER_AND_TRUST_UI.md` and `11_FIELD_AND_CLINICAL_INTERFACES.md`. This material predates v3 and was not carried into it — treat it as independently binding within its own scope, not as superseded by v3's silence on the topic. |
+
+Note on how this fifth source was found: it was not volunteered by any package. The maintainer
+asked directly whether responder-facing interfaces, symptom search, pill identification and a
+colour-coded evidence system were included, and a targeted search of conversation history
+turned up a materially complete design already worked out across those six threads — including
+a maintainer-authored correction to the colour ordering, recorded verbatim in
+`10_EVIDENCE_TIER_AND_TRUST_UI.md`, that a first-pass invention would not have reproduced.
+Where a future gap is suspected, search before assuming the package is silent because nothing
+exists.
 
 ## 3. Binding decisions
 
@@ -212,6 +224,35 @@ dashboard existing", not as permission to remove it. If the maintainer wants the
 actually removed for a leaner MVP, that is a rewrite-adjacent call per `CLAUDE.md` §4 and should
 be an explicit instruction, not an agent-initiated deletion.
 
+### D12 — Evidence tier is a schema-level concept from E1; the field/clinical UI that exploits it is Epic E6
+
+Recovered, not invented: across six 2025-09 → 2026-04 conversations, the maintainer independently
+designed a colour-coded evidence classification for exactly this system, refined it through his
+own correction, and separated it explicitly into two axes — see
+`10_EVIDENCE_TIER_AND_TRUST_UI.md` for the full recovered design and its formalisation here.
+
+The `evidence_tier` enum and its columns on `reference_scores` and the new field-reference
+tables (`02_DATA_MODEL.md` §Field reference) are added now, following the same reasoning as D9:
+the concept is cheap to seed as schema and expensive to retrofit once heterogeneous-provenance
+data exists without it.
+
+What is **not** pulled into E1: any UI that displays it, any real pill/symptom/toxicology
+sourcing, and any automated evidence-fusion scoring. The maintainer's own history contains a
+proposed numeric fusion-weight table (`10_EVIDENCE_TIER_AND_TRUST_UI.md` §Fusion weights); it is
+recorded as a candidate, not implemented — an algorithm silently collapsing heterogeneous
+evidence into one confidence number is exactly the pattern D7's approval gate exists to prevent,
+and this project does not carve out an exception for it just because the sketch predates that
+rule. Fusion, if it is ever built, goes through the same gate as everything else a machine
+proposes.
+
+The responder-facing interfaces, symptom search, pill identification and sourcing work that
+actually use `evidence_tier` are **Epic E6**, decomposed when its turn comes — see
+`11_FIELD_AND_CLINICAL_INTERFACES.md` and the epic table below. This is not a new sequencing
+decision: the maintainer's own April 2026 prioritisation already marked responder tooling
+"confirmed, post-MVP" against researcher tooling as "priority MVP." E1's narrow scope already
+matches that ordering; this decision only formalises the schema seam so E6 does not require a
+migration.
+
 ## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.
@@ -222,6 +263,8 @@ Do not block on these. Proceed with the stated default and flag the assumption.
 | Q2 | Do SerpApi credits exist and on which plan? | Irrelevant to E1 and E2 — all work runs on frozen fixtures |
 | Q3 | Which LLM provider for the compiler in E2? | Any configured provider; the compiler is provider-neutral by D5 |
 | Q4 | Is the reference harm-score set (Nutt et al. 2010) available as data? | E2 loads it from a versioned config file; ship a fixture with a clear placeholder marker if the real scores are not to hand |
+| Q5 | What retention and access policy applies to a responder's lookup history in E6? | Default to no patient-identifying fields accepted anywhere in the field interface (§`11_FIELD_AND_CLINICAL_INTERFACES.md`), audit events retained per the standard `audit_events` policy, visible only to the querying principal and an explicitly granted reviewer role. Revisit when E4 identity exists and real roles can be defined. |
+| Q6 | Which regional emergency and poison-control contacts ship as defaults in E6? | None hardcoded; a configuration table keyed by geography, empty until populated. The Dutch entry, when added, should be verified against current NVIC and 112 routing rather than assumed from training data. |
 
 ## 5. Epic overview
 
@@ -233,6 +276,7 @@ Do not block on these. Proceed with the stated default and flag the assumption.
 | **E3** | Live acquisition, provider abstraction, Postgres/S3 migration | A live JH2016 run completes with provider stamping and discontinuity detection |
 | **E4** | Identity, OIDC, RBAC, multi-user visibility | RBAC matrix tests pass; `local-user` rows migrate cleanly |
 | **E5** | Generic workbench, replication engine, paper pipeline | An arbitrary CSV can be transformed, analysed and charted without a source-code change |
+| **E6** | Field and clinical interfaces: symptom search, pill/sample identification, evidence-tier UI, offline responder mode | A responder card renders end to end from fixtures, entirely offline, with every fact's evidence tier visible and every pill match capped below `PRIMARY_EMPIRICAL` |
 
 Only E0 and E1 are broken into tasks in `07_EPICS_AND_TASKS.md`. Later epics are deliberately
 coarse; they will be decomposed when their turn comes, against the repository as it is then.

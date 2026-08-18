@@ -181,6 +181,96 @@ transform_runs(id, run_id, spec_id, input_hashes_json, output_dataset_id, output
 Create these tables at E1 as part of the initial migration. They cost nothing empty and
 prevent a schema fork later. Do not build features against them before E5.
 
+## Evidence tier (shared concept)
+
+A single ordinal classification of how a fact was established. It applies wherever this
+package draws on heterogeneous source types: general substance knowledge, symptom
+associations, and specimen identification alike.
+
+```
+evidence_tier: PRIMARY_EMPIRICAL | CURATED_SECONDARY | RAW_OBSERVATIONAL
+             | MODELED_PREDICTED | SPECULATIVE | UNKNOWN
+```
+
+Full definition, the UI colour convention, and its relationship to `approval_state` and to
+per-row `quality_flags_json` are in `10_EVIDENCE_TIER_AND_TRUST_UI.md`. In one sentence, because
+it matters enough to repeat here: tier is about the *kind* of evidence, `approval_state` is
+about whether a *human signed off*, and `quality_flags_json` is *situational caveats* — three
+independent axes that can all apply to the same row at once.
+
+`reference_scores` gains a nullable `evidence_tier` column now; backfill existing rows to
+`CURATED_SECONDARY`, since a versioned published score set is secondary-curated by this
+definition.
+
+## Field reference: symptoms, samples, pills — schema now, Epic E6 decomposes the rest
+
+Added at E1 as an empty skeleton, following the same reasoning as the datasets/transforms
+tables above: cheap to seed now, expensive to retrofit once real data exists without it. Do not
+build UI or acquisition against these tables before E6. This section is deliberately indicative
+rather than exhaustively columned — E2 through E5 receive the same treatment in
+`07_EPICS_AND_TASKS.md`, and E6 is no different: full design happens when its turn comes,
+against real source data and a real UI, not in advance of either.
+
+**Symptom ontology**, mirroring the existing substance/alias pattern:
+
+```
+symptoms(id, canonical_name, body_system, description, active, created_at)
+symptom_aliases(id, symptom_id, alias, language, source_id, created_at)
+```
+
+**Substance–symptom associations** — the direction this runs matters and is easy to get
+backwards. The community-extraction pipeline above mines *text → candidate symptom mentions*
+for population-level signal. This is the opposite direction: *given observed symptoms, which
+substances are known to produce them*, for individual-case decision support. Both use the same
+`extraction_candidates` / `verification_state` promotion path where a model is involved; they
+are different consumers of the same substance/symptom ontology, not the same pipeline.
+
+```
+substance_symptom_associations(id, substance_id, symptom_id, relation_type, onset_notes,
+    evidence_tier, reference_set_id, citation_json, created_at)
+```
+
+`relation_type` is a small controlled vocabulary, defined in full in
+`11_FIELD_AND_CLINICAL_INTERFACES.md`: intoxication sign, overdose sign, withdrawal sign,
+interaction sign.
+
+**Pills, composition and tested specimens** — extends the existing
+substance ↔ pill ↔ sample ↔ event ontology already scoped for this project. A visual pattern
+(what a responder or a photo recognises) is distinct from a specific tested specimen (what a
+lab actually confirmed); composition links the two and always traces to the specimen(s) that
+established it.
+
+```
+pill_types(id, shape, color_json, logo_text, score_line, size_mm, image_artifact_id,
+    geography_id, first_observed_at, created_at)
+
+tested_samples(id, pill_type_id, source_id, test_method, tested_at, lab_reference,
+    raw_result_artifact_id, evidence_tier, geography_id, created_at)
+
+pill_type_composition(id, pill_type_id, substance_id, concentration_value, concentration_unit,
+    evidence_tier, tested_sample_id, created_at)
+```
+
+A pill type with no `tested_samples` row and only a visual-match composition guess is exactly
+the dangerous case `10_EVIDENCE_TIER_AND_TRUST_UI.md` addresses: composition from visual
+matching alone is capped at `MODELED_PREDICTED`, never higher, regardless of how confident the
+match looks, because counterfeit pills are adversarial against visual identification by design.
+
+**Alert rules and firings** — reuses the approval gate rather than inventing new semantics for
+it. A rule is approved once, like a method spec; each firing is an automatic, deterministic
+consequence of an already-approved rule, like an analysis result is a consequence of an
+approved method spec.
+
+```
+batch_alert_rules(id, name, definition_json, approval_state, approved_by, approved_at,
+    created_at)
+
+batch_alerts(id, rule_id, pill_type_id, geography_id, alert_type, window_start, window_end,
+    sample_count, status, created_at)
+```
+
+`alert_type`: `new_composition`, `adulterant_detected`, `look_alike_warning`, `series_anomaly`.
+
 ## Audit
 
 ```

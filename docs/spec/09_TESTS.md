@@ -34,6 +34,16 @@ one stored trace without a re-run.
 All ten listed there. The exact-query golden test compares all 32 rendered query strings
 byte-for-byte; a change to a query string must break the build.
 
+### Adapter neutrality — `01_ARCHITECTURE.md` §SourceAdapter
+
+- given two `SourceRequest` objects whose `renderedQuery` strings both contain the word "harm"
+  but whose `dimension` fields differ, the resulting observations carry the `dimension` each
+  was given, not a value re-derived from the query text
+- deleting or corrupting the `dimension` field on the request causes `fetch`/`normalize` to
+  fail validation rather than falling back to text inspection
+- this test runs against every registered `SourceAdapter` implementation, present and future,
+  via the shared contract suite in §Contract above — not only against `FixtureSourceAdapter`
+
 ### Provenance — `02_DATA_MODEL.md`
 
 - a manifest contains every required field
@@ -64,6 +74,22 @@ byte-for-byte; a change to a query string must break the build.
 - the full failure-injection table
 - a deliberately failed fixture run produces a bundle from which the direct cause is
   identifiable without re-running
+
+### Evidence tier — `10_EVIDENCE_TIER_AND_TRUST_UI.md`
+
+- `evidence_tier` and `approval_state` vary independently on the same row
+- any composition row sourced only from visual matching is capped at `MODELED_PREDICTED`,
+  enforced in the domain layer
+- all six tiers map to exactly one responder-card bucket, and the mapping is total
+- with colour information stripped, every tier and approval state is still distinguishable by
+  icon and label
+- no code path computes a fused confidence score across tiers outside an approved `MethodSpec`
+
+### Field and clinical interfaces — `11_FIELD_AND_CLINICAL_INTERFACES.md`
+
+Deferred to E6; the list is recorded now so the contract is fixed before implementation starts.
+See that file's own table for the full set, including offline completeness and the
+no-patient-identifying-input requirement.
 
 ### Determinism
 
