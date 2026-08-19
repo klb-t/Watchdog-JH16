@@ -1,7 +1,7 @@
 # State and binding decisions
 
-Last updated: 2026-08-18, on the v12 spec merge, after E0 and E1 group 1 completed. Update
-this file whenever a decision changes or an epic completes.
+Last updated: 2026-08-19, after E0 and E1 completed in full. Update this file whenever a
+decision changes or an epic completes.
 
 ---
 
@@ -25,9 +25,10 @@ this file whenever a decision changes or an epic completes.
   partially applied. The list itself is not preserved, and E0.1's audit supersedes it as
   intended.
 
-**Current state: E0 and E1 are complete except E1.20, which is blocked on the maintainer.**
+**Current state: E0 and E1 are complete. Every task in the ledger is ticked and nothing is
+blocked.**
 
-`npm run test:all` is green — 118 passing, 0 skipped, 0 failing — and `npm run demo:jh16`
+`npm run test:all` is green — 126 passing, 0 skipped, 0 failing — and `npm run demo:jh16`
 has been verified on a clean clone, offline, with no credentials: it produces a run directory
 whose Pi and Hi reproduce every value published in the paper's own tables, and two runs are
 byte-identical apart from run id and timestamps.
