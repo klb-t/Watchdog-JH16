@@ -15,7 +15,14 @@ import { ApprovalState } from '../domain/approval';
  */
 
 export interface NarrativePayload {
-  readonly runId: string;
+  /**
+   * Deliberately no run id.
+   *
+   * The payload is the *analysis* being described, so two runs that computed
+   * the same numbers must produce the same payload hash — that identity is
+   * useful evidence, and mixing the run id in would destroy it while adding
+   * nothing the surrounding record does not already carry.
+   */
   readonly presetId: string | null;
   /** Already-computed values. Read-only to this service by construction. */
   readonly results: readonly { metricKey: string; entityId?: string; valueNumeric: number | null; unit?: string }[];
@@ -24,6 +31,7 @@ export interface NarrativePayload {
 }
 
 export interface NarrativeRequest {
+  runId: string;
   payload: NarrativePayload;
   payloadHash: string;
   templateId: string;
@@ -34,6 +42,7 @@ export interface NarrativeRequest {
 }
 
 export interface Narrative {
+  /** The run this narrative belongs to. Not part of the hashed payload. */
   runId: string;
   templateId: string;
   templateVersion: string;
@@ -82,7 +91,7 @@ export function generateNarrative(request: NarrativeRequest): Narrative {
   const top = ranked.slice(0, 3).map(r => r.entityId).filter(Boolean);
 
   const lines = [
-    `Methodological reproduction completed for run ${payload.runId}` +
+    'Methodological reproduction completed' +
       (payload.presetId ? ` under preset ${payload.presetId}` : '') + '.',
     `Data acquisition produced ${pi.length} computable popularity indices and ${hi.length} computable harm indices.`,
     payload.missingCount > 0
@@ -98,7 +107,7 @@ export function generateNarrative(request: NarrativeRequest): Narrative {
   const content = lines.join(' ');
 
   return {
-    runId: payload.runId,
+    runId: request.runId,
     templateId: request.templateId,
     templateVersion: request.templateVersion,
     providerId: request.providerId,

@@ -9,6 +9,8 @@ import { canonicalHash } from '../../domain/canonical';
 export type { RunState };
 
 export interface CreateRunInput {
+  /** Supply when the caller must know the id before the row exists. */
+  id?: string;
   runType: 'ACQUISITION' | 'ANALYSIS' | 'PIPELINE';
   config: any;
   presetId?: string;
@@ -28,7 +30,7 @@ export class RunRepository {
       ? { runType: input, config: legacyConfig }
       : input;
 
-    const id = randomUUID();
+    const id = normalized.id ?? randomUUID();
     this.db.insert(runs).values({
       id,
       run_type: normalized.runType,

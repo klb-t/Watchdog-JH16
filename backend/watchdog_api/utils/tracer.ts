@@ -47,7 +47,11 @@ export interface TraceEvent {
 class Tracer {
   private mode: DiagnosticsMode = 'NORMAL';
   private als = new AsyncLocalStorage<TraceContext>();
-  private logDir = path.join(process.cwd(), 'diagnostics');
+  // Overridable so a run can keep its own trace inside its own run directory,
+  // rather than every run sharing one global folder.
+  private logDir = process.env.WATCHDOG_DIAGNOSTICS_DIR
+    ? path.resolve(process.env.WATCHDOG_DIAGNOSTICS_DIR)
+    : path.join(process.cwd(), 'diagnostics');
 
   constructor() {
     const envMode = process.env.WATCHDOG_DIAGNOSTICS_MODE?.toUpperCase() as DiagnosticsMode;
@@ -61,6 +65,13 @@ class Tracer {
 
   public getLogDir(): string {
     return this.logDir;
+  }
+
+  public setLogDir(dir: string) {
+    this.logDir = path.resolve(dir);
+    if (this.mode === 'TRACE' || this.mode === 'ERRORS') {
+      fs.mkdirSync(this.logDir, { recursive: true });
+    }
   }
 
   public traceDir(traceId: string, when: Date = new Date()): string {

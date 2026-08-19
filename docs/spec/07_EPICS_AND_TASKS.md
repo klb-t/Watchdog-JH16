@@ -212,7 +212,7 @@ working tested navigation should be deleted. See D11.
 
 ### E1 exit
 
-- [ ] **E1.24 — `npm run demo:jh16`**
+- [x] **E1.24 — `npm run demo:jh16`**
   From a clean clone, with no credentials and no network, this command produces a complete run
   directory: manifest, raw fixture copies, normalized observations, analysis output, charts,
   exports, replication verdicts and the trace.
@@ -237,7 +237,7 @@ working tested navigation should be deleted. See D11.
   so no run produces a manifest and `GET /api/runs/:id/manifest` 404s even after success.
   *Test:* after a run completes, its manifest exists and is retrievable.
 
-- [ ] **E1.28 — Remove dead dependencies and the stale lockfile**
+- [x] **E1.28 — Remove dead dependencies and the stale lockfile**
   `@google/genai`, `jstat`, `motion`, `uuid`, `recharts`, `drizzle-kit`, `cors` and `dotenv` are
   declared but imported nowhere; `bun.lock` is a second unused lockfile beside
   `package-lock.json`.

@@ -152,8 +152,11 @@ export function buildManifest(input: BuildManifestInput): RunManifest {
     analyses: [...input.analyses].sort((a, b) =>
       (a.method_spec_hash ?? '').localeCompare(b.method_spec_hash ?? '')),
     quality_flags: [...new Set(input.qualityFlags)].sort(),
+    // Sorted by kind then URI, deliberately NOT by sha256: an artifact that
+    // names its own run has a run-dependent digest, so hash-ordering would
+    // shuffle the list between otherwise identical runs. The URI is stable.
     artifacts: [...input.artifacts].sort((a, b) =>
-      a.kind.localeCompare(b.kind) || a.sha256.localeCompare(b.sha256)),
+      a.kind.localeCompare(b.kind) || a.object_uri.localeCompare(b.object_uri)),
     missing_observations: [...input.missingObservations].sort((a, b) =>
       a.entity_id.localeCompare(b.entity_id) || a.query_role.localeCompare(b.query_role)),
     narratives: [...(input.narratives ?? [])].sort((a, b) =>
