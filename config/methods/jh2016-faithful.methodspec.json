@@ -1,0 +1,61 @@
+{
+  "specVersion": "1.0",
+  "name": "jh2016-faithful",
+  "_note": "Pi and Hi expressed as a declarative MethodSpec over the registered primitives, not as bespoke code (D6, E1.15). This file is data: it is never eval'd, never templated into source, never written to disk as executable anything.",
+  "inputs": [
+    { "name": "Ni", "unit": "count", "semanticType": "count" },
+    { "name": "Ni_harm", "unit": "count", "semanticType": "count" }
+  ],
+  "steps": [
+    {
+      "id": "max_Ni",
+      "primitive": "max",
+      "params": {},
+      "inputs": { "series": "Ni" },
+      "missingPolicy": "exclude",
+      "rationale": "\"max(Ni) is the drug with the highest frequency of hits\" — max over the valid comparison set; a substance with no count cannot define the maximum, so missing values are excluded rather than treated as zero."
+    },
+    {
+      "id": "Pi_ratio",
+      "primitive": "ratio",
+      "params": {},
+      "inputs": { "numerator": "Ni", "denominator": "max_Ni" },
+      "missingPolicy": "propagate",
+      "rationale": "\"Pi = (Ni / max(Ni)) x 100%\" — the division. Missing propagates so a substance without a count yields a missing Pi, never a zero one."
+    },
+    {
+      "id": "Pi",
+      "primitive": "scale",
+      "params": { "factor": 100, "unit": "%" },
+      "inputs": { "series": "Pi_ratio" },
+      "missingPolicy": "propagate",
+      "rationale": "\"x 100%\" — the scaling to percent."
+    },
+    {
+      "id": "Hi_ratio",
+      "primitive": "ratio",
+      "params": {},
+      "inputs": { "numerator": "Ni_harm", "denominator": "Ni" },
+      "missingPolicy": "propagate",
+      "rationale": "\"Hi = (Ni_harm / Ni) x 100%\" — the division. The ratio primitive yields undefined for a denominator <= 0, which is the contract's requirement that Hi be undefined when Ni <= 0 rather than zero or an epsilon."
+    },
+    {
+      "id": "Hi",
+      "primitive": "scale",
+      "params": { "factor": 100, "unit": "%" },
+      "inputs": { "series": "Hi_ratio" },
+      "missingPolicy": "propagate",
+      "rationale": "\"x 100%\" — the scaling to percent."
+    }
+  ],
+  "outputs": [
+    { "name": "Pi", "unit": "%", "semanticType": "percentage", "fromStep": "Pi" },
+    { "name": "Hi", "unit": "%", "semanticType": "percentage", "fromStep": "Hi" }
+  ],
+  "assumptions": [
+    "Ni and Ni_harm are entity-aligned result counts from the same provider, geography and day.",
+    "max(Ni) is taken over the valid comparison set within this run, not over a historical maximum.",
+    "Hi is not clipped at 100: provider counts are noisy and a value above 100 is information about the provider, so it is preserved and flagged rather than truncated.",
+    "Counts are provider estimates; every observation carries PROVIDER_ESTIMATE."
+  ]
+}

@@ -128,27 +128,27 @@ Before feature work. See `06_DIAGNOSTICS.md`.
 
 ### Group 4 — Method and approval
 
-- [ ] **E1.11 — Primitive registry**
+- [x] **E1.11 — Primitive registry**
   The seven primitives in `04_METHOD_COMPILER_AND_APPROVAL.md`, each with a declared contract
   and explicit missing-value behaviour.
   *Test:* each primitive against hand-computed values, including its missing and failure cases.
 
-- [ ] **E1.12 — MethodSpec validation and hashing**
+- [x] **E1.12 — MethodSpec validation and hashing**
   Full validation: unknown primitive, unresolved reference, cycle, unit mismatch, undeclared
   missing policy. Canonical hashing.
   *Test:* each invalid case is rejected with a precise message; equal specs hash equally.
 
-- [ ] **E1.13 — Approval gate**
+- [x] **E1.13 — Approval gate**
   Domain-layer enforcement, hash-bound, with audit events.
   *Test:* a `PROPOSED` spec reaching the executor throws `ApprovalRequiredError`; approving
   then editing reverts to `PROPOSED` with no explicit action; there is no code path that
   approves without a human action.
 
-- [ ] **E1.14 — TypeScript executor**
+- [x] **E1.14 — TypeScript executor**
   `MethodExecutor` implementation. Deterministic, ordered, no clock, no random.
   *Test:* two executions of the same spec on the same inputs produce byte-identical artifacts.
 
-- [ ] **E1.15 — JH2016 FAITHFUL preset and analyzer**
+- [x] **E1.15 — JH2016 FAITHFUL preset and analyzer**
   The locked preset as configuration; Pi and Hi expressed as a `MethodSpec` over the
   primitives, not as bespoke code.
   *Test:* the full golden-fixture suite in `03_JH2016_CONTRACT.md`.

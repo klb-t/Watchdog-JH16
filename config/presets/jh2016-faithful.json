@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "preset_id": "jh2016-faithful",
+  "preset_version": "2016-faithful-v1",
+  "label": "Jankowski & Hoffmann 2016 — faithful methodology",
+  "locked": true,
+  "_locked_note": "03_JH2016_CONTRACT.md has the highest precedence in the package. Changing anything here requires the maintainer's explicit approval and produces a NEW preset version; it never edits this one.",
+  "citation": {
+    "doi": "10.2196/jmir.4033",
+    "journal": "J Med Internet Res",
+    "year": 2016,
+    "volume": "18",
+    "issue": "2",
+    "elocation": "e38",
+    "authors": [
+      "Jankowski, Wojciech",
+      "Hoffmann, Marcin"
+    ]
+  },
+  "language": "en",
+  "query_expansion_mode": "STRICT_CANONICAL",
+  "search_method": {
+    "safe_search": "off",
+    "record_actual_provider_parameters": true,
+    "missing_count_policy": "missing_not_zero",
+    "safe_search_unknown_flag": "SAFESEARCH_UNKNOWN"
+  },
+  "queries": {
+    "popularity_template": "\"{query_label}\"",
+    "harm_template": "\"{query_label}\" \"harm\" OR \"harmful\"",
+    "alias_expansion": false
+  },
+  "substances": [
+    {
+      "canonical": "alcohol",
+      "query_label": "alcohol"
+    },
+    {
+      "canonical": "amphetamine",
+      "query_label": "amphetamine"
+    },
+    {
+      "canonical": "benzodiazepines",
+      "query_label": "benzodiazepines"
+    },
+    {
+      "canonical": "buprenorphine",
+      "query_label": "buprenorphine"
+    },
+    {
+      "canonical": "butane",
+      "query_label": "butane"
+    },
+    {
+      "canonical": "cannabis",
+      "query_label": "cannabis"
+    },
+    {
+      "canonical": "cocaine",
+      "query_label": "cocaine"
+    },
+    {
+      "canonical": "ecstasy",
+      "query_label": "ecstasy"
+    },
+    {
+      "canonical": "gamma-hydroxybutyric acid",
+      "query_label": "GHB"
+    },
+    {
+      "canonical": "heroin",
+      "query_label": "heroin"
+    },
+    {
+      "canonical": "ketamine",
+      "query_label": "ketamine"
+    },
+    {
+      "canonical": "khat",
+      "query_label": "khat"
+    },
+    {
+      "canonical": "lysergic acid diethylamide",
+      "query_label": "LSD"
+    },
+    {
+      "canonical": "mephedrone",
+      "query_label": "mephedrone"
+    },
+    {
+      "canonical": "methadone",
+      "query_label": "methadone"
+    },
+    {
+      "canonical": "methamphetamine",
+      "query_label": "methamphetamine"
+    }
+  ],
+  "metrics": {
+    "Pi": "(Ni / max(Ni)) * 100",
+    "Hi": "(Ni_harm / Ni) * 100"
+  },
+  "validation": {
+    "reference_score_set": "nutt-2010",
+    "reference_score_version": "2010-mcda-overall-harm",
+    "correlations": [
+      "pearson",
+      "spearman"
+    ],
+    "_note": "Report both. The paper's own reported 81.6% is Pearson on raw Hi values; see fixtures/jh2016/paper_reported.json."
+  },
+  "method_spec_ref": "config/methods/jh2016-faithful.methodspec.json"
+}
