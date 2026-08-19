@@ -12,12 +12,31 @@ import { sourceRegistry } from '../../backend/watchdog_api/sources/registry';
 // not render it as available.
 // -------------------------------------------------------------------------
 
-test('E1.10: the fixture provider is the only executable entry; the seed list is planned', () => {
-  const providers = capabilityRegistry.listProviders();
+/**
+ * Measurement capabilities — the ones whose provider choice changes what a
+ * number *is*. Storage capabilities are excluded deliberately: swapping a blob
+ * store changes where bytes live, not what was measured, so an implemented GCS
+ * backend is not a second measuring instrument. The invariant below is about
+ * instruments, and scoping it this way keeps it meaningful rather than merely
+ * passing.
+ */
+const MEASUREMENT_CAPABILITIES = new Set([
+  'search.result_count', 'trends.interest', 'reference.chemical', 'text.generate',
+]);
+
+test('E1.10: the fixture provider is the only executable instrument; the seed list is planned', () => {
+  const providers = capabilityRegistry.listProviders()
+    .filter(p => MEASUREMENT_CAPABILITIES.has(p.capability_key));
   const executable = providers.filter(p => capabilityRegistry.isSelectable(p.provider_key));
 
   assert.deepStrictEqual(executable.map(p => p.provider_key), ['fixture'],
-    'E1 registers exactly one runnable provider, and it is offline');
+    'with no credentials configured, exactly one runnable instrument exists and it is offline');
+
+  // Every capability a provider claims must be one the registry declares.
+  for (const p of capabilityRegistry.listProviders()) {
+    assert.ok(capabilityRegistry.getCapability(p.capability_key),
+      `${p.provider_key} claims undeclared capability '${p.capability_key}'`);
+  }
 
   // Everything else is honestly a plan.
   for (const key of ['serpapi', 'serper', 'dataforseo', 'anthropic', 'openai', 'pubchem']) {
@@ -26,6 +45,22 @@ test('E1.10: the fixture provider is the only executable entry; the seed list is
     assert.strictEqual(p.status, 'planned');
     assert.ok(!capabilityRegistry.isSelectable(key), `${key} must not be selectable`);
   }
+});
+
+test('E1.10: storage providers are implemented, and that is not a measurement claim', () => {
+  // These are runnable, and must be: without them nothing persists. The point
+  // of the split is that adding one can never be mistaken for adding an
+  // instrument, in the registry or in a progress summary.
+  for (const key of ['local_filesystem', 'gcs', 'sqlite']) {
+    const p = capabilityRegistry.getProvider(key)!;
+    assert.ok(p, `${key} should be registered`);
+    assert.strictEqual(p.status, 'implemented');
+    assert.ok(p.capability_key.startsWith('storage.'),
+      'anything runnable-by-default must be storage, never a measurement instrument');
+  }
+
+  // Postgres is the honest counter-example: registered, visible, not usable.
+  assert.strictEqual(capabilityRegistry.getProvider('postgres')!.status, 'planned');
 });
 
 test('E1.10: a planned provider cannot be selected for a run', () => {
