@@ -68,7 +68,7 @@ E1 is deliberately narrow. Resist widening it. The value of E1 is that it is *fi
   *Test:* the whole `domain` module imports and its tests pass with no database, network or
   filesystem available.
 
-- [ ] **E1.3 — Persistence**
+- [x] **E1.3 — Persistence**
   SQLite schema per `02_DATA_MODEL.md`, including the empty datasets, transforms and
   replication tables, and the `evidence_tier` enum plus the empty E6 field-reference tables
   (symptoms, pill_types, tested_samples, pill_type_composition, substance_symptom_associations,
@@ -230,7 +230,7 @@ permission to delete working, tested navigation. See D11.
   *Test:* submitting a run whose config fails schema validation is rejected before the
   orchestrator runs, with the failing path and rule in the error response.
 
-- [ ] **E1.26 — Persist `source_adapter_version` on observations**
+- [x] **E1.26 — Persist `source_adapter_version` on observations**
   `db/repositories/data.ts`'s `ObservationRepository.getByRunId` hardcodes
   `source_adapter_version: 'unknown'` on read because the `observations` table has no such
   column, even though adapters already stamp it on the `Observation` object at write time.
@@ -255,7 +255,7 @@ permission to delete working, tested navigation. See D11.
 
 ### v9 addition — existing code contradicts the tightened adapter contract
 
-- [ ] **E1.29 — Remove dimension inference from the three existing adapters**
+- [x] **E1.29 — Remove dimension inference from the three existing adapters**
   v9 made adapter semantic neutrality binding (`01_ARCHITECTURE.md` §SourceAdapter): `dimension`
   arrives on `SourceRequest` from the preset and is never re-derived from query text. All three
   adapters in the repository today violate this — `sources/serp.ts` and
@@ -316,79 +316,87 @@ the same relationship E1 has to the replication and dataset tables it also seeds
 
 ## Blocked
 
-- **E1.20 — tolerance bands PROPOSED, awaiting approval. Everything else proceeds around it.**
+- **E1.20 — tolerance bands PROPOSED against the primary source, awaiting approval.**
+  Everything else in the ledger proceeds around this; only E1.20's own execution waits.
 
-  Status: `PROPOSED` per the approval gate (D7). These numbers are **not** registered as
-  `replication_claims` rows and no replication attempt has been executed against them. One
-  maintainer line approves them, amends a number, or rejects them; on approval, E1.20 is
-  implemented as written and the claims enter the schema as `APPROVED`.
+  Status: `PROPOSED` per D7. No `replication_claims` rows are registered and no attempt has
+  been executed. One maintainer line approves, amends a number, or rejects.
 
-  **Source-access limitation, stated plainly because it changes how much these are worth.**
-  Every scholarly domain is blocked by this environment's egress proxy — `jmir.org`,
-  `pmc.ncbi.nlm.nih.gov`, `pubmed`, Europe PMC, Crossref and Semantic Scholar all refused.
-  The reference values below therefore come from **two independent web-search summaries of the
-  paper, not from the paper's own text**, which I could not open. They agree with each other,
-  which is weak corroboration, not verification. Before any of these becomes an `APPROVED`
-  claim, the values must be read off the primary text by someone who can open it.
+  **Source now verified.** The maintainer supplied the paper's full JATS XML
+  (`10.2196/jmir.4033`, JMIR 2016;18(2):e38). An earlier version of this entry relied on
+  web-search summaries because every scholarly domain is blocked by this environment's egress
+  proxy; those summaries are now superseded by the text itself, and the two ambiguities they
+  left are both resolved below. Reference data extracted verbatim into
+  `fixtures/jh2016/paper_reported.json`.
 
-  Reported by those summaries: correlation coefficient **81.6%** between "the harm score ranking
-  and the harm index", **p = 0.000143**, the authors' own significance level **α = 0.01**,
-  n = 16 substances.
+  **Correction to the earlier proposal — the statistic is Pearson, not Spearman.**
+  The paper's prose reads "the correlation coefficient between the harm score *ranking* and
+  the harm index was 81.6%", which reads as a rank correlation and was proposed as one. It is
+  not. Recomputing from the paper's own Tables 1 and 3 — all sixteen `Hi` values reproduce
+  exactly from `Ni_harm/Ni`, so the tables are internally consistent — gives:
 
-  Two ambiguities in that summary that are themselves findings, not obstacles to route around:
-  1. **Is 81.6% `r` or `R²`?** If `R² = 0.816` then `r ≈ 0.903`, a materially different claim.
-  2. **Pearson or Spearman?** The phrase "harm score *ranking*" points to a rank correlation,
-     which is what `tolerance_kind: rank_correlation_floor` assumes, but the paper may report
-     Pearson. `03_JH2016_CONTRACT.md` already requires reporting both; if the primary text turns
-     out not to determine which was used, that claim's verdict is `method_unclear` — the
-     vocabulary exists precisely for this and it is the honest outcome, not a failure.
+  | Statistic on the paper's own data | Value | Two-sided p |
+  |---|---|---|
+  | **Pearson r(Hi, Nutt harm score)** | **0.8162** | 0.00012 |
+  | Spearman rho(Hi, Nutt harm score) | 0.5668 | 0.022 |
 
-  **Proposed band 1 — harm index vs reference harm scores. `rank_correlation_floor: 0.70`.**
-  The paper's claim is qualitative — a crude Google-hit index "correlates very well" with Nutt's
-  MCDA — so the floor should test whether that relationship survives, not whether the coefficient
-  is reproduced to three digits. 0.70 is the conventional threshold for a *strong* correlation;
-  it sits well below the reported 0.816, leaving room for a decade of index drift, and well
-  above the ~0.64 needed for significance at n = 16 under the authors' own α = 0.01, so anything
-  clearing it is both strong and significant. A floor set at 0.816 would test numeric identity
-  rather than replication; a floor at 0.5 would let a substantially weaker relationship pass.
+  Pearson reproduces the reported 81.6% to three significant figures and its p is consistent
+  with the reported 0.000143; Spearman is nowhere near either. The published statistic is
+  therefore Pearson on the raw index values, and the word "ranking" in the prose is loose.
 
-  **Proposed band 2 — `Pi` ordinal ranking. `rank_correlation_floor: 0.60`.**
-  Deliberately looser than band 1, for a reason internal to the paper: the authors observed that
-  relative popularity indices *shifted over the months of their own study*. Popularity is the
-  less stable quantity, and it is compared against the paper's own snapshot rather than against a
-  fixed external reference the way harm is against Nutt. Demanding equal stability from the more
-  volatile measure would be a stricter test disguised as a consistent one.
-  Caveat: this band presupposes the paper publishes a per-substance `Pi` table to rank against.
-  I could not confirm one exists. If it does not, this claim is `not_computable` and should be
-  dropped rather than approximated from a figure.
+  This matters concretely: had the claim been registered as `rank_correlation_floor` at 0.70 as
+  originally proposed, **the paper's own data would score 0.57 and be recorded as `deviates`** —
+  a test that fails against the very result it is meant to check. That is the error this
+  correction prevents.
 
-  **Proposed band 3 — specific stated `Pi`/`Hi` values. `relative: 0.50` (±50%).**
-  Search-engine hit counts are estimates that vary between requests, data centres and days —
-  `03_JH2016_CONTRACT.md` already mandates a `PROVIDER_ESTIMATE` flag on every one of them.
-  `Pi` and `Hi` are ratios, so multiplicative inflation partially cancels, which is much of the
-  point of using indices; but it cancels only partially, because numerator and denominator come
-  from different queries. ±50% admits that ratio-level drift while still failing a substance that
-  has moved by an order of magnitude. A ±10% band would fail universally and tell us nothing;
-  ±100% would pass almost anything.
+  **Proposed band 1 — `harm_index_vs_reference_pearson`.** Floor **0.70** on Pearson r,
+  expressed with `tolerance_kind: interval` over `[0.70, 1.0]` (the four kinds in
+  `02_DATA_MODEL.md` are fixed, and `interval` expresses a floor without misusing
+  `rank_correlation_floor` for a statistic that is not a rank correlation). A `statistic`
+  column is added to `replication_claims` so "Pearson" is recorded in the data rather than
+  implied by a kind name, per `03_JH2016_CONTRACT.md`'s requirement that the selected method be
+  explicit in configuration and manifest.
+  Rationale: 0.70 is the conventional threshold for a strong correlation, sits below the
+  published 0.816 with room for a decade of drift, and clears the ~0.62 needed for significance
+  at n = 16 under the authors' own α = 0.01. Spearman is computed and reported alongside it
+  per `03_JH2016_CONTRACT.md`'s "report both", but is **not** a pass/fail claim, because the
+  paper never claimed it.
 
-  **Expected outcome, recorded in advance so it cannot be rationalised afterwards:** `deviates`
-  on bands 2 and 3 is likely, and is a result, not a defect. Per `08_REPLICATION_ENGINE.md`,
-  these bands are versioned and must not be widened after seeing a verdict. E1.24 does not
-  require `reproduced` to ship.
+  **Proposed band 2 — `popularity_ranking_stability`. `rank_correlation_floor: 0.60`.**
+  Now anchored in the paper's own data rather than convention. Table 2 gives `Pi` at six dates
+  spanning 25 months, and the Spearman correlation of the ranking between the first and last is
+  **0.785** — that is how much the paper's own ranking moved against itself in two years.
+  The gap from 2014 to a 2026 run is roughly six times longer, so a floor must sit meaningfully
+  below 0.785 to be a test of "the ordering survived" rather than a test of "nothing changed in
+  twelve years". 0.60 does that while still failing a ranking that has genuinely scrambled.
+  This band is now fully computable: Table 1 supplies the reference ranking.
 
-- **Original blocker text, retained for context:** E1.20 needs tolerance bands from the
-  maintainer before it can be implemented.
-  `08_REPLICATION_ENGINE.md`: "Setting tolerance before the attempt is the entire methodological
-  point — a tolerance chosen after seeing the result is not a tolerance." This is explicitly the
-  maintainer's call, not an agent default (unlike the Q1-Q6 defaults in
-  `00_STATE_AND_DECISIONS.md` §4, which are safe to proceed on). Needed, concretely:
-  1. The `rank_correlation_floor` for the harm-index-vs-reference-scores correlation claim.
-  2. Whether to also register the ordinal-ranking-by-`Pi` claim and specific reported `Pi`/`Hi`
-     values from the paper as `relative`-tolerance claims, or defer those to a later pass.
-  3. Confirmation that a `deviates` verdict (expected, per the paper's own honesty constraint —
-     2026 search-engine counts are not 2016 counts) is an acceptable E1 exit outcome, i.e. E1.24
-     does not require `reproduced` to ship.
-  One action to unblock: answer 1-3 (or say "use your judgement" for 2-3, since only 1 is
-  irreversible/scientific). Until answered, E1.20 stays undone and every other E1 task proceeds
-  around it — it does not block E1.24 in aggregate since a `not_computable`/`deviates` verdict
-  is itself a valid, honest outcome once *some* tolerance is on record.
+  **Proposed band 3 — recommend NOT registering it as a pass/fail claim.**
+  This reverses the earlier ±50% proposal, on the paper's own evidence. Table 2 shows the
+  drift in individual `Pi` values across just 25 months of the authors' own study:
+
+  | Substance | 2012-05-01 | 2014-06-20 | Relative change |
+  |---|---|---|---|
+  | GHB | 0.9% | 6.0% | +567% |
+  | mephedrone | 0.1% | 0.5% | +400% |
+  | cannabis | 6.3% | 15.2% | +141% |
+  | khat | 1.3% | 2.7% | +108% |
+
+  A ±50% band would record `deviates` for most substances *within the paper's own study
+  window*, and a band wide enough to accommodate +567% would pass essentially anything. There
+  is no tolerance here that is defensible in advance, which by
+  `08_REPLICATION_ENGINE.md`'s own standard means there is no tolerance: "a tolerance chosen
+  after seeing the result is not a tolerance."
+  Recommendation: record the 32 published point values as reference data and report the observed
+  deviation for each as descriptive output attached to the attempt, with **no verdict**. The
+  paper's durable claims are the correlation and the ranking; the point values are a snapshot
+  it explicitly says "change practically every day".
+  If a number is wanted anyway, `relative: 1.00` (±100%) is the least indefensible, and should
+  be read as informational rather than as a replication test.
+
+  **Recorded in advance so it cannot be rationalised later:** `deviates` on band 2 is plausible
+  and is a result, not a defect. Bands are versioned and must not be widened after a verdict is
+  seen. E1.24 does not require `reproduced` to ship.
+
+  **One line unblocks this:** "bands approved", or a different number for 1 and 2, or "register
+  band 3 anyway at X".

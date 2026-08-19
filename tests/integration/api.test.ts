@@ -79,17 +79,17 @@ test('API POST /api/runs - Submits PIPELINE job and retrieves results', async ()
   assert.ok(submitData.run_id);
   const runId = submitData.run_id;
 
-  // Since runs execute asynchronously, we need to poll until SUCCESS
+  // Since runs execute asynchronously, we need to poll until COMPLETED
   let runStatus = 'QUEUED';
   for (let i = 0; i < 20; i++) {
     const statusRes = await fetch(`${baseUrl}/api/runs/${runId}`);
     const statusData: any = await statusRes.json();
     runStatus = statusData.run.status;
-    if (runStatus === 'SUCCESS' || runStatus === 'FAILED') break;
+    if (runStatus === 'COMPLETED' || runStatus === 'FAILED') break;
     await new Promise(r => setTimeout(r, 50)); // wait 50ms
   }
   
-  assert.strictEqual(runStatus, 'SUCCESS');
+  assert.strictEqual(runStatus, 'COMPLETED');
 
   // Fetch results
   const resultsRes = await fetch(`${baseUrl}/api/runs/${runId}/results`);
@@ -99,8 +99,8 @@ test('API POST /api/runs - Submits PIPELINE job and retrieves results', async ()
   assert.ok(resultsData.observations.length > 0);
   assert.ok(resultsData.analysis_results.length > 0);
   
-  const piAlc = resultsData.analysis_results.find((r: any) => r.entity_id === 'alcohol' && r.metric_key === 'Pi');
-  assert.strictEqual(piAlc.value_numeric, 100);
+  const piAlc = resultsData.analysis_results.find((r: any) => r.entityId === 'alcohol' && r.metricKey === 'Pi');
+  assert.strictEqual(piAlc.valueNumeric, 100);
 
   // Fetch events
   const fetchEventsRes = await fetch(`${baseUrl}/api/runs/${runId}/fetch-events`);

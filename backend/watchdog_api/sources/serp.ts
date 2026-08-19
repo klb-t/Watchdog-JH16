@@ -1,82 +1,79 @@
-import { SourceAdapter, RawFetchResult, Observation, ProvenanceMetadata, ValidatedParams, SourceCapability } from './base';
+import {
+  SourceAdapter, RawFetchResult, Observation, ProvenanceMetadata, ValidatedParams,
+  SourceCapability, SourceRequest, assertValidSourceRequest, baseObservationFields
+} from './base';
 
 export class SerpAdapter implements SourceAdapter {
-  adapter_id = 'serp_generic';
-  adapter_version = '1.0.0';
+  readonly adapter_id = 'serp_generic';
+  readonly adapter_version = '2.0.0';
 
   capabilities(): SourceCapability[] {
     return ['result_count'];
   }
 
   validate_params(params: Record<string, any>): ValidatedParams {
-    const errors: string[] = [];
-    if (!params.query) errors.push("Missing 'query'");
-    
     return {
-      valid: errors.length === 0,
+      valid: true,
       normalized_params: {
-        query: String(params.query || ''),
         locale: params.locale ? String(params.locale) : 'en',
         safe_search: params.safe_search !== undefined ? Boolean(params.safe_search) : false
-      },
-      errors: errors.length > 0 ? errors : undefined
+      }
     };
   }
 
-  async fetch(params: Record<string, any>): Promise<RawFetchResult> {
-    // In a real implementation, this would make an HTTP call to SerpApi or similar.
-    // For this environment, we return a simulated network response.
+  async fetch(request: SourceRequest): Promise<RawFetchResult> {
+    assertValidSourceRequest(request);
+
+    // A real implementation would call SerpApi or an equivalent here. This
+    // adapter is registered with status 'fixture' precisely because it does
+    // not, and it must never be reported as a live capability.
     const fakeResponse = {
-      search_metadata: {
-        id: "mock_req_123",
-        status: "Success",
-        created_at: new Date().toISOString()
-      },
-      search_information: {
-        total_results: 42000
-      }
+      search_metadata: { id: 'mock_req_123', status: 'Success' },
+      search_information: { total_results: 42000 }
     };
 
     return {
       payload: Buffer.from(JSON.stringify(fakeResponse), 'utf-8'),
       status: 'SUCCESS',
       http_status: 200,
-      metadata: { provider: 'serp_generic_mock' }
+      metadata: { provider: 'serp_generic_mock' },
+      request
     };
   }
 
-  normalize(raw: RawFetchResult, params: Record<string, any>): Observation[] {
+  normalize(raw: RawFetchResult): Observation[] {
+    assertValidSourceRequest(raw.request);
     if (!raw.payload) return [];
-    
+
     try {
       const parsed = JSON.parse(raw.payload.toString('utf-8'));
-      
-      let count = null;
-      if (parsed.search_information && typeof parsed.search_information.total_results === 'number') {
-        count = parsed.search_information.total_results;
+      const base = baseObservationFields(raw, this.adapter_id, this.adapter_version);
+
+      const total = parsed?.search_information?.total_results;
+      if (typeof total !== 'number') {
+        // Unparseable is missing, never zero.
+        return [{
+          ...base,
+          isMissing: true,
+          numericValue: null,
+          missingReason: 'PARSE_FAILED',
+          qualityFlags: ['COUNT_PARSE_UNCERTAIN'],
+        }];
       }
 
-      const q = String(params.query || '');
-      const isHarm = q.includes('harm') || q.includes('harmful');
-
       return [{
-        entity_id: params.entity_id || 'unknown_entity', // Generic, should be resolved upstream
-        dimension: params.dimension || (isHarm ? 'harm' : 'popularity'),
-        query_text: q,
-        result_count: count,
-        retrieved_at: new Date().toISOString(),
-        source_id: 'serp_generic',
-        source_adapter_version: this.adapter_version,
-        locale: String(params.locale || 'en'),
-        safe_search: Boolean(params.safe_search),
-        raw_artifact_id: raw.raw_blob_id
+        ...base,
+        isMissing: false,
+        numericValue: total,
+        // Search engines report estimates that vary between requests.
+        qualityFlags: ['PROVIDER_ESTIMATE'],
       }];
     } catch (e) {
       throw new Error(`Normalization error: ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 
-  provenance(raw: RawFetchResult): ProvenanceMetadata {
+  provenance(_raw: RawFetchResult): ProvenanceMetadata {
     return {
       retention_policy: 'cache_only_as_permitted_by_terms',
       license: 'fair_use_research',

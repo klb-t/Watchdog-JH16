@@ -1,17 +1,47 @@
+/**
+ * Run lifecycle, mirroring `01_ARCHITECTURE.md` §Run lifecycle and the domain
+ * state machine in `backend/watchdog_api/domain/run_state.ts`. The two must
+ * agree; the domain module is authoritative.
+ */
+export type RunStatus =
+  | 'CREATED'
+  | 'VALIDATING'
+  | 'QUEUED'
+  | 'RUNNING'
+  | 'NORMALIZING'
+  | 'ANALYZING'
+  | 'EXPORTING'
+  | 'COMPLETED'
+  | 'FAILED'
+  | 'CANCELLED';
+
 export interface Run {
   id: string;
-  type: string;
-  status: 'QUEUED' | 'ACQUIRING' | 'NORMALIZING' | 'ANALYZING' | 'SUCCESS' | 'FAILED';
-  effective_config: Record<string, any>;
-  error_code?: string;
-  error_details?: string;
+  run_type: string;
+  status: RunStatus;
+  effective_config?: string;
+  effective_config_hash?: string | null;
+  preset_id?: string | null;
+  preset_version?: string | null;
+  owner_principal_id: string;
+  visibility: string;
+  warning_count?: number;
+  error_code?: string | null;
+  error_details?: string | null;
   created_at: string;
-  updated_at: string;
+  started_at?: string | null;
+  completed_at?: string | null;
 }
+
+/** Registry status; only `implemented` and `fixture` may be selected for a run. */
+export type SourceStatus = 'implemented' | 'fixture' | 'planned' | 'blocked-by-license/auth';
 
 export interface Source {
   source_id: string;
   adapter: string;
+  status: SourceStatus;
+  capabilities: string[];
+  description: string;
 }
 
 export interface Analyzer {

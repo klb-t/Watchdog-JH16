@@ -1,3 +1,7 @@
+import { Observation, QualityFlag, MissingReason } from '../domain/observation';
+
+export type { Observation, QualityFlag, MissingReason };
+
 export type SourceCapability =
   | 'result_count'
   | 'interest_over_time'
@@ -13,27 +17,72 @@ export type SourceCapability =
   | 'geospatial'
   | 'manual_dataset';
 
-export interface RawFetchResult {
-  payload: Buffer | null;
-  status: string; // e.g. "SUCCESS", "ZERO_RESULTS", "RATE_LIMIT"
-  http_status?: number;
-  metadata?: Record<string, any>;
-  raw_blob_id?: string; // Assigned by persistence layer
+/**
+ * Everything an adapter is told about what it is fetching.
+ *
+ * `01_ARCHITECTURE.md` §SourceAdapter: an adapter is **semantically neutral by
+ * construction**. `dimension` — popularity, harm, or any other research axis a
+ * future preset defines — is decided once, upstream, by the preset that renders
+ * `renderedQuery`, and arrives here as an explicit field. `fetch` and
+ * `normalize` copy it onto `Observation.queryRole`; they never re-derive it by
+ * pattern-matching the query string.
+ *
+ * The failure mode this prevents: an adapter that infers meaning from the text
+ * it is asked to fetch has quietly taken over a decision belonging to the
+ * preset, and two presets rendering similar-looking text would be silently
+ * misclassified.
+ */
+export interface SourceRequest {
+  readonly renderedQuery: string;
+  readonly dimension: string;
+  readonly entityId: string;
+  readonly presetId: string;
+  readonly presetVersion: string;
+  /** Adapter-specific knobs, already validated by `validateParams`. */
+  readonly params?: Record<string, any>;
 }
 
-export interface Observation {
-  entity_id: string;
-  dimension: string;
-  query_text: string;
-  result_count: number | null;
-  retrieved_at: string;
-  source_id: string;
-  source_adapter_version: string;
-  locale?: string;
-  country?: string;
-  safe_search?: boolean;
-  raw_artifact_id?: string;
-  quality_flags?: string[];
+export class InvalidSourceRequestError extends Error {
+  readonly code = 'validation_error';
+  constructor(detail: string) {
+    super(`Invalid SourceRequest: ${detail}`);
+    this.name = 'InvalidSourceRequestError';
+  }
+}
+
+/**
+ * Validates the fields every adapter depends on. Deleting or corrupting
+ * `dimension` must fail here rather than falling back to text inspection —
+ * asserted by the adapter-neutrality suite in `09_TESTS.md`.
+ */
+export function assertValidSourceRequest(request: SourceRequest | undefined | null): asserts request is SourceRequest {
+  if (!request) throw new InvalidSourceRequestError('request is missing');
+  if (typeof request.renderedQuery !== 'string' || request.renderedQuery.length === 0) {
+    throw new InvalidSourceRequestError("'renderedQuery' is required");
+  }
+  if (typeof request.dimension !== 'string' || request.dimension.length === 0) {
+    throw new InvalidSourceRequestError(
+      "'dimension' is required and comes from the preset; an adapter must never infer it from query text"
+    );
+  }
+  if (typeof request.entityId !== 'string' || request.entityId.length === 0) {
+    throw new InvalidSourceRequestError("'entityId' is required");
+  }
+}
+
+export interface RawFetchResult {
+  payload: Buffer | null;
+  status: string; // "SUCCESS" | "ZERO_RESULTS" | "RATE_LIMIT" | ...
+  http_status?: number;
+  metadata?: Record<string, any>;
+  /** Assigned by the persistence layer once the bytes are archived. */
+  raw_blob_id?: string;
+  /**
+   * The request this result answers. Carried on the result so `normalize` has
+   * the preset's `dimension` without being handed free-form params it might be
+   * tempted to interpret.
+   */
+  request: SourceRequest;
 }
 
 export interface ProvenanceMetadata {
@@ -49,12 +98,26 @@ export interface ValidatedParams {
 }
 
 export interface SourceAdapter {
-  adapter_id: string;
-  adapter_version: string;
-  
+  readonly adapter_id: string;
+  readonly adapter_version: string;
+
   capabilities(): SourceCapability[];
   validate_params(params: Record<string, any>): ValidatedParams;
-  fetch(params: Record<string, any>): Promise<RawFetchResult>;
-  normalize(raw: RawFetchResult, params: Record<string, any>): Observation[];
+  fetch(request: SourceRequest): Promise<RawFetchResult>;
+  normalize(raw: RawFetchResult): Observation[];
   provenance(raw: RawFetchResult): ProvenanceMetadata;
+}
+
+/** Shared field assembly so every adapter stamps provenance identically. */
+export function baseObservationFields(raw: RawFetchResult, sourceId: string, adapterVersion: string) {
+  return {
+    seriesId: '',
+    entityId: raw.request.entityId,
+    queryRole: raw.request.dimension,
+    queryText: raw.request.renderedQuery,
+    retrievedAt: new Date().toISOString(),
+    sourceId,
+    sourceAdapterVersion: adapterVersion,
+    rawArtifactId: raw.raw_blob_id,
+  };
 }

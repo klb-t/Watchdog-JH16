@@ -1,0 +1,329 @@
+{
+  "_source": "Transcribed verbatim from the primary text (JATS XML) of Jankowski W, Hoffmann M. 'Can Google Searches Predict the Popularity and Harm of Psychoactive Agents?' J Med Internet Res 2016;18(2):e38. doi:10.2196/jmir.4033",
+  "_warning": "Reference data only. These are the PAPER'S reported values, not measurements made by this system. Never merge them into an observation series.",
+  "citation": {
+    "doi": "10.2196/jmir.4033",
+    "journal": "J Med Internet Res",
+    "year": 2016,
+    "volume": "18",
+    "issue": "2",
+    "elocation": "e38",
+    "authors": [
+      "Jankowski, Wojciech",
+      "Hoffmann, Marcin"
+    ]
+  },
+  "method": {
+    "engine": "Google",
+    "safe_search": "off",
+    "popularity_query": "\"{query_label}\"",
+    "harm_query": "\"{query_label}\" \"harm\" OR \"harmful\"",
+    "quote": "We entered the name of each drug between quote marks in Google (so that the exact string was searched for) with the SafeSearch filter off.",
+    "Pi": "Pi = (Ni / max(Ni)) * 100%",
+    "Hi": "Hi = (Ni_harm / Ni) * 100%"
+  },
+  "reported_statistics": {
+    "correlation_coefficient_percent": 81.6,
+    "p_value": 0.000143,
+    "significance_level": 0.01,
+    "n": 16,
+    "prose": "The correlation coefficient between the harm score ranking and the harm index was 81.6%. The calculated P value was 0.000143, showing a significant correlation, with the significance level set at 0.01.",
+    "statistic_determined_by_recomputation": "pearson",
+    "recomputation_note": "The prose says 'ranking', but recomputing from the paper's own Tables 1 and 3 gives Pearson r = 0.8162 (matching 81.6%) and Spearman rho = 0.5668 (not matching). The published statistic is Pearson on raw Hi values."
+  },
+  "table1_date": "2014-06-20",
+  "substances": [
+    {
+      "canonical": "alcohol",
+      "query_label": "alcohol",
+      "Ni": 389000000,
+      "Pi_percent": 100,
+      "Ni_harm": 107000000,
+      "Hi_percent": 27.5,
+      "nutt_2010_harm_score": 72
+    },
+    {
+      "canonical": "amphetamine",
+      "query_label": "amphetamine",
+      "Ni": 9070000,
+      "Pi_percent": 2.3,
+      "Ni_harm": 465000,
+      "Hi_percent": 5.1,
+      "nutt_2010_harm_score": 23
+    },
+    {
+      "canonical": "benzodiazepines",
+      "query_label": "benzodiazepines",
+      "Ni": 4520000,
+      "Pi_percent": 1.2,
+      "Ni_harm": 467000,
+      "Hi_percent": 10.3,
+      "nutt_2010_harm_score": 15
+    },
+    {
+      "canonical": "buprenorphine",
+      "query_label": "buprenorphine",
+      "Ni": 6400000,
+      "Pi_percent": 1.6,
+      "Ni_harm": 374000,
+      "Hi_percent": 5.8,
+      "nutt_2010_harm_score": 7
+    },
+    {
+      "canonical": "butane",
+      "query_label": "butane",
+      "Ni": 11800000,
+      "Pi_percent": 3.0,
+      "Ni_harm": 386000,
+      "Hi_percent": 3.3,
+      "nutt_2010_harm_score": 11
+    },
+    {
+      "canonical": "cannabis",
+      "query_label": "cannabis",
+      "Ni": 59100000,
+      "Pi_percent": 15.2,
+      "Ni_harm": 2710000,
+      "Hi_percent": 4.6,
+      "nutt_2010_harm_score": 20
+    },
+    {
+      "canonical": "cocaine",
+      "query_label": "cocaine",
+      "Ni": 58600000,
+      "Pi_percent": 15.1,
+      "Ni_harm": 15000000,
+      "Hi_percent": 25.6,
+      "nutt_2010_harm_score": 27
+    },
+    {
+      "canonical": "ecstasy",
+      "query_label": "ecstasy",
+      "Ni": 42900000,
+      "Pi_percent": 11.0,
+      "Ni_harm": 669000,
+      "Hi_percent": 1.6,
+      "nutt_2010_harm_score": 9
+    },
+    {
+      "canonical": "gamma-hydroxybutyric acid",
+      "query_label": "GHB",
+      "Ni": 23500000,
+      "Pi_percent": 6.0,
+      "Ni_harm": 291000,
+      "Hi_percent": 1.2,
+      "nutt_2010_harm_score": 19
+    },
+    {
+      "canonical": "heroin",
+      "query_label": "heroin",
+      "Ni": 46800000,
+      "Pi_percent": 12.0,
+      "Ni_harm": 11700000,
+      "Hi_percent": 25.0,
+      "nutt_2010_harm_score": 55
+    },
+    {
+      "canonical": "ketamine",
+      "query_label": "ketamine",
+      "Ni": 8400000,
+      "Pi_percent": 2.2,
+      "Ni_harm": 411000,
+      "Hi_percent": 4.9,
+      "nutt_2010_harm_score": 15
+    },
+    {
+      "canonical": "khat",
+      "query_label": "khat",
+      "Ni": 10600000,
+      "Pi_percent": 2.7,
+      "Ni_harm": 711000,
+      "Hi_percent": 6.7,
+      "nutt_2010_harm_score": 9
+    },
+    {
+      "canonical": "lysergic acid diethylamide",
+      "query_label": "LSD",
+      "Ni": 48600000,
+      "Pi_percent": 12.5,
+      "Ni_harm": 580000,
+      "Hi_percent": 1.2,
+      "nutt_2010_harm_score": 7
+    },
+    {
+      "canonical": "mephedrone",
+      "query_label": "mephedrone",
+      "Ni": 2050000,
+      "Pi_percent": 0.5,
+      "Ni_harm": 92000,
+      "Hi_percent": 4.5,
+      "nutt_2010_harm_score": 13
+    },
+    {
+      "canonical": "methadone",
+      "query_label": "methadone",
+      "Ni": 13400000,
+      "Pi_percent": 3.4,
+      "Ni_harm": 543000,
+      "Hi_percent": 4.1,
+      "nutt_2010_harm_score": 14
+    },
+    {
+      "canonical": "methamphetamine",
+      "query_label": "methamphetamine",
+      "Ni": 8780000,
+      "Pi_percent": 2.3,
+      "Ni_harm": 513000,
+      "Hi_percent": 5.8,
+      "nutt_2010_harm_score": 33
+    }
+  ],
+  "table2_popularity_over_time": {
+    "dates": [
+      "2012-05-01",
+      "2012-10-01",
+      "2013-01-01",
+      "2013-07-01",
+      "2014-02-01",
+      "2014-06-20"
+    ],
+    "max_Ni": [
+      42600000,
+      55800000,
+      61900000,
+      68400000,
+      85600000,
+      389000000
+    ],
+    "Pi_percent": {
+      "alcohol": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "amphetamine": [
+        1.2,
+        1.5,
+        2.2,
+        1.6,
+        1.6,
+        2.3
+      ],
+      "benzodiazepines": [
+        1.7,
+        1.3,
+        1.3,
+        1.2,
+        1.0,
+        1.2
+      ],
+      "buprenorphine": [
+        1.0,
+        0.6,
+        0.6,
+        0.6,
+        0.5,
+        1.6
+      ],
+      "butane": [
+        1.8,
+        2.1,
+        2.3,
+        2.3,
+        2.2,
+        3.0
+      ],
+      "cannabis": [
+        6.3,
+        5.9,
+        6.9,
+        7.7,
+        10.1,
+        15.2
+      ],
+      "cocaine": [
+        10.5,
+        9.4,
+        10.3,
+        10.4,
+        11.4,
+        15.1
+      ],
+      "ecstasy": [
+        6.2,
+        5.1,
+        5.6,
+        6.1,
+        6.6,
+        11.0
+      ],
+      "gamma-hydroxybutyric acid": [
+        0.9,
+        1.1,
+        1.3,
+        1.5,
+        1.7,
+        6.0
+      ],
+      "heroin": [
+        8.8,
+        9.1,
+        10.0,
+        10.4,
+        11.0,
+        12.0
+      ],
+      "ketamine": [
+        2.6,
+        2.3,
+        2.2,
+        1.9,
+        1.6,
+        2.2
+      ],
+      "khat": [
+        1.3,
+        1.2,
+        1.3,
+        1.4,
+        1.6,
+        2.7
+      ],
+      "lysergic acid diethylamide": [
+        6.4,
+        6.8,
+        7.9,
+        8.8,
+        8.8,
+        12.5
+      ],
+      "mephedrone": [
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.1,
+        0.5
+      ],
+      "methadone": [
+        1.8,
+        2.1,
+        2.2,
+        2.0,
+        1.7,
+        3.4
+      ],
+      "methamphetamine": [
+        1.5,
+        1.6,
+        1.6,
+        1.6,
+        1.6,
+        2.3
+      ]
+    }
+  }
+}

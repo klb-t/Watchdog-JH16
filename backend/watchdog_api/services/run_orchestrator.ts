@@ -7,6 +7,18 @@ import { sourceRegistry } from '../sources/registry';
 import { analyzerRegistry } from '../analytics/registry';
 import { ObjectStore } from '../storage/object_store';
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
+import { SourceRequest } from '../sources/base';
+import { Observation } from '../domain/observation';
+
+/**
+ * One (entity, dimension) pair to acquire. The preset decides both; the
+ * adapter is told, never left to infer.
+ */
+export interface AcquisitionPlanItem {
+  entityId: string;
+  dimension: string;
+  renderedQuery: string;
+}
 
 export class RunOrchestrator {
   private runRepo: RunRepository;
@@ -27,82 +39,136 @@ export class RunOrchestrator {
   }
 
   /**
-   * Main entry point for a generic end-to-end pipeline run.
-   * Can be configured just for acquisition, just for analysis, or both.
+   * Builds the acquisition plan from run config.
+   *
+   * This is where `dimension` is decided — in the orchestrator, from the
+   * preset — so that it can travel to the adapter on `SourceRequest` rather
+   * than being recovered from query text downstream.
    */
+  private buildPlan(config: any): AcquisitionPlanItem[] {
+    if (Array.isArray(config.plan) && config.plan.length > 0) {
+      return config.plan;
+    }
+
+    const entities: string[] = config.entities ?? ['alcohol'];
+    const templates: Record<string, string> =
+      config.query_templates ?? { popularity: '"{entity}"', harm: '"{entity}" "harm" OR "harmful"' };
+
+    const plan: AcquisitionPlanItem[] = [];
+    for (const entityId of [...entities].sort()) {
+      for (const dimension of Object.keys(templates).sort()) {
+        plan.push({
+          entityId,
+          dimension,
+          renderedQuery: templates[dimension].replace('{entity}', entityId),
+        });
+      }
+    }
+    return plan;
+  }
+
   async executeRun(runId: string) {
     await tracer.runWithSpan('orchestrator', `executeRun:${runId}`, async () => {
       let stateAtFailure: string | null = null;
       try {
         const runRecord = this.runRepo.getRun(runId);
-        if (!runRecord) throw new Error("Run not found");
-        
-        const config = JSON.parse(runRecord.config);
+        if (!runRecord) throw new Error('Run not found');
 
-        if (runRecord.type === 'ACQUISITION' || runRecord.type === 'PIPELINE') {
-           this.runRepo.updateStatus(runId, 'ACQUIRING');
-           tracer.emit('START_ACQUISITION', { source: config.source_id });
-           
-           const adapter = sourceRegistry.getAdapter(config.source_id);
-           const params = config.source_params || {};
-           
-           const validated = adapter.validate_params(params);
-           if (!validated.valid) throw new Error(`Invalid params: ${validated.errors?.join(', ')}`);
+        const config = JSON.parse(runRecord.effective_config ?? '{}');
+        const runType = runRecord.run_type;
 
-           stateAtFailure = 'FETCHING';
-           const raw = await adapter.fetch(validated.normalized_params);
-           
-           stateAtFailure = 'ARCHIVING_RAW';
-           // Archive raw response - preserves WORM evidence even if normalization fails
-           const provenanceMetadata = adapter.provenance ? adapter.provenance(raw) : undefined;
-           raw.raw_blob_id = await this.acqRepo.recordFetch(runId, config.source_id, raw.payload, raw.status, adapter.adapter_version, provenanceMetadata);
-           
-           if (raw.status === 'SUCCESS') {
-             this.runRepo.updateStatus(runId, 'NORMALIZING');
-             stateAtFailure = 'NORMALIZING';
-             const observations = adapter.normalize(raw, validated.normalized_params);
-             
-             stateAtFailure = 'PERSISTING_OBSERVATIONS';
-             this.obsRepo.insertMany(runId, observations);
-           } else {
-             throw new Error(`Fetch failed with status: ${raw.status}`);
-           }
+        this.runRepo.updateStatus(runId, 'VALIDATING');
+        this.runRepo.updateStatus(runId, 'QUEUED');
+        this.runRepo.updateStatus(runId, 'RUNNING');
+
+        if (runType === 'ACQUISITION' || runType === 'PIPELINE') {
+          tracer.emit('START_ACQUISITION', { source: config.source_id });
+
+          const adapter = sourceRegistry.getAdapter(config.source_id);
+          const validated = adapter.validate_params(config.source_params || {});
+          if (!validated.valid) throw new Error(`Invalid params: ${validated.errors?.join(', ')}`);
+
+          const plan = this.buildPlan(config);
+          const observations: Observation[] = [];
+
+          for (const item of plan) {
+            const request: SourceRequest = {
+              renderedQuery: item.renderedQuery,
+              dimension: item.dimension,
+              entityId: item.entityId,
+              presetId: runRecord.preset_id ?? config.preset_id ?? 'ad-hoc',
+              presetVersion: runRecord.preset_version ?? config.preset_version ?? '0',
+              params: validated.normalized_params,
+            };
+
+            stateAtFailure = 'FETCHING';
+            const raw = await adapter.fetch(request);
+
+            stateAtFailure = 'ARCHIVING_RAW';
+            // Raw bytes are archived before normalisation, so evidence
+            // survives a later stage breaking.
+            raw.raw_blob_id = (await this.acqRepo.recordFetch({
+              runId,
+              sourceId: config.source_id,
+              payload: raw.payload,
+              status: raw.status,
+              adapterVersion: adapter.adapter_version,
+              renderedQuery: item.renderedQuery,
+              httpStatus: raw.http_status,
+              provenance: adapter.provenance ? adapter.provenance(raw) : undefined,
+            })) ?? undefined;
+
+            if (raw.status !== 'SUCCESS') {
+              throw new Error(`Fetch failed with status: ${raw.status}`);
+            }
+
+            stateAtFailure = 'NORMALIZING';
+            observations.push(...adapter.normalize(raw));
+          }
+
+          this.runRepo.updateStatus(runId, 'NORMALIZING');
+          stateAtFailure = 'PERSISTING_OBSERVATIONS';
+          this.obsRepo.insertMany(runId, observations);
         }
 
-        if (runRecord.type === 'ANALYSIS' || runRecord.type === 'PIPELINE') {
-           this.runRepo.updateStatus(runId, 'ANALYZING');
-           stateAtFailure = 'LOADING_OBSERVATIONS';
-           // Load observations (either from this run or a referenced source run)
-           const obsRunId = config.source_run_id || runId;
-           const observations = this.obsRepo.getByRunId(obsRunId);
-           
-           stateAtFailure = 'EXECUTING_ANALYSIS';
-           const analyzer = analyzerRegistry.get(config.method_id);
-           const results = analyzer.analyze(observations, {
-             method_id: config.method_id,
-             method_version: analyzer.analyzer_version,
-             parameters: config.method_params
-           });
+        if (runType === 'ANALYSIS' || runType === 'PIPELINE') {
+          this.runRepo.updateStatus(runId, 'ANALYZING');
+          stateAtFailure = 'LOADING_OBSERVATIONS';
+          const obsRunId = config.source_run_id || runId;
+          const observations = this.obsRepo.getByRunId(obsRunId);
 
-           stateAtFailure = 'PERSISTING_RESULTS';
-           this.anRepo.insertMany(runId, results);
+          stateAtFailure = 'EXECUTING_ANALYSIS';
+          const analyzer = analyzerRegistry.get(config.method_id);
+          const results = analyzer.analyze(observations, {
+            method_id: config.method_id,
+            method_version: analyzer.analyzer_version,
+            parameters: config.method_params ?? {},
+          });
+
+          stateAtFailure = 'PERSISTING_RESULTS';
+          const analysisRunId = this.anRepo.createAnalysisRun(runId, {
+            executorId: analyzer.analyzer_id,
+            executorVersion: analyzer.analyzer_version,
+          });
+          this.anRepo.insertMany(analysisRunId, results);
         }
 
-        this.runRepo.updateStatus(runId, 'SUCCESS');
+        this.runRepo.updateStatus(runId, 'EXPORTING');
+        this.runRepo.updateStatus(runId, 'COMPLETED');
         tracer.emit('RUN_COMPLETED', { runId });
 
       } catch (err: any) {
-        this.runRepo.updateStatus(runId, 'FAILED', err.message);
+        const current = this.runRepo.getRun(runId);
+        if (current && current.status !== 'FAILED' && current.status !== 'COMPLETED') {
+          this.runRepo.updateStatus(runId, 'FAILED', err.message, String(err.stack ?? ''));
+        }
         tracer.emit('STATE_AT_FAILURE', { state: stateAtFailure, error: err.message });
       }
     });
   }
 
-  // Helper to submit jobs
   submitJob(type: 'ACQUISITION' | 'ANALYSIS' | 'PIPELINE', config: any): string {
-    const runId = this.runRepo.createRun(type, config);
-    this.runRepo.updateStatus(runId, 'QUEUED');
-    // In a real environment, dispatch to Redis/Queue. Here we run asynchronously.
+    const runId = this.runRepo.createRun({ runType: type, config });
     setImmediate(() => {
       this.executeRun(runId).catch(console.error);
     });
