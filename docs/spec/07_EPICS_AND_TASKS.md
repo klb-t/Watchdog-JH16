@@ -271,7 +271,7 @@ Pulled forward by the maintainer ahead of the rest of E2–E5; see D17 in
 `00_STATE_AND_DECISIONS.md`. This is one vertical slice through three epics, not permission to
 start any of them breadth-first. Tasks keep their home epic's number.
 
-- [ ] **E3.1 — Secret store**
+- [x] **E3.1 — Secret store**
   `SecretProvider` with environment and GCP Secret Manager backends. `secret_ref` resolves
   through it and nowhere else. Resolved values register with the redactor at load, so a key
   that reaches an error message is scrubbed by value as well as by key. Credential state is
