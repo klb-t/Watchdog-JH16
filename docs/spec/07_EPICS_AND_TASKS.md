@@ -265,6 +265,61 @@ working tested navigation should be deleted. See D11.
 
 ---
 
+## D17 slice — a real instance the maintainer can test on
+
+Pulled forward by the maintainer ahead of the rest of E2–E5; see D17 in
+`00_STATE_AND_DECISIONS.md`. This is one vertical slice through three epics, not permission to
+start any of them breadth-first. Tasks keep their home epic's number.
+
+- [ ] **E3.1 — Secret store**
+  `SecretProvider` with environment and GCP Secret Manager backends. `secret_ref` resolves
+  through it and nowhere else. Resolved values register with the redactor at load, so a key
+  that reaches an error message is scrubbed by value as well as by key. Credential state is
+  `present | absent | invalid` and the value never leaves the process.
+  *Test:* a canary secret injected into configuration appears in no sink; a missing key yields
+  `absent` rather than an empty string that reads as a configured credential; no API response
+  or manifest contains a resolved value.
+
+- [ ] **E2.1 — OpenRouter as a real `text.generate` provider**
+  HTTP behind an injectable transport so tests never reach the network. Provider status is
+  *derived* from credential presence, not stored: no key means `blocked` with a reason, never
+  `implemented`. Generated text enters as `PROPOSED` under the existing hash-bound gate.
+  *Test:* with no credential the provider is unselectable and throws; with a stubbed transport
+  a generation round-trips and lands as `PROPOSED`; a test asserts no LLM output can reach an
+  `AnalysisResultValue`.
+
+- [ ] **E3.2 — SerpApi as a real `search.result_count` provider**
+  HTTP behind the same injectable transport. Rate limiting, quota exhaustion and an
+  unparseable count are each an explicit missing reason with its own code — never zero, never a
+  silent retry that fabricates a number.
+  *Test:* a 429 and a quota-exhausted body each produce a missing observation with a distinct
+  reason; a malformed count produces `PARSE_FAILED`; no path returns 0 for an absent count.
+
+- [ ] **E3.3 — Provider stamping and discontinuity**
+  Every observation records the provider that served it. A series whose provider changes
+  mid-way raises `PROVIDER_DISCONTINUITY` into the manifest and onto the chart, per rule 4.
+  *Test:* a two-provider series flags; a single-provider series does not; the flag survives
+  into the manifest and the chart spec.
+
+- [ ] **E3.4 — Cloud-durable persistence**
+  PostgreSQL behind the existing db client and GCS behind `ObjectStore`, both selected by
+  environment. SQLite and the local blob directory stay the default for local work.
+  *Test:* the same repository test suite passes against both backends; WORM refusal to
+  overwrite holds on GCS as it does locally.
+
+- [ ] **E4.1 — Google OIDC behind `IdentityProvider`**
+  OIDC as one implementation of the seam E1 shipped. Role ladder
+  `viewer < researcher < admin < dev` and the RBAC matrix. `local-user` rows migrate to a real
+  principal rather than being orphaned.
+  *Test:* the RBAC matrix tests pass; an unauthenticated request to a mutating route is
+  refused; existing `local-user` rows resolve to the migrated owner after migration.
+
+- [ ] **E3.5 — Container and Cloud Run**
+  Dockerfile, deploy script, and a runbook written for someone who has not used GCP. Startup
+  refuses to boot in production when storage is ephemeral and Postgres/GCS are unconfigured.
+  *Test:* the startup check fails fast with a precise message under a production environment
+  with no durable storage configured, and passes when it is configured.
+
 ## E2 — Compiler and validation
 
 Decompose when E1 exits. Contents: the LLM method compiler with its known-answer test on

@@ -367,6 +367,46 @@ strengthened with the specific role ladder and the access-request workflow so th
 completion of D3, not a reopening of it. If this reading is wrong, it is one sentence to
 override — this paragraph exists so that sentence has something concrete to contradict.
 
+### D17 — Live providers, identity and a deployed instance are pulled forward, ahead of the rest of E2–E5
+
+Decided by the maintainer, 2026-08-19, in one sentence: *"takie rzeczy muszą być bo to jest
+pierwsze na czym będę testował"* — live LLM access, OpenRouter, SerpApi, OAuth and a GCP
+deployment have to exist, because they are the surface he will first evaluate the system on.
+
+This is the override D3's conflict-check paragraph explicitly invited, and it is the
+maintainer's call to make. It does **not** repeal D3's reasoning. The anti-pattern D3 guards
+against is *infrastructure before flow* — a previous attempt died debugging OAuth before one
+feature worked end to end. That condition no longer holds: E1 exits complete, the slice runs
+end to end offline, and `demo:jh16` is reproducible from a clean clone. Building identity and
+live acquisition now is therefore sequencing work after the flow exists, which is what D3
+actually asked for, not a reversal of it.
+
+Chosen: decompose the minimum cross-cutting slice of E2, E3 and E4 that makes a real,
+reachable, credentialled instance possible, and build that before the remainder of any of the
+three epics. Specifically: the secret store, one real `text.generate` provider (OpenRouter),
+one real `search.result_count` provider (SerpApi), provider stamping and discontinuity
+detection, cloud-durable persistence, OIDC, and a container.
+
+Rejected: deploying first and migrating persistence later. On Cloud Run the filesystem is
+ephemeral, so a deploy that keeps E1's SQLite file and local blob directory loses the database,
+the manifests and the content-addressed raw payloads on every restart while continuing to
+render charts. That is not a degraded deployment, it is a system that reports provenance it no
+longer holds, and it voids rule 6. Cloud-durable storage is therefore a precondition of the
+deployment task, not a follow-up to it — enforced by a startup check, not by a note.
+
+Rejected: a credential-entry form in the UI. Secrets arrive from the environment or the secret
+store only. A paste-a-key screen would put credential handling on an internet-reachable surface
+before identity exists, and would create a second place a key could be persisted.
+
+Consequence for ordering: the four remaining bullets of E2, the workbench in E5 and all of E6
+stay untouched. This is a vertical slice through three epics, not the start of doing them
+breadth-first — the anti-pattern in `CLAUDE.md` §2 still applies to everything else in them.
+
+Consequence for cost: two of these providers are metered. `CLAUDE.md` §4 reserves spending
+decisions to the maintainer, so the adapters are built complete and left credential-less; each
+reports `absent` until a key is present in the environment. No account is created and no
+spending is committed by the agent.
+
 ## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.
