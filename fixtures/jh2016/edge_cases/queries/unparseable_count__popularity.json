@@ -1,0 +1,5 @@
+{
+  "_case": "UNPARSEABLE — the provider returned prose where a count belongs. Must be missing with COUNT_PARSE_UNCERTAIN, never coerced or guessed at.",
+  "query": "\"unparseable\"",
+  "result_stats": "many results"
+}

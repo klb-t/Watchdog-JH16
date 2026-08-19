@@ -1,0 +1,32 @@
+{
+  "_source": "Hand-written edge cases required by E1.9 / 03_JH2016_CONTRACT.md. Not paper data.",
+  "set_key": "jh2016-edge-cases",
+  "language": "en",
+  "query_expansion_mode": "STRICT_CANONICAL",
+  "queries": [
+    {
+      "entity_id": "grouped_digits",
+      "dimension": "popularity",
+      "rendered_query": "\"groupeddigits\"",
+      "file": "queries/grouped_digits__popularity.json"
+    },
+    {
+      "entity_id": "missing_count",
+      "dimension": "popularity",
+      "rendered_query": "\"missingcount\"",
+      "file": "queries/missing_count__popularity.json"
+    },
+    {
+      "entity_id": "unparseable_count",
+      "dimension": "popularity",
+      "rendered_query": "\"unparseable\"",
+      "file": "queries/unparseable_count__popularity.json"
+    },
+    {
+      "entity_id": "zero_ni",
+      "dimension": "popularity",
+      "rendered_query": "\"zeroni\"",
+      "file": "queries/zero_ni__popularity.json"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ import {
  * keep that distinction visible in the data rather than relying on convention.
  */
 export class GoogleTrendsAdapter implements SourceAdapter {
-  readonly adapter_id = 'google_trends';
+  readonly adapter_id = 'google_trends_adapter';
   readonly adapter_version = '2.0.0';
 
   capabilities(): SourceCapability[] {

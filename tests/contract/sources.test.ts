@@ -25,9 +25,9 @@ function request(over: Partial<SourceRequest> = {}): SourceRequest {
 test('SourceRegistry - Retrieves executable adapters and blocks planned', () => {
   assert.ok(sourceRegistry.getAdapter('offline_fixture') instanceof OfflineFixtureAdapter);
   assert.ok(sourceRegistry.getAdapter('serp_generic') instanceof SerpAdapter);
-  assert.ok(sourceRegistry.getAdapter('google_trends') instanceof GoogleTrendsAdapter);
+  assert.ok(sourceRegistry.getAdapter('trends_interest_index') instanceof GoogleTrendsAdapter);
 
-  assert.throws(() => sourceRegistry.getAdapter('pubchem'), NotImplementedError);
+  assert.throws(() => sourceRegistry.getAdapter('chemical_reference'), NotImplementedError);
 });
 
 test('OfflineFixtureAdapter - normalizes to a domain observation', async () => {
@@ -80,6 +80,13 @@ test('GoogleTrendsAdapter - interest is not a result count', async () => {
 // §SourceAdapter. Runs against every registered adapter, present and future.
 // -------------------------------------------------------------------------
 
+/** Params each adapter legitimately requires, so neutrality is tested on a valid request. */
+function paramsFor(id: string): Record<string, any> {
+  if (id === 'fixture_jh2016') return { fixture_set: 'faithful_2014-06-20' };
+  if (id === 'offline_fixture') return { fixture_name: 'jh16_test' };
+  return {};
+}
+
 function executableAdapters(): [string, SourceAdapter][] {
   return sourceRegistry.listSources()
     .filter(s => s.status === 'implemented' || s.status === 'fixture')
@@ -95,10 +102,10 @@ test('Adapter neutrality: dimension comes from the request, never from query tex
     // whose declared dimensions differ. An adapter that sniffs the text would
     // return the same dimension for both.
     const asHarm = await adapter.fetch(request({
-      renderedQuery: '"alcohol" "harm" OR "harmful"', dimension: 'harm'
+      renderedQuery: '"alcohol" "harm" OR "harmful"', dimension: 'harm', params: paramsFor(id)
     }));
     const asPopularity = await adapter.fetch(request({
-      renderedQuery: '"alcohol" "harm" OR "harmful"', dimension: 'popularity'
+      renderedQuery: '"alcohol" "harm" OR "harmful"', dimension: 'popularity', params: paramsFor(id)
     }));
 
     const harmObs = adapter.normalize(asHarm);
@@ -113,7 +120,7 @@ test('Adapter neutrality: dimension comes from the request, never from query tex
 
 test('Adapter neutrality: a missing dimension fails validation, never falls back to text', async () => {
   for (const [id, adapter] of executableAdapters()) {
-    const broken = { ...request(), dimension: '' } as SourceRequest;
+    const broken = { ...request({ params: paramsFor(id) }), dimension: '' } as SourceRequest;
 
     await assert.rejects(
       async () => adapter.fetch(broken),
@@ -122,7 +129,7 @@ test('Adapter neutrality: a missing dimension fails validation, never falls back
     );
 
     // And normalize must refuse too, in case a result is assembled by hand.
-    const good = await adapter.fetch(request());
+    const good = await adapter.fetch(request({ params: paramsFor(id) }));
     assert.throws(
       () => adapter.normalize({ ...good, request: broken }),
       InvalidSourceRequestError,
@@ -133,20 +140,20 @@ test('Adapter neutrality: a missing dimension fails validation, never falls back
 
 test('Query-plan identity: language and expansion mode are required, never defaulted (D15)', async () => {
   for (const [id, adapter] of executableAdapters()) {
-    const noLanguage = { ...request(), language: '' } as SourceRequest;
+    const noLanguage = { ...request({ params: paramsFor(id) }), language: '' } as SourceRequest;
     await assert.rejects(async () => adapter.fetch(noLanguage), InvalidSourceRequestError,
       `${id}: a query plan with no language must be rejected, not assumed`);
 
-    const noMode = { ...request(), queryExpansionMode: undefined } as unknown as SourceRequest;
+    const noMode = { ...request({ params: paramsFor(id) }), queryExpansionMode: undefined } as unknown as SourceRequest;
     await assert.rejects(async () => adapter.fetch(noMode), InvalidSourceRequestError,
       `${id}: a query plan with no expansion mode must be rejected, not assumed`);
 
-    const badMode = { ...request(), queryExpansionMode: 'GUESS' } as unknown as SourceRequest;
+    const badMode = { ...request({ params: paramsFor(id) }), queryExpansionMode: 'GUESS' } as unknown as SourceRequest;
     await assert.rejects(async () => adapter.fetch(badMode), InvalidSourceRequestError,
       `${id}: an unknown expansion mode must be rejected`);
 
     // Same discipline on the normalize side.
-    const good = await adapter.fetch(request());
+    const good = await adapter.fetch(request({ params: paramsFor(id) }));
     assert.throws(() => adapter.normalize({ ...good, request: noLanguage }), InvalidSourceRequestError);
   }
 });

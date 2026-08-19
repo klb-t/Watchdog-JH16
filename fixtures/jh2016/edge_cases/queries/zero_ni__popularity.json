@@ -1,0 +1,5 @@
+{
+  "_case": "ZERO Ni — a genuine zero popularity count. Hi is then undefined (division by zero) and the run must not crash; Pi is 0, which is a real measured value, not missing. The distinction between this file and missing_count is the whole point.",
+  "query": "\"zeroni\"",
+  "result_stats": "0 results (0.30 seconds)"
+}

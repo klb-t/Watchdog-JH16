@@ -1,0 +1,234 @@
+{
+  "_note": "Expected normalized values. The adapter must never read this file.",
+  "observations": [
+    {
+      "entity_id": "alcohol",
+      "dimension": "harm",
+      "expected_count": 107000000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "alcohol",
+      "dimension": "popularity",
+      "expected_count": 389000000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "amphetamine",
+      "dimension": "harm",
+      "expected_count": 465000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "amphetamine",
+      "dimension": "popularity",
+      "expected_count": 9070000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "benzodiazepines",
+      "dimension": "harm",
+      "expected_count": 467000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "benzodiazepines",
+      "dimension": "popularity",
+      "expected_count": 4520000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "buprenorphine",
+      "dimension": "harm",
+      "expected_count": 374000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "buprenorphine",
+      "dimension": "popularity",
+      "expected_count": 6400000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "butane",
+      "dimension": "harm",
+      "expected_count": 386000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "butane",
+      "dimension": "popularity",
+      "expected_count": 11800000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "cannabis",
+      "dimension": "harm",
+      "expected_count": 2710000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "cannabis",
+      "dimension": "popularity",
+      "expected_count": 59100000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "cocaine",
+      "dimension": "harm",
+      "expected_count": 15000000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "cocaine",
+      "dimension": "popularity",
+      "expected_count": 58600000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "ecstasy",
+      "dimension": "harm",
+      "expected_count": 669000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "ecstasy",
+      "dimension": "popularity",
+      "expected_count": 42900000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "gamma-hydroxybutyric acid",
+      "dimension": "harm",
+      "expected_count": 291000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "gamma-hydroxybutyric acid",
+      "dimension": "popularity",
+      "expected_count": 23500000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "heroin",
+      "dimension": "harm",
+      "expected_count": 11700000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "heroin",
+      "dimension": "popularity",
+      "expected_count": 46800000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "ketamine",
+      "dimension": "harm",
+      "expected_count": 411000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "ketamine",
+      "dimension": "popularity",
+      "expected_count": 8400000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "khat",
+      "dimension": "harm",
+      "expected_count": 711000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "khat",
+      "dimension": "popularity",
+      "expected_count": 10600000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "lysergic acid diethylamide",
+      "dimension": "harm",
+      "expected_count": 580000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "lysergic acid diethylamide",
+      "dimension": "popularity",
+      "expected_count": 48600000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "mephedrone",
+      "dimension": "harm",
+      "expected_count": 92000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "mephedrone",
+      "dimension": "popularity",
+      "expected_count": 2050000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "methadone",
+      "dimension": "harm",
+      "expected_count": 543000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "methadone",
+      "dimension": "popularity",
+      "expected_count": 13400000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "methamphetamine",
+      "dimension": "harm",
+      "expected_count": 513000,
+      "is_missing": false
+    },
+    {
+      "entity_id": "methamphetamine",
+      "dimension": "popularity",
+      "expected_count": 8780000,
+      "is_missing": false
+    }
+  ],
+  "expected_pi": {
+    "alcohol": 100,
+    "amphetamine": 2.3,
+    "benzodiazepines": 1.2,
+    "buprenorphine": 1.6,
+    "butane": 3.0,
+    "cannabis": 15.2,
+    "cocaine": 15.1,
+    "ecstasy": 11.0,
+    "gamma-hydroxybutyric acid": 6.0,
+    "heroin": 12.0,
+    "ketamine": 2.2,
+    "khat": 2.7,
+    "lysergic acid diethylamide": 12.5,
+    "mephedrone": 0.5,
+    "methadone": 3.4,
+    "methamphetamine": 2.3
+  },
+  "expected_hi": {
+    "alcohol": 27.5,
+    "amphetamine": 5.1,
+    "benzodiazepines": 10.3,
+    "buprenorphine": 5.8,
+    "butane": 3.3,
+    "cannabis": 4.6,
+    "cocaine": 25.6,
+    "ecstasy": 1.6,
+    "gamma-hydroxybutyric acid": 1.2,
+    "heroin": 25.0,
+    "ketamine": 4.9,
+    "khat": 6.7,
+    "lysergic acid diethylamide": 1.2,
+    "mephedrone": 4.5,
+    "methadone": 4.1,
+    "methamphetamine": 5.8
+  },
+  "expected_pearson_hi_vs_reference_percent": 81.6
+}

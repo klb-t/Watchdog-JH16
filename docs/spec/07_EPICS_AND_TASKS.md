@@ -105,7 +105,7 @@ Before feature work. See `06_DIAGNOSTICS.md`.
 
 ### Group 3 — Acquisition
 
-- [ ] **E1.8 — SourceAdapter protocol and fixture adapter**
+- [x] **E1.8 — SourceAdapter protocol and fixture adapter**
   `FixtureSourceAdapter` reads frozen JSON from `fixtures/jh2016/`. No network in E1 at all.
   `dimension`, `language` and `queryExpansionMode` all travel on `SourceRequest` from the
   preset; the adapter never infers any of them from query text (`01_ARCHITECTURE.md`
@@ -114,12 +114,12 @@ Before feature work. See `06_DIAGNOSTICS.md`.
   and a missing count arriving as missing rather than zero; the adapter-neutrality test in
   `09_TESTS.md`.
 
-- [ ] **E1.9 — Fixtures**
+- [x] **E1.9 — Fixtures**
   Frozen fixture set for all 32 JH2016 queries, plus deliberate edge cases: one missing count,
   one zero `Ni`, one unparseable count, one count formatted with grouping separators.
   *Test:* every fixture loads and the edge cases behave per `03_JH2016_CONTRACT.md`.
 
-- [ ] **E1.10 — Registry skeleton**
+- [x] **E1.10 — Registry skeleton**
   Capability, provider and credential registries per `05_PROVIDERS_AND_CAPABILITIES.md`, with
   the fixture provider as the only `implemented` entry and the seed list registered as
   `planned`.

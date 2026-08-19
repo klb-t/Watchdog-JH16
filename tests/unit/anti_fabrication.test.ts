@@ -10,7 +10,8 @@ import { pearson, spearman, calculateRatio } from '../../backend/watchdog_api/an
 // function must never return a value that ignores its inputs.
 
 test('Anti-fabrication: every non-executable source throws NotImplementedError, not a value', () => {
-  const registeredIds = ['offline_fixture', 'serp_generic', 'google_trends', 'pubchem', 'scientific_literature', 'erowid', 'drug_checking', 'manual_dataset'];
+  const registeredIds = ['fixture_jh2016', 'offline_fixture', 'serp_generic', 'trends_interest_index',
+    'chemical_reference', 'scientific_literature', 'erowid', 'drug_checking', 'manual_dataset'];
   let sawAtLeastOnePlannedOrBlocked = false;
 
   for (const id of registeredIds) {

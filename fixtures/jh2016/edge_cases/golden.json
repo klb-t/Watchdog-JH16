@@ -1,0 +1,28 @@
+{
+  "observations": [
+    {
+      "entity_id": "missing_count",
+      "dimension": "popularity",
+      "is_missing": true,
+      "missing_reason": "PARSE_FAILED"
+    },
+    {
+      "entity_id": "zero_ni",
+      "dimension": "popularity",
+      "is_missing": false,
+      "expected_count": 0
+    },
+    {
+      "entity_id": "unparseable_count",
+      "dimension": "popularity",
+      "is_missing": true,
+      "missing_reason": "PARSE_FAILED"
+    },
+    {
+      "entity_id": "grouped_digits",
+      "dimension": "popularity",
+      "is_missing": false,
+      "expected_count": 1234567
+    }
+  ]
+}

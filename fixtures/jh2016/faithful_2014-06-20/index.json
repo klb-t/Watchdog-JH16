@@ -1,0 +1,234 @@
+{
+  "_source": "Derived from fixtures/jh2016/paper_reported.json (paper Tables 1 and 3).",
+  "set_key": "jh2016-faithful",
+  "observed_at": "2014-06-20",
+  "language": "en",
+  "query_expansion_mode": "STRICT_CANONICAL",
+  "safe_search": "off",
+  "queries": [
+    {
+      "entity_id": "alcohol",
+      "query_label": "alcohol",
+      "dimension": "harm",
+      "rendered_query": "\"alcohol\" \"harm\" OR \"harmful\"",
+      "file": "queries/alcohol__harm.json"
+    },
+    {
+      "entity_id": "alcohol",
+      "query_label": "alcohol",
+      "dimension": "popularity",
+      "rendered_query": "\"alcohol\"",
+      "file": "queries/alcohol__popularity.json"
+    },
+    {
+      "entity_id": "amphetamine",
+      "query_label": "amphetamine",
+      "dimension": "harm",
+      "rendered_query": "\"amphetamine\" \"harm\" OR \"harmful\"",
+      "file": "queries/amphetamine__harm.json"
+    },
+    {
+      "entity_id": "amphetamine",
+      "query_label": "amphetamine",
+      "dimension": "popularity",
+      "rendered_query": "\"amphetamine\"",
+      "file": "queries/amphetamine__popularity.json"
+    },
+    {
+      "entity_id": "benzodiazepines",
+      "query_label": "benzodiazepines",
+      "dimension": "harm",
+      "rendered_query": "\"benzodiazepines\" \"harm\" OR \"harmful\"",
+      "file": "queries/benzodiazepines__harm.json"
+    },
+    {
+      "entity_id": "benzodiazepines",
+      "query_label": "benzodiazepines",
+      "dimension": "popularity",
+      "rendered_query": "\"benzodiazepines\"",
+      "file": "queries/benzodiazepines__popularity.json"
+    },
+    {
+      "entity_id": "buprenorphine",
+      "query_label": "buprenorphine",
+      "dimension": "harm",
+      "rendered_query": "\"buprenorphine\" \"harm\" OR \"harmful\"",
+      "file": "queries/buprenorphine__harm.json"
+    },
+    {
+      "entity_id": "buprenorphine",
+      "query_label": "buprenorphine",
+      "dimension": "popularity",
+      "rendered_query": "\"buprenorphine\"",
+      "file": "queries/buprenorphine__popularity.json"
+    },
+    {
+      "entity_id": "butane",
+      "query_label": "butane",
+      "dimension": "harm",
+      "rendered_query": "\"butane\" \"harm\" OR \"harmful\"",
+      "file": "queries/butane__harm.json"
+    },
+    {
+      "entity_id": "butane",
+      "query_label": "butane",
+      "dimension": "popularity",
+      "rendered_query": "\"butane\"",
+      "file": "queries/butane__popularity.json"
+    },
+    {
+      "entity_id": "cannabis",
+      "query_label": "cannabis",
+      "dimension": "harm",
+      "rendered_query": "\"cannabis\" \"harm\" OR \"harmful\"",
+      "file": "queries/cannabis__harm.json"
+    },
+    {
+      "entity_id": "cannabis",
+      "query_label": "cannabis",
+      "dimension": "popularity",
+      "rendered_query": "\"cannabis\"",
+      "file": "queries/cannabis__popularity.json"
+    },
+    {
+      "entity_id": "cocaine",
+      "query_label": "cocaine",
+      "dimension": "harm",
+      "rendered_query": "\"cocaine\" \"harm\" OR \"harmful\"",
+      "file": "queries/cocaine__harm.json"
+    },
+    {
+      "entity_id": "cocaine",
+      "query_label": "cocaine",
+      "dimension": "popularity",
+      "rendered_query": "\"cocaine\"",
+      "file": "queries/cocaine__popularity.json"
+    },
+    {
+      "entity_id": "ecstasy",
+      "query_label": "ecstasy",
+      "dimension": "harm",
+      "rendered_query": "\"ecstasy\" \"harm\" OR \"harmful\"",
+      "file": "queries/ecstasy__harm.json"
+    },
+    {
+      "entity_id": "ecstasy",
+      "query_label": "ecstasy",
+      "dimension": "popularity",
+      "rendered_query": "\"ecstasy\"",
+      "file": "queries/ecstasy__popularity.json"
+    },
+    {
+      "entity_id": "gamma-hydroxybutyric acid",
+      "query_label": "GHB",
+      "dimension": "harm",
+      "rendered_query": "\"GHB\" \"harm\" OR \"harmful\"",
+      "file": "queries/gamma_hydroxybutyric_acid__harm.json"
+    },
+    {
+      "entity_id": "gamma-hydroxybutyric acid",
+      "query_label": "GHB",
+      "dimension": "popularity",
+      "rendered_query": "\"GHB\"",
+      "file": "queries/gamma_hydroxybutyric_acid__popularity.json"
+    },
+    {
+      "entity_id": "heroin",
+      "query_label": "heroin",
+      "dimension": "harm",
+      "rendered_query": "\"heroin\" \"harm\" OR \"harmful\"",
+      "file": "queries/heroin__harm.json"
+    },
+    {
+      "entity_id": "heroin",
+      "query_label": "heroin",
+      "dimension": "popularity",
+      "rendered_query": "\"heroin\"",
+      "file": "queries/heroin__popularity.json"
+    },
+    {
+      "entity_id": "ketamine",
+      "query_label": "ketamine",
+      "dimension": "harm",
+      "rendered_query": "\"ketamine\" \"harm\" OR \"harmful\"",
+      "file": "queries/ketamine__harm.json"
+    },
+    {
+      "entity_id": "ketamine",
+      "query_label": "ketamine",
+      "dimension": "popularity",
+      "rendered_query": "\"ketamine\"",
+      "file": "queries/ketamine__popularity.json"
+    },
+    {
+      "entity_id": "khat",
+      "query_label": "khat",
+      "dimension": "harm",
+      "rendered_query": "\"khat\" \"harm\" OR \"harmful\"",
+      "file": "queries/khat__harm.json"
+    },
+    {
+      "entity_id": "khat",
+      "query_label": "khat",
+      "dimension": "popularity",
+      "rendered_query": "\"khat\"",
+      "file": "queries/khat__popularity.json"
+    },
+    {
+      "entity_id": "lysergic acid diethylamide",
+      "query_label": "LSD",
+      "dimension": "harm",
+      "rendered_query": "\"LSD\" \"harm\" OR \"harmful\"",
+      "file": "queries/lysergic_acid_diethylamide__harm.json"
+    },
+    {
+      "entity_id": "lysergic acid diethylamide",
+      "query_label": "LSD",
+      "dimension": "popularity",
+      "rendered_query": "\"LSD\"",
+      "file": "queries/lysergic_acid_diethylamide__popularity.json"
+    },
+    {
+      "entity_id": "mephedrone",
+      "query_label": "mephedrone",
+      "dimension": "harm",
+      "rendered_query": "\"mephedrone\" \"harm\" OR \"harmful\"",
+      "file": "queries/mephedrone__harm.json"
+    },
+    {
+      "entity_id": "mephedrone",
+      "query_label": "mephedrone",
+      "dimension": "popularity",
+      "rendered_query": "\"mephedrone\"",
+      "file": "queries/mephedrone__popularity.json"
+    },
+    {
+      "entity_id": "methadone",
+      "query_label": "methadone",
+      "dimension": "harm",
+      "rendered_query": "\"methadone\" \"harm\" OR \"harmful\"",
+      "file": "queries/methadone__harm.json"
+    },
+    {
+      "entity_id": "methadone",
+      "query_label": "methadone",
+      "dimension": "popularity",
+      "rendered_query": "\"methadone\"",
+      "file": "queries/methadone__popularity.json"
+    },
+    {
+      "entity_id": "methamphetamine",
+      "query_label": "methamphetamine",
+      "dimension": "harm",
+      "rendered_query": "\"methamphetamine\" \"harm\" OR \"harmful\"",
+      "file": "queries/methamphetamine__harm.json"
+    },
+    {
+      "entity_id": "methamphetamine",
+      "query_label": "methamphetamine",
+      "dimension": "popularity",
+      "rendered_query": "\"methamphetamine\"",
+      "file": "queries/methamphetamine__popularity.json"
+    }
+  ]
+}
