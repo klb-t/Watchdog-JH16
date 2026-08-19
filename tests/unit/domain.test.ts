@@ -106,6 +106,8 @@ const baseObs = {
   retrievedAt: '2026-01-01T00:00:00.000Z',
   sourceId: 'fixture',
   sourceAdapterVersion: '1.0.0',
+  language: 'en-GB',
+  queryExpansionMode: 'STRICT_CANONICAL',
   qualityFlags: [] as const
 };
 

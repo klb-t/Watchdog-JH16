@@ -18,6 +18,10 @@ let page: Page;
 let server: ChildProcess;
 let baseUrl: string;
 const DB_PATH = path.join('/tmp', `watchdog_e2e_${Date.now()}.sqlite`);
+// Isolated alongside the database. The blob store and the database must be
+// reset together: dedup is decided against the database, so a surviving store
+// paired with a fresh database is a different scenario from a clean start.
+const STORE_PATH = path.join('/tmp', `watchdog_e2e_store_${Date.now()}`);
 
 function resolveChromium(): string | undefined {
   const root = process.env.PLAYWRIGHT_BROWSERS_PATH ?? '/opt/pw-browsers';
@@ -54,7 +58,7 @@ before(async () => {
   // holding the port and the test runner alive.
   server = spawn('npx', ['tsx', 'server.ts'], {
     cwd: process.cwd(),
-    env: { ...process.env, PORT: String(port), DB_PATH, WATCHDOG_DIAGNOSTICS_MODE: 'OFF' },
+    env: { ...process.env, PORT: String(port), DB_PATH, STORE_PATH, WATCHDOG_DIAGNOSTICS_MODE: 'OFF' },
     stdio: 'pipe',
     detached: true,
   });
@@ -71,6 +75,7 @@ after(async () => {
   if (server?.pid) {
     try { process.kill(-server.pid, 'SIGKILL'); } catch { /* already gone */ }
   }
+  fs.rmSync(STORE_PATH, { recursive: true, force: true });
   for (const f of [DB_PATH, `${DB_PATH}-journal`]) {
     if (fs.existsSync(f)) fs.rmSync(f, { force: true });
   }

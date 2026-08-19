@@ -153,6 +153,8 @@ export function baseObservationFields(raw: RawFetchResult, sourceId: string, ada
     entityId: raw.request.entityId,
     queryRole: raw.request.dimension,
     queryText: raw.request.renderedQuery,
+    language: raw.request.language,
+    queryExpansionMode: raw.request.queryExpansionMode,
     retrievedAt: new Date().toISOString(),
     sourceId,
     sourceAdapterVersion: adapterVersion,

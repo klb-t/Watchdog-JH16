@@ -181,6 +181,8 @@ export const observations = sqliteTable('observations', {
   provider_id: text('provider_id'),
   source_adapter_version: text('source_adapter_version'),
   query_text: text('query_text'),
+  language: text('language'),
+  query_expansion_mode: text('query_expansion_mode'),
   method_version: text('method_version'),
   quality_flags_json: text('quality_flags_json'),
   created_at: text('created_at').notNull(),

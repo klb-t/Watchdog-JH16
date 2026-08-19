@@ -73,6 +73,30 @@ export interface RunManifest {
   narratives: ManifestNarrativeRecord[];
   /** Any provider/unit/method substitution that happened, per rule 4. */
   substitutions: { kind: string; from: string; to: string; recorded_at: string }[];
+  /**
+   * Detected mid-series changes of instrument or query plan (E3.3).
+   *
+   * Distinct from `substitutions`: a substitution is a decision someone made
+   * and recorded, whereas this is what the data itself shows happened. The two
+   * disagreeing is informative — an undeclared discontinuity means a vendor or
+   * plan changed without anyone declaring it.
+   */
+  discontinuities: ManifestDiscontinuity[];
+  /**
+   * Per series, the fraction of adjacent observation pairs that could actually
+   * be checked for discontinuity. Present so that an empty `discontinuities`
+   * list over unverifiable rows is not read as a clean bill of health.
+   */
+  discontinuity_coverage: Record<string, number>;
+}
+
+export interface ManifestDiscontinuity {
+  series_key: string;
+  kind: string;
+  attribute: string;
+  from: string;
+  to: string;
+  at: string;
 }
 
 /** Fields whose absence makes the manifest a defect rather than merely thin. */
@@ -80,7 +104,7 @@ const REQUIRED_FIELDS: (keyof RunManifest)[] = [
   'schema_version', 'run_id', 'run_type', 'status', 'created_at',
   'effective_config_hash', 'effective_config', 'preset_id', 'preset_version', 'preset_locked',
   'fetches', 'analyses', 'quality_flags', 'artifacts', 'missing_observations',
-  'narratives', 'substitutions',
+  'narratives', 'substitutions', 'discontinuities', 'discontinuity_coverage',
 ];
 
 /**
@@ -123,6 +147,8 @@ export interface BuildManifestInput {
   artifacts: { kind: string; sha256: string; object_uri: string }[];
   missingObservations: ManifestMissingObservation[];
   qualityFlags: string[];
+  discontinuities?: ManifestDiscontinuity[];
+  discontinuityCoverage?: Record<string, number>;
   narratives?: ManifestNarrativeRecord[];
   substitutions?: { kind: string; from: string; to: string; recorded_at: string }[];
 }
@@ -163,6 +189,11 @@ export function buildManifest(input: BuildManifestInput): RunManifest {
       a.input_payload_hash.localeCompare(b.input_payload_hash)),
     substitutions: [...(input.substitutions ?? [])].sort((a, b) =>
       a.kind.localeCompare(b.kind) || a.from.localeCompare(b.from)),
+    discontinuities: [...(input.discontinuities ?? [])].sort((a, b) =>
+      a.series_key.localeCompare(b.series_key) || a.at.localeCompare(b.at)
+      || a.attribute.localeCompare(b.attribute) || a.from.localeCompare(b.from)),
+    discontinuity_coverage: Object.fromEntries(
+      Object.entries(input.discontinuityCoverage ?? {}).sort(([a], [b]) => a.localeCompare(b))),
   };
 
   assertManifestComplete(manifest);

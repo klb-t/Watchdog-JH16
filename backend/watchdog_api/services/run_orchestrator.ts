@@ -10,6 +10,7 @@ import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { SourceRequest, QueryExpansionMode, QUERY_EXPANSION_MODES } from '../sources/base';
 import { Observation } from '../domain/observation';
 import { buildManifest, serializeManifest, ManifestFetchRecord, ManifestMissingObservation } from './manifest';
+import { detectDiscontinuities, annotateWithDiscontinuities } from './discontinuity';
 import { AnalysisResultValue } from '../domain/method_spec';
 import { canonicalHash } from '../domain/canonical';
 
@@ -158,8 +159,17 @@ export class RunOrchestrator {
           }
 
           this.runRepo.updateStatus(runId, 'NORMALIZING');
+
+          // E3.3: detected before persistence, so the warning is stored on the
+          // rows themselves. A chart tooltip and an exported row do not consult
+          // the manifest, and a flag that lives only there is a flag most
+          // readers never see.
+          stateAtFailure = 'DETECTING_DISCONTINUITIES';
+          const annotated = annotateWithDiscontinuities(
+            observations, detectDiscontinuities(observations));
+
           stateAtFailure = 'PERSISTING_OBSERVATIONS';
-          this.obsRepo.insertMany(runId, observations);
+          this.obsRepo.insertMany(runId, annotated);
         }
 
         if (runType === 'ANALYSIS' || runType === 'PIPELINE') {
@@ -237,8 +247,14 @@ export class RunOrchestrator {
         missing_reason: (o as Extract<Observation, { isMissing: true }>).missingReason,
       }));
 
+    // Re-detected from what was actually stored rather than trusting the
+    // annotation pass: the manifest is the scientific claim, and it should rest
+    // on the persisted rows, not on an in-memory result from earlier in the run.
+    const discontinuity = detectDiscontinuities(observations);
+
     const qualityFlags = new Set<string>();
     for (const o of observations) for (const f of o.qualityFlags ?? []) qualityFlags.add(f);
+    for (const f of discontinuity.flags) qualityFlags.add(f);
 
     const analysisRows = this.anRepo.listAnalysisRuns(runId);
 
@@ -267,6 +283,11 @@ export class RunOrchestrator {
       })),
       missingObservations,
       qualityFlags: [...qualityFlags],
+      discontinuities: discontinuity.records.map(r => ({
+        series_key: r.seriesKey, kind: r.kind, attribute: r.attribute,
+        from: r.from, to: r.to, at: r.at,
+      })),
+      discontinuityCoverage: discontinuity.coverage,
     });
 
     const { bytes, sha256 } = serializeManifest(manifest);

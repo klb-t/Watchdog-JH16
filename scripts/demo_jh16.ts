@@ -29,6 +29,7 @@ import { Observation } from '../backend/watchdog_api/domain/observation';
 import { approve, Approvable } from '../backend/watchdog_api/domain/approval';
 import { buildManifest, serializeManifest } from '../backend/watchdog_api/services/manifest';
 import { buildAllCharts } from '../backend/watchdog_api/services/charts';
+import { detectDiscontinuities, annotateWithDiscontinuities } from '../backend/watchdog_api/services/discontinuity';
 import { generateNarrative, hashNarrativePayload } from '../backend/watchdog_api/services/narrative';
 import { exportCsv, exportJson } from '../backend/watchdog_api/services/export';
 import { canonicalHash } from '../backend/watchdog_api/domain/canonical';
@@ -142,7 +143,15 @@ async function runDemo(traceId: string, runId: string, runDir: string) {
   }
 
   runRepo.updateStatus(dbRunId, 'NORMALIZING');
-  obsRepo.insertMany(dbRunId, observations);
+
+  // E3.3. On this fixture run nothing changes instrument mid-series, so the
+  // report is empty — which is the point: the check runs on every run, and an
+  // empty result here is evidence rather than an absence of checking.
+  const discontinuity = detectDiscontinuities(observations);
+  for (const r of discontinuity.records) {
+    tracer.decision('discontinuity_detected', r.attribute, `${r.from} -> ${r.to}`, { series: r.seriesKey });
+  }
+  obsRepo.insertMany(dbRunId, annotateWithDiscontinuities(observations, discontinuity));
   tracer.emit('OBSERVATIONS_PERSISTED', {
     count: observations.length, missing: observations.filter(o => o.isMissing).length });
 
@@ -156,7 +165,11 @@ async function runDemo(traceId: string, runId: string, runDir: string) {
   // observations rather than from the analysis artifact: a flag that a
   // primitive never saw must still reach the manifest, since the manifest is
   // the disclosure and dropping one there is a highest-severity defect.
-  const observationFlags = [...new Set(stored.flatMap(o => [...o.qualityFlags]))].sort();
+  const storedDiscontinuity = detectDiscontinuities(stored);
+  const observationFlags = [...new Set([
+    ...stored.flatMap(o => [...o.qualityFlags]),
+    ...storedDiscontinuity.flags,
+  ])].sort();
   const seriesFor = (role: string): TypedSeries => ({
     name: role === 'popularity' ? 'Ni' : 'Ni_harm',
     unit: 'count', semanticType: 'count', entityIds,
@@ -363,6 +376,11 @@ async function runDemo(traceId: string, runId: string, runDir: string) {
     artifacts: artRepo.getArtifacts(dbRunId).map(a => ({ kind: a.kind, sha256: a.sha256, object_uri: a.object_uri })),
     missingObservations: exportInput.missingObservations,
     qualityFlags: allFlags,
+    discontinuities: storedDiscontinuity.records.map(r => ({
+      series_key: r.seriesKey, kind: r.kind, attribute: r.attribute,
+      from: r.from, to: r.to, at: r.at,
+    })),
+    discontinuityCoverage: storedDiscontinuity.coverage,
     narratives: [{
       provider_id: narrative.providerId, model: narrative.model,
       generation_params: narrative.generationParams,

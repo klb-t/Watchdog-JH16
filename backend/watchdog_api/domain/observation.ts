@@ -51,6 +51,15 @@ interface ObservationBase {
    */
   readonly queryRole: string;
   readonly queryText: string;
+  /**
+   * D15: the query plan's identity travels with the observation, not only with
+   * the run that produced it. Without these two fields on the row, a series
+   * assembled from two runs cannot be checked for a mid-series change of
+   * language or expansion mode — the check would have to trust that nobody
+   * changed the preset, which is exactly what the check exists to verify.
+   */
+  readonly language: string;
+  readonly queryExpansionMode: string;
   readonly retrievedAt: string;
   readonly sourceId: string;
   readonly sourceAdapterVersion: string;

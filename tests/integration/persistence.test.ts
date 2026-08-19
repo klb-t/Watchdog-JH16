@@ -6,7 +6,7 @@ import { LocalFileSystemStore } from '../../backend/watchdog_api/storage/object_
 import { AcquisitionRepository } from '../../backend/watchdog_api/db/repositories/acquisition';
 import { ArtifactRepository } from '../../backend/watchdog_api/db/repositories/artifacts';
 import { RunRepository } from '../../backend/watchdog_api/db/repositories/runs';
-import { runMigrations, listTables } from '../../backend/watchdog_api/db/migrations';
+import { runMigrations, listTables, MIGRATIONS } from '../../backend/watchdog_api/db/migrations';
 import { rawBlobs, fetchEvents, manifests } from '../../backend/watchdog_api/db/schema';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -33,11 +33,16 @@ afterEach(() => {
 test('Migration runs clean on an empty file and is idempotent', () => {
   const fresh = new Database(':memory:');
   const first = runMigrations(fresh);
-  assert.deepStrictEqual(first.applied, ['001_initial_schema', '002_assertions']);
+  // Derived from the migration list rather than restated, so adding a
+  // migration does not require editing this assertion — an assertion people
+  // routinely edit stops being one.
+  const ids = MIGRATIONS.map(m => m.id);
+  assert.deepStrictEqual(first.applied, ids);
+  assert.deepStrictEqual([...ids].sort(), ids, 'migrations must be listed in applied order');
 
   const second = runMigrations(fresh);
   assert.deepStrictEqual(second.applied, [], 'a second run must apply nothing');
-  assert.deepStrictEqual(second.alreadyPresent, ['001_initial_schema', '002_assertions']);
+  assert.deepStrictEqual(second.alreadyPresent, ids);
   fresh.close();
 });
 
@@ -182,14 +187,29 @@ test('Persistence: WORM constraint on manifests', async () => {
   assert.throws(() => repo.finalizeManifest(runId, 'file://manifest/uri2', 'def'), /WORM Violation/);
 });
 
-test('Persistence: WORM constraint on the object store', async () => {
+test('Persistence: the object store refuses to overwrite a key with different bytes', async () => {
   const store = new LocalFileSystemStore(TEST_STORE_PATH);
   await store.put('raw/fixedhash123', Buffer.from('data'));
 
   await assert.rejects(
     async () => store.put('raw/fixedhash123', Buffer.from('mutated data')),
-    /WORM Violation/
+    /WORM violation/i
   );
+});
+
+test('Persistence: re-putting identical bytes succeeds, because it changes nothing', async () => {
+  const store = new LocalFileSystemStore(TEST_STORE_PATH);
+  const payload = Buffer.from('identical bytes');
+
+  const first = await store.put('raw/samehash456', payload);
+  const second = await store.put('raw/samehash456', payload);
+
+  assert.strictEqual(second, first, 'a content-addressed re-put is a no-op, not a violation');
+  assert.ok((await store.get(first)).equals(payload));
+
+  // The case this protects: dedup is decided against the database, so a
+  // database reset with a surviving store must not fail every acquisition.
+  assert.ok((await store.get(second)).equals(payload));
 });
 
 test('No SQL outside the repository layer (D13)', () => {

@@ -67,6 +67,8 @@ export class ObservationRepository {
         provider_id: obs.providerId ?? null,
         source_adapter_version: obs.sourceAdapterVersion,
         query_text: obs.queryText,
+        language: obs.language,
+        query_expansion_mode: obs.queryExpansionMode,
         quality_flags_json: JSON.stringify(obs.qualityFlags ?? []),
         created_at: now,
       };
@@ -93,6 +95,11 @@ export class ObservationRepository {
           entityId: s?.substance_id ?? 'unknown_entity',
           queryRole: s?.query_role ?? 'unknown',
           queryText: r.query_text ?? '',
+          // Rows written before migration 003 genuinely do not know their plan.
+          // 'unknown' is honest; defaulting to the current preset's language
+          // would manufacture the continuity the detector is meant to test.
+          language: r.language ?? 'unknown',
+          queryExpansionMode: r.query_expansion_mode ?? 'unknown',
           retrievedAt: r.retrieved_at,
           sourceId: s?.source_id ?? 'unknown',
           sourceAdapterVersion: r.source_adapter_version ?? 'unknown',

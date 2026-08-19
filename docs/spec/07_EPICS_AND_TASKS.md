@@ -295,7 +295,7 @@ start any of them breadth-first. Tasks keep their home epic's number.
   *Test:* a 429 and a quota-exhausted body each produce a missing observation with a distinct
   reason; a malformed count produces `PARSE_FAILED`; no path returns 0 for an absent count.
 
-- [ ] **E3.3 — Provider stamping and discontinuity**
+- [x] **E3.3 — Provider stamping and discontinuity**
   Every observation records the provider that served it. A series whose provider changes
   mid-way raises `PROVIDER_DISCONTINUITY` into the manifest and onto the chart, per rule 4.
   *Test:* a two-provider series flags; a single-provider series does not; the flag survives

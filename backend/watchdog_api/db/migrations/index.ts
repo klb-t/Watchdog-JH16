@@ -1,6 +1,7 @@
 import type { Database } from 'better-sqlite3';
 import { MIGRATION_001_INITIAL_SCHEMA } from './001_initial_schema';
 import { MIGRATION_002_ASSERTIONS } from './002_assertions';
+import { MIGRATION_003_QUERY_PLAN_IDENTITY } from './003_query_plan_identity';
 
 export interface Migration {
   readonly id: string;
@@ -14,7 +15,8 @@ export interface Migration {
  */
 export const MIGRATIONS: readonly Migration[] = [
   { id: '001_initial_schema', sql: MIGRATION_001_INITIAL_SCHEMA },
-  { id: '002_assertions', sql: MIGRATION_002_ASSERTIONS }
+  { id: '002_assertions', sql: MIGRATION_002_ASSERTIONS },
+  { id: '003_query_plan_identity', sql: MIGRATION_003_QUERY_PLAN_IDENTITY }
 ];
 
 const MIGRATIONS_TABLE = `
