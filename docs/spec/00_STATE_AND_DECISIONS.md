@@ -40,10 +40,27 @@ hashing, the approval gate, the deterministic executor, the JH2016 FAITHFUL pres
 as a MethodSpec, charts, narrative, export, manifest, the three UI pages with browser-driven
 E2E, and `demo:jh16`.
 
-**The one thing outstanding is E1.20.** Its tolerance bands are proposed against the primary
-source and recorded in `07_EPICS_AND_TASKS.md`'s Blocked section; one line from the maintainer
-approves them. Until then the demo records `no_claims_registered` rather than inventing a
-verdict against an unapproved tolerance.
+**E1.20 is now done too, and how it was unblocked matters.** The maintainer delegated the
+tolerance bands explicitly rather than setting them himself. That delegation does not weaken
+the pre-registration rule, because the ordering is what the rule protects: the bands and their
+full rationale were committed in `2e417c66514b3ac24aef6cc067d435168089f852` **before any verdict
+existed anywhere in this repository**, and `config/replication/jh2016.json` names that commit so
+the ordering is checkable rather than merely asserted.
+
+One correction that came out of reading the primary source and is worth carrying forward: the
+paper's prose says the coefficient is between "the harm score *ranking*" and the harm index,
+which reads as a rank correlation. It is not. Recomputing from the paper's own Tables 1 and 3
+gives Pearson r = 0.8162, matching the reported 81.6%, against Spearman rho = 0.5668, which does
+not. Had the claim been registered as a rank correlation with the originally proposed 0.70 floor,
+the paper's own data would have scored 0.57 and been recorded as `deviates` — a test that fails
+against the very result it exists to check.
+
+**And the limit of what the current verdicts mean.** The fixture attempt is registered as a
+`pipeline_self_check`, not an `independent_attempt`, because its inputs are the paper's own
+published counts. Both claims come back `reproduced`, and that means this pipeline computes what
+the paper computed from the same numbers — nothing more. Whether the finding still holds needs
+independently acquired counts, which is E3. The paper's own Table 2 (individual popularity
+indices drifting up to +567% across 25 months) is reason to expect that answer to differ.
 
 ## 2. Lineage of this specification
 

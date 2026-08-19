@@ -32,6 +32,10 @@ import { buildAllCharts } from '../backend/watchdog_api/services/charts';
 import { generateNarrative, hashNarrativePayload } from '../backend/watchdog_api/services/narrative';
 import { exportCsv, exportJson } from '../backend/watchdog_api/services/export';
 import { canonicalHash } from '../backend/watchdog_api/domain/canonical';
+import {
+  evaluateClaim, observedHiVsReference, observedPiRankingStability,
+  ATTEMPT_KIND_MEANING, ReplicationClaim,
+} from '../backend/watchdog_api/services/replication';
 import { tracer } from '../backend/watchdog_api/utils/tracer';
 
 const ROOT = process.cwd();
@@ -221,18 +225,81 @@ async function runDemo(traceId: string, runId: string, runDir: string) {
 
   // ----------------------------------------------------- replication verdicts
   //
-  // E1.20's tolerance bands are PROPOSED and not yet approved, so no claim is
-  // registered and no verdict is computed. Recording that explicitly is the
-  // honest output: inventing a verdict against an unapproved tolerance would
-  // be precisely the pre-registration failure the replication engine exists to
-  // prevent.
-  const replication = {
-    target: 'Jankowski & Hoffmann 2016 (doi:10.2196/jmir.4033)',
-    status: 'no_claims_registered',
-    reason: 'E1.20 tolerance bands are PROPOSED and awaiting maintainer approval; '
-          + 'see the Blocked section of docs/spec/07_EPICS_AND_TASKS.md.',
-    verdicts: [] as unknown[],
+  // The bands were pre-registered in config/replication/jh2016.json and in the
+  // git commit it names, before any verdict existed anywhere in this repo.
+  const target = readJson('config', 'replication', 'jh2016.json');
+  const paper = readJson('fixtures', 'jh2016', 'paper_reported.json');
+
+  // This attempt runs over the paper's OWN published counts, so it checks the
+  // machinery, not the finding. Saying so in the artifact is the difference
+  // between a self-check and a claim about the world.
+  const attemptKind = 'pipeline_self_check' as const;
+
+  const publishedPi = Object.fromEntries(
+    paper.substances.map((sub: any) => [sub.canonical, sub.Pi_percent]));
+  const referenceScores = reference.scores as Record<string, number>;
+
+  const pearsonObs = observedHiVsReference(results, referenceScores, 'pearson');
+  const spearmanObs = observedHiVsReference(results, referenceScores, 'spearman');
+  const rankingObs = observedPiRankingStability(results, publishedPi);
+
+  const verdicts = (target.claims as ReplicationClaim[]).map(claim => {
+    if (claim.claim_key === 'harm_index_vs_reference_pearson') {
+      return evaluateClaim(claim, pearsonObs.value);
+    }
+    if (claim.claim_key === 'popularity_ranking_stability') {
+      return evaluateClaim(claim, rankingObs.value);
+    }
+    return evaluateClaim(claim, null, 'No observed value is wired for this claim key.');
+  });
+
+  // Reported alongside, never as a pass/fail claim: the paper never claimed a
+  // Spearman value, so scoring one against a band would be inventing a claim
+  // on its behalf. 03_JH2016_CONTRACT.md's "report both" is satisfied here.
+  const alsoReported = {
+    spearman_hi_vs_reference: spearmanObs.value,
+    _why_not_a_claim: 'The paper reports Pearson. Spearman is computed and shown for '
+      + 'completeness, but it is not scored against a tolerance because the paper never '
+      + 'asserted it.',
   };
+
+  // Band 3, deliberately verdict-free: the deviation of each published point
+  // value is described, not judged.
+  const pointValueDeviations = paper.substances.map((sub: any) => {
+    const pi = results.find(r => r.metricKey === 'Pi' && r.entityId === sub.canonical);
+    const hi = results.find(r => r.metricKey === 'Hi' && r.entityId === sub.canonical);
+    const rel = (obs: number | null | undefined, pub: number) =>
+      obs === null || obs === undefined ? null : (obs - pub) / pub;
+    return {
+      entity_id: sub.canonical,
+      published_Pi: sub.Pi_percent, observed_Pi: pi?.valueNumeric ?? null,
+      relative_change_Pi: rel(pi?.valueNumeric, sub.Pi_percent),
+      published_Hi: sub.Hi_percent, observed_Hi: hi?.valueNumeric ?? null,
+      relative_change_Hi: rel(hi?.valueNumeric, sub.Hi_percent),
+    };
+  }).sort((a: any, b: any) => a.entity_id.localeCompare(b.entity_id));
+
+  const replication = {
+    target: `${target.title} (doi:${target.identifier})`,
+    target_id: target.target_id,
+    attempt_kind: attemptKind,
+    attempt_kind_meaning: ATTEMPT_KIND_MEANING[attemptKind],
+    pre_registration: target._pre_registration,
+    verdicts,
+    also_reported: alsoReported,
+    point_value_deviations: {
+      _note: target._band_3_deliberately_absent.reason,
+      values: pointValueDeviations,
+    },
+    summary: Object.fromEntries(
+      ['reproduced', 'deviates', 'not_computable', 'method_unclear']
+        .map(v => [v, verdicts.filter(x => x.verdict === v).length])),
+  };
+
+  tracer.emit('REPLICATION_EVALUATED', {
+    attempt_kind: attemptKind,
+    verdicts: verdicts.map(v => ({ claim: v.claim_key, verdict: v.verdict })),
+  });
 
   // ------------------------------------------------------------- run directory
   write(runDir, 'observations.json', JSON.stringify(
@@ -322,7 +389,10 @@ async function runDemo(traceId: string, runId: string, runDir: string) {
   console.log(`  observations  : ${stored.length} (${exportInput.missingObservations.length} missing)`);
   console.log(`  computed      : ${pi} Pi, ${hi} Hi`);
   console.log(`  manifest      : sha256 ${manifestHash}`);
-  console.log(`  replication   : ${replication.status} — ${replication.reason}`);
+  for (const v of verdicts) {
+    console.log(`  replication   : ${v.claim_key} → ${v.verdict.toUpperCase()} (${v.rationale})`);
+  }
+  console.log(`  attempt kind  : ${attemptKind} — ${ATTEMPT_KIND_MEANING[attemptKind]}`);
 }
 
 // Wrapped in a span so the run actually has a trace to put in its directory —

@@ -134,10 +134,24 @@ test('E1.24: the demo produces the published JH2016 values, offline', () => {
   assert.ok(manifest.effective_config_hash);
   assert.ok(manifest.quality_flags.includes('PROVIDER_ESTIMATE'));
 
-  // And no replication verdict is invented against an unapproved tolerance.
+  // Replication verdicts against the pre-registered bands.
   const replication = JSON.parse(fs.readFileSync(path.join(dir, 'replication.json'), 'utf-8'));
-  assert.strictEqual(replication.status, 'no_claims_registered');
-  assert.deepStrictEqual(replication.verdicts, []);
+  assert.strictEqual(replication.verdicts.length, 2);
+  for (const v of replication.verdicts) {
+    assert.ok(['reproduced', 'deviates', 'not_computable', 'method_unclear'].includes(v.verdict));
+    assert.ok(v.rationale.length > 0, 'every verdict says why');
+  }
+
+  // The honesty constraint that matters most here: this attempt runs on the
+  // paper's own counts, so it must declare itself a self-check rather than
+  // letting a 'reproduced' be read as evidence the finding holds in 2026.
+  assert.strictEqual(replication.attempt_kind, 'pipeline_self_check');
+  assert.match(replication.attempt_kind_meaning, /NOT evidence/);
+  assert.match(replication.pre_registration.bands_proposed_in_commit, /^[0-9a-f]{40}$/);
+
+  // Point values are described, never judged.
+  assert.strictEqual(replication.point_value_deviations.values.length, 16);
+  assert.ok(!JSON.stringify(replication.point_value_deviations).includes('verdict'));
 
   fs.rmSync(dir, { recursive: true, force: true });
 });

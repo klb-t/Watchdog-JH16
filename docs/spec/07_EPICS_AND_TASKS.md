@@ -179,7 +179,7 @@ Before feature work. See `06_DIAGNOSTICS.md`.
   *Test:* the manifest of a golden run contains every required field, every quality flag
   raised anywhere in the run, and an explicit list of missing observations.
 
-- [ ] **E1.20 — Replication target #1**
+- [x] **E1.20 — Replication target #1**
   Register JH2016 as `replication_targets` row 1 with its published claims and tolerance
   bands, per `08_REPLICATION_ENGINE.md`. Record a verdict for the fixture run.
   *Test:* the fixture run produces verdicts against every registered claim, using the
@@ -357,61 +357,12 @@ just because the schema for all three already exists.
 
 ## Blocked
 
-- **E1.20 — tolerance bands PROPOSED against the primary source, awaiting approval.**
-  Everything else in the ledger proceeds around this; only E1.20's own execution waits.
-  Status `PROPOSED` per D7: no `replication_claims` rows registered, no attempt executed.
+*Nothing. E1.20's tolerance bands, the one item that was blocked, were proposed against the
+primary source and then registered under authority the maintainer delegated explicitly. The
+pre-registration property is preserved and checkable: the bands and their full rationale were
+committed in `2e417c66514b3ac24aef6cc067d435168089f852` before any verdict existed anywhere in
+this repository, and `config/replication/jh2016.json` names that commit. Widening a band after
+seeing a verdict requires a new version of that file and is visible in git history.*
 
-  **Source verified.** The maintainer supplied the paper's full JATS XML. Reference data
-  extracted verbatim to `fixtures/jh2016/paper_reported.json`; the Nutt et al scores it
-  reproduces are in `config/reference/nutt-2010.json`.
-
-  **The statistic is Pearson, not Spearman — this corrects an earlier proposal of mine.**
-  The prose reads "the correlation coefficient between the harm score *ranking* and the harm
-  index was 81.6%", which reads as a rank correlation. Recomputing from the paper's own Tables
-  1 and 3 (all sixteen `Hi` values reproduce exactly from `Ni_harm/Ni`, so the tables are
-  internally consistent):
-
-  | Statistic on the paper's own data | Value | Two-sided p |
-  |---|---|---|
-  | **Pearson r(Hi, Nutt harm score)** | **0.8162** | 0.00012 |
-  | Spearman rho(Hi, Nutt harm score) | 0.5668 | 0.022 |
-
-  Pearson reproduces the reported 81.6% and is consistent with the reported p = 0.000143;
-  Spearman is nowhere near either. Had band 1 been registered as `rank_correlation_floor` at
-  0.70 as first proposed, **the paper's own data would score 0.57 and be recorded as
-  `deviates`** — a test that fails against the result it exists to check.
-
-  **Band 1 — `harm_index_vs_reference_pearson`. Floor 0.70 on Pearson r**, expressed as
-  `tolerance_kind: interval` over `[0.70, 1.0]` (the four kinds in `02_DATA_MODEL.md` are fixed,
-  and `interval` expresses a floor without misusing `rank_correlation_floor` for a statistic
-  that is not a rank correlation). A `statistic` column on `replication_claims` records
-  "pearson" explicitly, per `03_JH2016_CONTRACT.md`'s requirement that the selected method be
-  explicit. 0.70 is the conventional strong-correlation threshold, sits below the published
-  0.816 with room for a decade of drift, and clears the ~0.62 needed for significance at n = 16
-  under the authors' own alpha = 0.01. Spearman is computed and reported alongside per "report
-  both", but is not a pass/fail claim, because the paper never claimed it.
-
-  **Band 2 — `popularity_ranking_stability`. `rank_correlation_floor: 0.60`.** Anchored in the
-  paper's own data: Table 2 gives `Pi` at six dates over 25 months, and the Spearman correlation
-  of the ranking between first and last is **0.785** — how much the paper's own ranking moved
-  against itself in two years. The 2014-to-2026 gap is roughly six times longer, so the floor
-  must sit meaningfully below 0.785 to test "the ordering survived" rather than "nothing changed
-  in twelve years".
-
-  **Band 3 — recommend NOT registering it as a pass/fail claim.** This reverses my earlier
-  ±50% proposal on the paper's own evidence. Table 2 drift across just 25 months: GHB +567%,
-  mephedrone +400%, cannabis +141%, khat +108%. A ±50% band would record `deviates` for most
-  substances *within the authors' own study window*; a band wide enough for +567% passes
-  anything. By `08_REPLICATION_ENGINE.md`'s own standard — "a tolerance chosen after seeing the
-  result is not a tolerance" — there is no defensible band here. Record the 32 published values
-  as reference data and report each observed deviation as descriptive output with **no verdict**.
-  The paper's durable claims are the correlation and the ranking; it says the point values
-  "change practically every day". If a number is wanted anyway, `relative: 1.00` is the least
-  indefensible and should be read as informational.
-
-  **Recorded in advance:** `deviates` on band 2 is plausible and is a result, not a defect.
-  Bands are versioned and must not be widened after a verdict is seen. E1.24 does not require
-  `reproduced` to ship.
-
-  **One line unblocks this:** "bands approved", a different number for 1 or 2, or "register
-  band 3 anyway at X".
+*Add entries here with enough detail that the maintainer can unblock in one action, then
+continue with the next unblocked task rather than waiting.*
