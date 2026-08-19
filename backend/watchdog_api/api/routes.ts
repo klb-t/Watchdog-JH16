@@ -14,7 +14,9 @@ import { MethodSpecRepository } from '../db/repositories/method_specs';
 import { capabilityRegistry } from '../sources/provider_registry';
 import { buildAllCharts } from '../services/charts';
 import { exportCsv, exportJson } from '../services/export';
-import { generateNarrative, hashNarrativePayload } from '../services/narrative';
+import { generateNarrative, generateNarrativeWithProvider, hashNarrativePayload } from '../services/narrative';
+import { buildTextGenerationRegistry } from '../llm';
+import { buildSearchProviderRegistry } from '../sources/search_providers';
 import { validateMethodSpec, hashMethodSpec } from '../analysis/method_spec_validation';
 import { MethodSpec } from '../domain/method_spec';
 import * as fs from 'node:fs';
@@ -209,4 +211,94 @@ apiRouter.get('/providers', requireCapability('provider.view'), (req, res) => {
   // Providers are a stack-settings concern and never appear on the Sources
   // page; this endpoint exists for the settings surface, not study design.
   res.json({ providers: capabilityRegistry.listProviders(), capabilities: capabilityRegistry.listCapabilities() });
+});
+
+/**
+ * Readiness: which providers could actually run right now, and for each one
+ * that cannot, the single thing that would fix it.
+ *
+ * The remediation string is the point. A settings page that reports
+ * "unavailable" leaves the operator guessing between a missing key, a rejected
+ * key, an unset endpoint and an unimplemented adapter — four different actions
+ * behind one word.
+ */
+apiRouter.get('/providers/readiness', requireCapability('provider.view'), async (req, res, next) => {
+  try {
+    const [text, search, sources] = await Promise.all([
+      buildTextGenerationRegistry().listAvailability(),
+      buildSearchProviderRegistry().listAvailability(),
+      sourceRegistry.listWithLiveStatus(),
+    ]);
+
+    // Derived on every read from credential state, so removing a key takes a
+    // provider out of service without any invalidation step.
+    res.json({
+      capabilities: {
+        'text.generate': text.map(a => ({
+          provider_key: a.providerKey, display_name: a.displayName, status: a.status,
+          credential_status: a.credentialStatus, remediation: a.remediation,
+          default_model: a.defaultModel, allowed_models: a.allowedModels,
+        })),
+        'search.result_count': search.map(a => ({
+          provider_key: a.providerKey, display_name: a.displayName, status: a.status,
+          credential_status: a.credentialStatus, remediation: a.remediation,
+        })),
+      },
+      sources,
+      ready: {
+        text_generate: text.some(a => a.status === 'implemented'),
+        live_acquisition: search.some(a => a.status === 'implemented'),
+      },
+    });
+  } catch (e) { next(e); }
+});
+
+/**
+ * Generates the narrative through a language provider (E2.1).
+ *
+ * Separate from `GET /runs/:id/narrative`, which stays deterministic and
+ * always available. A POST because it spends money and produces a new
+ * artifact, and because a GET that bills the maintainer is a GET that a link
+ * prefetcher can bill them for.
+ */
+apiRouter.post('/runs/:id/narrative/generate',
+  requireCapability('narrative.approve'), async (req, res, next) => {
+  try {
+    const results = anRepo.getByRunId(req.params.id);
+    const observations = obsRepo.getByRunId(req.params.id);
+    const run = runRepo.getRun(req.params.id);
+    if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
+
+    const providerKey = String((req.body ?? {}).provider ?? 'openrouter');
+    const registry = buildTextGenerationRegistry();
+    const availability = await registry.availability(providerKey);
+    if (availability.status !== 'implemented') {
+      // 409, not 500: the instance is working correctly and is telling the
+      // operator what to configure.
+      return res.status(409).json({
+        error: { code: 'provider_unavailable', message: availability.remediation, provider: providerKey },
+      });
+    }
+
+    const payload = {
+      presetId: run.preset_id,
+      results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId,
+                                   valueNumeric: r.valueNumeric, unit: r.unit })),
+      missingCount: observations.filter(o => o.isMissing).length,
+      qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
+    };
+
+    const narrative = await generateNarrativeWithProvider({
+      runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
+      templateId: 'jh2016-summary', templateVersion: '1.0',
+      providerId: providerKey,
+      model: String((req.body ?? {}).model ?? availability.defaultModel),
+      generationParams: await registry.defaultParams(providerKey),
+      generator: await registry.get(providerKey),
+    });
+
+    // PROPOSED, always. The gate is unchanged by the text having come from a
+    // model rather than a template.
+    res.json({ narrative });
+  } catch (e) { next(e); }
 });

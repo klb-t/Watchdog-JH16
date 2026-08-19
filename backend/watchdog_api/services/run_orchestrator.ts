@@ -108,7 +108,7 @@ export class RunOrchestrator {
         if (runType === 'ACQUISITION' || runType === 'PIPELINE') {
           tracer.emit('START_ACQUISITION', { source: config.source_id });
 
-          const adapter = sourceRegistry.getAdapter(config.source_id);
+          const adapter = await sourceRegistry.resolveAdapter(config.source_id);
           const validated = adapter.validate_params(config.source_params || {});
           if (!validated.valid) throw new Error(`Invalid params: ${validated.errors?.join(', ')}`);
 

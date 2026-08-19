@@ -13,6 +13,7 @@ import { Analyzers } from './pages/Analyzers';
 import { Study } from './pages/Study';
 import { MethodReview } from './pages/MethodReview';
 import { Results } from './pages/Results';
+import { Setup } from './pages/Setup';
 
 export default function App() {
   return (
@@ -27,7 +28,8 @@ export default function App() {
         <Route path="study" element={<Study />} />
         <Route path="method" element={<MethodReview />} />
         <Route path="runs/:id/results" element={<Results />} />
-        <Route path="settings" element={<div className="p-8">Settings coming soon</div>} />
+        <Route path="setup" element={<Setup />} />
+        <Route path="settings" element={<Setup />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

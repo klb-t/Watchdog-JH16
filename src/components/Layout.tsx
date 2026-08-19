@@ -12,7 +12,7 @@ export function Layout() {
     { name: 'Sources', href: '/sources', icon: Database },
     { name: 'Runs', href: '/runs', icon: PlayCircle },
     { name: 'Analyzers', href: '/analyzers', icon: Activity },
-    { name: 'Settings', href: '/settings', icon: Settings },
+    { name: 'Setup', href: '/setup', icon: Settings },
   ];
 
   return (

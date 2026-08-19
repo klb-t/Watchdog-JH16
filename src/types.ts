@@ -34,7 +34,11 @@ export interface Run {
 }
 
 /** Registry status; only `implemented` and `fixture` may be selected for a run. */
-export type SourceStatus = 'implemented' | 'fixture' | 'planned' | 'blocked-by-license/auth';
+// 'blocked' is distinct from 'planned': a planned source has no adapter,
+// whereas a blocked one is built and waiting on a credential. The UI must not
+// tell the maintainer to wait for something that a single environment variable
+// would switch on.
+export type SourceStatus = 'implemented' | 'fixture' | 'planned' | 'blocked' | 'blocked-by-license/auth';
 
 export interface Source {
   source_id: string;

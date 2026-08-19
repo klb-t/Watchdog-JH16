@@ -314,6 +314,15 @@ start any of them breadth-first. Tasks keep their home epic's number.
   *Test:* the RBAC matrix tests pass; an unauthenticated request to a mutating route is
   refused; existing `local-user` rows resolve to the migrated owner after migration.
 
+- [x] **E3.6 — The flow, end to end**
+  `GET /api/providers/readiness` reporting derived status and a remediation for every provider
+  and source; a live `serp_result_count` source resolved per run from credential state;
+  `POST /api/runs/:id/narrative/generate` behind the approval gate; a Setup page that answers
+  "why can't I run this yet?" with the exact fix.
+  *Test:* readiness names the missing environment variable for each blocked provider; an
+  uncredentialled live run fails and its failure names the variable; an unconfigured narrative
+  provider returns 409 and never template prose.
+
 - [ ] **E3.5 — Container and Cloud Run**
   Dockerfile, deploy script, and a runbook written for someone who has not used GCP. Startup
   refuses to boot in production when storage is ephemeral and Postgres/GCS are unconfigured.
