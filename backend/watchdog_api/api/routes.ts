@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { requireCapability } from './auth_routes';
 import { sourceRegistry } from '../sources/registry';
 import { analyzerRegistry } from '../analytics/registry';
 import { RunOrchestrator } from '../services/run_orchestrator';
@@ -33,21 +34,21 @@ function readConfig(...p: string[]) {
   return JSON.parse(fs.readFileSync(path.join(process.cwd(), ...p), 'utf-8'));
 }
 
-apiRouter.get('/sources', (req, res) => {
+apiRouter.get('/sources', requireCapability('run.view'), (req, res) => {
   const sources = sourceRegistry.listSources();
   res.json({ sources });
 });
 
-apiRouter.get('/analyzers', (req, res) => {
+apiRouter.get('/analyzers', requireCapability('run.view'), (req, res) => {
   res.json({ analyzers: analyzerRegistry.listAnalyzers() }); 
 });
 
-apiRouter.get('/runs', (req, res) => {
+apiRouter.get('/runs', requireCapability('run.view'), (req, res) => {
   const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
   res.json({ runs: runRepo.getRuns(limit) });
 });
 
-apiRouter.post('/runs', (req, res, next) => {
+apiRouter.post('/runs', requireCapability('run.create'), (req, res, next) => {
   try {
     const parsed = RunSubmissionSchema.parse(req.body);
     const runId = orchestrator.submitJob(parsed.type, parsed.config);
@@ -57,13 +58,13 @@ apiRouter.post('/runs', (req, res, next) => {
   }
 });
 
-apiRouter.get('/runs/:id', (req, res) => {
+apiRouter.get('/runs/:id', requireCapability('run.view'), (req, res) => {
   const run = runRepo.getRun(req.params.id);
   if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
   res.json({ run });
 });
 
-apiRouter.get('/runs/:id/results', (req, res) => {
+apiRouter.get('/runs/:id/results', requireCapability('run.view'), (req, res) => {
   const run = runRepo.getRun(req.params.id);
   if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
   
@@ -77,18 +78,18 @@ apiRouter.get('/runs/:id/results', (req, res) => {
   });
 });
 
-apiRouter.get('/runs/:id/manifest', (req, res) => {
+apiRouter.get('/runs/:id/manifest', requireCapability('run.view'), (req, res) => {
   const manifest = artRepo.getManifest(req.params.id);
   if (!manifest) return res.status(404).json({ error: 'NOT_FOUND' });
   res.json({ manifest });
 });
 
-apiRouter.get('/runs/:id/fetch-events', (req, res) => {
+apiRouter.get('/runs/:id/fetch-events', requireCapability('run.view'), (req, res) => {
   const events = acqRepo.getFetchEvents(req.params.id);
   res.json({ events });
 });
 
-apiRouter.get('/artifacts/:id', async (req, res, next) => {
+apiRouter.get('/artifacts/:id', requireCapability('run.view'), async (req, res, next) => {
   try {
     const blob = acqRepo.getRawBlob(req.params.id);
     if (!blob) return res.status(404).json({ error: 'NOT_FOUND' });
@@ -108,7 +109,7 @@ apiRouter.get('/artifacts/:id', async (req, res, next) => {
 // --------------------------------------------------------------------------
 
 /** The shipped JH2016 spec, rendered step by step with its per-step rationale. */
-apiRouter.get('/method-specs/jh2016-faithful', (req, res, next) => {
+apiRouter.get('/method-specs/jh2016-faithful', requireCapability('run.view'), (req, res, next) => {
   try {
     const spec: MethodSpec = readConfig('config', 'methods', 'jh2016-faithful.methodspec.json');
     const id = specRepo.upsert(spec, { id: 'jh2016-faithful' });
@@ -133,7 +134,7 @@ apiRouter.get('/method-specs/jh2016-faithful', (req, res, next) => {
  * default: there is deliberately no path that approves without a named actor,
  * and no bulk approve.
  */
-apiRouter.post('/method-specs/:id/approve', (req, res, next) => {
+apiRouter.post('/method-specs/:id/approve', requireCapability('method.approve'), (req, res, next) => {
   try {
     const approvedBy = String(req.body?.approved_by ?? '').trim();
     if (!approvedBy) {
@@ -148,7 +149,7 @@ apiRouter.post('/method-specs/:id/approve', (req, res, next) => {
 // Results surfaces (E1.23).
 // --------------------------------------------------------------------------
 
-apiRouter.get('/runs/:id/charts', (req, res, next) => {
+apiRouter.get('/runs/:id/charts', requireCapability('run.view'), (req, res, next) => {
   try {
     const results = anRepo.getByRunId(req.params.id);
     const observations = obsRepo.getByRunId(req.params.id);
@@ -158,7 +159,7 @@ apiRouter.get('/runs/:id/charts', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-apiRouter.get('/runs/:id/narrative', (req, res, next) => {
+apiRouter.get('/runs/:id/narrative', requireCapability('run.view'), (req, res, next) => {
   try {
     const results = anRepo.getByRunId(req.params.id);
     const observations = obsRepo.getByRunId(req.params.id);
@@ -181,7 +182,7 @@ apiRouter.get('/runs/:id/narrative', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-apiRouter.get('/runs/:id/export', (req, res, next) => {
+apiRouter.get('/runs/:id/export', requireCapability('export.download'), (req, res, next) => {
   try {
     const format = String(req.query.format ?? 'json');
     const results = anRepo.getByRunId(req.params.id);
@@ -204,7 +205,7 @@ apiRouter.get('/runs/:id/export', (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-apiRouter.get('/providers', (req, res) => {
+apiRouter.get('/providers', requireCapability('provider.view'), (req, res) => {
   // Providers are a stack-settings concern and never appear on the Sources
   // page; this endpoint exists for the settings surface, not study design.
   res.json({ providers: capabilityRegistry.listProviders(), capabilities: capabilityRegistry.listCapabilities() });

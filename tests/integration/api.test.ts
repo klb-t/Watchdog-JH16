@@ -1,6 +1,6 @@
 import { test, before, after } from 'node:test';
 import * as assert from 'node:assert';
-import { app } from '../../server';
+import { app, configureApp } from '../../server';
 import { tracer } from '../../backend/watchdog_api/utils/tracer';
 
 let server: any;
@@ -8,6 +8,10 @@ let baseUrl: string;
 
 before(async () => {
   tracer.setMode('OFF'); // keep logs clean during test
+  // The same wiring the real server uses. With no GOOGLE_OAUTH_CLIENT_ID set
+  // this is local mode, so requests carry the `local-user` principal and the
+  // capability gates pass — the E1 behaviour these tests were written against.
+  await configureApp();
   return new Promise((resolve) => {
     server = app.listen(0, '127.0.0.1', () => {
       const port = server.address().port;

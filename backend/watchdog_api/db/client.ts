@@ -13,7 +13,16 @@ function initDb() {
   const sqlite = new Database(DB_PATH);
   sqlite.pragma('foreign_keys = ON');
   runMigrations(sqlite);
-  return drizzle(sqlite);
+  return { sqlite, orm: drizzle(sqlite) };
 }
 
-export const db = initDb();
+const initialised = initDb();
+
+export const db = initialised.orm;
+
+/**
+ * The raw handle, for the few repositories that predate drizzle's coverage of
+ * what they need. Exported from the client rather than reopened elsewhere:
+ * two connections to one SQLite file is how a writer starves a reader.
+ */
+export const sqlite = initialised.sqlite;

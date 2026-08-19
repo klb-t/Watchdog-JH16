@@ -307,7 +307,7 @@ start any of them breadth-first. Tasks keep their home epic's number.
   *Test:* the same repository test suite passes against both backends; WORM refusal to
   overwrite holds on GCS as it does locally.
 
-- [ ] **E4.1 — Google OIDC behind `IdentityProvider`**
+- [x] **E4.1 — Google OIDC behind `IdentityProvider`**
   OIDC as one implementation of the seam E1 shipped. Role ladder
   `viewer < researcher < admin < dev` and the RBAC matrix. `local-user` rows migrate to a real
   principal rather than being orphaned.
