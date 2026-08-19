@@ -1,5 +1,7 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 import { sourceRegistry } from '../../backend/watchdog_api/sources/registry';
 import { NotImplementedError } from '../../backend/watchdog_api/utils/errors';
 import { pearson, spearman, calculateRatio } from '../../backend/watchdog_api/analytics/stats';
@@ -59,4 +61,40 @@ test('Anti-fabrication: calculateRatio never divides by a non-positive denominat
   // Ni <= 0 must be undefined (null), never a fabricated 0 or Infinity.
   assert.strictEqual(calculateRatio(50, 0, true), null);
   assert.strictEqual(calculateRatio(50, -3, true), null);
+});
+
+// ---------------------------------------------------------------------------
+// Rule 2 as an import-graph invariant (E2.1).
+//
+// The numeric-guard test in llm.test.ts checks that a model cannot smuggle a
+// number through the narrative. This checks the wider claim: the analysis
+// layer, which is where every scientific value is produced, cannot reach a
+// language model at all. A guard on one path is a guard someone routes around;
+// an absent edge in the import graph is not.
+// ---------------------------------------------------------------------------
+
+test('Rule 2: nothing in the numerical path can import a language model', () => {
+  const ROOT = path.join(process.cwd(), 'backend', 'watchdog_api');
+  const NUMERIC_LAYERS = ['analysis', 'domain'];
+
+  const walk = (dir: string): string[] =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap(e => {
+      const p = path.join(dir, e.name);
+      return e.isDirectory() ? walk(p) : (e.name.endsWith('.ts') ? [p] : []);
+    });
+
+  const offenders: string[] = [];
+  for (const layer of NUMERIC_LAYERS) {
+    const dir = path.join(ROOT, layer);
+    if (!fs.existsSync(dir)) continue;
+    for (const file of walk(dir)) {
+      const src = fs.readFileSync(file, 'utf-8');
+      for (const m of src.matchAll(/from\s+['"]([^'"]+)['"]/g)) {
+        if (/(^|\/)llm(\/|$)/.test(m[1])) offenders.push(`${path.relative(ROOT, file)} → ${m[1]}`);
+      }
+    }
+  }
+
+  assert.deepStrictEqual(offenders, [],
+    'A module that computes scientific values must not be able to reach a text generator.');
 });

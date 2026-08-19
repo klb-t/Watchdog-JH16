@@ -280,7 +280,7 @@ start any of them breadth-first. Tasks keep their home epic's number.
   `absent` rather than an empty string that reads as a configured credential; no API response
   or manifest contains a resolved value.
 
-- [ ] **E2.1 — OpenRouter as a real `text.generate` provider**
+- [x] **E2.1 — OpenRouter as a real `text.generate` provider**
   HTTP behind an injectable transport so tests never reach the network. Provider status is
   *derived* from credential presence, not stored: no key means `blocked` with a reason, never
   `implemented`. Generated text enters as `PROPOSED` under the existing hash-bound gate.
