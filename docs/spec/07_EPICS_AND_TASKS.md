@@ -195,17 +195,17 @@ disagree, the repository wins"), E1.21-23 add the required pages *into* that she
 removing it. "No dashboard" means the vertical slice does not depend on one existing, not that
 working tested navigation should be deleted. See D11.
 
-- [ ] **E1.21 — Study page**
+- [x] **E1.21 — Study page**
   Source selection, run trigger, run status with live trace link.
   *Test:* a browser E2E test drives a full fixture run from the UI.
 
-- [ ] **E1.22 — Method review page**
+- [x] **E1.22 — Method review page**
   Prose input, proposed spec rendered step by step in red with its rationale, per-step
   approval, then green.
   *Test:* E2E — a proposal cannot be executed until approved; editing an approved spec turns
   it red again.
 
-- [ ] **E1.23 — Results page**
+- [x] **E1.23 — Results page**
   Charts, the results table, the manifest link, the export button, the narrative in its
   approval state.
   *Test:* E2E — results, approval states and export are all reachable and correct.

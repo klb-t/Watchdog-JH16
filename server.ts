@@ -5,7 +5,7 @@ import { apiRouter } from './backend/watchdog_api/api/routes';
 import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middleware';
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT ?? 3000);
 
 // CORS
 app.use((req, res, next) => {

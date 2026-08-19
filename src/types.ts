@@ -49,6 +49,12 @@ export interface Analyzer {
   analyzer_id: string;
 }
 
+export type QueryExpansionMode =
+  | 'STRICT_CANONICAL'
+  | 'SCIENTIFIC_SYNONYMS'
+  | 'LOCALIZED_SYNONYMS'
+  | 'EXPERIMENTAL_SLANG_EXPANSION';
+
 export interface RunSubmission {
   type: 'ACQUISITION' | 'ANALYSIS' | 'PIPELINE';
   config: {
@@ -57,6 +63,11 @@ export interface RunSubmission {
     method_id?: string;
     method_params?: Record<string, any>;
     source_run_id?: string;
+    /** Part of the query plan's identity (D15). Never defaulted server-side. */
+    language?: string;
+    query_expansion_mode?: QueryExpansionMode;
+    entities?: string[];
+    query_templates?: Record<string, string>;
   };
 }
 

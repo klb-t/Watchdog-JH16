@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { Activity, Database, PlayCircle, Settings, LayoutDashboard } from 'lucide-react';
+import { Activity, Database, PlayCircle, Settings, LayoutDashboard, FlaskConical, ClipboardCheck } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export function Layout() {
@@ -7,6 +7,8 @@ export function Layout() {
 
   const navItems = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Study', href: '/study', icon: FlaskConical },
+    { name: 'Method', href: '/method', icon: ClipboardCheck },
     { name: 'Sources', href: '/sources', icon: Database },
     { name: 'Runs', href: '/runs', icon: PlayCircle },
     { name: 'Analyzers', href: '/analyzers', icon: Activity },

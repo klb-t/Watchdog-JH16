@@ -121,7 +121,9 @@ that owns the file.
 | File | Verdict | Reason |
 |---|---|---|
 | `contract/sources.test.ts` | REFACTOR (was KEEP; changed by v9) | exercises all 3 adapters + registry gating of `planned` status; becomes the seed of the E1.8 `SourceAdapter` conformance suite `09_TESTS.md` asks for. But its "should detect 'harm' in query" assertion actively pins the anti-pattern v9 now forbids — **see E1.29** |
-| `e2e/api_flow.test.ts` | REFACTOR (fixed E0.4) | was an empty file that `node:test` silently reported as a zero-assertion pass; replaced with an explicit `test(..., { skip: '<reason>' }, ...)` so the gap shows up as 1 skipped test instead of a phantom green. Becomes the real E1.21-23 browser E2E test once those pages exist. |
+| `e2e/api_flow.test.ts` | DELETED at E1.21-23 | was an empty file silently counted as a zero-assertion pass, then an explicit skip. Now replaced by `e2e/ui_flow.test.ts`, the real browser-driven E2E it was always standing in for. |
+| `e2e/ui_flow.test.ts` | KEEP | Playwright-driven E1.21-23 tests against the real server and real fixtures |
+| `e2e/demo_determinism.test.ts` | KEEP | the E1.24 exit test |
 | `integration/api.test.ts` | KEEP | full HTTP flow through `server.ts`'s `app`, tests source list, analyzer list, run submission, polling, results, fetch-events, raw artifact retrieval — good coverage of what exists |
 | `integration/orchestrator.test.ts` | KEEP | exercises graceful-failure path and evidence retention, correctly updated last session |
 | `integration/persistence.test.ts` | KEEP | blob dedup + WORM tests, both directions (manifest and object store) |
@@ -166,9 +168,9 @@ The one skip, with reason, per E0.4's "explicitly marking and listing skipped te
 
 | Test | Reason skipped |
 |---|---|
-| `tests/e2e/api_flow.test.ts` — "E2E: full fixture run driven from the Study/Method Review/Results pages" | Requires E1.21-23 (those UI pages don't exist yet) and a browser driver. Was previously an empty file silently counted as a zero-assertion pass (see E0.1 finding); now an explicit skip so the gap is visible in `npm run test` output rather than hidden. |
+| *(none)* | The skip recorded here at E0.4 has been removed: E1.21-23 landed and `tests/e2e/ui_flow.test.ts` now drives the real pages in a real browser. |
 
-No other test in the suite is skipped, marked `.todo`, or conditionally disabled.
+No test in the suite is skipped, marked `.todo`, or conditionally disabled.
 
 ## Secrets scan (E0.3)
 

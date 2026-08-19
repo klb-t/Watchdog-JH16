@@ -9,6 +9,15 @@ import { AcquisitionRepository } from '../db/repositories/acquisition';
 import { db } from '../db/client';
 import { store } from '../storage/client';
 import { RunSubmissionSchema } from './schemas';
+import { MethodSpecRepository } from '../db/repositories/method_specs';
+import { capabilityRegistry } from '../sources/provider_registry';
+import { buildAllCharts } from '../services/charts';
+import { exportCsv, exportJson } from '../services/export';
+import { generateNarrative, hashNarrativePayload } from '../services/narrative';
+import { validateMethodSpec, hashMethodSpec } from '../analysis/method_spec_validation';
+import { MethodSpec } from '../domain/method_spec';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 export const apiRouter = Router();
 
@@ -18,6 +27,11 @@ const obsRepo = new ObservationRepository(db);
 const anRepo = new AnalysisResultRepository(db);
 const artRepo = new ArtifactRepository(db);
 const acqRepo = new AcquisitionRepository(db, store);
+const specRepo = new MethodSpecRepository(db);
+
+function readConfig(...p: string[]) {
+  return JSON.parse(fs.readFileSync(path.join(process.cwd(), ...p), 'utf-8'));
+}
 
 apiRouter.get('/sources', (req, res) => {
   const sources = sourceRegistry.listSources();
@@ -87,3 +101,111 @@ apiRouter.get('/artifacts/:id', async (req, res, next) => {
   }
 });
 
+
+
+// --------------------------------------------------------------------------
+// Method review (E1.22) — propose, inspect, approve.
+// --------------------------------------------------------------------------
+
+/** The shipped JH2016 spec, rendered step by step with its per-step rationale. */
+apiRouter.get('/method-specs/jh2016-faithful', (req, res, next) => {
+  try {
+    const spec: MethodSpec = readConfig('config', 'methods', 'jh2016-faithful.methodspec.json');
+    const id = specRepo.upsert(spec, { id: 'jh2016-faithful' });
+    res.json({
+      id,
+      spec,
+      spec_hash: hashMethodSpec(spec),
+      // Derived from the hash on every read, never read off a stored flag.
+      approval_state: specRepo.readApprovalState(id),
+      issues: validateMethodSpec(spec),
+      steps: spec.steps.map(s => ({
+        id: s.id, primitive: s.primitive, params: s.params,
+        inputs: s.inputs, missing_policy: s.missingPolicy,
+        rationale: s.rationale ?? null, ambiguous: s.ambiguous === true,
+      })),
+    });
+  } catch (e) { next(e); }
+});
+
+/**
+ * One human action approves one spec. `approved_by` is required and has no
+ * default: there is deliberately no path that approves without a named actor,
+ * and no bulk approve.
+ */
+apiRouter.post('/method-specs/:id/approve', (req, res, next) => {
+  try {
+    const approvedBy = String(req.body?.approved_by ?? '').trim();
+    if (!approvedBy) {
+      return res.status(400).json({ error: 'validation_error', message: "'approved_by' is required" });
+    }
+    specRepo.approve(req.params.id, approvedBy, new Date().toISOString());
+    res.json({ id: req.params.id, approval_state: specRepo.readApprovalState(req.params.id) });
+  } catch (e) { next(e); }
+});
+
+// --------------------------------------------------------------------------
+// Results surfaces (E1.23).
+// --------------------------------------------------------------------------
+
+apiRouter.get('/runs/:id/charts', (req, res, next) => {
+  try {
+    const results = anRepo.getByRunId(req.params.id);
+    const observations = obsRepo.getByRunId(req.params.id);
+    const flags = [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort();
+    const reference = readConfig('config', 'reference', 'nutt-2010.json');
+    res.json({ charts: buildAllCharts(results, reference.scores, flags) });
+  } catch (e) { next(e); }
+});
+
+apiRouter.get('/runs/:id/narrative', (req, res, next) => {
+  try {
+    const results = anRepo.getByRunId(req.params.id);
+    const observations = obsRepo.getByRunId(req.params.id);
+    const run = runRepo.getRun(req.params.id);
+    if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
+
+    const payload = {
+      presetId: run.preset_id,
+      results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId,
+                                   valueNumeric: r.valueNumeric, unit: r.unit })),
+      missingCount: observations.filter(o => o.isMissing).length,
+      qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
+    };
+    res.json({
+      narrative: generateNarrative({
+        runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
+        templateId: 'jh2016-summary', templateVersion: '1.0', providerId: null, model: null,
+      }),
+    });
+  } catch (e) { next(e); }
+});
+
+apiRouter.get('/runs/:id/export', (req, res, next) => {
+  try {
+    const format = String(req.query.format ?? 'json');
+    const results = anRepo.getByRunId(req.params.id);
+    const observations = obsRepo.getByRunId(req.params.id);
+    const input = {
+      runId: req.params.id, results,
+      missingObservations: observations.filter(o => o.isMissing).map(o => ({
+        entity_id: o.entityId, query_role: o.queryRole,
+        missing_reason: (o as any).missingReason,
+      })),
+      qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
+    };
+
+    if (format === 'csv') {
+      res.setHeader('Content-Type', 'text/csv');
+      return res.send(exportCsv(input));
+    }
+    res.setHeader('Content-Type', 'application/json');
+    res.send(exportJson(input));
+  } catch (e) { next(e); }
+});
+
+apiRouter.get('/providers', (req, res) => {
+  // Providers are a stack-settings concern and never appear on the Sources
+  // page; this endpoint exists for the settings surface, not study design.
+  res.json({ providers: capabilityRegistry.listProviders(), capabilities: capabilityRegistry.listCapabilities() });
+});
