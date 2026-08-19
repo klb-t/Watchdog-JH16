@@ -82,23 +82,23 @@ E1 is deliberately narrow. Resist widening it. The value of E1 is that it is *fi
 
 Before feature work. See `06_DIAGNOSTICS.md`.
 
-- [ ] **E1.4 — Tracer**
+- [x] **E1.4 — Tracer**
   Central diagnostics API, correlation context, event vocabulary, four modes, context
   propagation across the service and worker boundary.
   *Test:* a traced call chain produces ordered events with consistent `trace_id` and
   monotonic `sequence_no`.
 
-- [ ] **E1.5 — Redaction**
+- [x] **E1.5 — Redaction**
   Central layer before every sink.
   *Test:* the canary secret is absent from trace stream, logs, manifest, bundle and error
   envelope.
 
-- [ ] **E1.6 — Error envelopes and cause chains**
+- [x] **E1.6 — Error envelopes and cause chains**
   Wrap at every boundary, preserve `cause` to the root.
   *Test:* an error raised four layers down arrives with its full chain and the state at
   failure.
 
-- [ ] **E1.7 — Diagnostic bundle**
+- [x] **E1.7 — Diagnostic bundle**
   One command or one click produces the redacted ZIP.
   *Test:* a deliberately failed fixture run yields a bundle from which the direct cause is
   identifiable without re-running. This is the E1 diagnostics acceptance test.

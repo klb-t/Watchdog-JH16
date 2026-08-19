@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { redact } from './redaction';
+import { redact, redactText } from './redaction';
 import { buildErrorEnvelope, ErrorEnvelope } from './errors';
 
 export type DiagnosticsMode = 'OFF' | 'ERRORS' | 'NORMAL' | 'TRACE';
@@ -20,6 +20,22 @@ export interface TraceContext {
   operation: string;
   stage?: string;
 }
+
+/**
+ * The ordered event vocabulary from `06_DIAGNOSTICS.md`:
+ *
+ *   STEP_ENTER -> STATE_BEFORE -> INPUT -> VALIDATION -> DECISION
+ *              -> TRANSFORM/CALL -> RESULT -> STATE_AFTER -> STEP_EXIT
+ *
+ * On failure: EXCEPTION -> stack -> cause chain -> STATE_AT_FAILURE.
+ */
+export const TRACE_EVENT_TYPES = [
+  'SPAN_START', 'STEP_ENTER', 'STATE_BEFORE', 'INPUT', 'VALIDATION', 'DECISION',
+  'TRANSFORM', 'CALL', 'RESULT', 'STATE_AFTER', 'STEP_EXIT', 'SPAN_END',
+  'EXCEPTION', 'STATE_AT_FAILURE', 'WARNING',
+] as const;
+
+export type TraceEventType = typeof TRACE_EVENT_TYPES[number] | string;
 
 export interface TraceEvent {
   event_type: string;
@@ -41,6 +57,14 @@ class Tracer {
     if (this.mode === 'TRACE' || this.mode === 'ERRORS') {
       fs.mkdirSync(this.logDir, { recursive: true });
     }
+  }
+
+  public getLogDir(): string {
+    return this.logDir;
+  }
+
+  public traceDir(traceId: string, when: Date = new Date()): string {
+    return path.join(this.logDir, when.toISOString().split('T')[0], traceId);
   }
 
   public getMode(): DiagnosticsMode {
@@ -85,23 +109,39 @@ class Tracer {
       this.writeLog(ctx.trace_id, 'events.jsonl', event);
     } else if (this.mode === 'NORMAL') {
       if (['SPAN_START', 'SPAN_END', 'WARNING', 'EXCEPTION'].includes(eventType)) {
-        console.log(`[${eventType}] ${ctx.component}:${ctx.operation} - ${JSON.stringify(payload || '')}`);
+        console.log(redactText(`[${eventType}] ${ctx.component}:${ctx.operation} - ${JSON.stringify(redact(payload) || '')}`));
       }
     }
   }
+
+  /**
+   * Records which branch was taken **and the value that determined it**.
+   * `06_DIAGNOSTICS.md` calls this the single highest-value event type for
+   * debugging and the one most often omitted, so it gets a first-class API
+   * rather than relying on callers to hand-roll a payload.
+   */
+  public decision(branch: string, becauseField: string, becauseValue: unknown, extra?: Record<string, unknown>) {
+    this.emit('DECISION', { branch, because: { field: becauseField, value: becauseValue }, ...extra });
+  }
+
+  public stateBefore(state: unknown) { this.emit('STATE_BEFORE', { state }); }
+  public stateAfter(state: unknown) { this.emit('STATE_AFTER', { state }); }
+  public input(value: unknown) { this.emit('INPUT', { value }); }
+  public validation(valid: boolean, detail?: unknown) { this.emit('VALIDATION', { valid, detail }); }
+  public result(value: unknown) { this.emit('RESULT', { value }); }
 
   public emitError(error: any, handled: boolean = false, retryable: boolean = false) {
     if (this.mode === 'OFF') return;
     const ctx = this.getContext();
     if (!ctx) return;
     
-    const envelope = buildErrorEnvelope(error, ctx, handled, retryable);
+    const envelope = redact(buildErrorEnvelope(error, ctx, handled, retryable)) as ErrorEnvelope;
     if (this.mode === 'TRACE' || this.mode === 'ERRORS') {
       this.writeLog(ctx.trace_id, 'errors.jsonl', envelope);
       this.emit('EXCEPTION', { error_id: envelope.error_id });
     }
     if (this.mode === 'NORMAL') {
-      console.error(`[ERROR] ${ctx.component}:${ctx.operation}`, envelope.message);
+      console.error(redactText(`[ERROR] ${ctx.component}:${ctx.operation} ${envelope.message}`));
     }
   }
 
