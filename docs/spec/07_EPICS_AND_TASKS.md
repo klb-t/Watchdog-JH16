@@ -288,7 +288,7 @@ start any of them breadth-first. Tasks keep their home epic's number.
   a generation round-trips and lands as `PROPOSED`; a test asserts no LLM output can reach an
   `AnalysisResultValue`.
 
-- [ ] **E3.2 — SerpApi as a real `search.result_count` provider**
+- [x] **E3.2 — SerpApi as a real `search.result_count` provider**
   HTTP behind the same injectable transport. Rate limiting, quota exhaustion and an
   unparseable count are each an explicit missing reason with its own code — never zero, never a
   silent retry that fabricates a number.

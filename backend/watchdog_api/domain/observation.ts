@@ -15,7 +15,20 @@ export type MissingReason =
   | 'FETCH_FAILED'
   | 'PARSE_FAILED'
   | 'PROVIDER_ZERO_RESULTS_UNRELIABLE'
-  | 'SUPPRESSED_BY_POLICY';
+  | 'SUPPRESSED_BY_POLICY'
+  // Live-acquisition states (E3.2). Each is separate on purpose: they are the
+  // same absence to a chart but three different actions for an operator, and
+  // one of them means the study can be resumed while another means it cannot.
+  //
+  //  - RATE_LIMITED       transient; the same query may succeed later
+  //  - QUOTA_EXHAUSTED    a billing state; retrying changes nothing
+  //  - CREDENTIAL_UNAVAILABLE  the provider was never reachable for this run
+  //
+  // Collapsing them into FETCH_FAILED would make a half-finished run
+  // indistinguishable from a genuinely unanswerable query.
+  | 'RATE_LIMITED'
+  | 'QUOTA_EXHAUSTED'
+  | 'CREDENTIAL_UNAVAILABLE';
 
 export type QualityFlag =
   | 'PROVIDER_DISCONTINUITY'
