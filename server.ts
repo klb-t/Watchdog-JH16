@@ -6,7 +6,9 @@ import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middle
 import { buildIdentity, assertAuthSafeForEnvironment, readAuthConfig } from './backend/watchdog_api/identity';
 import { buildAuthRouter, principalMiddleware } from './backend/watchdog_api/api/auth_routes';
 import { PrincipalRepository } from './backend/watchdog_api/db/repositories/principals';
-import { sqlite } from './backend/watchdog_api/db/client';
+import { sqlite, dbPath } from './backend/watchdog_api/db/client';
+import { assertStorageSafeForEnvironment } from './backend/watchdog_api/storage/durability';
+import { storeBackend, storePath } from './backend/watchdog_api/storage/client';
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 3000);
@@ -36,9 +38,11 @@ app.use(traceMiddleware);
  * test suite is least able to warn you about.
  */
 export async function configureApp() {
-  // Checked before anything is mounted. An instance that becomes reachable
-  // before its access rules are known is what this ordering prevents.
+  // Both checked before anything is mounted. An instance that becomes
+  // reachable before its access rules are known, or before its data is known
+  // to survive a restart, is what this ordering prevents.
   assertAuthSafeForEnvironment(readAuthConfig());
+  assertStorageSafeForEnvironment({ env: process.env, dbPath, storeBackend, storePath });
 
   const identity = await buildIdentity();
   const authDeps = {
@@ -58,6 +62,8 @@ export async function configureApp() {
 async function startServer() {
   const { identity } = await configureApp();
   console.log(`Authentication: ${identity.mode} — ${identity.config.reason}`);
+  console.log(`Blob store: ${storeBackend}${storeBackend === 'gcs' ? ` (${process.env.GCS_BUCKET})` : ` (${storePath})`}`);
+  console.log(`Database:   ${dbPath}`);
 
   if (process.env.NODE_ENV !== "production") {
     const { createServer: createViteServer } = await import("vite");

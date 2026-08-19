@@ -301,11 +301,15 @@ start any of them breadth-first. Tasks keep their home epic's number.
   *Test:* a two-provider series flags; a single-provider series does not; the flag survives
   into the manifest and the chart spec.
 
-- [ ] **E3.4 — Cloud-durable persistence**
-  PostgreSQL behind the existing db client and GCS behind `ObjectStore`, both selected by
-  environment. SQLite and the local blob directory stay the default for local work.
-  *Test:* the same repository test suite passes against both backends; WORM refusal to
-  overwrite holds on GCS as it does locally.
+- [x] **E3.4 — Cloud-durable persistence (blob store done; Postgres deliberately not)**
+  GCS behind `ObjectStore`, selected by `STORE_BACKEND`, with WORM decided on content exactly
+  as locally and `ifGenerationMatch=0` making the cross-instance race safe. A startup gate
+  refuses to boot a production instance whose data would not survive a restart.
+  **PostgreSQL is registered `planned` and throws** — see Blocked. SQLite and the local blob
+  directory remain the default for local work.
+  *Test:* a blob round-trips through a stubbed GCS; identical bytes re-put succeed and
+  differing bytes are refused, on both backends; the durability gate names what would be lost
+  and how to fix it; `postgres` is unselectable and throws `NotImplementedError`.
 
 - [x] **E4.1 — Google OIDC behind `IdentityProvider`**
   OIDC as one implementation of the seam E1 shipped. Role ladder
@@ -427,6 +431,28 @@ pre-registration property is preserved and checkable: the bands and their full r
 committed in `2e417c66514b3ac24aef6cc067d435168089f852` before any verdict existed anywhere in
 this repository, and `config/replication/jh2016.json` names that commit. Widening a band after
 seeing a verdict requires a new version of that file and is visible in git history.*
+
+### PostgreSQL backend for `storage.relational`
+
+**What is missing.** Everything except the database runs cloud-durably: GCS is implemented and
+tested, and the durability gate enforces it. The database is still SQLite.
+
+**Why it was not written.** A Postgres backend needs (a) a driver dependency — `pg` plus
+`drizzle-orm/node-postgres` — and (b) a dialect port of the four migrations, which use SQLite
+integer booleans, `PRAGMA table_info` introspection in the ownership-transfer path, and
+`INSERT OR IGNORE`. None of that is hard, but **none of it can be verified from this
+environment**: there is no Postgres server to run the repository suite against. Shipping an
+adapter that has never executed a statement, registered as `implemented`, is the fabricated
+implementation rule 1 forbids. It is registered `planned` and throws instead.
+
+**Consequence for deploying now.** Cloud Run with `--max-instances=1` and the SQLite file on a
+mounted volume is durable and correct for a single writer, which is what a solo researcher
+testing the system actually has. It does not scale horizontally, and the gate will not let a
+production instance run without the mount.
+
+**Unblock in one line:** *"Provision Cloud SQL Postgres and add `pg` as a dependency"* — with a
+`DATABASE_URL` reachable from a test run, this is roughly a day: port the migrations, add the
+drizzle pg dialect behind the existing `db` export, and run the repository suite against both.
 
 *Add entries here with enough detail that the maintainer can unblock in one action, then
 continue with the next unblocked task rather than waiting.*

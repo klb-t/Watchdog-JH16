@@ -80,6 +80,18 @@ export class CapabilityRegistry {
       output_contract: 'relative interest index 0-100 — NOT a result count, and never substitutable for one in a JH2016 run',
     });
     this.registerCapability({
+      capability_key: 'storage.durable_blob',
+      display_name: 'Durable content-addressed blob storage',
+      input_contract: 'content-addressed key, bytes',
+      output_contract: 'a URI that still resolves after the process restarts',
+    });
+    this.registerCapability({
+      capability_key: 'storage.relational',
+      display_name: 'Relational database for runs, observations and approvals',
+      input_contract: 'SQL against the schema in 02_DATA_MODEL.md',
+      output_contract: 'durable rows surviving process restart and horizontal scaling',
+    });
+    this.registerCapability({
       capability_key: 'reference.chemical',
       display_name: 'Chemical and pharmacological reference data',
       input_contract: 'substance identifier',
@@ -111,6 +123,30 @@ export class CapabilityRegistry {
         provider_key: key, capability_key: 'text.generate', display_name: key, status: 'planned',
       });
     }
+    this.registerProvider({
+      provider_key: 'local_filesystem', capability_key: 'storage.durable_blob',
+      display_name: 'Local content-addressed directory', adapter_id: 'local_fs',
+      adapter_version: '1.1.0', status: 'implemented',
+    });
+    this.registerProvider({
+      provider_key: 'gcs', capability_key: 'storage.durable_blob',
+      display_name: 'Google Cloud Storage', adapter_id: 'gcs',
+      adapter_version: '1.0.0', status: 'implemented',
+    });
+    this.registerProvider({
+      provider_key: 'sqlite', capability_key: 'storage.relational',
+      display_name: 'SQLite (single writer)', adapter_id: 'better_sqlite3',
+      adapter_version: '1.0.0', status: 'implemented',
+    });
+    // Honestly planned, not quietly claimed. A Postgres backend needs a driver
+    // dependency and a dialect port of four migrations, and neither has been
+    // written or tested against a real server. Registering it as implemented
+    // on the strength of an untested adapter is precisely the fabrication
+    // rule 1 forbids — see the Blocked entry in 07_EPICS_AND_TASKS.md.
+    this.registerProvider({
+      provider_key: 'postgres', capability_key: 'storage.relational',
+      display_name: 'PostgreSQL / Cloud SQL', status: 'planned',
+    });
     this.registerProvider({
       provider_key: 'google_trends', capability_key: 'trends.interest',
       display_name: 'Google Trends', status: 'planned',

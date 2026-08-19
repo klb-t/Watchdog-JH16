@@ -26,3 +26,6 @@ export const db = initialised.orm;
  * two connections to one SQLite file is how a writer starves a reader.
  */
 export const sqlite = initialised.sqlite;
+
+/** Where the database actually lives, for the startup durability check. */
+export const dbPath = DB_PATH;
