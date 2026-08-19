@@ -218,21 +218,46 @@ symptoms(id, canonical_name, body_system, description, active, created_at)
 symptom_aliases(id, symptom_id, alias, language, source_id, created_at)
 ```
 
-**Substance–symptom associations** — the direction this runs matters and is easy to get
-backwards. The community-extraction pipeline above mines *text → candidate symptom mentions*
-for population-level signal. This is the opposite direction: *given observed symptoms, which
-substances are known to produce them*, for individual-case decision support. Both use the same
-`extraction_candidates` / `verification_state` promotion path where a model is involved; they
-are different consumers of the same substance/symptom ontology, not the same pipeline.
+**Regions** — previously a loose, undefined `geography_id` string on several tables. Formalised
+now because the market-label query below needs real hierarchy (country → province/state →
+municipality → service region), not a flat string:
 
 ```
-substance_symptom_associations(id, substance_id, symptom_id, relation_type, onset_notes,
-    evidence_tier, reference_set_id, citation_json, created_at)
+geographic_regions(id, name, region_type, parent_region_id, iso_code, created_at)
 ```
 
-`relation_type` is a small controlled vocabulary, defined in full in
-`11_FIELD_AND_CLINICAL_INTERFACES.md`: intoxication sign, overdose sign, withdrawal sign,
-interaction sign.
+Every existing `geography_id` column in this document refers to this table from here on.
+
+**The assertion mechanism** — replaces `substance_symptom_associations`, `substance_relations`,
+`substance_receptor_bindings` as drafted in an earlier pass of this section. Full rationale,
+predicate vocabulary and the market-label/misrepresentation query this exists to answer are in
+`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`; this is the schema it specifies.
+
+```
+assertions(id, subject_type, subject_id, predicate, object_type, object_id, value_json,
+    geography_id, language, observed_at, valid_from, valid_to,
+    source_id, provider_id, artifact_id, citation_json, fetch_event_id,
+    evidence_tier, approval_state, approved_by, approved_at, quality_flags_json,
+    contradicts_json, corroborates_json, supersedes_assertion_id, created_at)
+
+targets(id, canonical_name, target_type, organism, external_identifiers_json, created_at)
+
+market_labels(id, label_text, canonical_label_group, language, region_id, notes, created_at)
+```
+
+`subject_type`/`object_type` reference node tables polymorphically (`substance`, `symptom`,
+`target`, `pill_type`, `tested_sample`, `market_label`). `target_type` on `targets`:
+`receptor`, `transporter`, `enzyme`, `pathway` — one table rather than four near-identical ones,
+since a substance's relationship to any of them is mechanistically the same kind of fact.
+
+`tested_samples` (below) gains `claimed_label_id`, nullable, referencing `market_labels` — what
+a specimen was sold or represented as, independent of what `pill_type_composition` later shows
+it actually contained. This is the column the misrepresentation query joins on.
+
+Two conflicting assertions about the same fact are both stored, linked via `contradicts_json`,
+and both shown with their own evidence tier. Nothing here averages them, prefers the newer one,
+or lets a model quietly pick a winner — the same discipline as everywhere else in this project,
+applied to evidence instead of to method proposals.
 
 **Pills, composition and tested specimens** — extends the existing
 substance ↔ pill ↔ sample ↔ event ontology already scoped for this project. A visual pattern
@@ -245,7 +270,7 @@ pill_types(id, shape, color_json, logo_text, score_line, size_mm, image_artifact
     geography_id, first_observed_at, created_at)
 
 tested_samples(id, pill_type_id, source_id, test_method, tested_at, lab_reference,
-    raw_result_artifact_id, evidence_tier, geography_id, created_at)
+    raw_result_artifact_id, claimed_label_id, evidence_tier, geography_id, created_at)
 
 pill_type_composition(id, pill_type_id, substance_id, concentration_value, concentration_unit,
     evidence_tier, tested_sample_id, created_at)
@@ -255,6 +280,12 @@ A pill type with no `tested_samples` row and only a visual-match composition gue
 the dangerous case `10_EVIDENCE_TIER_AND_TRUST_UI.md` addresses: composition from visual
 matching alone is capped at `MODELED_PREDICTED`, never higher, regardless of how confident the
 match looks, because counterfeit pills are adversarial against visual identification by design.
+
+`quality_flags_json` values relevant to this section, alongside `PROVIDER_DISCONTINUITY`
+already defined above: `QUERY_PLAN_DISCONTINUITY` (query-expansion mode changed mid-series),
+`ALIAS_SET_DISCONTINUITY` (the alias/market-label set resolved for a query changed between
+runs), `GEOGRAPHY_DISCONTINUITY` (region resolution granularity changed). Same rule as the
+original flag: never silent, always in the manifest.
 
 **Alert rules and firings** — reuses the approval gate rather than inventing new semantics for
 it. A rule is approved once, like a method spec; each firing is an automatic, deterministic

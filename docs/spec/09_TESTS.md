@@ -91,6 +91,31 @@ Deferred to E6; the list is recorded now so the contract is fixed before impleme
 See that file's own table for the full set, including offline completeness and the
 no-patient-identifying-input requirement.
 
+### Knowledge graph — `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`
+
+Deferred to E6, fixture-based, five tests defining what "the substance memory works" means
+before any of it is built:
+
+- **KG-1, regional lookup end-to-end** — a fixture graph with canonical `amphetamine`, several
+  market-label aliases across languages, a region, two pill types, one lab-tested composition,
+  one visual-only match, several symptom/interaction assertions and one deliberate
+  contradiction. The query in `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` §Market labels must
+  return all relevant candidates ranked, show the graph path for each, rank the lab-backed
+  result above the visual-only one, preserve region/time context, expose the contradiction
+  rather than hiding it, and attach provenance and evidence tier to every hop. This is the
+  literal acceptance test for the requirement that started this file.
+- **KG-2, alias ambiguity** — a slang term resolving to different concepts in different
+  locales; `STRICT_CANONICAL` must not expand it, and a wider mode may propose alternatives but
+  must never silently merge two entities' histories into one.
+- **KG-3, temporal legal status** — one substance with different legal status before and after
+  a dated legal event; a projection for each date resolves correctly without rewriting the
+  historical record.
+- **KG-4, provenance round-trip** — an assertion survives persistence and reload with source,
+  provider, artifact, region, time, evidence tier, approval state and quality flags all intact.
+- **KG-5, rebuildable projection** — deleting a materialized substance-card cache and rebuilding
+  it from the assertion graph produces equivalent content; a projection is a cache, not a
+  second source of truth.
+
 ### Determinism
 
 - two runs of `demo:jh16` produce byte-identical artifacts apart from run id and timestamps

@@ -21,7 +21,12 @@ export type QualityFlag =
   | 'PROVIDER_DISCONTINUITY'
   | 'COUNT_PARSE_UNCERTAIN'
   | 'PROVIDER_ESTIMATE'
-  | 'SAFESEARCH_UNKNOWN';
+  | 'SAFESEARCH_UNKNOWN'
+  // D15 / 02_DATA_MODEL.md: the same disclosure discipline as
+  // PROVIDER_DISCONTINUITY, applied to the rest of the query plan's identity.
+  | 'QUERY_PLAN_DISCONTINUITY'
+  | 'ALIAS_SET_DISCONTINUITY'
+  | 'GEOGRAPHY_DISCONTINUITY';
 
 interface ObservationBase {
   readonly seriesId: string;

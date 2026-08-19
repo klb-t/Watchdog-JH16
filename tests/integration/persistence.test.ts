@@ -33,11 +33,11 @@ afterEach(() => {
 test('Migration runs clean on an empty file and is idempotent', () => {
   const fresh = new Database(':memory:');
   const first = runMigrations(fresh);
-  assert.deepStrictEqual(first.applied, ['001_initial_schema']);
+  assert.deepStrictEqual(first.applied, ['001_initial_schema', '002_assertions']);
 
   const second = runMigrations(fresh);
   assert.deepStrictEqual(second.applied, [], 'a second run must apply nothing');
-  assert.deepStrictEqual(second.alreadyPresent, ['001_initial_schema']);
+  assert.deepStrictEqual(second.alreadyPresent, ['001_initial_schema', '002_assertions']);
   fresh.close();
 });
 
@@ -62,9 +62,11 @@ test('Schema contains every table 02_DATA_MODEL.md specifies', () => {
 
 test('Every E6 field-reference table exists and is empty (D12)', () => {
   const e6 = [
-    'symptoms', 'symptom_aliases', 'substance_symptom_associations',
+    'symptoms', 'symptom_aliases',
     'pill_types', 'tested_samples', 'pill_type_composition',
     'batch_alert_rules', 'batch_alerts',
+    // D14 replaced substance_symptom_associations with the assertion mechanism.
+    'assertions', 'targets', 'market_labels', 'geographic_regions',
   ];
   const tables = new Set(listTables(sqlite));
 
@@ -215,4 +217,81 @@ test('No SQL outside the repository layer (D13)', () => {
   walk(backend);
 
   assert.deepStrictEqual(offenders, [], `SQL/driver access leaked outside the repository layer:\n${offenders.join('\n')}`);
+});
+
+// -------------------------------------------------------------------------
+// D14 — the assertion mechanism (migration 002)
+// -------------------------------------------------------------------------
+
+test('D14: assertion tables exist and are empty; the superseded edge table is gone', () => {
+  const tables = new Set(listTables(sqlite));
+  for (const t of ['assertions', 'targets', 'market_labels', 'geographic_regions']) {
+    assert.ok(tables.has(t), `missing D14 table: ${t}`);
+    const { n } = sqlite.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get() as { n: number };
+    assert.strictEqual(n, 0, `${t} must be empty at E1 — schema now, populated at E6`);
+  }
+
+  assert.ok(!tables.has('substance_symptom_associations'),
+    'D14 supersedes substance_symptom_associations; two places to record one edge is the drift it prevents');
+
+  const cols = (sqlite.prepare('PRAGMA table_info(tested_samples)').all() as { name: string }[]).map(c => c.name);
+  assert.ok(cols.includes('claimed_label_id'), 'tested_samples needs the misrepresentation join column');
+});
+
+test('D14: the predicate vocabulary is closed', () => {
+  const now = '2026-01-01T00:00:00Z';
+  sqlite.prepare(`INSERT INTO substances (id,canonical_name,normalized_name,created_at)
+                  VALUES ('sub1','Alcohol','alcohol',?)`).run(now);
+
+  // A predicate from the vocabulary is accepted.
+  sqlite.prepare(`INSERT INTO assertions (id,subject_type,subject_id,predicate,created_at)
+                  VALUES ('a1','substance','sub1','INTERACTS_WITH',?)`).run(now);
+
+  assert.throws(() => {
+    sqlite.prepare(`INSERT INTO assertions (id,subject_type,subject_id,predicate,created_at)
+                    VALUES ('a2','substance','sub1','MADE_UP_PREDICATE',?)`).run(now);
+  }, /CHECK constraint failed/);
+
+  assert.throws(() => {
+    sqlite.prepare(`INSERT INTO assertions (id,subject_type,subject_id,predicate,created_at)
+                    VALUES ('a3','spaceship','sub1','INTERACTS_WITH',?)`).run(now);
+  }, /CHECK constraint failed/, 'subject_type is a closed set of node classes');
+});
+
+test('D14: two contradicting assertions are both retained, neither silently wins', () => {
+  const now = '2026-01-01T00:00:00Z';
+  sqlite.prepare(`INSERT INTO substances (id,canonical_name,normalized_name,created_at)
+                  VALUES ('s1','X','x',?)`).run(now);
+  sqlite.prepare(`INSERT INTO symptoms (id,canonical_name,created_at) VALUES ('sym1','tachycardia',?)`).run(now);
+
+  const ins = sqlite.prepare(`INSERT INTO assertions
+    (id,subject_type,subject_id,predicate,object_type,object_id,evidence_tier,contradicts_json,created_at)
+    VALUES (?,'substance','s1','ASSOCIATED_WITH_SYMPTOM','symptom','sym1',?,?,?)`);
+  ins.run('a_yes', 'PRIMARY_EMPIRICAL', JSON.stringify(['a_no']), now);
+  ins.run('a_no', 'RAW_OBSERVATIONAL', JSON.stringify(['a_yes']), now);
+
+  const rows = sqlite.prepare(`SELECT id, evidence_tier FROM assertions
+                               WHERE predicate='ASSOCIATED_WITH_SYMPTOM' ORDER BY id`).all() as any[];
+  assert.strictEqual(rows.length, 2, 'both sides of a contradiction are stored');
+  assert.deepStrictEqual(
+    Object.fromEntries(rows.map(r => [r.id, r.evidence_tier])),
+    { a_no: 'RAW_OBSERVATIONAL', a_yes: 'PRIMARY_EMPIRICAL' },
+    'each keeps its own evidence tier; nothing averages or prefers one');
+});
+
+test('D14: geographic regions form a real hierarchy, not a flat string', () => {
+  const now = '2026-01-01T00:00:00Z';
+  const ins = sqlite.prepare(`INSERT INTO geographic_regions
+    (id,name,region_type,parent_region_id,iso_code,created_at) VALUES (?,?,?,?,?,?)`);
+  ins.run('nl', 'Netherlands', 'country', null, 'NL', now);
+  ins.run('nh', 'Noord-Holland', 'province', 'nl', null, now);
+  ins.run('adam', 'Amsterdam', 'municipality', 'nh', null, now);
+
+  const row = sqlite.prepare(`
+    SELECT m.name AS city, p.name AS province, c.name AS country
+    FROM geographic_regions m
+    JOIN geographic_regions p ON m.parent_region_id = p.id
+    JOIN geographic_regions c ON p.parent_region_id = c.id
+    WHERE m.id = 'adam'`).get() as any;
+  assert.deepStrictEqual(row, { city: 'Amsterdam', province: 'Noord-Holland', country: 'Netherlands' });
 });

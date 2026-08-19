@@ -7,7 +7,7 @@ import { sourceRegistry } from '../sources/registry';
 import { analyzerRegistry } from '../analytics/registry';
 import { ObjectStore } from '../storage/object_store';
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { SourceRequest } from '../sources/base';
+import { SourceRequest, QueryExpansionMode, QUERY_EXPANSION_MODES } from '../sources/base';
 import { Observation } from '../domain/observation';
 
 /**
@@ -67,6 +67,26 @@ export class RunOrchestrator {
     return plan;
   }
 
+  private resolveLanguage(config: any): string {
+    const language = config.language;
+    if (typeof language !== 'string' || language.length === 0) {
+      throw new Error(
+        "Run config is missing 'language'. Per D15 it is part of the query plan's identity and is never defaulted."
+      );
+    }
+    return language;
+  }
+
+  private resolveExpansionMode(config: any): QueryExpansionMode {
+    const mode = config.query_expansion_mode;
+    if (!QUERY_EXPANSION_MODES.includes(mode)) {
+      throw new Error(
+        `Run config is missing a valid 'query_expansion_mode' (one of ${QUERY_EXPANSION_MODES.join(', ')}). Per D15 it is never defaulted.`
+      );
+    }
+    return mode;
+  }
+
   async executeRun(runId: string) {
     await tracer.runWithSpan('orchestrator', `executeRun:${runId}`, async () => {
       let stateAtFailure: string | null = null;
@@ -88,6 +108,12 @@ export class RunOrchestrator {
           const validated = adapter.validate_params(config.source_params || {});
           if (!validated.valid) throw new Error(`Invalid params: ${validated.errors?.join(', ')}`);
 
+          // D15: the query plan's identity — language and expansion mode —
+          // is resolved here, from configuration, and travels to the adapter.
+          // Both are required; neither is defaulted silently.
+          const language = this.resolveLanguage(config);
+          const queryExpansionMode = this.resolveExpansionMode(config);
+
           const plan = this.buildPlan(config);
           const observations: Observation[] = [];
 
@@ -96,6 +122,8 @@ export class RunOrchestrator {
               renderedQuery: item.renderedQuery,
               dimension: item.dimension,
               entityId: item.entityId,
+              language,
+              queryExpansionMode,
               presetId: runRecord.preset_id ?? config.preset_id ?? 'ad-hoc',
               presetVersion: runRecord.preset_version ?? config.preset_version ?? '0',
               params: validated.normalized_params,

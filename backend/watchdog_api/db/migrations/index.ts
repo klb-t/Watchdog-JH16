@@ -1,5 +1,6 @@
 import type { Database } from 'better-sqlite3';
 import { MIGRATION_001_INITIAL_SCHEMA } from './001_initial_schema';
+import { MIGRATION_002_ASSERTIONS } from './002_assertions';
 
 export interface Migration {
   readonly id: string;
@@ -12,7 +13,8 @@ export interface Migration {
  * the source, not of a filesystem listing.
  */
 export const MIGRATIONS: readonly Migration[] = [
-  { id: '001_initial_schema', sql: MIGRATION_001_INITIAL_SCHEMA }
+  { id: '001_initial_schema', sql: MIGRATION_001_INITIAL_SCHEMA },
+  { id: '002_assertions', sql: MIGRATION_002_ASSERTIONS }
 ];
 
 const MIGRATIONS_TABLE = `

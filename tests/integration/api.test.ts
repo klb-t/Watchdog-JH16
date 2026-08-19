@@ -62,6 +62,8 @@ test('API POST /api/runs - Submits PIPELINE job and retrieves results', async ()
       source_id: 'offline_fixture',
       source_params: { fixture_name: 'test_api' },
       method_id: 'jh16_faithful',
+      language: 'en',
+      query_expansion_mode: 'STRICT_CANONICAL',
       method_params: {
         reference_scores: { alcohol: 72 }
       }

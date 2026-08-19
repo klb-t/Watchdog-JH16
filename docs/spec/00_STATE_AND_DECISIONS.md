@@ -1,44 +1,34 @@
 # State and binding decisions
 
-Last updated: 2026-08-18, on the v9 spec merge, after E0 (repository audit) completed. Update
+Last updated: 2026-08-18, on the v12 spec merge, after E0 and E1 group 1 completed. Update
 this file whenever a decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
 
-**Superseded by E0.1's audit (`docs/AUDIT.md`) — kept below for lineage, resolved inline:**
+**Superseded by E0.1's audit (`docs/AUDIT.md`) — kept for lineage, resolved inline:**
 
 - A repository exists and is connected to GitHub. ✓ still true.
 - An AI Studio Build-mode agent (Gemini) completed roughly three passes over it. ✓ consistent
-  with `git log`: an initial commit, a scaffolding commit, and a "feat: enhance data provenance
-  and analytic robustness" commit that introduced the defects described next.
+  with `git log`.
 - Files observed by name in that agent's action history: `registry.ts`, `serp.ts`, an
   orchestrator, a schema/client pair, a repository module, and an orchestrator test.
   This establishes the implementation language as **TypeScript**, not Python. ✓ confirmed.
-- `npm run test:all` was the agent's test command. ✓ confirmed, still the canonical command.
-- The last pass was interrupted mid-repair, with roughly seven modified files left in an
-  unclear state. **Resolved (Q1 below): `git log`/`git status` show a clean, fully-pushed
-  working tree.** The interrupted pass's actual defects — a duplicated/broken import in
+- `npm run test:all` was the agent's test command. ✓ confirmed, still canonical.
+- The last pass was interrupted mid-repair. **Resolved (Q1 below): `git log`/`git status` show a
+  clean, fully-pushed working tree.** Its actual defects — a duplicated/broken import in
   `sources/registry.ts`, a duplicated `const q` in `sources/serp.ts`, a run-status vocabulary
   mismatch between `run_orchestrator.ts` and its own tests, and a corrupted committed
-  `data/watchdog.sqlite` — were identified and fixed before this spec package was added.
+  `data/watchdog.sqlite` — were identified and fixed before the v6 spec package landed.
 - A twelve-point review list was produced against the repository by an external reviewer and
-  partially applied. The list itself is not preserved, and E0.1's audit (`docs/AUDIT.md`)
-  supersedes it as intended: full source tree, KEEP/REFACTOR/REPLACE verdicts per file, unused
-  dependencies, and the anti-fabrication sweep are all there now.
+  partially applied. The list itself is not preserved, and E0.1's audit supersedes it as
+  intended.
 
-**Current state, in one paragraph:** `npm run test:all` is green (25 passing, 1 explicitly
-skipped, 0 failing). No E1 task is genuinely complete against its literal stated test, but
-several have substantial, tested, reusable partial implementations already: the config loader
-(E1.1, not yet wired into the running server), the flight recorder and redaction layer
-(E1.4-E1.6, missing the full event vocabulary and the diagnostic bundle), the content-addressed
-WORM blob store (part of E1.3), and three fixture-status source adapters (E1.8's protocol,
-though fixture data is inline rather than file-based per E1.9, and all three currently infer
-`dimension` from query text in violation of the v9 adapter-neutrality rule — see E1.29). See
-`docs/AUDIT.md` for the complete per-file breakdown and `07_EPICS_AND_TASKS.md`'s E0.5 and v9
-additions (E1.25-E1.29) for the concrete gaps the audit and the v9 merge found that the original
-ledger didn't call out.
+**Current state:** E0 complete; E1 group 1 (E1.1 configuration loader, E1.2 domain types,
+E1.3 persistence) complete, along with E1.26 and E1.29 which its ripple closed.
+`npm run test:all` is green. See `docs/AUDIT.md` for the per-file breakdown and
+`07_EPICS_AND_TASKS.md` for what remains.
 
 ## 2. Lineage of this specification
 
@@ -213,38 +203,15 @@ plus Dashboard, Sources, Runs, RunDetails and Analyzers pages, exercised by
 Chosen: E1.21-23 add the Study/Method-Review/Results flow as pages inside the existing shell,
 rather than deleting the shell to match the spec's literal "no dashboard" framing.
 
-Rejected: discarding the existing frontend to build the minimal single-workflow shell the spec
-describes. That spec text was written for an empty repository; this repository is not empty.
-Deleting tested, working navigation to satisfy a framing written before the code existed would
-be the exact "Rewrites" anti-pattern `CLAUDE.md` §2 warns against, and would violate §0's rule
-that the repository wins when it disagrees with what the specification assumed.
+Rejected: discarding the existing frontend. That spec text was written for an empty repository;
+this repository is not empty. Deleting tested, working navigation to satisfy a framing written
+before the code existed would be the "Rewrites" anti-pattern `CLAUDE.md` §2 warns against, and
+would violate §0's rule that the repository wins when it disagrees with what the specification
+assumed.
 
 Consequence: "no dashboard" is read as "the E1 vertical slice's own tests do not depend on the
-dashboard existing", not as permission to remove it. If the maintainer wants the dashboard
-actually removed for a leaner MVP, that is a rewrite-adjacent call per `CLAUDE.md` §4 and should
-be an explicit instruction, not an agent-initiated deletion.
-
-### D13 — `backend/watchdog_api/` stays the backend root; the layer *boundary* is what E1.3 tests, not the path (decided at E1.2)
-
-`01_ARCHITECTURE.md` §Repository layout specifies `src/{api,services,domain,analysis,adapters,repo,diag,ui}`
-and E1.3's test says "no SQL exists outside `src/repo`". The repository instead has its backend
-under `backend/watchdog_api/{api,services,analytics,config,db,sources,storage,utils}` and its
-React app under `src/`, and that same architecture file says to "adapt to what exists rather
-than forcing a move".
-
-Chosen: keep `backend/watchdog_api/` as the backend root and add new layers inside it
-(`domain/` at E1.2). The repository layer is `backend/watchdog_api/db/`. E1.3's boundary test
-asserts the *invariant* — no SQL and no `better-sqlite3`/`drizzle` import outside the repository
-layer — against that path.
-
-Rejected: relocating twenty-odd working, tested files to match the spec's example tree. The
-invariant D2 actually protects is "all persistence sits behind repository interfaces"; the
-directory name is incidental to it, and a large mechanical move would bury the E1 work it was
-supposed to enable in an unreviewable diff. The deviation is already recorded in `docs/AUDIT.md`.
-
-Consequence: read every `src/<layer>` reference in the specification as naming the layer, not
-the path. If the backend is ever relocated, that is a standalone task, not a side effect of
-whichever feature happens to touch it first.
+dashboard existing", not as permission to remove it. Removing it is a rewrite-adjacent call per
+`CLAUDE.md` §4 and needs an explicit instruction.
 
 ### D12 — Evidence tier is a schema-level concept from E1; the field/clinical UI that exploits it is Epic E6
 
@@ -275,18 +242,111 @@ decision: the maintainer's own April 2026 prioritisation already marked responde
 matches that ordering; this decision only formalises the schema seam so E6 does not require a
 migration.
 
+**Correction, same day:** the first draft of the Field reference schema omitted substance-to-
+substance and substance-to-receptor edges entirely — `substances` had aliases and external
+identifiers but no graph. Caught when the maintainer asked directly whether substance-centric
+memory had graph elements; it did not. `substance_relations`, `receptors` and
+`substance_receptor_bindings` were added to `02_DATA_MODEL.md` §Field reference under this same
+decision — and were themselves superseded hours later by D14 below, which replaced all three
+with a single generic mechanism rather than a growing pile of bespoke edge tables.
+
+### D13 — Generic core / drug-vertical package separation
+
+The maintainer supplied a second, independently produced recovery package (a different AI's
+reconstruction of the same project history) specifically to catch what this side's search had
+missed. Its first and most binding point: the generic research engine — `runs`, `observations`,
+`series`, `fetch_events`, `manifests`, method compiler, approval gate — must not encode `drug`,
+`substance`, `pill`, or any equivalent concept in its foundational shape. The drug/public-health
+vertical, everything in `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` and the field-reference
+tables, is a package layered on top of a domain-neutral core, not fused into it.
+
+This project has not violated the boundary in any way that requires code changes — E1's core
+tables were already generic. What was missing was the explicit statement, which matters because
+without it a future contributor has no way to tell which tables are safe to reuse for an
+unrelated research vertical and which are not. This decision is the statement; no schema
+changed because of it.
+
+### D14 — A single assertion mechanism replaces bespoke drug-relation tables
+
+Full rationale in `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`. In short: bespoke tables
+(`substance_relations`, `substance_receptor_bindings`, `substance_symptom_associations`) were
+naked edges with no shared provenance shape, no contradiction handling, and no uniform regional
+or temporal context — and the concrete requirement that surfaced this (searching interactions
+for whatever is commonly sold as a given substance) needs exactly those three things across a
+multi-hop query. A single reified `assertions` table, keyed by a controlled predicate
+vocabulary, replaces all three. `market_labels` and `geographic_regions` are new for the same
+reason: what something is sold as must be able to diverge from what it is, and region needs
+real hierarchy, not a bare string.
+
+Not affected: `pill_type_composition` stays a typed table by deliberate exception, stated in
+`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` — high-volume, stable-shaped lab data is exactly
+what a typed column serves better than a generic value field.
+
+### D15 — Query-plan identity extends to language and expansion mode
+
+`01_ARCHITECTURE.md`'s `SourceRequest.dimension` fix (adapters never infer semantics from query
+text) extends the same way to language/locale and to alias expansion: a query rendered in Dutch
+is a different measurement plan from the same query in Polish, and expanding to slang/market
+labels is a different plan from strict canonical naming. Both travel as explicit fields on the
+query plan, both are versioned, and a change in either mid-series is a flagged discontinuity
+(`QUERY_PLAN_DISCONTINUITY`, `ALIAS_SET_DISCONTINUITY`) exactly like a provider change already
+is. The four-mode vocabulary (`STRICT_CANONICAL` / `SCIENTIFIC_SYNONYMS` / `LOCALIZED_SYNONYMS`
+/ `EXPERIMENTAL_SLANG_EXPANSION`) is defined in full in
+`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`.
+
+### D16 — `backend/watchdog_api/` stays the backend root; the layer *boundary* is what E1.3 tests, not the path
+
+Numbered D16 rather than D13 as originally written: the v12 package introduced its own D13, D14
+and D15, which other v12 documents cross-reference by number, so this one moved rather than
+displacing them.
+
+`01_ARCHITECTURE.md` §Repository layout specifies `src/{api,services,domain,analysis,adapters,repo,diag,ui}`
+and E1.3's test says "no SQL exists outside `src/repo`". The repository instead has its backend
+under `backend/watchdog_api/` and its React app under `src/`, and that same architecture file
+says to "adapt to what exists rather than forcing a move".
+
+Chosen: keep `backend/watchdog_api/` as the backend root and add new layers inside it
+(`domain/` at E1.2). The repository layer is `backend/watchdog_api/db/`. E1.3's boundary test
+asserts the *invariant* — no SQL and no `better-sqlite3` import outside the repository layer —
+against that path.
+
+Rejected: relocating twenty-odd working, tested files to match the spec's example tree. The
+invariant D2 protects is "all persistence sits behind repository interfaces"; the directory name
+is incidental, and a large mechanical move would bury the E1 work it was meant to enable.
+
+Consequence: read every `src/<layer>` reference in the specification as naming the layer, not
+the path.
+
+### Conflict check — RBAC sequencing (resolved by precedence, not overridden)
+
+The second recovery package flagged a genuine sequencing question: recovered pre-MVP material
+describes a role ladder (`viewer < researcher < admin < dev`) with an access-request workflow,
+which sits in tension with D3's full deferral of authentication to E4. This is recorded rather
+than silently resolved, per that package's own instruction not to resolve conflicts quietly.
+
+Resolution: **D3 stands.** The role ladder and access-request workflow are real requirements,
+but they are exactly what E4 already is — "Identity, OIDC, RBAC, multi-user visibility" — and
+D3's reasoning (a previous attempt died debugging OAuth before one feature worked end to end)
+is the maintainer's own lived history, not a convenience this project talked itself into. The
+recovered "pre-MVP" framing most plausibly describes readiness before real external users touch
+the product, which is compatible with "not before E1's first working slice." E4's scope is
+strengthened with the specific role ladder and the access-request workflow so this is a
+completion of D3, not a reopening of it. If this reading is wrong, it is one sentence to
+override — this paragraph exists so that sentence has something concrete to contradict.
+
 ## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.
 
 | # | Question | Default until answered |
 |---|---|---|
-| Q1 | Are the ~7 files from the interrupted AI Studio pass committed and pushed? | **Answered by E0.1 (`docs/AUDIT.md`).** `git log`/`git status` show a clean working tree with every commit pushed; there is no uncommitted AI-Studio work sitting in the repository. The specific defects the interrupted pass left behind (a duplicated/broken import in `sources/registry.ts`, a duplicated `const q` in `sources/serp.ts`, a status-vocabulary mismatch between `run_orchestrator.ts` and its own tests, and a corrupted committed `data/watchdog.sqlite`) were identified and fixed in the commit immediately preceding this spec package. |
+| Q1 | Are the ~7 files from the interrupted AI Studio pass committed and pushed? | **Answered by E0.1.** Clean, fully-pushed tree; that pass's specific defects were found and fixed. |
 | Q2 | Do SerpApi credits exist and on which plan? | Irrelevant to E1 and E2 — all work runs on frozen fixtures |
 | Q3 | Which LLM provider for the compiler in E2? | Any configured provider; the compiler is provider-neutral by D5 |
 | Q4 | Is the reference harm-score set (Nutt et al. 2010) available as data? | E2 loads it from a versioned config file; ship a fixture with a clear placeholder marker if the real scores are not to hand |
 | Q5 | What retention and access policy applies to a responder's lookup history in E6? | Default to no patient-identifying fields accepted anywhere in the field interface (§`11_FIELD_AND_CLINICAL_INTERFACES.md`), audit events retained per the standard `audit_events` policy, visible only to the querying principal and an explicitly granted reviewer role. Revisit when E4 identity exists and real roles can be defined. |
 | Q6 | Which regional emergency and poison-control contacts ship as defaults in E6? | None hardcoded; a configuration table keyed by geography, empty until populated. The Dutch entry, when added, should be verified against current NVIC and 112 routing rather than assumed from training data. |
+| Q7 | Deployment posture: controlled academic/research service, institutional licence, public read-only harm-reduction surface, or open distribution? | Genuinely undecided, not defaulted. This changes access-control and licensing requirements well beyond E4's RBAC scope. Preserve as a strategy question; do not let any epic's design quietly assume one answer. |
 
 ## 5. Epic overview
 

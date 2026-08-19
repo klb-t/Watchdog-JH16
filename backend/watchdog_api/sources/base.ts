@@ -32,10 +32,34 @@ export type SourceCapability =
  * preset, and two presets rendering similar-looking text would be silently
  * misclassified.
  */
+/**
+ * How far a query plan expands beyond canonical naming, per D15 and
+ * `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` §Query expansion modes.
+ *
+ * Expanding to slang or market labels is a *different measurement plan* from
+ * strict canonical naming, not a refinement of it, so it is declared rather
+ * than inferred and a mid-series change is a flagged discontinuity.
+ */
+export const QUERY_EXPANSION_MODES = [
+  'STRICT_CANONICAL',
+  'SCIENTIFIC_SYNONYMS',
+  'LOCALIZED_SYNONYMS',
+  'EXPERIMENTAL_SLANG_EXPANSION',
+] as const;
+
+export type QueryExpansionMode = typeof QUERY_EXPANSION_MODES[number];
+
 export interface SourceRequest {
   readonly renderedQuery: string;
   readonly dimension: string;
   readonly entityId: string;
+  /**
+   * BCP-47-ish language/locale tag. Per D15, a query rendered in Dutch is a
+   * different measurement plan from the same query in Polish, so this is part
+   * of the plan's identity rather than an adapter preference.
+   */
+  readonly language: string;
+  readonly queryExpansionMode: QueryExpansionMode;
   readonly presetId: string;
   readonly presetVersion: string;
   /** Adapter-specific knobs, already validated by `validateParams`. */
@@ -67,6 +91,20 @@ export function assertValidSourceRequest(request: SourceRequest | undefined | nu
   }
   if (typeof request.entityId !== 'string' || request.entityId.length === 0) {
     throw new InvalidSourceRequestError("'entityId' is required");
+  }
+  // D15: language and expansion mode are part of the plan's identity, on the
+  // same footing as dimension. Neither may be inferred or defaulted here — a
+  // silently assumed locale or expansion mode splices two different
+  // measurement plans into one series.
+  if (typeof request.language !== 'string' || request.language.length === 0) {
+    throw new InvalidSourceRequestError(
+      "'language' is required and comes from the query plan; a query rendered in one language is a different measurement from the same query in another"
+    );
+  }
+  if (!QUERY_EXPANSION_MODES.includes(request.queryExpansionMode)) {
+    throw new InvalidSourceRequestError(
+      `'queryExpansionMode' is required and must be one of ${QUERY_EXPANSION_MODES.join(', ')}; expanding to synonyms or slang is a different plan, not a refinement of the canonical one`
+    );
   }
 }
 

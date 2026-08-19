@@ -80,6 +80,18 @@ changes are versioned and visible.
 - scheduled re-attempts producing a longitudinal record of whether a finding holds over time,
   which is a genuinely novel artifact
 - a public replication register
+- the full autonomous pipeline (`DISCOVERED → SCREENED → METHOD_EXTRACTED →
+  FEASIBILITY_ASSESSED → REPLICATION_PLANNED → DATA_ACQUIRED → REPLICATED →
+  INDEPENDENTLY_CHECKED → META_ANALYZED → REPORT_DRAFTED`); a candidate-prioritisation formula
+  (`replication_value × feasibility × data_availability × methodological_clarity ÷ cost`) is
+  recorded as a design seed, not an approved scoring method — same non-implementation status as
+  the evidence-fusion weights in `10_EVIDENCE_TIER_AND_TRUST_UI.md`, and for the same reason
+
+When this is eventually built, a replication assessment records method fidelity, data
+fidelity, population/context fidelity, analysis fidelity, effect direction, effect magnitude,
+uncertainty, deviations and limitations as separate fields. It never collapses them into one
+"replicated / not replicated" score — the four-value verdict vocabulary above exists precisely
+so no later feature quietly reintroduces that collapse through a back door.
 
 None of this is built now. The schema is.
 

@@ -28,6 +28,8 @@ const PIPELINE_CONFIG = {
   source_id: 'offline_fixture',
   source_params: { fixture_name: 'test_123' },
   method_id: 'jh16_faithful',
+  language: 'en',
+  query_expansion_mode: 'STRICT_CANONICAL',
   entities: ['alcohol', 'cannabis'],
   query_templates: {
     popularity: '"{entity}"',

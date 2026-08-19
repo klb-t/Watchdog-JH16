@@ -131,3 +131,4 @@ Never weaken a higher contract to make a lower one easier.
 | `docs/spec/09_TESTS.md` | Test taxonomy and required tests |
 | `docs/spec/10_EVIDENCE_TIER_AND_TRUST_UI.md` | Colour-coded evidence tiers; two-axis design; UI convention |
 | `docs/spec/11_FIELD_AND_CLINICAL_INTERFACES.md` | Epic E6: responder card, symptom search, pill ID |
+| `docs/spec/12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` | Assertion model, predicate vocabulary, market-label/misrepresentation query |

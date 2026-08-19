@@ -14,6 +14,8 @@ function request(over: Partial<SourceRequest> = {}): SourceRequest {
     renderedQuery: '"alcohol"',
     dimension: 'popularity',
     entityId: 'alcohol',
+    language: 'en',
+    queryExpansionMode: 'STRICT_CANONICAL',
     presetId: 'jh2016-faithful',
     presetVersion: '1.0',
     ...over,
@@ -126,5 +128,25 @@ test('Adapter neutrality: a missing dimension fails validation, never falls back
       InvalidSourceRequestError,
       `${id}: normalize must reject a result whose request lost its dimension`
     );
+  }
+});
+
+test('Query-plan identity: language and expansion mode are required, never defaulted (D15)', async () => {
+  for (const [id, adapter] of executableAdapters()) {
+    const noLanguage = { ...request(), language: '' } as SourceRequest;
+    await assert.rejects(async () => adapter.fetch(noLanguage), InvalidSourceRequestError,
+      `${id}: a query plan with no language must be rejected, not assumed`);
+
+    const noMode = { ...request(), queryExpansionMode: undefined } as unknown as SourceRequest;
+    await assert.rejects(async () => adapter.fetch(noMode), InvalidSourceRequestError,
+      `${id}: a query plan with no expansion mode must be rejected, not assumed`);
+
+    const badMode = { ...request(), queryExpansionMode: 'GUESS' } as unknown as SourceRequest;
+    await assert.rejects(async () => adapter.fetch(badMode), InvalidSourceRequestError,
+      `${id}: an unknown expansion mode must be rejected`);
+
+    // Same discipline on the normalize side.
+    const good = await adapter.fetch(request());
+    assert.throws(() => adapter.normalize({ ...good, request: noLanguage }), InvalidSourceRequestError);
   }
 });

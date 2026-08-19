@@ -96,6 +96,18 @@ provider B creates a new observation, not a replacement — and the series acqui
 
 There is no configuration in which a fallback silently rewrites a stored measurement.
 
+## Source policy contract
+
+Recovered addition: each registered source declares, alongside its capability and status,
+`acquisition_method`, `auth_requirements`, `license_terms`, `raw_retention_allowed`,
+`retention_duration`, `allowed_derived_outputs`, `attribution_requirements`, `pii_handling`,
+and `geographic_language_coverage`. Extends the existing `sources` table
+(`02_DATA_MODEL.md`) rather than adding a new one — these are columns, not a parallel registry.
+
+Deletion or retention-expiry must never destroy scientific lineage silently: where a raw
+payload must be deleted for licence or legal reasons, its hash and manifest entry remain even
+though the payload does not — a tombstone, not an amnesia.
+
 ## Credentials
 
 Secret store or environment only. Never in configuration files, never in git, never returned

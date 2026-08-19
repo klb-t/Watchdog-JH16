@@ -36,15 +36,24 @@ systems.
 | `UNKNOWN` | ⬜ grey | Not yet classified, or genuinely missing | No match attempted or possible |
 
 **Axis 2 — content category.** Where a fact sits in the narrative structure of a substance or
-specimen profile, fixed regardless of which tier populates it:
+specimen profile, fixed regardless of which tier populates it. Extended, not contradicted, by
+`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`'s fuller ontology — this list was seven items on
+first draft and missed legal status and preparations/samples as their own categories entirely,
+which the ontology work caught by naming them as first-class node classes with nowhere else to
+sit:
 
-1. Pharmacokinetics (absorption, distribution, metabolism, excretion)
-2. Pharmacodynamics (mechanism, receptors, transporters, signalling)
-3. Acute toxicity / overdose (clinical signs, specific syndromes, thresholds)
-4. Chronic effects (organ systems, dependence)
-5. Interactions (drugs, other substances)
-6. Context (legal status, encyclopedic background)
-7. Field signal (recent reports, geographic/temporal patterns)
+1. Identity / names / aliases
+2. Chemistry and structural relations (isomers, salts, metabolites, analogs)
+3. Pharmacokinetics (absorption, distribution, metabolism, excretion)
+4. Pharmacodynamics (mechanism, receptors, transporters, signalling)
+5. Acute toxicity / overdose (clinical signs, specific syndromes, thresholds)
+6. Chronic effects (organ systems, dependence)
+7. Interactions (drugs, other substances)
+8. Preparations / pills / samples
+9. Regional / time signal (recent reports, geographic/temporal patterns)
+10. Research citations
+11. Legal status
+12. Alerts
 
 A card renders top to bottom in this fixed order. Each section's *border* colour reflects the
 tier of the specific fact shown, which may vary fact-by-fact within a section — a PK section can

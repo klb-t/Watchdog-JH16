@@ -56,6 +56,9 @@ interface SourceAdapter {
 interface SourceRequest {
   renderedQuery: string;
   dimension: string;          // e.g. "popularity" | "harm" — see note below
+  language: string;           // e.g. "nl" | "pl" | "en" — explicit, never inferred
+  queryExpansionMode: string; // STRICT_CANONICAL | SCIENTIFIC_SYNONYMS
+                               // | LOCALIZED_SYNONYMS | EXPERIMENTAL_SLANG_EXPANSION
   presetId: string;
   presetVersion: string;
 }
@@ -67,9 +70,15 @@ metadata, not vendor response objects.
 **An adapter is semantically neutral by construction.** `dimension` — whether a query is
 measuring popularity, harm, or any other research axis a future preset defines — is decided
 once, upstream, by the preset/MethodSpec/query plan that renders `renderedQuery`, and is passed
-into the adapter as an explicit field on `SourceRequest`. `fetch` and `normalize` copy that
-field onto the resulting `Observation.query_role`; they never re-derive it by pattern-matching
-the query string (checking whether it contains "harm", for instance). This applies to every
+into the adapter as an explicit field on `SourceRequest`. The same holds for `language` and
+`queryExpansionMode` (D15, full vocabulary in
+`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`): a query rendered in Dutch is a different
+measurement plan from the same query in Polish, and expanding to slang or market labels is a
+different plan from strict canonical naming — both decided upstream, carried explicitly, never
+detected by inspecting the rendered string. `fetch` and `normalize` copy all three fields onto
+the resulting `Observation`; none is re-derived by pattern-matching the query string (checking
+whether it contains "harm", or guessing a language from character set, for instance). This
+applies to every
 implementation of this protocol, present and future — the E1 `FixtureSourceAdapter` as much as
 any live SERP adapter added in E3 — because the failure mode is the same regardless of which
 concrete adapter it happens in: an adapter that infers meaning from the text it is asked to

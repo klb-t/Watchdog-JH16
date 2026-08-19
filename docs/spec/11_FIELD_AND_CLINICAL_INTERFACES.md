@@ -57,11 +57,12 @@ already specified for the community-report pipeline — a different call site on
 mechanism, not a new one.
 
 A search returns a **ranked list of candidate substances, never a single verdict.** Matching is
-a deterministic score over `substance_symptom_associations` — a weighted overlap or a curated
-base-rate calculation — never an LLM-assigned probability; `04_METHOD_COMPILER_AND_APPROVAL.md`'s
-"no LLM in the numerical path" applies here without modification. Each candidate shows its
-supporting associations with their individual evidence tiers, so a responder can see *why* a
-substance was suggested, not just that it was.
+a deterministic score over `assertions` filtered to `predicate IN (ASSOCIATED_WITH_SYMPTOM,
+ASSOCIATED_WITH_EFFECT, ASSOCIATED_WITH_TOXICITY)` (`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`)
+— a weighted overlap or a curated base-rate calculation — never an LLM-assigned probability;
+`04_METHOD_COMPILER_AND_APPROVAL.md`'s "no LLM in the numerical path" applies here without
+modification. Each candidate shows its supporting assertions with their individual evidence
+tiers, so a responder can see *why* a substance was suggested, not just that it was.
 
 ## Pill and sample identification
 
@@ -88,11 +89,46 @@ time as `batch_alert_rules` fire `batch_alerts` of type `adulterant_detected` or
 and above the evidence-tier badge cluster, because an active warning is time-sensitive
 situational information, not a background trust signal.
 
+## Search by market label — "what's commonly sold as X"
+
+The concrete requirement this section exists to satisfy: search by what a substance is
+commonly sold or represented as — the maintainer's own example was amphetamine — and get back,
+easily, the interactions of whatever it actually turns out to contain. Mechanism, predicate
+vocabulary and the full acceptance query are specified once in
+`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` §Market labels; this section states only what the
+UI does with it.
+
+A search resolves the term against `market_labels`' `canonical_label_group` under an explicit
+query-expansion mode (`STRICT_CANONICAL` would not find "speed" for "amphetamine" — this search
+by construction runs at `LOCALIZED_SYNONYMS` or wider, and that mode is shown, not hidden). The
+result is not one substance — it is a ranked distribution of what has actually been found under
+that label, in the selected region and time window, each entry showing:
+
+- the actual substance(s) found, ranked by frequency in the sample set within region/time
+- the fraction of samples where the actual finding diverged from the claimed label — the
+  misrepresentation rate is exactly the point of the query and is never buried
+- for each actual substance, its known interactions (`INTERACTS_WITH` assertions), each with
+  its own citation and evidence tier
+- the graph path for every result — label → sample(s) → composition → substance → interaction —
+  so a researcher or responder can see why a result appeared, not just that it did
+- any contradiction between sources, shown rather than silently resolved
+
+"Counterfeit" is never applied on the strength of a visual mismatch alone — it is an
+evidence-backed classification, requiring a `TESTED_AS`/`CONTAINS` assertion that actually
+disagrees with the claimed label, per `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md`.
+
 ## Responder card layout
 
-Renders the fixed content-category order from `10_EVIDENCE_TIER_AND_TRUST_UI.md`: PK, PD,
-acute toxicity/overdose, chronic effects, interactions, context, field signal. Each fact within
-a section carries its own evidence-tier badge; sections are not colour-coded as a whole.
+Renders the fixed twelve-category content order from
+`12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` §Substance profile projection. Each fact within a
+section carries its own evidence-tier badge; sections are not colour-coded as a whole.
+
+The pharmacodynamics section reads from `assertions` filtered to
+`predicate IN (BINDS_TO, AGONIST_AT, ANTAGONIST_AT, MODULATES, INHIBITS, INDUCES)` with
+`object_type = target`; a "chemistry and structural relations" line reads the same table
+filtered to `ANALOG_OF`/`STRUCTURALLY_SIMILAR_TO`/`METABOLITE_OF` between two substances.
+Neither section is a free-text field a model fills in — both are graph queries over sourced,
+cited rows, same as everything else in this epic.
 
 Above all content, always visible, never scrolled past:
 
@@ -172,3 +208,8 @@ open until E4 gives this project real roles to grant.
 | offline completeness | a full responder-card session — symptom search, pill search, card render, alert display — completes with the network disabled, against synced fixtures |
 | stale-cache disclosure | a card sourced from data older than the configured sync threshold visibly states its cache age |
 | alert rule reuse of approval gate | a `batch_alert_rules` row is unusable to produce a `batch_alerts` firing while `PROPOSED`, identically to a method spec |
+| market-label lookup returns a distribution, not a verdict | a query against a `canonical_label_group` returns ranked actual-substance candidates with frequency, never collapses to one answer |
+| counterfeit requires evidence | no UI surface applies a "counterfeit" or equivalent label from a visual mismatch alone, absent a `TESTED_AS`/`CONTAINS` assertion contradicting the claimed label |
+
+The full knowledge-graph acceptance suite (KG-1 through KG-5, including the amphetamine
+regional-lookup end-to-end test) is specified once in `09_TESTS.md` rather than duplicated here.
