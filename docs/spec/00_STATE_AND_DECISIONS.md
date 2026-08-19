@@ -25,10 +25,25 @@ this file whenever a decision changes or an epic completes.
   partially applied. The list itself is not preserved, and E0.1's audit supersedes it as
   intended.
 
-**Current state:** E0 complete; E1 group 1 (E1.1 configuration loader, E1.2 domain types,
-E1.3 persistence) complete, along with E1.26 and E1.29 which its ripple closed.
-`npm run test:all` is green. See `docs/AUDIT.md` for the per-file breakdown and
-`07_EPICS_AND_TASKS.md` for what remains.
+**Current state: E0 and E1 are complete except E1.20, which is blocked on the maintainer.**
+
+`npm run test:all` is green — 118 passing, 0 skipped, 0 failing — and `npm run demo:jh16`
+has been verified on a clean clone, offline, with no credentials: it produces a run directory
+whose Pi and Hi reproduce every value published in the paper's own tables, and two runs are
+byte-identical apart from run id and timestamps.
+
+Done: the configuration loader, domain types, the full `02_DATA_MODEL.md` schema with
+migrations, the diagnostics spine (tracer, redaction with a canary test, error cause chains,
+diagnostic bundle), the fixture source with all 32 frozen queries and four edge cases, the
+capability/provider/credential registries, the seven primitives, MethodSpec validation and
+hashing, the approval gate, the deterministic executor, the JH2016 FAITHFUL preset expressed
+as a MethodSpec, charts, narrative, export, manifest, the three UI pages with browser-driven
+E2E, and `demo:jh16`.
+
+**The one thing outstanding is E1.20.** Its tolerance bands are proposed against the primary
+source and recorded in `07_EPICS_AND_TASKS.md`'s Blocked section; one line from the maintainer
+approves them. Until then the demo records `no_claims_registered` rather than inventing a
+verdict against an unapproved tolerance.
 
 ## 2. Lineage of this specification
 
