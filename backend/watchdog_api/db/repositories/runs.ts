@@ -4,6 +4,7 @@ import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 import { randomUUID } from 'node:crypto';
 import { RunState, assertTransition } from '../../domain/run_state';
 import { LOCAL_USER_ID, DEFAULT_VISIBILITY } from '../../domain/principal';
+import { canonicalHash } from '../../domain/canonical';
 
 export type { RunState };
 
@@ -38,7 +39,9 @@ export class RunRepository {
       owner_principal_id: normalized.ownerPrincipalId ?? LOCAL_USER_ID,
       visibility: DEFAULT_VISIBILITY,
       effective_config: JSON.stringify(normalized.config ?? {}),
-      effective_config_hash: normalized.effectiveConfigHash ?? null,
+      // Always hashed: an unidentifiable configuration makes the run
+      // irreproducible, and the manifest refuses to finalise without it.
+      effective_config_hash: normalized.effectiveConfigHash ?? canonicalHash(normalized.config ?? {}),
       created_at: new Date().toISOString(),
     }).run();
     return id;

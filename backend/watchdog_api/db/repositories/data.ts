@@ -152,6 +152,11 @@ export class AnalysisResultRepository {
     this.db.insert(analysisResults).values(values).run();
   }
 
+  listAnalysisRuns(runId: string) {
+    return this.db.select().from(analysisRuns).where(eq(analysisRuns.run_id, runId)).all()
+      .sort((a, b) => a.id.localeCompare(b.id));
+  }
+
   /** All results for a top-level run, across its analysis runs. */
   getByRunId(runId: string): AnalysisResultValue[] {
     const aRuns = this.db.select().from(analysisRuns).where(eq(analysisRuns.run_id, runId)).all();

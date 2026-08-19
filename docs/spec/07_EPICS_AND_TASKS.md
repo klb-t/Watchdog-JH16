@@ -155,26 +155,26 @@ Before feature work. See `06_DIAGNOSTICS.md`.
 
 ### Group 5 — Output
 
-- [ ] **E1.16 — Charts**
+- [x] **E1.16 — Charts**
   Pi and Hi bar charts, and a scatter of Hi against the reference set. Missing values render
   as visibly missing, never as zero or as a gap that reads as zero. A series carrying
   `PROVIDER_DISCONTINUITY` shows it in the legend.
   *Test:* a chart spec with a missing value renders it as missing; snapshot test on the golden
   fixture.
 
-- [ ] **E1.17 — Narrative service**
+- [x] **E1.17 — Narrative service**
   Consumes a frozen payload and its hash. Cannot read the database. Output is `PROPOSED`,
   visually distinct, recorded with provider, model and generation parameters.
   *Test:* the service cannot alter any numeric value; unapproved narrative cannot reach an
   export.
 
-- [ ] **E1.18 — Export**
+- [x] **E1.18 — Export**
   CSV and JSON at minimum. Exports consume stored results; they never recompute and never
   re-fetch. Generated prose is visually distinguishable in every format that supports it.
   *Test:* exported values equal stored values byte-for-byte; an export attempted with an
   unapproved artifact is refused.
 
-- [ ] **E1.19 — Manifest**
+- [x] **E1.19 — Manifest**
   Every field in `02_DATA_MODEL.md` §manifest.
   *Test:* the manifest of a golden run contains every required field, every quality flag
   raised anywhere in the run, and an explicit list of missing observations.
@@ -221,7 +221,7 @@ working tested navigation should be deleted. See D11.
 
 ### E0.5 / v9 / v12 additions — found by the audit and by later spec merges
 
-- [ ] **E1.25 — Wire `ConfigLoader` into the running server**
+- [x] **E1.25 — Wire `ConfigLoader` into the running server**
   `config/{loader,schemas,canonicalize}.ts` pass their tests in isolation, but nothing in
   `server.ts` or `api/routes.ts` calls `loadEffectiveConfig`. Every run today executes whatever
   the HTTP request body contains, unvalidated by this system.
@@ -232,7 +232,7 @@ working tested navigation should be deleted. See D11.
   Closed by E1.3: it is a real column, so a real version round-trips and `'unknown'` appears
   only when the value genuinely was never recorded.
 
-- [ ] **E1.27 — Finalize a manifest at the end of a run**
+- [x] **E1.27 — Finalize a manifest at the end of a run**
   `run_orchestrator.ts` constructs an `ArtifactRepository` but never calls `finalizeManifest`,
   so no run produces a manifest and `GET /api/runs/:id/manifest` 404s even after success.
   *Test:* after a run completes, its manifest exists and is retrievable.
