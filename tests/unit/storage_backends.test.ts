@@ -150,11 +150,23 @@ test('E3.4: GCS plus a mounted database path passes', () => {
   }));
 });
 
-test('E3.4: /tmp is not durable, and is worse than it looks', () => {
+test('E3.4: /tmp is not durable by default, and is worse than it looks', () => {
   assert.strictEqual(looksDurable('/tmp/watchdog.sqlite', {} as any), false,
     'on Cloud Run /tmp is a tmpfs that also consumes the memory allowance');
   assert.strictEqual(looksDurable('/mnt/data/watchdog.sqlite', {} as any), true);
   assert.strictEqual(looksDurable('/srv/x', { WATCHDOG_DURABLE_PATHS: '/srv' } as any), true);
+  assert.strictEqual(looksDurable('/srv/x', { WATCHDOG_DURABLE_PATHS: '/other' } as any), false);
+});
+
+test('E3.4: an explicit declaration beats the /tmp heuristic', () => {
+  // The operator naming their mount roots knows their mount table. A heuristic
+  // that silently overrides an explicit declaration makes the configuration a
+  // lie — and it is exactly what blocked a legitimate sandbox smoke test.
+  assert.strictEqual(looksDurable('/tmp/mount/db.sqlite',
+    { WATCHDOG_DURABLE_PATHS: '/tmp/mount' } as any), true);
+  assert.strictEqual(looksDurable('/tmp/elsewhere/db.sqlite',
+    { WATCHDOG_DURABLE_PATHS: '/tmp/mount' } as any), false,
+    'declaring one path must not bless the whole of /tmp');
 });
 
 test('E3.4: development is never blocked, and a throwaway instance stays possible', () => {

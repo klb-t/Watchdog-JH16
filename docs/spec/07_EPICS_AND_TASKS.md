@@ -327,7 +327,7 @@ start any of them breadth-first. Tasks keep their home epic's number.
   uncredentialled live run fails and its failure names the variable; an unconfigured narrative
   provider returns 409 and never template prose.
 
-- [ ] **E3.5 — Container and Cloud Run**
+- [x] **E3.5 — Container and Cloud Run**
   Dockerfile, deploy script, and a runbook written for someone who has not used GCP. Startup
   refuses to boot in production when storage is ephemeral and Postgres/GCS are unconfigured.
   *Test:* the startup check fails fast with a precise message under a production environment

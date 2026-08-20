@@ -45,10 +45,21 @@ export class EphemeralStorageError extends Error {
  */
 export function looksDurable(p: string, env: NodeJS.ProcessEnv): boolean {
   const resolved = path.resolve(p);
-  const declared = (env.WATCHDOG_DURABLE_PATHS ?? '/mnt')
-    .split(':').map(s => s.trim()).filter(Boolean);
-  if (resolved === '/tmp' || resolved.startsWith('/tmp/')) return false;
-  return declared.some(root => resolved === path.resolve(root) || resolved.startsWith(`${path.resolve(root)}/`));
+  const declaration = env.WATCHDOG_DURABLE_PATHS;
+  const declared = (declaration ?? '/mnt').split(':').map(s => s.trim()).filter(Boolean);
+
+  const under = (root: string) =>
+    resolved === path.resolve(root) || resolved.startsWith(`${path.resolve(root)}/`);
+
+  // The `/tmp` veto applies only to the *default*. On Cloud Run `/tmp` is a
+  // tmpfs — worse than ephemeral disk, since it also consumes the instance's
+  // memory allowance — so it must never pass by accident. But an operator who
+  // has named their mount roots knows their own mount table, and a heuristic
+  // that overrides an explicit declaration is a heuristic that makes the
+  // configuration a lie.
+  if (declaration === undefined && (resolved === '/tmp' || resolved.startsWith('/tmp/'))) return false;
+
+  return declared.some(under);
 }
 
 export function checkDurability(input: DurabilityInput): { durable: boolean; problems: string[] } {
