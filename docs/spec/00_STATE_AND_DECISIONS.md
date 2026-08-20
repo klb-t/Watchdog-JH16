@@ -25,13 +25,37 @@ decision changes or an epic completes.
   partially applied. The list itself is not preserved, and E0.1's audit supersedes it as
   intended.
 
-**Current state: E0 and E1 are complete. Every task in the ledger is ticked and nothing is
-blocked.**
+**Current state: E0, E1 and the D17 slice are complete. One item is blocked: the PostgreSQL
+backend, deliberately and with its reasoning recorded.**
 
-`npm run test:all` is green — 126 passing, 0 skipped, 0 failing — and `npm run demo:jh16`
+`npm run test:all` is green — 231 passing, 0 skipped, 0 failing — and `npm run demo:jh16`
 has been verified on a clean clone, offline, with no credentials: it produces a run directory
 whose Pi and Hi reproduce every value published in the paper's own tables, and two runs are
 byte-identical apart from run id and timestamps.
+
+**The D17 slice (see that decision) added, in this order:** the secret store; OpenRouter and
+any OpenAI-compatible endpoint as a real `text.generate` provider; SerpApi as a real
+`search.result_count` provider; provider and query-plan discontinuity detection; Google OIDC
+with the `viewer < researcher < admin < dev` ladder and an RBAC matrix; a GCS blob store with
+a startup durability gate; the readiness API and Setup page; and a container with a Cloud Run
+runbook (`docs/DEPLOY_GCP.md`).
+
+Nothing in that list is switched on by default. Every provider derives its status from live
+credential state on each read, so an absent key yields `blocked` with the exact variable that
+would fix it, and removing a key takes a provider out of service with no invalidation step.
+The production bundle has been booted and probed directly (auth config, readiness, SPA); the
+container image itself has **not** been built, because this environment has no Docker daemon —
+`tests/integration/deployment.test.ts` asserts the Dockerfile's properties instead, and the
+first real `docker build` remains unverified.
+
+Two things worth carrying forward about how that slice was built. First, `E3.4` is only
+half-done and says so: PostgreSQL could not be tested against a real server from here, so it
+is registered `planned` and throws rather than shipping as an untested `implemented` adapter.
+Second, three defects were caught by the project's own invariants rather than by inspection —
+a repository placed outside the repository layer (the D2 SQL-boundary test), a hardcoded list
+of owned tables that was simply wrong (caught while writing the migration test, then replaced
+by schema introspection), and a spurious WORM violation whenever a database was reset while
+its blob store survived. That last one was a latent bug in E1, not in the new work.
 
 Done: the configuration loader, domain types, the full `02_DATA_MODEL.md` schema with
 migrations, the diagnostics spine (tracer, redaction with a canary test, error cause chains,

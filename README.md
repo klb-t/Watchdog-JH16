@@ -4,7 +4,8 @@ A reproducible-research platform for monitoring psychoactive-substance signals. 
 scientific benchmark is a replication of Jankowski & Hoffmann 2016
 ([JMIR 18(2):e38](https://doi.org/10.2196/jmir.4033)).
 
-**Status: Epic E1 complete.** The vertical slice runs end to end, offline, on frozen fixtures:
+**Status: Epic E1 complete; the D17 slice makes it deployable and credentialled.** The vertical
+slice runs end to end, offline, on frozen fixtures:
 
 ```
 fixture source → observations → method (proposed → approved) → deterministic compute
@@ -16,9 +17,12 @@ fixture source → observations → method (proposed → approved) → determini
 ```bash
 npm install
 npm run demo:jh16     # the whole slice, offline, no credentials
-npm run test:all      # lint + 126 tests + production build
-npm run dev           # http://localhost:3000
+npm run test:all      # lint + 231 tests + production build
+npm run dev           # http://localhost:3000 — then open /setup
 ```
+
+Nothing above needs an API key, a Google account or a cloud project. Adding those switches on
+more; it is never required to run what exists.
 
 `demo:jh16` writes a complete run directory under `runs/<run-id>/`:
 
@@ -92,14 +96,49 @@ docs/spec/      the binding specification; 07_EPICS_AND_TASKS.md is the ledger
 ## Where to look first
 
 - `docs/spec/07_EPICS_AND_TASKS.md` — the ledger: what is done, what is next.
-- `docs/spec/00_STATE_AND_DECISIONS.md` — every binding decision (D1–D16) and why.
+- `docs/spec/00_STATE_AND_DECISIONS.md` — every binding decision (D1–D17) and why.
 - `docs/spec/03_JH2016_CONTRACT.md` — the locked scientific invariants. Highest precedence.
+- `docs/DEPLOY_GCP.md` — deploying to Cloud Run, written for someone who has not used GCP.
 - `docs/AUDIT.md` — the historical E0 audit of the inherited codebase.
+
+## Live providers, sign-in and deployment
+
+Added under D17 because they are what the maintainer tests on first. Everything is derived from
+credential state on every read, so removing a key takes a provider out of service with no
+invalidation step, and the **Setup** page answers "why can't I run this yet?" with the exact
+variable to set — never with the word "unavailable".
+
+| | State | Switch on with |
+|---|---|---|
+| Google sign-in, roles `viewer < researcher < admin < dev` | built | `GOOGLE_OAUTH_CLIENT_ID` + `WATCHDOG_GRANTS` + `SESSION_SIGNING_KEY` |
+| OpenRouter, and any OpenAI-compatible endpoint | built | `OPENROUTER_API_KEY` |
+| SerpApi live result counts | built | `SERPAPI_API_KEY` |
+| GCS blob store | built | `STORE_BACKEND=gcs` + `GCS_BUCKET` |
+| Cloud Run container and runbook | built | [`docs/DEPLOY_GCP.md`](docs/DEPLOY_GCP.md) |
+| PostgreSQL | **not built, on purpose** | see `## Blocked` in the ledger |
+
+Two startup checks refuse to boot rather than warn: a production instance with no
+authentication, and one whose data would not survive a restart. Both have explicit waivers,
+and neither state is reachable by forgetting a variable.
+
+`tests/integration/live_path.test.ts` drives the credentialled path against stub providers over
+real HTTP — real sockets, the real config loader, the adapters' own `fetch`. What separates it
+from a live run is the value of two environment variables.
+
+Two rules survive the arrival of live providers:
+
+- **A model never computes.** Generated prose is checked against the deterministic summary and
+  **rejected outright** if it contains a figure the frozen payload does not — including a
+  rounded one, since `15.2` is a different number from `15.17`. A test on the import graph
+  proves the analysis layer cannot reach a text generator at all.
+- **A failure is never a zero.** A throttle, an exhausted quota, a rejected key and an
+  unparseable body are four distinct `missing_reason` values, because they are four different
+  things for an operator to do.
 
 ## Not built yet
 
-Epics E2–E6, deliberately: the LLM method compiler, live acquisition with provider-discontinuity
-detection, identity and RBAC, the generic workbench and autonomous replication engine, and the
-field/clinical interfaces. The schema for the later ones exists and is empty on purpose — cheap
+The rest of E2–E6, deliberately: the LLM method compiler, the generic workbench and autonomous
+replication engine, and the field/clinical interfaces. Live acquisition, identity and RBAC were
+pulled forward by D17 and are listed above. The schema for the later ones exists and is empty on purpose — cheap
 to seed now, expensive to retrofit — but nothing is built against it. See the epic table in
 `00_STATE_AND_DECISIONS.md`.
