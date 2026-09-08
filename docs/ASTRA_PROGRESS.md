@@ -34,3 +34,37 @@ candidate never confirms the identity or composition of the pill in front of the
 ## Checkpoints
 
 Further verified changes and blockers are recorded with their task in the main ledger.
+
+## 2026-09-08 — E6 responder/reference stage
+
+Published baseline/roles in draft PR #1, based on the handoff branch. API publication retained
+identical Git trees; remote commits are dcba295 (E0.6) and 4dfd8b0 (E4.2).
+
+Implemented the reference import → individual hash-bound human review → responder lookup
+path over the existing specimen/assertion graph. Repeated import events retain raw mapping
+provenance; raw bytes deduplicate. No reference is approved at startup. The bundled Trimbos
+and Jellinek mappings remain proposals, including explicit absent lab details and amounts.
+
+Responder UI supports appearance (including reverse score line), market-group labels, source
+symptom vocabulary, region/time filters, explicit broader context, specimen composition and
+unknown components. Clinical source facts occupy twelve fixed categories with independent
+source-tier, review and quality badges. Visual matches remain inferred even for lab references.
+Conflicting sources remain visible. National alerts are not counted as sampled local prevalence.
+
+Offline support uses a principal-bound, hash-checked snapshot with a maximum configured 8-hour
+window, source retrieval ages, a static-only production service worker and an idempotent audit
+outbox. Revocations cannot be checked offline; this is displayed. HTTP 401/403 erases cached
+access. Logout clears this local cache/outbox; it is not a durable clinical record. No patient
+identity fields are accepted. A full initial source review is still required before clinical use.
+
+Validation so far: 238 unit/contract/scientific/integration tests passed, plus two subsequent
+UI-render/offline-client tests. Type checking and production build passed. Browser-driven E2E
+remains unverified locally: the cloud browser's localhost attempt was blocked and caused an
+unwanted permission prompt on the maintainer's phone. That tab was closed; do not repeat the
+localhost browser route. A GitHub Actions workflow now installs Chromium and runs the full
+suite. Do not claim CI or browser success before reading its result.
+
+Latest maintainer clarifications are recorded in spec/13_VISUAL_WORKBENCH.md: institutional
+geographic/language/time/context/sentiment analysis, map and chart palettes/context menus,
+favourites, publication figures, 3D/4+ channels, abstractions/data profiles and developer UI
+diagnostics. These are accepted requirements; this stage does not claim they are implemented.

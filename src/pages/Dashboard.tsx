@@ -20,9 +20,9 @@ export function Dashboard() {
       .catch(console.error);
   }, []);
 
-  const completedRuns = runs.filter(r => r.status === 'SUCCESS').length;
+  const completedRuns = runs.filter(r => r.status === 'COMPLETED').length;
   const failedRuns = runs.filter(r => r.status === 'FAILED').length;
-  const activeRuns = runs.filter(r => ['QUEUED', 'ACQUIRING', 'NORMALIZING', 'ANALYZING'].includes(r.status)).length;
+  const activeRuns = runs.filter(r => ['QUEUED', 'RUNNING', 'NORMALIZING', 'ANALYZING'].includes(r.status)).length;
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
@@ -61,7 +61,7 @@ export function Dashboard() {
                         {run.id.split('-')[0]}...{run.id.split('-').pop()}
                       </Link>
                       <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
-                        <span className="font-medium">{run.type}</span>
+                        <span className="font-medium">{run.run_type}</span>
                         <span>•</span>
                         <span>{new Date(run.created_at).toLocaleString()}</span>
                       </div>
@@ -99,10 +99,10 @@ function StatCard({ title, value, icon: Icon, className }: any) {
 
 export function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    SUCCESS: "bg-emerald-100 text-emerald-800 border-emerald-200",
+    COMPLETED: "bg-emerald-100 text-emerald-800 border-emerald-200",
     FAILED: "bg-red-100 text-red-800 border-red-200",
     QUEUED: "bg-slate-100 text-slate-800 border-slate-200",
-    ACQUIRING: "bg-blue-100 text-blue-800 border-blue-200",
+    RUNNING: "bg-blue-100 text-blue-800 border-blue-200",
     NORMALIZING: "bg-indigo-100 text-indigo-800 border-indigo-200",
     ANALYZING: "bg-purple-100 text-purple-800 border-purple-200",
   };
@@ -115,7 +115,7 @@ export function StatusBadge({ status }: { status: string }) {
 }
 
 export function StatusIcon({ status }: { status: string }) {
-  if (status === 'SUCCESS') return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
+  if (status === 'COMPLETED') return <CheckCircle2 className="w-5 h-5 text-emerald-500" />;
   if (status === 'FAILED') return <XCircle className="w-5 h-5 text-red-500" />;
   if (status === 'QUEUED') return <Clock className="w-5 h-5 text-slate-400" />;
   return <Activity className="w-5 h-5 text-blue-500 animate-pulse" />;

@@ -5,16 +5,20 @@ import { randomUUID } from 'node:crypto';
 import { authErrorStatus } from './auth_routes';
 
 export function traceMiddleware(req: Request, res: Response, next: NextFunction) {
-  const traceId = (req.headers['x-trace-id'] as string) || randomUUID();
-  tracer.runWithSpan('http_request', `${req.method} ${req.path}`, () => {
-    tracer.emit('INCOMING_REQUEST', { method: req.method, path: req.path, query: req.query });
+  const supplied = req.headers['x-trace-id'];
+  const traceId = typeof supplied === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(supplied)
+    ? supplied : randomUUID();
+  void tracer.runWithSpan('http_request', `${req.method} ${req.path}`, () => new Promise<void>(resolve => {
+    tracer.emit('INCOMING_REQUEST', { method: req.method, path: req.path });
     res.setHeader('x-trace-id', traceId);
+    res.once('finish', resolve);
+    res.once('close', resolve);
     next();
-  });
+  }), { trace_id: traceId, request_id: randomUUID() }).catch(next);
 }
 
 export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
-  tracer.emit('REQUEST_ERROR', { error: err.message, stack: err.stack });
+  tracer.emitError(err, true);
   
   if (err instanceof ZodError) {
     return res.status(400).json({

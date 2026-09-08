@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { clearFieldCache, readFieldCache } from './field_client';
 import type { Capability } from '../../shared/authorization';
 
 interface Access {
@@ -21,16 +22,21 @@ export function AccessProvider({ children }: { children: ReactNode }) {
     const refresh = async () => {
       try {
         const response = await fetch('/api/auth/me', { cache: 'no-store' });
+        if ([401, 403].includes(response.status)) clearFieldCache();
         const data = response.ok ? await response.json() : null;
         if (active) setAccess({ loading: false, roles: data?.principal.roles ?? [],
           capabilities: data?.capabilities ?? [], principalId: data?.principal.id ?? null });
       } catch {
-        if (active) setAccess({ ...empty, loading: false });
+        try {
+          const cached = await readFieldCache();
+          if (active) setAccess({ loading: false, roles: ['offline responder'], capabilities: ['responder.lookup'], principalId: cached.snapshot.principalId });
+        } catch { if (active) setAccess({ ...empty, loading: false }); }
       }
     };
     refresh();
-    window.addEventListener('watchdog-session-changed', refresh);
-    return () => { active = false; window.removeEventListener('watchdog-session-changed', refresh); };
+    const sessionChanged = () => { clearFieldCache(); setAccess(empty); void refresh(); };
+    window.addEventListener('watchdog-session-changed', sessionChanged);
+    return () => { active = false; window.removeEventListener('watchdog-session-changed', sessionChanged); };
   }, [location.pathname]);
   return <AccessContext.Provider value={access}>{children}</AccessContext.Provider>;
 }

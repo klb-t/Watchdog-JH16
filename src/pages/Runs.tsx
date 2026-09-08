@@ -53,7 +53,7 @@ export function Runs() {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className="text-sm text-slate-900 font-medium">{run.type}</span>
+                  <span className="text-sm text-slate-900 font-medium">{run.run_type}</span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <StatusBadge status={run.status} />

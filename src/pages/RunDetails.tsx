@@ -47,7 +47,7 @@ export function RunDetails() {
           <div>
             <h1 className="text-2xl font-semibold tracking-tight font-mono">{run.id}</h1>
             <div className="flex items-center space-x-4 mt-2">
-              <span className="text-sm font-medium text-slate-600">{run.type}</span>
+              <span className="text-sm font-medium text-slate-600">{run.run_type}</span>
               <span className="text-slate-300">•</span>
               <span className="text-sm text-slate-500">{new Date(run.created_at).toLocaleString()}</span>
             </div>

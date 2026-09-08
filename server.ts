@@ -9,6 +9,11 @@ import { PrincipalRepository } from './backend/watchdog_api/db/repositories/prin
 import { sqlite, dbPath } from './backend/watchdog_api/db/client';
 import { assertStorageSafeForEnvironment } from './backend/watchdog_api/storage/durability';
 import { storeBackend, storePath } from './backend/watchdog_api/storage/client';
+import { store } from './backend/watchdog_api/storage/client';
+import { FieldReferenceRepository } from './backend/watchdog_api/db/repositories/field_reference';
+import { FieldService } from './backend/watchdog_api/field/service';
+import { loadFieldProfile } from './backend/watchdog_api/config/field';
+import { buildFieldRouter } from './backend/watchdog_api/api/field_routes';
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 3000);
@@ -53,6 +58,9 @@ export async function configureApp() {
 
   app.use(principalMiddleware(authDeps));
   app.use('/api/auth', buildAuthRouter(authDeps));
+  const fieldRepository = new FieldReferenceRepository(sqlite, store);
+  const fieldService = new FieldService(fieldRepository, loadFieldProfile());
+  app.use('/api/field', buildFieldRouter(fieldRepository, fieldService));
   app.use('/api', apiRouter);
   app.use(errorHandler);
 

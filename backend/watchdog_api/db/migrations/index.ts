@@ -4,6 +4,7 @@ import { MIGRATION_002_ASSERTIONS } from './002_assertions';
 import { MIGRATION_003_QUERY_PLAN_IDENTITY } from './003_query_plan_identity';
 import { MIGRATION_004_PRINCIPALS } from './004_principals';
 import { MIGRATION_005_ROLE_PROFILES } from './005_role_profiles';
+import { MIGRATION_006_FIELD_REFERENCE } from './006_field_reference';
 
 export interface Migration {
   readonly id: string;
@@ -20,7 +21,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '002_assertions', sql: MIGRATION_002_ASSERTIONS },
   { id: '003_query_plan_identity', sql: MIGRATION_003_QUERY_PLAN_IDENTITY },
   { id: '004_principals', sql: MIGRATION_004_PRINCIPALS },
-  { id: '005_role_profiles', sql: MIGRATION_005_ROLE_PROFILES }
+  { id: '005_role_profiles', sql: MIGRATION_005_ROLE_PROFILES },
+  { id: '006_field_reference', sql: MIGRATION_006_FIELD_REFERENCE }
 ];
 
 const MIGRATIONS_TABLE = `
