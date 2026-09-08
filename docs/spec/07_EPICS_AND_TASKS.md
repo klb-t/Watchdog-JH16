@@ -425,6 +425,14 @@ just because the schema for all three already exists.
 
 ## Blocked
 
+### Continuation checkpoint (2026-09-08)
+
+- [x] **E0.6 — Portable clean install and test entrypoints.** Repair missing optional-platform
+  lock entries; use Node's tsx loader without a CLI IPC server. Lockfile consistency,
+  production build and offline JH16 demo checked. Baseline 227/231 passed; four browser tests
+  blocked by absent Chromium/download timeout, not by a reported application assertion.
+  See `docs/ASTRA_PROGRESS.md` for exact environment limits.
+
 *Nothing. E1.20's tolerance bands, the one item that was blocked, were proposed against the
 primary source and then registered under authority the maintainer delegated explicitly. The
 pre-registration property is preserved and checkable: the bands and their full rationale were

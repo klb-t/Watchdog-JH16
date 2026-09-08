@@ -53,10 +53,9 @@ before(async () => {
   const port = 3100 + Math.floor(Math.random() * 400);
   baseUrl = `http://127.0.0.1:${port}`;
 
-  // detached so the whole process group can be killed on teardown: npx spawns
-  // tsx which spawns node, and killing only the top pid leaves the server
-  // holding the port and the test runner alive.
-  server = spawn('npx', ['tsx', 'server.ts'], {
+  // Use Node's loader directly: no CLI IPC socket is needed. Detach so any
+  // child Vite/esbuild processes are also reaped on teardown.
+  server = spawn(process.execPath, ['--import', 'tsx', 'server.ts'], {
     cwd: process.cwd(),
     env: { ...process.env, PORT: String(port), DB_PATH, STORE_PATH, WATCHDOG_DIAGNOSTICS_MODE: 'OFF' },
     stdio: 'pipe',
