@@ -347,6 +347,11 @@ condition; PostgreSQL and S3 migration; a real worker process.
 
 ## E4 — Identity
 
+- [x] **E4.2 — Peer capability profiles.** One shared resolver, `/auth/me` union, UI navigation
+  and route gates, additive role migration, full principal role sets. Matrix + real HTTP tests
+  verify researcher/responder separation, combined profiles, restricted institutional access,
+  admin/developer distinction and the legacy `dev` alias. Supersedes the old ladder below.
+
 Contents: OIDC behind `IdentityProvider`; role ladder `viewer < researcher < admin < dev`
 (recovered pre-MVP requirement, folded in here per the conflict resolution in
 `00_STATE_AND_DECISIONS.md`); RBAC capability matrix; migration of `local-user` rows; access

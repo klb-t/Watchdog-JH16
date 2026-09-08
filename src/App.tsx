@@ -14,24 +14,25 @@ import { Study } from './pages/Study';
 import { MethodReview } from './pages/MethodReview';
 import { Results } from './pages/Results';
 import { Setup } from './pages/Setup';
+import { AccessBoundary, AccessProvider } from './lib/access';
 
 export default function App() {
   return (
-    <Routes>
+    <AccessProvider><Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="sources" element={<Sources />} />
-        <Route path="runs" element={<Runs />} />
-        <Route path="runs/:id" element={<RunDetails />} />
-        <Route path="analyzers" element={<Analyzers />} />
+        <Route index element={<AccessBoundary capability="run.view"><Dashboard /></AccessBoundary>} />
+        <Route path="sources" element={<AccessBoundary capability="run.view"><Sources /></AccessBoundary>} />
+        <Route path="runs" element={<AccessBoundary capability="run.view"><Runs /></AccessBoundary>} />
+        <Route path="runs/:id" element={<AccessBoundary capability="run.view"><RunDetails /></AccessBoundary>} />
+        <Route path="analyzers" element={<AccessBoundary capability="run.view"><Analyzers /></AccessBoundary>} />
         {/* E1.21-23, added into the existing shell per D11. */}
-        <Route path="study" element={<Study />} />
-        <Route path="method" element={<MethodReview />} />
-        <Route path="runs/:id/results" element={<Results />} />
+        <Route path="study" element={<AccessBoundary capability="run.create"><Study /></AccessBoundary>} />
+        <Route path="method" element={<AccessBoundary capability="method.propose"><MethodReview /></AccessBoundary>} />
+        <Route path="runs/:id/results" element={<AccessBoundary capability="run.view"><Results /></AccessBoundary>} />
         <Route path="setup" element={<Setup />} />
         <Route path="settings" element={<Setup />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
-    </Routes>
+    </Routes></AccessProvider>
   );
 }

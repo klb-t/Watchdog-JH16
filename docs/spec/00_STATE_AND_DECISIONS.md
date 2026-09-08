@@ -1,11 +1,17 @@
 # State and binding decisions
 
-Last updated: 2026-08-19, after E0 and E1 completed in full. Update this file whenever a
+Last updated: 2026-09-08, Astra continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**2026-09-08 continuation:** see `docs/ASTRA_PROGRESS.md` for the re-run baseline and runtime
+limits. D18 below supersedes every old ordinal-role description in this document. The owner
+has prioritised the general responder vertical (pill/market-label/region/time → composition →
+cited reference facts and interactions), including evidence tier, category ordering, approval
+and quality flags. “Green X” is an illustrative acceptance scenario, not a domain restriction.
 
 **Superseded by E0.1's audit (`docs/AUDIT.md`) — kept for lineage, resolved inline:**
 
@@ -432,6 +438,24 @@ reports `absent` until a key is present in the environment. No account is create
 spending is committed by the agent.
 
 ## 4. Open questions for the maintainer
+
+### D18 — Capability bundles and responder priority (owner correction, 2026-09-08)
+
+The earlier ladder was the first implementation. `researcher` and `responder` are peers;
+their union grants both workflows. `institutional` and `law_enforcement` grant restricted
+reference lookup, with no private research, evidence curation, audit-history review or role
+management. `admin` is operational; `developer` adds principal management and diagnostics.
+`dev` remains an equivalent compatibility alias for existing grants and signed sessions.
+
+The single versioned MVP profile is `shared/authorization.ts`; API enforcement and `/auth/me`
+use its union resolver. The UI consumes those capabilities for navigation and route gates.
+The principal repository preserves the full set instead of choosing an ordinal maximum.
+New role rows are an additive migration; existing OIDC subjects and ownership remain intact.
+
+The owner has brought the responder vertical forward after this foundation. The compiler,
+worker and generic-workbench tasks remain open; their unfinished status does not block the
+explicitly requested E6 flow. Keep the graph and its four independent presentation dimensions
+(evidence tier, content category, approval and quality flags) general, not tied to one pill.
 
 Do not block on these. Proceed with the stated default and flag the assumption.
 

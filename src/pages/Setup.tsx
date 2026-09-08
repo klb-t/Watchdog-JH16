@@ -113,6 +113,7 @@ export function Setup() {
 
   const signOut = async () => {
     await fetch('/api/auth/signout', { method: 'POST' });
+    window.dispatchEvent(new Event('watchdog-session-changed'));
     load();
   };
 
