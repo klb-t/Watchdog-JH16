@@ -2,11 +2,12 @@ import { Router, type Request, type Response, type NextFunction } from 'express'
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import { can } from '../../../shared/authorization';
-import { FigureSchema, validateDataset, csvExport, filterRows } from '../../../shared/workbench';
+import { FigureSchema, validateDataset, csvExport } from '../../../shared/workbench';
 import { requireCapability } from './auth_routes';
 import { WorkbenchRepository, WorkbenchError } from '../db/repositories/workbench';
 import { WorkbenchService } from '../workbench/service';
-import { checkProviderProfile, checkFigureProfile } from '../config/workbench';
+import { checkProviderProfile, checkFigureProfile, validateWorkbenchProfile } from '../config/workbench';
+import { publicationSvg, researchPackage } from '../workbench/publication';
 import { tracer } from '../utils/tracer';
 const requestId = () => tracer.getContext()?.request_id ?? randomUUID();
 const boundary = (operation: string, fn: (req: Request, res: Response) => unknown) => (req: Request, res: Response, next: NextFunction) => {
@@ -17,6 +18,11 @@ export function buildWorkbenchRouter(repo: WorkbenchRepository, service: Workben
   const router = Router(); router.use(requireCapability('workbench.view'));
   router.use((_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
   router.get('/profile', boundary('profile', (_req, res) => res.json(service.profile)));
+  router.get('/profiles/:hash', boundary('profile_restore', (req, res) => {
+    const hash = z.string().regex(/^[a-f0-9]{64}$/).parse(req.params.hash), profile = repo.getProfile(hash);
+    if (!profile) throw new WorkbenchError('Archived visualization profile not found.', 404);
+    res.json(profile);
+  }));
   router.get('/datasets', boundary('datasets', async (req, res) => res.json({ records: await repo.listDatasets(req.principal!.id, can(req.principal!.roles, 'dataset.review')) })));
   router.post('/datasets', requireCapability('dataset.import'), boundary('dataset_import', async (req, res) => {
     const document = validateDataset(req.body); checkProviderProfile(document, service.profile);
@@ -33,17 +39,34 @@ export function buildWorkbenchRouter(repo: WorkbenchRepository, service: Workben
   router.get('/figures', boundary('figures', (req, res) => res.json({ figures: repo.figures(req.principal!.id) })));
   router.post('/figures', requireCapability('figure.manage'), boundary('figure_save', async (req, res) => {
     const { spec, favorite } = z.object({ spec: FigureSchema, favorite: z.boolean() }).strict().parse(req.body);
-    checkFigureProfile(spec, service.profile); res.status(201).json({ figure: await repo.saveFigure(req.principal!.id, spec, favorite, requestId()) });
+    service.profileForFigure(spec); res.status(201).json({ figure: await repo.saveFigure(req.principal!.id, spec, favorite, requestId()) });
+  }));
+  router.post('/figures/restore', requireCapability('figure.manage'), boundary('figure_restore', async (req, res) => {
+    const body = z.object({ figure: FigureSchema, profile: z.unknown() }).strict().parse(req.body);
+    const profile = validateWorkbenchProfile(body.profile); checkFigureProfile(body.figure, profile);
+    // Uploaded receipts or results never grant access or approve a dataset.
+    const verified = await repo.requireFigure(body.figure, req.principal!.id);
+    repo.archiveProfile(profile);
+    repo.audit(req.principal!.id, 'figure.restore', verified.record.id, requestId(), { profileHash: profile.contentHash, datasetHash: verified.record.contentHash });
+    res.json({ figure: verified.spec, profile, dataset: verified.record });
   }));
   router.post('/export', boundary('figure_export', async (req, res) => {
-    const { figure, format } = z.object({ figure: FigureSchema, format: z.enum(['csv', 'json', 'svg', 'analysis']) }).strict().parse(req.body);
-    checkFigureProfile(figure, service.profile); const { record, spec, result } = await repo.requireFigure(figure, req.principal!.id);
-    if (format === 'svg' && spec.channels.facet && new Set(filterRows(record.document, spec).map(r => r.values[spec.channels.facet!])).size > 12) throw new WorkbenchError('SVG export supports up to 12 panels. Narrow the facet filter, or export the complete JSON/CSV.');
+    const { figure, format } = z.object({ figure: FigureSchema, format: z.enum(['csv', 'json', 'svg', 'analysis', 'zip']) }).strict().parse(req.body);
+    const profile = service.profileForFigure(figure), { record, spec, result } = await repo.requireFigure(figure, req.principal!.id);
     if (format === 'analysis' && !result) throw new WorkbenchError('The figure has no verified analysis result.', 409);
-    repo.audit(req.principal!.id, 'figure.export', record.id, requestId(), { datasetHash: record.contentHash, format });
+    if (format === 'zip') {
+      const bundle = researchPackage(record, spec, profile, result);
+      repo.audit(req.principal!.id, 'figure.export', record.id, requestId(), { datasetHash: record.contentHash, format, manifestHash: bundle.manifestHash, archiveHash: bundle.sha256 });
+      tracer.result({ format, manifestHash: bundle.manifestHash, bytes: bundle.bytes.length });
+      res.setHeader('X-Package-Manifest-SHA256', bundle.manifestHash); res.setHeader('X-Package-SHA256', bundle.sha256);
+      res.attachment('watchdog-research-package.zip').type('application/zip').send(bundle.bytes); return;
+    }
+    const svg = format === 'svg' ? publicationSvg(record, spec, profile) : null;
+    repo.audit(req.principal!.id, 'figure.export', record.id, requestId(), { datasetHash: record.contentHash, profileHash: profile.contentHash, format });
     if (format === 'csv') res.type('text/csv').send(csvExport(record, spec));
+    else if (format === 'svg') res.type('image/svg+xml').send(svg);
     else if (format === 'analysis') res.json(result);
-    else res.json({ figure: spec, dataset: record, profile: service.profile, analysis: result });
+    else res.json({ figure: spec, dataset: record, profile, analysis: result });
   }));
   router.post('/methods', requireCapability('workbench.analyze'), boundary('method_prepare', async (req, res) => {
     const { figure, method } = z.object({ figure: FigureSchema, method: z.string() }).strict().parse(req.body);

@@ -512,3 +512,13 @@ Do not block on these. Proceed with the stated default and flag the assumption.
 
 Only E0 and E1 are broken into tasks in `07_EPICS_AND_TASKS.md`. Later epics are deliberately
 coarse; they will be decomposed when their turn comes, against the repository as it is then.
+
+
+### E5.4 implementation checkpoint — 2026-09-09
+
+Visualization settings now resolve immutable archived profiles; portable imports cannot restore
+source approval or someone else's analysis. Publication ZIPs retain complete source and method
+provenance with file hashes, independent verification and the actual rendered SVG. Rendering
+code is shared between browser and server. Legacy run/resource API ownership gates also apply
+to workbench-created results, preventing access through an older route. See WORKBENCH.md and
+ASTRA_PROGRESS.md for verified behavior, test evidence and remaining scope.

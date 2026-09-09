@@ -5,6 +5,8 @@ import { spawn, execFileSync, type ChildProcess } from 'node:child_process';
 import { mkdtempSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
+import { readZip } from '../../backend/watchdog_api/utils/zip';
+import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
 import { testDataset } from '../helpers/workbench';
 import { testSample, testAssertion } from '../helpers/field';
 
@@ -134,6 +136,18 @@ test('E5 browser: regional figures, 3D camera, context tools, statistics, favour
   await exportPage.setViewportSize(dimensions);
   await exportPage.locator('svg').screenshot({ path: path.join(artifacts, 'publication-figure.png') });
   await exportPage.close();
+  const packageDownload = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export research package (ZIP)', exact: true }).click();
+  await (await packageDownload).saveAs(path.join(artifacts, 'research-package.zip'));
+  const packageEntries = readZip(readFileSync(path.join(artifacts, 'research-package.zip')));
+  const manifest = JSON.parse(packageEntries.find(e => e.name === 'package-manifest.json')!.content.toString());
+  await page.getByText(new RegExp(`Research package exported.*${canonicalHash(manifest)}`)).waitFor();
+  assert.equal(packageEntries.find(e => e.name === 'figure.svg')!.content.toString(), svg);
+  const extracted = path.join(root, 'publication'); mkdirSync(extracted);
+  for (const entry of packageEntries) { const file = path.join(extracted, entry.name); mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, entry.content); }
+  const verification = execFileSync(process.execPath, [path.join(extracted, 'verify.mjs'), extracted, canonicalHash(manifest)], { encoding: 'utf8' });
+  assert.match(verification, /Matches the independently supplied/);
+  writeFileSync(path.join(artifacts, 'publication-verification.txt'), verification);
   await page.getByLabel('X channel', { exact: true }).selectOption('longitude');
   await page.getByLabel('Y channel', { exact: true }).selectOption('latitude');
   await page.getByLabel('View type', { exact: true }).selectOption('map');
@@ -149,6 +163,31 @@ test('E5 browser: regional figures, 3D camera, context tools, statistics, favour
   await page.screenshot({ path: path.join(artifacts, 'workbench-mobile.png'), fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), false, 'mobile page must not overflow horizontally');
   await page.setViewportSize({ width: 1440, height: 1050 });
+});
+
+test('E5 browser: portable figure imports restore archived profiles after a reload', async () => {
+  const entries = readZip(readFileSync(path.join(artifacts, 'research-package.zip')));
+  const workspace = JSON.parse(entries.find(e => e.name === 'workspace.json')!.content.toString());
+  workspace.profile.version = 'browser-historical-profile'; workspace.profile.palettes[0].colors[0] = '#996633';
+  const { contentHash, ...document } = workspace.profile; workspace.profile.contentHash = canonicalHash(document);
+  workspace.figure.profileHash = workspace.profile.contentHash; workspace.figure.name = 'Archived profile figure';
+  await page.goto(base + '/workbench');
+  await page.getByLabel(/Restore figure JSON or package workspace.json/).setInputFiles({ name: 'workspace.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(workspace)) });
+  await page.getByText(/Figure and historical profile restored against/).waitFor();
+  await page.getByText(/Historical visualization profile restored/).waitFor();
+  assert.ok(await page.locator('svg circle[fill="#996633"]').count() > 0);
+  await page.getByRole('button', { name: 'Save figure and settings', exact: true }).click();
+  await page.getByText(/Saved immutable figure/).waitFor(); await page.reload();
+  const option = page.getByLabel('Saved figures and favourites', { exact: true }).locator('option').filter({ hasText: 'Archived profile figure' });
+  await option.waitFor({ state: 'attached' });
+  await page.getByLabel('Saved figures and favourites', { exact: true }).selectOption((await option.getAttribute('value'))!);
+  await page.getByText(/Historical visualization profile restored/).waitFor();
+  assert.equal(await page.getByLabel('View type', { exact: true }).inputValue(), 'scatter3d');
+  assert.ok(await page.locator('svg circle[fill="#996633"]').count() > 0);
+  const restored = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export research package (ZIP)', exact: true }).click();
+  await (await restored).saveAs(path.join(artifacts, 'restored-research-package.zip'));
+  const restoredEntries = readZip(readFileSync(path.join(artifacts, 'restored-research-package.zip')));
+  assert.deepEqual(JSON.parse(restoredEntries.find(e => e.name === 'profile.json')!.content.toString()), workspace.profile);
 });
 
 test('E4 browser: developer can inspect a persisted trace and download diagnostic evidence', async () => {

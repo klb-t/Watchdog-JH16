@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAccess } from '../lib/access';
-import { workbenchApi, downloadText } from '../lib/workbench_client';
+import { workbenchApi, downloadText, downloadBlob } from '../lib/workbench_client';
 import { defaultFigure, filterRows, type DatasetRecord, type FigureSpec, type SavedFigure, type WorkbenchProfile, selectionIdentity } from '../../shared/workbench';
 import { DatasetImport } from '../components/DatasetImport';
 import { FigureCanvas } from '../components/FigureCanvas';
-import tiers from '../../config/evidence/tier-display.json';
 
 export function Workbench() {
   const access = useAccess(), svgRef = useRef<SVGSVGElement>(null);
-  const [profile, setProfile] = useState<WorkbenchProfile | null>(null), [records, setRecords] = useState<DatasetRecord[]>([]), [saved, setSaved] = useState<SavedFigure[]>([]);
+  const [currentProfile, setCurrentProfile] = useState<WorkbenchProfile | null>(null), [records, setRecords] = useState<DatasetRecord[]>([]), [saved, setSaved] = useState<SavedFigure[]>([]);
+  const [archivedProfile, setArchivedProfile] = useState<WorkbenchProfile | null>(null);
   const [datasetId, setDatasetId] = useState(''), [spec, setSpecState] = useState<FigureSpec | null>(null);
   function setSpec(update: FigureSpec | null | ((value: FigureSpec | null) => FigureSpec | null)) {
     setSpecState(previous => {
@@ -22,12 +22,20 @@ export function Workbench() {
   const [filterColumn, setFilterColumn] = useState(''), [filterValue, setFilterValue] = useState(''), [filterEnd, setFilterEnd] = useState(''), [filterOperator, setFilterOperator] = useState('equals');
   const [menu, setMenu] = useState(false), [inspected, setInspected] = useState<DatasetRecord['document']['rows'][number] | null>(null);
   const [method, setMethod] = useState<any>(null), [methodReviewed, setMethodReviewed] = useState(false), [analysis, setAnalysis] = useState<any>(null), [playing, setPlaying] = useState(false);
+  const profile = spec && spec.profileHash !== currentProfile?.contentHash ? (archivedProfile?.contentHash === spec.profileHash ? archivedProfile : null) : currentProfile;
+  const tiers = profile?.evidenceDisplay;
   const record = records.find(r => r.id === datasetId), columns = record?.document.columns ?? [];
   async function load() {
     const [p, d, f] = await Promise.all([workbenchApi('profile'), workbenchApi('datasets'), workbenchApi('figures')]);
-    setProfile(p); setRecords(d.records); setSaved(f.figures);
+    setCurrentProfile(p); setRecords(d.records); setSaved(f.figures);
   }
   useEffect(() => { load().catch(e => setError(e.message)); }, []);
+  useEffect(() => {
+    if (!spec || spec.profileHash === currentProfile?.contentHash || spec.profileHash === archivedProfile?.contentHash) return;
+    let active = true;
+    workbenchApi(`profiles/${spec.profileHash}`).then(p => { if (active) setArchivedProfile(p); }).catch(e => { if (active) setError(e.message); });
+    return () => { active = false; };
+  }, [spec?.profileHash, currentProfile?.contentHash, archivedProfile?.contentHash]);
   useEffect(() => { setMethod(null); setAnalysis(null); }, [spec?.channels.x, spec?.channels.y, spec?.channels.time, spec?.filters, spec?.selectedIds, spec?.timeValue, datasetId]);
   const frames = record && spec?.channels.time ? [...new Set(record.document.rows.map(r => r.values[spec.channels.time!]).filter(v => v !== null))].sort((a, b) => typeof a === 'number' && typeof b === 'number' ? a - b : String(a).localeCompare(String(b))) : [];
   useEffect(() => {
@@ -36,22 +44,32 @@ export function Workbench() {
     return () => clearInterval(timer);
   }, [playing, datasetId, spec?.channels.time]);
   function selectDataset(id: string) {
-    const next = records.find(r => r.id === id); setDatasetId(id); setSpec(next?.approvalState === 'APPROVED' ? defaultFigure(next, profile!) : null);
+    const next = records.find(r => r.id === id); setDatasetId(id); setSpec(next?.approvalState === 'APPROVED' ? defaultFigure(next, currentProfile!) : null);
     setReviewed(false); setInspected(null); setShare(next?.visibility === 'shared_aggregate'); setError(''); setPlaying(false);
   }
   async function act(fn: () => Promise<void>) { setBusy(true); setError(''); try { await fn(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }
   const style = <K extends keyof FigureSpec['style']>(key: K, value: FigureSpec['style'][K]) => setSpec(s => s ? { ...s, style: { ...s.style, [key]: value } } : s);
   const channel = (key: keyof FigureSpec['channels'], value: string) => setSpec(s => s ? { ...s, channels: { ...s.channels, [key]: value || null }, ...(key === 'time' ? { timeValue: null } : {}) } : s);
-  async function exportFigure(format: 'svg' | 'csv' | 'json') {
+  async function exportFigure(format: 'svg' | 'csv' | 'json' | 'zip') {
     if (!spec) return;
     setPlaying(false);
-    const capturedSvg = svgRef.current?.outerHTML;
-    const data = await workbenchApi('export', { figure: spec, format }, format === 'csv');
-    if (format === 'svg') {
-      if (!capturedSvg) throw new Error('No rendered figure to export.');
-      downloadText('watchdog-figure.svg', '<?xml version="1.0" encoding="UTF-8"?>\n' + capturedSvg, 'image/svg+xml');
-    } else downloadText(`watchdog-figure.${format}`, format === 'csv' ? data : JSON.stringify(data, null, 2), format === 'csv' ? 'text/csv' : 'application/json');
-    setNotice(`Exported ${format.toUpperCase()} with data identity and provenance.`);
+    const data = await workbenchApi('export', { figure: spec, format }, format === 'zip' ? 'blob' : format !== 'json');
+    if (format === 'zip') {
+      downloadBlob('watchdog-research-package.zip', data.blob);
+      setNotice(`Research package exported. Keep this manifest SHA-256 separately for verification: ${data.manifestHash}`);
+    } else {
+      downloadText(`watchdog-figure.${format}`, format === 'json' ? JSON.stringify(data, null, 2) : data, format === 'svg' ? 'image/svg+xml' : format === 'csv' ? 'text/csv' : 'application/json');
+      setNotice(`Exported ${format.toUpperCase()} with data identity and provenance.`);
+    }
+  }
+  async function restoreFile(file: File) {
+    if (file.size > 2_000_000) throw new Error('Figure JSON exceeds the 2 MB import limit. Use workspace.json from the research package.');
+    const input = JSON.parse(await file.text());
+    const restored = await workbenchApi('figures/restore', { figure: input.figure, profile: input.profile });
+    setPlaying(false); setInspected(null); setArchivedProfile(restored.profile);
+    setRecords(rows => [...rows.filter(r => r.id !== restored.dataset.id), restored.dataset]);
+    setDatasetId(restored.dataset.id); setSpec(restored.figure);
+    setNotice('Figure and historical profile restored against the currently approved source data. Save to add it to your figures.');
   }
   const tools = () => <div className="flex flex-wrap gap-2" aria-label="Figure tools">
     <button className="field-button" disabled={!spec} onClick={() => setSpec(s => s ? { ...s, selectedIds: [] } : s)}>Clear selection</button>
@@ -59,19 +77,19 @@ export function Workbench() {
       const data = await workbenchApi('methods', { figure: spec, method: m.id }); setMethod(data.method); setMethodReviewed(false); setAnalysis(null);
       setNotice('Analysis specification prepared. Review its inputs, missing-value policy and assumptions before approval.');
     }); }}>{m.label}</button>)}
-    {(['svg', 'csv', 'json'] as const).map(f => <button className="field-button" disabled={!spec || busy} key={f} onClick={() => act(() => exportFigure(f))}>Export {f.toUpperCase()}</button>)}
+    {(['svg', 'csv', 'json', 'zip'] as const).map(f => <button className="field-button" disabled={!spec || busy} key={f} onClick={() => act(() => exportFigure(f))}>{f === 'zip' ? 'Export research package (ZIP)' : `Export ${f.toUpperCase()}`}</button>)}
   </div>;
   return <div className="field-page"><div className="flex flex-wrap justify-between gap-3"><div><h1>Visual workbench</h1><p className="text-slate-600">Regional signals, multi-dimensional figures and reproducible analysis.</p></div>
     <button className="field-button" onClick={() => act(load)} disabled={busy}>Refresh data and saved figures</button></div>
-    {error && <p className="field-error" role="alert">{error}</p>}{notice && <p role="status" className="mt-3 text-sm text-slate-600">{notice}</p>}
-    {!profile ? <p role="status" className="mt-4">Loading workbench profiles…</p> : <>
+    {error && <p className="field-error" role="alert">{error}</p>}{notice && <p role="status" className="mt-3 text-sm text-slate-600 break-all">{notice}</p>}
+    {!currentProfile ? <p role="status" className="mt-4">Loading workbench profiles…</p> : <>
       <div className="field-panel grid md:grid-cols-2 gap-4"><label className="field-control">Dataset<select aria-label="Dataset" value={datasetId} onChange={e => selectDataset(e.target.value)}><option value="">Select a dataset</option>{records.map(r => <option key={r.id} value={r.id}>{r.document.name} · {r.approvalState} · {r.visibility}</option>)}</select></label>
         <label className="field-control">Saved figures and favourites<select aria-label="Saved figures and favourites" value="" onChange={e => { const selected = saved.find(f => f.id === e.target.value); if (!selected) return;
           const data = records.find(r => r.id === selected.spec.datasetId && r.contentHash === selected.spec.datasetHash && r.approvalState === 'APPROVED');
           if (!data) { setError('The pinned dataset is unavailable or its approval was revoked. The figure will not render against replacement data.'); return; }
-          setPlaying(false); setInspected(null); setDatasetId(data.id); setSpec(selected.spec); setNotice(`Restored exact figure ${selected.hash}.`);
+          setError(''); setPlaying(false); setInspected(null); setDatasetId(data.id); setSpec(selected.spec); setNotice(`Restored exact figure ${selected.hash}.`);
         }}><option value="">Restore a saved figure</option>{saved.map(f => <option key={f.id} value={f.id}>{f.favorite ? '★ ' : ''}{f.spec.name} · {f.savedAt.slice(0, 10)}</option>)}</select></label></div>
-      {access.capabilities.includes('dataset.import') && <DatasetImport profile={profile} busy={busy} onImport={document => { void act(async () => {
+      {access.capabilities.includes('dataset.import') && <DatasetImport profile={currentProfile} busy={busy} onImport={document => { void act(async () => {
         const { record: imported } = await workbenchApi('datasets', document); await load(); setDatasetId(imported.id); setSpec(null); setReviewed(false); setShare(false);
         setNotice('Dataset imported as proposed. Inspect every mapping before approval.');
       }); }} />}
@@ -80,16 +98,19 @@ export function Workbench() {
         <p className="text-sm mt-2"><a href={record.document.source.url}>{record.document.source.publisher} · {record.document.source.title}</a> · retrieved {record.document.source.retrievedAt} · {record.document.rows.length} records</p>
         <p className="text-sm">Measure: {record.document.measure} · normalization: {record.document.normalization} · language: {record.document.languageMeaning}</p>
         <p className="text-sm">Comparison scope: {record.document.comparisonScope}</p>
-        <div className="field-warning text-sm">{profile.providerProfiles.find(p => p.id === record.document.providerProfileId)?.notices.map(n => <p key={n}>{n}</p>)}</div>
+        <div className="field-warning text-sm">{(profile ?? currentProfile).providerProfiles.find(p => p.id === record.document.providerProfileId)?.notices.map(n => <p key={n}>{n}</p>)}</div>
         <details><summary>Source mapping, column definitions and full provenance</summary><pre className="max-h-80 overflow-auto bg-slate-50 p-3 mt-3 text-xs">{JSON.stringify(record, null, 2)}</pre></details>
         {access.capabilities.includes('dataset.approve') && record.ownerId === access.principalId && <div className="mt-4 space-y-3">
           {record.approvalState === 'PROPOSED' ? <><label className="flex gap-2 text-sm"><input type="checkbox" checked={reviewed} onChange={e => setReviewed(e.target.checked)} />I checked the source, column mapping, units, missingness, evidence tiers and comparison scope.</label>
             <label className="flex gap-2 text-sm"><input type="checkbox" checked={share} onChange={e => setShare(e.target.checked)} />Share this reviewed aggregate dataset with institutional profiles.</label>
-            <button className="field-button primary" disabled={!reviewed || busy} onClick={() => act(async () => { const { record: approved } = await workbenchApi(`datasets/${record.id}/approve`, { expectedHash: record.contentHash, shareAggregate: share }); await load(); setSpec(defaultFigure(approved, profile!)); setReviewed(false); })}>Approve this dataset mapping</button></>
+            <button className="field-button primary" disabled={!reviewed || busy} onClick={() => act(async () => { const { record: approved } = await workbenchApi(`datasets/${record.id}/approve`, { expectedHash: record.contentHash, shareAggregate: share }); await load(); setSpec(defaultFigure(approved, currentProfile!)); setReviewed(false); })}>Approve this dataset mapping</button></>
             : <button className="field-button" disabled={busy} onClick={() => act(async () => { await workbenchApi(`datasets/${record.id}/revoke`, {}); await load(); setSpec(null); })}>Revoke dataset approval</button>}
         </div>}
       </section>}
-      {record?.approvalState === 'APPROVED' && spec && <>
+      {access.capabilities.includes('figure.manage') && <label className="field-control field-panel">Restore figure JSON or package workspace.json<input type="file" accept=".json,application/json" disabled={busy} onChange={e => { const file = e.target.files?.[0]; e.target.value = ''; if (file) void act(() => restoreFile(file)); }} /><span className="text-sm text-slate-600">Restores the saved profile and settings against data you can currently access.</span></label>}
+      {spec && !profile && <p role="status" className="field-panel">Loading the archived visualization profile…</p>}
+      {record?.approvalState === 'APPROVED' && spec && profile && <>
+        {profile.contentHash !== currentProfile.contentHash && <p className="field-panel text-sm">Historical visualization profile restored · {profile.version} · {profile.contentHash.slice(0, 16)}</p>}
         <section className="field-panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2>Figure builder</h2><button className="field-button" onClick={() => setMenu(!menu)} aria-expanded={menu}>Tools / context menu</button></div>
           <p className="text-sm text-slate-600 mt-2">Hover or focus a mark to inspect its source values. Click or press Enter to select it. Right-click, Shift+F10 or the Tools button opens the same palette. Statistics use the selected rows, or all filtered rows when no selection is made.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">

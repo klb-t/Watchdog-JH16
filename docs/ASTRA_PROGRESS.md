@@ -114,3 +114,28 @@ Browser screenshots also prompted a visualization correction: map/3D discontinui
 local outlined marks, not vertical geographic lines. Whole-dataset scale domains keep colors,
 size, alpha and numeric axes stable during animation; explicit filtered rescaling remains a
 saved option. A regression verifies that narrowing a time frame preserves a record's encoding.
+
+
+## 2026-09-09 — publication package and ownership review
+
+Previous workbench head `ddae00a` passed GitHub Actions run `34322096020`: 264 tests passed,
+none failed or skipped, including Chromium production flows and JH16 demo.
+
+E5.4 now archives visualization profiles, automatically restores historical settings, imports
+portable figure JSON and exports a deterministic research ZIP. Shared React SVG rendering is
+used in both the UI and server export. The package contains a file inventory and a dependency-free
+verifier, and its analysis inputs reproduce the stored result through the existing executor.
+Profile/configuration changes, file corruption, unsupported renderers, ownership and revoked
+source approval have explicit regression coverage. No received receipt grants new access.
+
+Publication review exposed a real bypass: legacy run and raw-blob endpoints checked capabilities
+but not the owner, and the old method approval accepted a client-supplied reviewer. Those routes
+now enforce ownership and exact-hash session-bound review. New legacy runs/artifacts inherit
+the authenticated principal. Acquisition-only and analysis-only execution also had illegal
+lifecycle skips; explicit no-op/reuse stages now preserve the existing state machine.
+
+Validation before publication: TypeScript and production build passed; all 258 local
+unit/contract/scientific/integration tests passed. New Chromium scenarios verify ZIP download,
+standalone verification, historical-profile import, save and reload. Their CI result must be
+checked after publication. The SVG is the portable figure snapshot; automatic paper writing,
+advanced methods/layers and live-source expansion remain unfinished as recorded in the ledger.

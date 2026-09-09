@@ -172,8 +172,14 @@ export class RunOrchestrator {
           this.obsRepo.insertMany(runId, annotated);
         }
 
+        if (runType === 'ANALYSIS') {
+          // Existing observations are already normalized. Retain the lifecycle
+          // stage, with an explicit reuse event instead of skipping it.
+          this.runRepo.updateStatus(runId, 'NORMALIZING');
+          tracer.emit('NORMALIZATION_REUSED', { sourceRunId: config.source_run_id ?? runId });
+        }
+        this.runRepo.updateStatus(runId, 'ANALYZING');
         if (runType === 'ANALYSIS' || runType === 'PIPELINE') {
-          this.runRepo.updateStatus(runId, 'ANALYZING');
           stateAtFailure = 'LOADING_OBSERVATIONS';
           const obsRunId = config.source_run_id || runId;
           const observations = this.obsRepo.getByRunId(obsRunId);
@@ -192,7 +198,7 @@ export class RunOrchestrator {
             executorVersion: analyzer.analyzer_version,
           });
           this.anRepo.insertMany(analysisRunId, results);
-        }
+        } else tracer.emit('ANALYSIS_NOT_REQUESTED', { runType });
 
         this.runRepo.updateStatus(runId, 'EXPORTING');
 
@@ -298,7 +304,7 @@ export class RunOrchestrator {
     tracer.emit('MANIFEST_FINALIZED', { runId, sha256 });
   }
 
-  submitJob(type: 'ACQUISITION' | 'ANALYSIS' | 'PIPELINE', config: any): string {
+  submitJob(type: 'ACQUISITION' | 'ANALYSIS' | 'PIPELINE', config: any, ownerPrincipalId?: string): string {
     // E1.25: the effective configuration is hashed at submission, so the
     // manifest can name exactly which configuration produced the run. A run
     // whose config is unidentifiable is not reproducible.
@@ -308,6 +314,7 @@ export class RunOrchestrator {
       presetId: config.preset_id,
       presetVersion: config.preset_version,
       effectiveConfigHash: canonicalHash(config),
+      ownerPrincipalId,
     });
     setImmediate(() => {
       this.executeRun(runId).catch(console.error);

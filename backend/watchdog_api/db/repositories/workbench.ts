@@ -1,5 +1,7 @@
 import type { Database } from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
+import { validateWorkbenchProfile } from '../../config/workbench';
+import type { WorkbenchProfile } from '../../../../shared/workbench';
 import type { ObjectStore } from '../../storage/object_store';
 import { canonicalHash, canonicalizeJson } from '../../domain/canonical';
 import { DatasetRecord, FigureSpec, SavedFigure, validateDataset, FigureSchema, checkFigureBindings, selectionIdentity } from '../../../../shared/workbench';
@@ -10,6 +12,19 @@ import { assertTransition, type RunState } from '../../domain/run_state';
 export class WorkbenchError extends Error { readonly code = 'workbench_error'; constructor(message: string, readonly status = 400) { super(message); } }
 export class WorkbenchRepository {
   constructor(private readonly db: Database, readonly store: ObjectStore) {}
+  archiveProfile(input: WorkbenchProfile): WorkbenchProfile {
+    const profile = validateWorkbenchProfile(input);
+    this.db.prepare('INSERT OR IGNORE INTO workbench_profiles VALUES (?,?,?)')
+      .run(profile.contentHash, canonicalizeJson(profile), new Date().toISOString());
+    return this.getProfile(profile.contentHash)!;
+  }
+  getProfile(hash: string): WorkbenchProfile | null {
+    const row = this.db.prepare('SELECT profile_json FROM workbench_profiles WHERE content_hash=?').get(hash) as { profile_json: string } | undefined;
+    if (!row) return null;
+    const profile = validateWorkbenchProfile(JSON.parse(row.profile_json));
+    if (profile.contentHash !== hash) throw new WorkbenchError('Archived visualization profile integrity mismatch.', 409);
+    return profile;
+  }
   async importDataset(input: unknown, actor: string, requestId: string): Promise<DatasetRecord> {
     const doc = validateDataset(input), contentHash = canonicalHash(doc), id = `dataset-${contentHash}-${canonicalHash(actor).slice(0, 10)}`;
     const bytes = Buffer.from(canonicalizeJson(doc)), uri = await this.store.put(`raw/${contentHash}`, bytes);

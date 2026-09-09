@@ -148,7 +148,7 @@ test('E1.22: a proposal renders red step by step and cannot execute until approv
   assert.strictEqual(after.approval_state, 'APPROVED');
 });
 
-test('E1.22: approval requires a named actor — the server refuses an anonymous one', async () => {
+test('E1.22: approval refuses a client-supplied actor and a missing review hash', async () => {
   const res = await fetch(`${baseUrl}/api/method-specs/jh2016-faithful/approve`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

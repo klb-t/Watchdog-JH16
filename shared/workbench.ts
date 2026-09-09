@@ -84,6 +84,7 @@ export function selectionIdentity(spec: FigureSpec, columns: string[]) {
 }
 export function checkFigureProfile(spec: FigureSpec, profile: WorkbenchProfile) {
   if (spec.profileHash !== profile.contentHash) throw new WorkbenchInputError('This figure pins a different visualization profile. Restore that profile before rendering or exporting; settings will not be silently substituted.');
+  if (!['scatter', 'line', 'bar', 'scatter3d', 'map'].includes(spec.renderer)) throw new WorkbenchInputError(`Renderer implementation '${spec.renderer}' is unavailable in this release.`);
   if (!profile.renderers.some(r => r.id === spec.renderer) || !profile.palettes.some(p => p.id === spec.style.palette)) throw new WorkbenchInputError('Unknown renderer or palette profile.');
   if (spec.renderer === 'scatter3d' && !spec.channels.z) throw new WorkbenchInputError('The 3D renderer requires a Z column.');
   if (spec.renderer === 'map' && (spec.style.xScale !== 'linear' || spec.style.yScale !== 'linear')) throw new WorkbenchInputError('Geographic coordinates must use linear longitude/latitude axes.');

@@ -48,11 +48,15 @@ Saved figures are immutable owned snapshots. Favourites can restore an exact fig
 its presentation with explicitly chosen current data channels. Settings pin the dataset and
 visual-profile hashes, renderer version, filters/selection, camera, labels, palette, scales,
 alpha, time and result reference. Changing statistical inputs clears the attached result.
-Changing style leaves the mathematical method identity intact. A changed profile must be
-restored before an old figure renders; no silent palette substitution is permitted. Exports
-include the full profile to make that restoration possible.
+Changing style leaves the mathematical method identity intact. Profile snapshots are archived
+by hash in an append-only table. Saved figures and favourite styles automatically load their
+historical profile after configuration changes, including evidence labels and colors. Missing
+or unavailable renderer implementations fail explicitly; there is no silent substitution.
+Restore an exported figure JSON or the package's `workspace.json` through the file control.
+Restoration checks the exact dataset's current access and approval, and ownership of an attached
+analysis. It restores settings; it never imports or approves a dataset using an old receipt.
 
-SVG carries vector marks, metadata, source identity, missingness and fully opaque evidence-tier
+Browser figures and server-generated SVG exports use the same shared renderer. SVG carries vector marks, metadata, source identity, missingness and fully opaque evidence-tier
 and mapping-approval labels. It supports up to 12 panels; a larger preview is labelled and SVG
 export is refused until filtered. JSON retains the complete figure, dataset, profile and
 verified attached analysis. CSV exports the filtered/selected raw rows with missing reasons,
@@ -60,6 +64,24 @@ quality flags, tiers and provenance. Analysis downloads include method, typed in
 source context and a hash-checked manifest. Existing `runs`, `run_steps`, `analysis_runs`,
 `analysis_results`, `artifacts` and `manifests` hold the execution trail; no parallel numerical
 engine exists. Runs and manifests are immutable; reruns create new execution identities.
+
+**Export research package (ZIP)** collects the standalone SVG, full figure and profile,
+workspace restoration snapshot, source dataset and approval receipt, selected CSV and original
+CSV when supplied. An attached result includes the method, typed inputs, result and immutable
+execution manifest. Maps include the attributed basemap snapshot. A manifest inventories every
+file with its byte length and SHA-256; identical export snapshots produce identical ZIP bytes.
+The export records both ZIP and manifest hashes in the audit trail and exposes the manifest
+hash in the UI so it can be kept independently.
+
+After extraction, `node verify.mjs . <manifest-sha256>` verifies the inventory and linked
+figure/data/profile/result identities with no network, database or external packages. Without
+an independently recorded hash it verifies internal consistency, not authorship. The script
+does not recompute statistics; integration tests separately rerun the recorded executor on
+archived inputs and require an identical artifact. The SVG is the portable rendered snapshot;
+future renderer-code changes require version-aware support to regenerate historical geometry.
+The package is downloaded, not automatically deposited in a publication repository. It is not
+a written scientific paper. Raw `source.csv` can contain source formulas; `selected.csv` escapes
+spreadsheet formula prefixes in text while preserving signed numeric measurements.
 
 The canonical evidence palette lives in `config/evidence/tier-display.json`, shared with the
 responder. Data color and alpha channels never replace evidence/review labels or combine them
@@ -72,7 +94,13 @@ events/errors and download redacted ZIP bundles. Browser history keeps only 60 r
 entries; server view lists up to 200 traces from seven date directories. Request bodies, query
 strings and credentials are not captured in browser metadata. Mode changes are audited;
 the recorder mode applies to the current running process. Trace spans share an ordered counter
-even when operations overlap. Interactive trace files over 4 MB require bundle inspection.
+even when operations overlap. Trace previews over 4 MB are explicitly truncated at complete records; the full ZIP remains available.
+
+Private runs are owner-scoped on every legacy results/export/narrative route as well as the
+workbench routes. Raw blobs require a fetch event belonging to that owner; deduplication never
+grants access by itself. New runs and artifacts inherit the authenticated owner. Legacy method
+review is limited to the shipped JH2016 method, pins the displayed hash, identifies the reviewer
+from the session and audits the approval. Workbench methods retain their dataset-aware gate.
 
 This slice does not implement a transform DAG, advanced/causal statistics, uncertainty bands,
 choropleths, route graphs, a live Trends feed, sentiment inference or automated paper writing.

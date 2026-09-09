@@ -352,6 +352,12 @@ condition; PostgreSQL and S3 migration; a real worker process.
   verify researcher/responder separation, combined profiles, restricted institutional access,
   admin/developer distinction and the legacy `dev` alias. Supersedes the old ladder below.
 
+- [x] **E4.4 — Run/resource ownership.** Legacy run lists and all descendants enforce ownership;
+  raw blobs require an owned fetch event. New runs/artifacts inherit the signed-in principal.
+  Source-run reuse is owner-gated. Legacy approval is scoped to the shipped method, requires
+  the displayed hash, derives the reviewer from the session and writes an audit event.
+  HTTP tests include workbench-result bypass attempts and separate acquisition/analysis runs.
+
 Contents: OIDC behind `IdentityProvider`; role ladder `viewer < researcher < admin < dev`
 (recovered pre-MVP requirement, folded in here per the conflict resolution in
 `00_STATE_AND_DECISIONS.md`); RBAC capability matrix; migration of `local-user` rows; access
@@ -376,6 +382,12 @@ requests and admin approval; per-source permissions; developer diagnostics surfa
 - [x] **E4.3 — Developer diagnostics UI.** Capability-gated mode control, recent request
   metadata, persisted traces/errors and redacted ZIP download. Mode changes are audited;
   concurrent spans retain unique ordered sequence numbers.
+- [x] **E5.4 — Reproducible publication package.** WORM profile snapshots; automatic historical
+  palette/style restoration and portable figure JSON import. Browser and server exports share
+  one SVG renderer. Deterministic ZIP includes full data, figure, profile, source CSV, selected
+  rows and optional method/inputs/result/manifest. Standalone verification checks checksums and
+  linked identities. Real DB/HTTP tests cover configuration changes, tampering, revocation,
+  private-result isolation and numerical replay. Chromium import/download/reload is a CI gate.
 - [ ] **E5 remainder.** Transform DAG, advanced reviewed methods, Python sidecar, uncertainty
   bands, choropleths/graph layers, route-hypothesis workflow, and the full paper pipeline.
   Their presence in the following inventory is not an implementation claim.

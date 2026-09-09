@@ -7,8 +7,10 @@ import { RunRepository } from '../db/repositories/runs';
 import { ObservationRepository, AnalysisResultRepository } from '../db/repositories/data';
 import { ArtifactRepository } from '../db/repositories/artifacts';
 import { AcquisitionRepository } from '../db/repositories/acquisition';
-import { db } from '../db/client';
-import { store } from '../storage/client';
+import type { ObjectStore } from '../storage/object_store';
+import { z } from 'zod';
+import { AuditRepository } from '../db/repositories/audit';
+import { tracer } from '../utils/tracer';
 import { RunSubmissionSchema } from './schemas';
 import { MethodSpecRepository } from '../db/repositories/method_specs';
 import { capabilityRegistry } from '../sources/provider_registry';
@@ -22,7 +24,8 @@ import { MethodSpec } from '../domain/method_spec';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
-export const apiRouter = Router();
+export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository) {
+const apiRouter = Router();
 
 const orchestrator = new RunOrchestrator(db, store);
 const runRepo = new RunRepository(db);
@@ -31,6 +34,13 @@ const anRepo = new AnalysisResultRepository(db);
 const artRepo = new ArtifactRepository(db);
 const acqRepo = new AcquisitionRepository(db, store);
 const specRepo = new MethodSpecRepository(db);
+
+// All descendants, including exports and provider narratives, share the owner gate.
+apiRouter.use('/runs/:id', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  if (!req.principal || !runRepo.getOwnedRun(req.params.id, req.principal.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+  next();
+});
 
 function readConfig(...p: string[]) {
   return JSON.parse(fs.readFileSync(path.join(process.cwd(), ...p), 'utf-8'));
@@ -46,14 +56,16 @@ apiRouter.get('/analyzers', requireCapability('run.view'), (req, res) => {
 });
 
 apiRouter.get('/runs', requireCapability('run.view'), (req, res) => {
-  const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
-  res.json({ runs: runRepo.getRuns(limit) });
+  const limit = Math.min(200, Math.max(1, Number(req.query.limit) || 50));
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ runs: runRepo.getRuns(limit, req.principal!.id) });
 });
 
 apiRouter.post('/runs', requireCapability('run.create'), (req, res, next) => {
   try {
     const parsed = RunSubmissionSchema.parse(req.body);
-    const runId = orchestrator.submitJob(parsed.type, parsed.config);
+    if (parsed.config.source_run_id && !runRepo.getOwnedRun(parsed.config.source_run_id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    const runId = orchestrator.submitJob(parsed.type, parsed.config, req.principal!.id);
     res.status(202).json({ run_id: runId, status: 'QUEUED' });
   } catch (e) {
     next(e);
@@ -93,10 +105,12 @@ apiRouter.get('/runs/:id/fetch-events', requireCapability('run.view'), (req, res
 
 apiRouter.get('/artifacts/:id', requireCapability('run.view'), async (req, res, next) => {
   try {
-    const blob = acqRepo.getRawBlob(req.params.id);
+    const blob = acqRepo.getOwnedRawBlob(req.params.id, req.principal!.id);
     if (!blob) return res.status(404).json({ error: 'NOT_FOUND' });
     
     const data = await store.get(blob.object_uri);
+    if (!acqRepo.getOwnedRawBlob(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Type', 'application/octet-stream');
     res.send(data);
   } catch (e) {
@@ -131,18 +145,20 @@ apiRouter.get('/method-specs/jh2016-faithful', requireCapability('run.view'), (r
   } catch (e) { next(e); }
 });
 
-/**
- * One human action approves one spec. `approved_by` is required and has no
- * default: there is deliberately no path that approves without a named actor,
- * and no bulk approve.
- */
+/** The legacy review surface owns only the shipped JH2016 method.
+ * Workbench methods must pass their dataset/selection and expected-hash gate. */
 apiRouter.post('/method-specs/:id/approve', requireCapability('method.approve'), (req, res, next) => {
   try {
-    const approvedBy = String(req.body?.approved_by ?? '').trim();
-    if (!approvedBy) {
-      return res.status(400).json({ error: 'validation_error', message: "'approved_by' is required" });
-    }
-    specRepo.approve(req.params.id, approvedBy, new Date().toISOString());
+    if (req.params.id !== 'jh2016-faithful') return res.status(404).json({ error: 'NOT_FOUND' });
+    const body = z.object({ expectedHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().safeParse(req.body);
+    if (!body.success) return res.status(400).json({ error: 'validation_error', message: 'Review requires the displayed expectedHash; the actor comes from the signed-in session.' });
+    const row = specRepo.get(req.params.id);
+    if (!row) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (row.spec_hash !== body.data.expectedHash || hashMethodSpec(JSON.parse(row.spec_json)) !== body.data.expectedHash)
+      return res.status(409).json({ error: 'stale_review', message: 'Reload the method before approving its changed content.' });
+    specRepo.approve(req.params.id, req.principal!.id, new Date().toISOString(), body.data.expectedHash);
+    audit.append(req.principal!.id, 'method.approve', 'method_spec', req.params.id,
+      tracer.getContext()?.request_id ?? 'legacy-review', { expectedHash: body.data.expectedHash });
     res.json({ id: req.params.id, approval_state: specRepo.readApprovalState(req.params.id) });
   } catch (e) { next(e); }
 });
@@ -302,3 +318,6 @@ apiRouter.post('/runs/:id/narrative/generate',
     res.json({ narrative });
   } catch (e) { next(e); }
 });
+
+return apiRouter;
+}

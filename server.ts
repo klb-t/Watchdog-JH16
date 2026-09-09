@@ -7,12 +7,12 @@ import { loadWorkbenchProfile } from './backend/watchdog_api/config/workbench';
 import { buildWorkbenchRouter } from './backend/watchdog_api/api/workbench_routes';
 import path from 'path';
 import url from 'node:url';
-import { apiRouter } from './backend/watchdog_api/api/routes';
+import { buildApiRouter } from './backend/watchdog_api/api/routes';
 import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middleware';
 import { buildIdentity, assertAuthSafeForEnvironment, readAuthConfig } from './backend/watchdog_api/identity';
 import { buildAuthRouter, principalMiddleware } from './backend/watchdog_api/api/auth_routes';
 import { PrincipalRepository } from './backend/watchdog_api/db/repositories/principals';
-import { sqlite, dbPath } from './backend/watchdog_api/db/client';
+import { db, sqlite, dbPath } from './backend/watchdog_api/db/client';
 import { assertStorageSafeForEnvironment } from './backend/watchdog_api/storage/durability';
 import { storeBackend, storePath } from './backend/watchdog_api/storage/client';
 import { store } from './backend/watchdog_api/storage/client';
@@ -70,7 +70,7 @@ export async function configureApp() {
   const workbench = new WorkbenchRepository(sqlite, store);
   app.use('/api/workbench', buildWorkbenchRouter(workbench, new WorkbenchService(workbench, loadWorkbenchProfile())));
   app.use('/api/diagnostics', buildDiagnosticRouter(new AuditRepository(sqlite)));
-  app.use('/api', apiRouter);
+  app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite)));
   app.use(errorHandler);
 
   return { app, identity };

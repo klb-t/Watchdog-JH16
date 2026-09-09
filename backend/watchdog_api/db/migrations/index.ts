@@ -4,6 +4,7 @@ import { MIGRATION_002_ASSERTIONS } from './002_assertions';
 import { MIGRATION_003_QUERY_PLAN_IDENTITY } from './003_query_plan_identity';
 import { MIGRATION_004_PRINCIPALS } from './004_principals';
 import { MIGRATION_005_ROLE_PROFILES } from './005_role_profiles';
+import { MIGRATION_008_WORKBENCH_PROFILES } from './008_workbench_profiles';
 import { MIGRATION_007_WORKBENCH } from './007_workbench';
 import { MIGRATION_006_FIELD_REFERENCE } from './006_field_reference';
 
@@ -24,7 +25,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '004_principals', sql: MIGRATION_004_PRINCIPALS },
   { id: '005_role_profiles', sql: MIGRATION_005_ROLE_PROFILES },
   { id: '006_field_reference', sql: MIGRATION_006_FIELD_REFERENCE },
-  { id: '007_workbench', sql: MIGRATION_007_WORKBENCH }
+  { id: '007_workbench', sql: MIGRATION_007_WORKBENCH },
+  { id: '008_workbench_profiles', sql: MIGRATION_008_WORKBENCH_PROFILES }
 ];
 
 const MIGRATIONS_TABLE = `
