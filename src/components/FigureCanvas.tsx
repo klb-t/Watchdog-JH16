@@ -15,14 +15,16 @@ export function FigureCanvas({ record, spec, profile, onSelect, onInspect, onMen
   catch (error) { return <p className="field-warning" role="alert">{(error as Error).message}</p>; }
   const col = (key: string | null) => record.document.columns.find(c => c.key === key);
   const palette = profile.palettes.find(p => p.id === spec.style.palette)!.colors;
+  // Legacy saved figures omitted domainScope and retain their original filtered domains.
+  const domainRows = spec.style.domainScope === 'dataset' ? record.document.rows : rows;
   const facets = spec.channels.facet ? distinct(rows.map(r => r.values[spec.channels.facet!])) : ['All observations'];
-  const colors = spec.channels.color ? distinct(rows.map(r => r.values[spec.channels.color!])) : [];
+  const colors = spec.channels.color ? distinct(domainRows.map(r => r.values[spec.channels.color!])) : [];
   const isMap = spec.renderer === 'map', is3d = spec.renderer === 'scatter3d';
   const numeric = (r: Row, key: string | null, scale = 'linear') => key ? axisValue(r.values[key], col(key)?.type, scale) : null;
   const rangeCache = new Map<string, number[]>();
   const numericRange = (key: string | null) => {
     if (rangeCache.has(key)) return rangeCache.get(key)!;
-    const values = rows.map(r => numeric(r, key)).filter((v): v is number => v !== null);
+    const values = domainRows.map(r => numeric(r, key)).filter((v): v is number => v !== null);
     const range = values.length ? [Math.min(...values), Math.max(...values)] : [0, 1];
     rangeCache.set(key, range); return range;
   };
@@ -51,6 +53,8 @@ export function FigureCanvas({ record, spec, profile, onSelect, onInspect, onMen
     `Normalization: ${record.document.normalization}; comparison: ${record.document.comparisonScope}.`,
     record.document.source.url,
     'Missing ≠ zero. Missing size/alpha uses a neutral mark with a dashed outline. Evidence tier, source mapping approval and quality flags are independent.',
+    `Numeric/channel domains: ${spec.style.domainScope === 'dataset' ? 'whole dataset, stable across filters and time frames' : 'filtered observations, rescaled with each frame'}.`,
+    ...(rows.some(r => r.qualityFlags.includes('PROVIDER_DISCONTINUITY')) ? ['Provider discontinuity: red vertical marker in line views; red outlined mark in other views.'] : []),
     ...(facets.length > 12 ? [`PREVIEW ONLY: 12 of ${facets.length} panels. Narrow the filter before SVG export.`] : []),
     ...(isMap ? ['Basemap: Natural Earth, public domain, 1:110m. Geographic markers; no inferred distribution routes.'] : []),
     ...(spec.channels.time && spec.timeValue !== null ? [`Time frame: ${String(spec.timeValue)}`] : []),
@@ -72,12 +76,13 @@ export function FigureCanvas({ record, spec, profile, onSelect, onInspect, onMen
     {subtitleLines.map((line, i) => <text key={i} x={M} y={40 + titleLines.length * 28 + i * (spec.style.fontSize + 5)} fill="#475569">{line}</text>)}
     {visibleFacets.map((facet, fi) => {
       const group = rows.filter(r => !spec.channels.facet || (r.values[spec.channels.facet] === null ? '(missing)' : String(r.values[spec.channels.facet])) === facet);
-      const categories = distinct(group.map(r => r.values[spec.channels.x]));
+      const axisRows = spec.style.domainScope === 'dataset' ? record.document.rows : group;
+      const categories = distinct(axisRows.map(r => r.values[spec.channels.x]));
       const bars = [...group].sort((a, b) => String(a.values[spec.channels.x]).localeCompare(String(b.values[spec.channels.x])) || a.id.localeCompare(b.id));
       const barIndex = new Map(bars.map((r, i) => [r.id, i]));
       const xv = (r: Row) => r.values[spec.channels.x] === null ? null : spec.renderer === 'bar' ? barIndex.get(r.id)! : xCol.type === 'text' ? categories.indexOf(String(r.values[spec.channels.x])) : numeric(r, spec.channels.x, spec.style.xScale);
       const yv = (r: Row) => numeric(r, spec.channels.y, spec.style.yScale);
-      const xs = group.map(xv).filter((v): v is number => v !== null), ys = group.map(yv).filter((v): v is number => v !== null);
+      const xs = axisRows.map(xv).filter((v): v is number => v !== null), ys = axisRows.map(yv).filter((v): v is number => v !== null);
       const extent = (vs: number[], zero = false) => { const min = Math.min(...vs, ...(zero ? [0] : [])), max = Math.max(...vs, ...(zero ? [0] : [])); return !vs.length ? [0, 1] : min === max ? [min - 0.5, max + 0.5] : [min, max]; };
       const [xmin, xmax] = isMap ? [spec.camera.centerLongitude - 180 / spec.camera.zoom, spec.camera.centerLongitude + 180 / spec.camera.zoom] : spec.renderer === 'bar' ? [-0.5, bars.length - 0.5] : extent(xs), [ymin, ymax] = isMap ? [spec.camera.centerLatitude - 90 / spec.camera.zoom, spec.camera.centerLatitude + 90 / spec.camera.zoom] : extent(ys, spec.renderer === 'bar');
       const xPixel = (n: number) => M + (n - xmin) / (xmax - xmin) * (W - 2 * M);
@@ -138,7 +143,7 @@ export function FigureCanvas({ record, spec, profile, onSelect, onInspect, onMen
             <title>{description}</title>
             {spec.renderer === 'bar' ? <rect x={x - barWidth / 2} y={Math.min(y, yPixel(0))} width={barWidth} height={Math.abs(yPixel(0) - y)} fill={color(row)} opacity={opacity} stroke={selected ? '#111827' : 'none'} strokeWidth={3} />
               : <circle cx={x} cy={y} r={size} fill={color(row)} opacity={opacity} stroke={selected ? '#111827' : missingChannel ? '#64748b' : 'white'} strokeDasharray={missingChannel ? '2 2' : undefined} strokeWidth={selected ? 3 : 1} />}
-            {row.qualityFlags.includes('PROVIDER_DISCONTINUITY') && <line x1={x} y1={M} x2={x} y2={H - M} stroke="#be123c" strokeDasharray="5 4"><title>Provider discontinuity</title></line>}
+            {row.qualityFlags.includes('PROVIDER_DISCONTINUITY') && (spec.renderer === 'line' ? <line x1={x} y1={M} x2={x} y2={H - M} stroke="#be123c" strokeDasharray="5 4"><title>Provider discontinuity</title></line> : <circle cx={x} cy={y} r={size + 3} fill="none" stroke="#be123c" strokeDasharray="3 2"><title>Provider discontinuity</title></circle>)}
             {spec.style.labels && <text x={x + size + 3} y={y - 5} fill="#0f172a">{label}</text>}
           </g>;
         })}

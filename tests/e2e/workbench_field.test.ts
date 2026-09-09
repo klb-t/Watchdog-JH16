@@ -63,6 +63,7 @@ test('E6 browser: individual source review, live lookup, offline reload and audi
   await page.getByLabel('Region', { exact: true }).selectOption('NL-NB');
   await page.getByRole('button', { name: 'Find references', exact: true }).click();
   await page.getByRole('heading', { name: 'Fictional Green X', exact: true }).waitFor();
+  await page.locator('summary').filter({ hasText: 'Fictional A' }).click();
   await page.getByText('Fictional interaction used only to verify software behavior.', { exact: true }).waitFor();
   await page.screenshot({ path: path.join(artifacts, 'responder-online.png'), fullPage: true });
   await page.evaluate(async () => { await navigator.serviceWorker.ready; });
@@ -122,6 +123,17 @@ test('E5 browser: regional figures, 3D camera, context tools, statistics, favour
   const download = await exported; await download.saveAs(path.join(artifacts, 'publication-figure.svg'));
   const svg = readFileSync(path.join(artifacts, 'publication-figure.svg'), 'utf8');
   assert.match(svg, /Evidence tier: Raw observation/); assert.match(svg, /Source mapping: APPROVED/); assert.match(svg, /datasetHash/);
+  // Render the actual exported vector independently of the application's scroll container.
+  const exportPage = await context.newPage();
+  await exportPage.setContent(svg);
+  const dimensions = await exportPage.locator('svg').evaluate(element => {
+    const [,, width, height] = element.getAttribute('viewBox')!.split(' ').map(Number);
+    element.setAttribute('width', String(width)); element.setAttribute('height', String(height));
+    return { width, height: Math.ceil(height) };
+  });
+  await exportPage.setViewportSize(dimensions);
+  await exportPage.locator('svg').screenshot({ path: path.join(artifacts, 'publication-figure.png') });
+  await exportPage.close();
   await page.getByLabel('X channel', { exact: true }).selectOption('longitude');
   await page.getByLabel('Y channel', { exact: true }).selectOption('latitude');
   await page.getByLabel('View type', { exact: true }).selectOption('map');

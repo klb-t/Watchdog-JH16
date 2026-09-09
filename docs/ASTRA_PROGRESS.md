@@ -104,3 +104,13 @@ pages loaded correctly and no JavaScript exceptions; nested option text polluted
 Added explicit accessible names to the new selects. A separate large-trace regression exposed
 an unusable ZIP fallback above the 4 MB preview cap; the preview now reads bounded complete
 records, labels truncation and still permits the full ZIP. The dedicated >4 MB test passes.
+
+
+The second CI run (`34321640546`, head `e2d9d8a`) passed 262/263 tests. The complete workbench
+browser flow (including real numeric analysis, saved figure restoration, SVG export and mobile
+layout) and diagnostics passed. The remaining responder assertion located the interaction
+inside a correctly collapsed substance card; its test now opens that card before reading it.
+Browser screenshots also prompted a visualization correction: map/3D discontinuities are
+local outlined marks, not vertical geographic lines. Whole-dataset scale domains keep colors,
+size, alpha and numeric axes stable during animation; explicit filtered rescaling remains a
+saved option. A regression verifies that narrowing a time frame preserves a record's encoding.

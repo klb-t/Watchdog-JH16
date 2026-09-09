@@ -49,6 +49,7 @@ export const FigureSchema = z.object({ version: z.literal('figure-1'), rendererV
   style: z.object({ title: z.string().max(250), subtitle: z.string().max(500), xLabel: z.string().max(150), yLabel: z.string().max(150),
     palette: key, opacity: z.number().min(0.1).max(1), pointSize: z.number().min(2).max(20), lineWidth: z.number().min(0.5).max(8),
     fontSize: z.number().min(8).max(24), labels: z.boolean(), grid: z.boolean(), legend: z.boolean(),
+    domainScope: z.enum(['dataset', 'filtered']).optional(),
     xScale: z.enum(['linear', 'log']), yScale: z.enum(['linear', 'log']) }).strict(),
   camera: z.object({ yaw: z.number().min(-180).max(180), pitch: z.number().min(-90).max(90), zoom: z.number().min(0.5).max(8), centerLongitude: z.number().min(-180).max(180), centerLatitude: z.number().min(-90).max(90) }).strict(),
   timeValue: z.union([z.string(), z.number(), z.null()]),
@@ -65,7 +66,7 @@ export function defaultFigure(record: DatasetRecord, profile: WorkbenchProfile):
     renderer: 'scatter', channels: { x: numeric[0]?.key ?? record.document.columns[0].key, y: numeric[1]?.key ?? numeric[0]?.key ?? record.document.columns[1].key,
       z: numeric[2]?.key ?? null, color: null, size: null, alpha: null, label: null, series: null, facet: null, time: null, region: null },
     filters: [], selectedIds: [], style: { title: record.document.name, subtitle: '', xLabel: '', yLabel: '', palette: 'accessible', opacity: 0.85,
-      pointSize: 5, lineWidth: 1.5, fontSize: 12, labels: false, grid: true, legend: true, xScale: 'linear', yScale: 'linear' },
+      pointSize: 5, lineWidth: 1.5, fontSize: 12, labels: false, grid: true, legend: true, domainScope: 'dataset', xScale: 'linear', yScale: 'linear' },
     camera: { yaw: 25, pitch: 20, zoom: 1, centerLongitude: 0, centerLatitude: 0 }, timeValue: null, analysis: null };
 }
 export function filterRows(document: DatasetDocument, spec: FigureSpec) {

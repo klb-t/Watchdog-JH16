@@ -55,3 +55,11 @@ test('E5 projection: rotations preserve depth identity and deterministic wrappin
   const title = 'Long publication title with several words'; const lines = wrapFigureText(title, 15);
   assert.equal(lines.join(' '), title); assert.ok(lines.every(l => l.length <= 15));
 });
+
+test('E5 animation: a record keeps its color, size and alpha when the time frame narrows', () => {
+  const spec = defaultFigure(record, loadWorkbenchProfile()); spec.channels.color = 'language'; spec.channels.size = 'mentions'; spec.channels.alpha = 'sentiment';
+  const mark = (svg: string) => svg.split('data-row-id="row-1"')[1].match(/<circle[^>]+/g)![0];
+  const before = mark(render(spec)); spec.channels.time = 'date'; spec.timeValue = '2026-09-01';
+  assert.equal(mark(render(spec)), before, 'stable domains prevent frame-by-frame rescaling from hiding or inventing visual change');
+  spec.style.domainScope = 'filtered'; assert.notEqual(mark(render(spec)), before, 'explicit rescaling remains available as a separate setting');
+});

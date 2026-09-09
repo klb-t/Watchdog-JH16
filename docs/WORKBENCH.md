@@ -31,8 +31,10 @@ Choose X/Y and optional Z, color, marker size, alpha, label, series, panel, time
 columns. Geographic markers require explicit longitude/latitude in degrees; the bundled
 Natural Earth basemap is public domain at 1:110m. Center and zoom affect only the viewport.
 3D is an orthographic projection with camera controls and labelled axes/ranges; time animation
-filters observations and never implies movement. Bars show individual observations without
-aggregation. Line gaps preserve missing values and provider discontinuities. Numeric/date
+filters observations and never implies movement. The Scale domain control preserves whole-dataset
+domains through time by default; explicit filtered-frame rescaling is also available. Bars show individual observations without
+aggregation. Line gaps preserve missing values and provider discontinuities. On maps/3D, a local outlined
+mark signals a discontinuity; no geographic boundary is invented. Numeric/date
 axes, log exclusions, missing-channel outlines and visible omission counts are explicit.
 
 Hover/focus inspects the raw record. Click/Enter selects it; right-click, Shift+F10 and the
