@@ -1,9 +1,10 @@
 /** MVP role bundles, not an ordinal hierarchy. See decision D18. */
-export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-2';
+export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-3';
 export const CAPABILITIES = [
   'run.view', 'run.create', 'method.propose', 'method.approve',
   'narrative.approve', 'export.download', 'provider.view', 'provider.approve',
   'diagnostics.view', 'diagnostics.bundle', 'principal.view', 'principal.manage',
+  'workbench.view', 'workbench.analyze', 'dataset.import', 'dataset.review', 'dataset.approve', 'figure.manage',
   'responder.lookup', 'evidence.review', 'evidence.import', 'evidence.approve',
 ] as const;
 export type Capability = typeof CAPABILITIES[number];
@@ -12,6 +13,7 @@ const viewer: readonly Capability[] = ['run.view', 'export.download', 'provider.
 const researcher: readonly Capability[] = [
   ...viewer, 'run.create', 'method.propose', 'method.approve', 'narrative.approve',
   'evidence.review', 'evidence.import', 'evidence.approve',
+  'workbench.view', 'workbench.analyze', 'dataset.import', 'dataset.review', 'dataset.approve', 'figure.manage',
 ];
 const responder: readonly Capability[] = ['responder.lookup'];
 const admin: readonly Capability[] = [
@@ -24,8 +26,8 @@ export const RBAC = Object.freeze({
   responder: Object.freeze(responder),
   // Restricted reference access. No private research, curation, audit history,
   // role management or diagnostics are granted to an institutional profile.
-  institutional: Object.freeze([...responder, 'provider.view'] as Capability[]),
-  law_enforcement: Object.freeze([...responder, 'provider.view'] as Capability[]),
+  institutional: Object.freeze([...responder, 'provider.view', 'workbench.view', 'workbench.analyze', 'figure.manage'] as Capability[]),
+  law_enforcement: Object.freeze([...responder, 'provider.view', 'workbench.view', 'workbench.analyze', 'figure.manage'] as Capability[]),
   admin: Object.freeze(admin),
   developer: CAPABILITIES,
   // Compatibility for existing OIDC grants and signed sessions. No migration

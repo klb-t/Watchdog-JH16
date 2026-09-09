@@ -3,45 +3,162 @@
   "staleAfterHours": 24,
   "offlineMaxHours": 8,
   "regions": [
-    { "id": "NL", "name": "Netherlands", "parentId": null },
-    { "id": "NL-NB", "name": "Noord-Brabant", "parentId": "NL" }
+    {
+      "id": "NL",
+      "name": "Netherlands",
+      "parentId": null
+    },
+    {
+      "id": "NL-NB",
+      "name": "Noord-Brabant",
+      "parentId": "NL"
+    }
   ],
   "categories": [
-    { "id": "identity", "label": "Identity, names and aliases" },
-    { "id": "chemistry", "label": "Chemistry and structural relations" },
-    { "id": "pharmacokinetics", "label": "Pharmacokinetics" },
-    { "id": "pharmacodynamics", "label": "Pharmacodynamics and mechanism" },
-    { "id": "acute_toxicity", "label": "Acute toxicity and overdose signs" },
-    { "id": "chronic_effects", "label": "Chronic effects" },
-    { "id": "interactions", "label": "Interactions" },
-    { "id": "preparations", "label": "Preparations, pills and samples" },
-    { "id": "regional_signals", "label": "Regional and temporal signals" },
-    { "id": "citations", "label": "Research citations" },
-    { "id": "legal_status", "label": "Legal status" },
-    { "id": "alerts", "label": "Alerts" }
+    {
+      "id": "identity",
+      "label": "Identity, names and aliases"
+    },
+    {
+      "id": "chemistry",
+      "label": "Chemistry and structural relations"
+    },
+    {
+      "id": "pharmacokinetics",
+      "label": "Pharmacokinetics"
+    },
+    {
+      "id": "pharmacodynamics",
+      "label": "Pharmacodynamics and mechanism"
+    },
+    {
+      "id": "acute_toxicity",
+      "label": "Acute toxicity and overdose signs"
+    },
+    {
+      "id": "chronic_effects",
+      "label": "Chronic effects"
+    },
+    {
+      "id": "interactions",
+      "label": "Interactions"
+    },
+    {
+      "id": "preparations",
+      "label": "Preparations, pills and samples"
+    },
+    {
+      "id": "regional_signals",
+      "label": "Regional and temporal signals"
+    },
+    {
+      "id": "citations",
+      "label": "Research citations"
+    },
+    {
+      "id": "legal_status",
+      "label": "Legal status"
+    },
+    {
+      "id": "alerts",
+      "label": "Alerts"
+    }
   ],
-  "tiers": {
-    "PRIMARY_EMPIRICAL": { "label": "Primary measurement", "bucket": "Confirmed", "icon": "●", "color": "#166534" },
-    "CURATED_SECONDARY": { "label": "Curated reference", "bucket": "Reference", "icon": "◆", "color": "#616923" },
-    "RAW_OBSERVATIONAL": { "label": "Raw observation", "bucket": "Unconfirmed", "icon": "▲", "color": "#8a6500" },
-    "MODELED_PREDICTED": { "label": "Modeled / inferred", "bucket": "Unconfirmed", "icon": "◇", "color": "#a4470c" },
-    "SPECULATIVE": { "label": "Speculative", "bucket": "Unconfirmed", "icon": "?", "color": "#b91c1c" },
-    "UNKNOWN": { "label": "Unknown evidence", "bucket": "Unconfirmed", "icon": "—", "color": "#64748b" }
-  },
   "colors": [
-    { "id": "green", "label": "Green", "aliases": ["groen", "groene", "zielone", "zielony"] },
-    { "id": "pink", "label": "Pink", "aliases": ["roze", "różowe"] },
-    { "id": "purple", "label": "Purple", "aliases": ["paars", "fioletowe"] },
-    { "id": "blue", "label": "Blue", "aliases": ["blauw", "niebieskie"] },
-    { "id": "beige", "label": "Beige", "aliases": ["beżowe"] },
-    { "id": "gold", "label": "Gold", "aliases": ["goud", "złote"] },
-    { "id": "white", "label": "White", "aliases": ["wit", "białe"] },
-    { "id": "orange", "label": "Orange", "aliases": ["oranje", "pomarańczowe"] }
+    {
+      "id": "green",
+      "label": "Green",
+      "aliases": [
+        "groen",
+        "groene",
+        "zielone",
+        "zielony"
+      ]
+    },
+    {
+      "id": "pink",
+      "label": "Pink",
+      "aliases": [
+        "roze",
+        "różowe"
+      ]
+    },
+    {
+      "id": "purple",
+      "label": "Purple",
+      "aliases": [
+        "paars",
+        "fioletowe"
+      ]
+    },
+    {
+      "id": "blue",
+      "label": "Blue",
+      "aliases": [
+        "blauw",
+        "niebieskie"
+      ]
+    },
+    {
+      "id": "beige",
+      "label": "Beige",
+      "aliases": [
+        "beżowe"
+      ]
+    },
+    {
+      "id": "gold",
+      "label": "Gold",
+      "aliases": [
+        "goud",
+        "złote"
+      ]
+    },
+    {
+      "id": "white",
+      "label": "White",
+      "aliases": [
+        "wit",
+        "białe"
+      ]
+    },
+    {
+      "id": "orange",
+      "label": "Orange",
+      "aliases": [
+        "oranje",
+        "pomarańczowe"
+      ]
+    }
   ],
   "disclaimer": "Reference information only. This is not a diagnosis or treatment recommendation. Do not delay emergency assessment or poison-control consultation. Matching a name or appearance does not identify the substance taken.",
   "contacts": [
-    { "regionId": "NL", "name": "Emergency services", "phone": "112", "url": "https://www.government.nl/faq/emergency-number-112/when-can-i-call-112", "audience": "Life-threatening emergencies", "verifiedOn": "2026-09-08", "citationUrl": "https://www.government.nl/faq/emergency-number-112/when-can-i-call-112" },
-    { "regionId": "NL", "name": "NVIC poison information", "phone": "+31887558000", "url": "https://nvic.umcutrecht.nl/nvic/nl/", "audience": "Doctors and professional healthcare responders", "verifiedOn": "2026-09-08", "citationUrl": "https://nvic.umcutrecht.nl/nvic/nl/" },
-    { "regionId": "NL", "name": "Find a drug-checking service", "phone": null, "url": "https://www.drugs-test.nl/", "audience": "Specimen testing; not a substitute for emergency care", "verifiedOn": "2026-09-08", "citationUrl": "https://www.drugs-test.nl/" }
+    {
+      "regionId": "NL",
+      "name": "Emergency services",
+      "phone": "112",
+      "url": "https://www.government.nl/faq/emergency-number-112/when-can-i-call-112",
+      "audience": "Life-threatening emergencies",
+      "verifiedOn": "2026-09-08",
+      "citationUrl": "https://www.government.nl/faq/emergency-number-112/when-can-i-call-112"
+    },
+    {
+      "regionId": "NL",
+      "name": "NVIC poison information",
+      "phone": "+31887558000",
+      "url": "https://nvic.umcutrecht.nl/nvic/nl/",
+      "audience": "Doctors and professional healthcare responders",
+      "verifiedOn": "2026-09-08",
+      "citationUrl": "https://nvic.umcutrecht.nl/nvic/nl/"
+    },
+    {
+      "regionId": "NL",
+      "name": "Find a drug-checking service",
+      "phone": null,
+      "url": "https://www.drugs-test.nl/",
+      "audience": "Specimen testing; not a substitute for emergency care",
+      "verifiedOn": "2026-09-08",
+      "citationUrl": "https://www.drugs-test.nl/"
+    }
   ]
 }

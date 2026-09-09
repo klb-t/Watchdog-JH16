@@ -1,0 +1,25 @@
+{
+  "version": "workbench-profile-1",
+  "renderers": [
+    { "id": "scatter", "label": "Scatter · 2D", "dimensions": 2, "description": "Two numeric or date axes; optional marker channels and facets." },
+    { "id": "line", "label": "Time / line", "dimensions": 2, "description": "Ordered series with explicit missing-value gaps." },
+    { "id": "bar", "label": "Bars", "dimensions": 2, "description": "One bar per observation, without implicit aggregation." },
+    { "id": "scatter3d", "label": "Scatter · 3D / 4+D", "dimensions": 3, "description": "Three axes, orbit controls, time frames and optional color, size, alpha and panels." },
+    { "id": "map", "label": "Geographic markers", "dimensions": 2, "description": "Longitude on X, latitude on Y. Coordinates must be explicitly provided, never inferred from a name." }
+  ],
+  "palettes": [
+    { "id": "accessible", "label": "Accessible categorical", "colors": ["#0072b2", "#d55e00", "#009e73", "#cc79a7", "#e69f00", "#333333"] },
+    { "id": "sequential", "label": "Sequential blue", "colors": ["#c6dbef", "#9ecae1", "#6baed6", "#3182bd", "#08519c", "#08306b"] },
+    { "id": "diverging", "label": "Diverging purple / orange", "colors": ["#542788", "#998ec3", "#d8daeb", "#fee0b6", "#f1a340", "#b35806"] }
+  ],
+  "methods": [
+    { "id": "describe", "label": "Descriptive statistics", "description": "Valid/missing count, min, max, mean, median and sample SD." },
+    { "id": "pearson", "label": "Pearson correlation", "description": "Aligned pairs; excludes missing values explicitly. Correlation is not causation." },
+    { "id": "spearman", "label": "Spearman rank correlation", "description": "Aligned ranks with ties; no causal or route inference." }
+  ],
+  "providerProfiles": [
+    { "id": "manual-table", "label": "Versioned source table", "measure": "Declared by source", "normalizations": ["none", "within_export_0_100", "consistently_scaled", "unknown"], "languageMeanings": ["query_term_language", "corpus_language", "interface_language", "unknown"], "notices": ["Import and review a source mapping before showing it as evidence."] },
+    { "id": "google-trends-export", "label": "Google Trends website export", "measure": "Relative search interest", "normalizations": ["within_export_0_100"], "languageMeanings": ["query_term_language", "interface_language", "unknown"], "notices": ["Relative interest is not a search count, prevalence or consumption.", "Compare only observations in the same export normalization scope.", "Interface language is not the language of searchers.", "Trends does not measure sentiment or verify distribution routes.", "A source export importer is available; live API access is not configured."] },
+    { "id": "annotated-corpus", "label": "Annotated context / sentiment corpus", "measure": "Declared corpus annotation", "normalizations": ["none", "unknown"], "languageMeanings": ["corpus_language", "unknown"], "notices": ["Record corpus, sampling and annotation/model method in the source description.", "Model sentiment stays modeled; a reviewed estimate is not a direct observation."] }
+  ]
+}

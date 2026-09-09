@@ -68,3 +68,31 @@ Latest maintainer clarifications are recorded in spec/13_VISUAL_WORKBENCH.md: in
 geographic/language/time/context/sentiment analysis, map and chart palettes/context menus,
 favourites, publication figures, 3D/4+ channels, abstractions/data profiles and developer UI
 diagnostics. These are accepted requirements; this stage does not claim they are implemented.
+
+## 2026-09-09 — first visual workbench and developer diagnostics
+
+The published E6 commit `d467c0d` passed GitHub Actions run `34268060616`, including the
+full pre-workbench suite and JH16 demo. This verifies the previous browser tests; production
+responder offline reload and the new workbench now have their own additional browser tests.
+
+Implemented dataset import/review/sharing, the figure builder, 2D/3D/map renderers and channels,
+source inspection, shared context/visible tools, favourite snapshots, approved exploratory
+statistics, vector/data exports and developer diagnostics. `docs/WORKBENCH.md` documents actual
+usage and limits; D19 records the owner's sequencing and profile/data architecture. Generic
+workbench code imports no drug-specific configuration. A shared validated evidence palette
+feeds both workflows. Profile and source identities are pinned; figures cannot silently switch
+palettes/data or attach unrelated analysis results. Statistical runs now persist in the existing
+analysis and manifest tables with complete replay inputs and checksums.
+
+Local regression: 253 tests attempted; 252 passed and one repository-boundary assertion found
+a driver type import in the diagnostic route. Replaced it with an AuditRepository dependency.
+The subsequent focused suite passed all 31 tests, including that architecture gate, workbench
+HTTP/storage/analysis contracts, SVG geometry and concurrent trace sequencing. Type checking
+passed. GitHub CI will run the whole suite, production build and new Chromium flows, retaining
+screenshots/vector exports as `browser-evidence`. Do not claim this CI run passed until observed.
+
+Remaining scope is explicit in the ledger: live data connections/credentials, additional
+reviewed regional source coverage, advanced statistics, uncertainty bands/choropleths/graphs,
+route-hypothesis tools and the automated paper pipeline. The existing JH16 fixture check remains
+a pipeline self-check, never independent replication. Bundled clinical sources remain proposals;
+only clearly fictional records are approved in isolated tests.

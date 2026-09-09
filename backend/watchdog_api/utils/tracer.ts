@@ -47,6 +47,7 @@ export interface TraceEvent {
 class Tracer {
   private mode: DiagnosticsMode = 'NORMAL';
   private als = new AsyncLocalStorage<TraceContext>();
+  private sequences = new WeakMap<TraceContext, { value: number }>();
   // Overridable so a run can keep its own trace inside its own run directory,
   // rather than every run sharing one global folder.
   private logDir = process.env.WATCHDOG_DIAGNOSTICS_DIR
@@ -165,14 +166,15 @@ class Tracer {
     const parentCtx = this.getContext();
     const trace_id = overrides?.trace_id || parentCtx?.trace_id || randomUUID();
     const span_id = randomUUID();
-    const parent_span_id = parentCtx?.span_id;
-    const sequence_no = parentCtx ? parentCtx.sequence_no : 0;
+    const sameTrace = parentCtx?.trace_id === trace_id;
+    const parent_span_id = sameTrace ? parentCtx?.span_id : undefined;
+    const sequence = sameTrace && parentCtx ? this.sequences.get(parentCtx)! : { value: 0 };
     
     const newCtx: TraceContext = {
       trace_id,
       span_id,
       parent_span_id,
-      sequence_no,
+      sequence_no: sequence.value,
       component,
       operation,
       request_id: overrides?.request_id || parentCtx?.request_id,
@@ -181,6 +183,10 @@ class Tracer {
       actor_id: overrides?.actor_id || parentCtx?.actor_id,
       stage: overrides?.stage || parentCtx?.stage,
     };
+    // Every span of a trace shares one counter, including concurrently awaited siblings.
+    // An enumerable accessor keeps the public context/event schema unchanged.
+    Object.defineProperty(newCtx, 'sequence_no', { enumerable: true, get: () => sequence.value, set: value => { sequence.value = value; } });
+    this.sequences.set(newCtx, sequence);
 
     return this.als.run(newCtx, async () => {
       this.emit('SPAN_START');
@@ -189,18 +195,12 @@ class Tracer {
         const result = await fn();
         this.emit('STEP_EXIT', { status: 'success' });
         this.emit('SPAN_END');
-        if (parentCtx) {
-           parentCtx.sequence_no = newCtx.sequence_no; // sync sequence back
-        }
         return result;
       } catch (err) {
         this.emit('STATE_AT_FAILURE');
         this.emitError(err);
         this.emit('STEP_EXIT', { status: 'failed' });
         this.emit('SPAN_END');
-        if (parentCtx) {
-           parentCtx.sequence_no = newCtx.sequence_no;
-        }
         throw err;
       }
     });

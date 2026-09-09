@@ -1,0 +1,38 @@
+{
+  "PRIMARY_EMPIRICAL": {
+    "label": "Primary measurement",
+    "bucket": "Confirmed",
+    "icon": "●",
+    "color": "#166534"
+  },
+  "CURATED_SECONDARY": {
+    "label": "Curated reference",
+    "bucket": "Reference",
+    "icon": "◆",
+    "color": "#616923"
+  },
+  "RAW_OBSERVATIONAL": {
+    "label": "Raw observation",
+    "bucket": "Unconfirmed",
+    "icon": "▲",
+    "color": "#8a6500"
+  },
+  "MODELED_PREDICTED": {
+    "label": "Modeled / inferred",
+    "bucket": "Unconfirmed",
+    "icon": "◇",
+    "color": "#a4470c"
+  },
+  "SPECULATIVE": {
+    "label": "Speculative",
+    "bucket": "Unconfirmed",
+    "icon": "?",
+    "color": "#b91c1c"
+  },
+  "UNKNOWN": {
+    "label": "Unknown evidence",
+    "bucket": "Unconfirmed",
+    "icon": "—",
+    "color": "#64748b"
+  }
+}

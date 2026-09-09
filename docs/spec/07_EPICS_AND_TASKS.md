@@ -360,6 +360,26 @@ requests and admin approval; per-source permissions; developer diagnostics surfa
 
 ## E5 — Workbench and replication engine
 
+- [x] **E5.1 — Versioned source tables.** JSON/CSV import, original CSV retention, explicit
+  column types/units/missing reasons/provider/comparison context, WORM hashes and separate
+  retrieval/import events. Individual hash-bound approval, revocation and aggregate sharing.
+  Real database/HTTP tests verify access isolation and missingness.
+- [x] **E5.2 — First visual workbench.** 2D scatter, line, observation bars, orthographic 3D
+  and Natural Earth geographic markers; filters, time frames, panels, color/size/alpha/labels,
+  camera controls, inspect/select, shared visible/context palette, exact saved figures and
+  favourites. SVG/CSV/JSON exports pin source and profile identity. Render tests cover missing
+  values, log gaps, discontinuities, map units and 3D geometry. Browser workflow is a CI gate.
+- [x] **E5.3 — Reviewed exploratory analysis.** Existing describe/Pearson/Spearman primitives
+  behind individual MethodSpec approval; inputs/selections are hash-bound. Existing runs,
+  analysis tables, artifacts and manifests persist deterministic results with replay inputs.
+  Saved result references reject forged hashes, changed selections, other owners and revocation.
+- [x] **E4.3 — Developer diagnostics UI.** Capability-gated mode control, recent request
+  metadata, persisted traces/errors and redacted ZIP download. Mode changes are audited;
+  concurrent spans retain unique ordered sequence numbers.
+- [ ] **E5 remainder.** Transform DAG, advanced reviewed methods, Python sidecar, uncertainty
+  bands, choropleths/graph layers, route-hypothesis workflow, and the full paper pipeline.
+  Their presence in the following inventory is not an implementation claim.
+
 Contents: dataset import and the transform DAG; the generic method registry beyond the seven
 primitives, including the baseline statistical family (Pearson/Spearman/Kendall, regression,
 partial and lagged correlation, confidence intervals, multiple-testing control) and the
@@ -370,15 +390,24 @@ the replication engine per `08_REPLICATION_ENGINE.md`, including the later auton
 replication-agent pipeline (`DISCOVERED → SCREENED → METHOD_EXTRACTED → ... → REPORT_DRAFTED`)
 and the rule that a replication assessment never collapses method/data/population/analysis
 fidelity into one score; the paper pipeline; the visualisation registry (line/bar/scatter,
-uncertainty bands, region maps, provider-discontinuity markers, graph-neighbourhood views). A
-3D region×substance×metric cube is preserved as a candidate only — not a dependency of anything
-above it, and not scheduled.
+uncertainty bands, region maps, provider-discontinuity markers, graph-neighbourhood views). 3D and further visual channels were explicitly brought forward by the owner; see D19 and
+`13_VISUAL_WORKBENCH.md`. Orthographic 3D is implemented in E5.2.
 
 This epic is explicitly domain-neutral (D13): everything here must work for an arbitrary
 dataset, not only the drug vertical, and nothing in this list may be implemented by importing
 a drug-specific concept into the generic method registry.
 
 ## E6 — Field and clinical interfaces
+
+- [x] **E6.1 — Reviewed responder references.** Versioned sample/alert/assertion import into
+  the existing graph, individual approval/revocation, regional pill/market/symptom lookup,
+  fixed twelve-category reference cards and independent evidence/review/quality signals.
+  Bundled real-source mappings remain PROPOSED until reviewed. See `docs/FIELD_REFERENCE.md`.
+- [x] **E6.2 — Bounded offline reference access.** Hash-checked principal snapshots, TTL,
+  static production shell, cached-source age and offline audit outbox with idempotent sync.
+  Backend/render/client tests pass; production browser reload is an explicit CI gate.
+- [ ] **E6 remainder.** Automated alert classification/queues, additional reviewed source
+  coverage, public-health policy timelines and the public harm-reduction surface.
 
 Contents: the substance-centric knowledge graph and assertion mechanism per
 `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` — populating `assertions`, `targets`,

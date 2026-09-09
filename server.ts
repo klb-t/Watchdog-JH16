@@ -1,4 +1,10 @@
 import express from 'express';
+import { buildDiagnosticRouter } from './backend/watchdog_api/api/diagnostic_routes';
+import { AuditRepository } from './backend/watchdog_api/db/repositories/audit';
+import { WorkbenchRepository } from './backend/watchdog_api/db/repositories/workbench';
+import { WorkbenchService } from './backend/watchdog_api/workbench/service';
+import { loadWorkbenchProfile } from './backend/watchdog_api/config/workbench';
+import { buildWorkbenchRouter } from './backend/watchdog_api/api/workbench_routes';
 import path from 'path';
 import url from 'node:url';
 import { apiRouter } from './backend/watchdog_api/api/routes';
@@ -30,7 +36,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 app.use(traceMiddleware);
 
 /**
@@ -61,6 +67,9 @@ export async function configureApp() {
   const fieldRepository = new FieldReferenceRepository(sqlite, store);
   const fieldService = new FieldService(fieldRepository, loadFieldProfile());
   app.use('/api/field', buildFieldRouter(fieldRepository, fieldService));
+  const workbench = new WorkbenchRepository(sqlite, store);
+  app.use('/api/workbench', buildWorkbenchRouter(workbench, new WorkbenchService(workbench, loadWorkbenchProfile())));
+  app.use('/api/diagnostics', buildDiagnosticRouter(new AuditRepository(sqlite)));
   app.use('/api', apiRouter);
   app.use(errorHandler);
 

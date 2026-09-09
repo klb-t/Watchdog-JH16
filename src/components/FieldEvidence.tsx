@@ -1,7 +1,8 @@
 import type { FieldProfile, ReferenceRecord, FactView, SubstanceCard } from '../../shared/field';
 import type { EvidenceTier } from '../../backend/watchdog_api/domain/evidence_tier';
+import tierDisplay from '../../config/evidence/tier-display.json';
 import fallbackProfile from '../../config/field/responder.json';
-export const defaultFieldProfile = fallbackProfile as FieldProfile;
+export const defaultFieldProfile = { ...fallbackProfile, tiers: tierDisplay } as FieldProfile;
 
 export function EvidenceBadge({ tier, profile = defaultFieldProfile, prefix }: { tier: EvidenceTier; profile?: FieldProfile; prefix?: string }) {
   const value = profile.tiers[tier] ?? profile.tiers.UNKNOWN;

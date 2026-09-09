@@ -1,6 +1,6 @@
 # State and binding decisions
 
-Last updated: 2026-09-08, Astra continuation. Update this file whenever a
+Last updated: 2026-09-09, Astra continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
@@ -12,6 +12,11 @@ limits. D18 below supersedes every old ordinal-role description in this document
 has prioritised the general responder vertical (pill/market-label/region/time → composition →
 cited reference facts and interactions), including evidence tier, category ordering, approval
 and quality flags. “Green X” is an illustrative acceptance scenario, not a domain restriction.
+
+**2026-09-09 workbench checkpoint:** implemented versioned JSON/CSV imports and aggregate sharing,
+2D/3D/map figures with time/facet/color/size/alpha channels, source inspection and a shared tool
+palette, approved descriptive/Pearson/Spearman analysis, favourite figure snapshots, vector/data
+exports and developer diagnostics. See D19 and `docs/WORKBENCH.md` for boundaries and operation.
 
 **Superseded by E0.1's audit (`docs/AUDIT.md`) — kept for lineage, resolved inline:**
 
@@ -437,8 +442,6 @@ decisions to the maintainer, so the adapters are built complete and left credent
 reports `absent` until a key is present in the environment. No account is created and no
 spending is committed by the agent.
 
-## 4. Open questions for the maintainer
-
 ### D18 — Capability bundles and responder priority (owner correction, 2026-09-08)
 
 The earlier ladder was the first implementation. `researcher` and `responder` are peers;
@@ -456,6 +459,32 @@ The owner has brought the responder vertical forward after this foundation. The 
 worker and generic-workbench tasks remain open; their unfinished status does not block the
 explicitly requested E6 flow. Keep the graph and its four independent presentation dimensions
 (evidence tier, content category, approval and quality flags) general, not tied to one pill.
+
+### D19 — Visual workbench, institutional aggregates and profile identity (2026-09-09)
+
+The owner's subsequent instructions explicitly bring forward maps, chart/map tool palettes,
+favourites, publication settings, 3D and additional dimensions; spec/13 records the authority
+and supersedes E5's old unscheduled-3D wording. This is a working first workbench slice, not
+completion of the full advanced-statistics, causal-analysis or paper-generation backlog.
+
+Datasets are versioned source documents with per-owner approval and explicit aggregate sharing.
+Institutional profiles see approved shared aggregates, keep their own figure/result history,
+and do not acquire private research, curation or diagnostic permissions. A figure pins its
+source hash, renderer version and visualization-profile hash. An altered profile is reported
+as unavailable for that figure, never silently substituted. Full profiles accompany exports.
+Providers, renderers, palettes and shared evidence displays are validated configuration.
+
+Method proposals pin the exact statistical inputs, units, filters and missing-value policy;
+individual human approval is required. Styling does not change the statistical method hash.
+Runs use the existing deterministic primitives, state machine, analysis tables, object store
+and immutable manifests. Result links are checked against ownership, current approval and
+selection identity. No live Trends access, synthetic surveillance feed, sentiment model or
+verified distribution-route engine is claimed. Imported annotations preserve their own tiers.
+
+Developer diagnostics expose redacted request metadata, persisted trace events/errors and ZIP
+bundles. Concurrent spans now share one trace sequence. Changes to recorder mode are audited.
+
+## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.
 

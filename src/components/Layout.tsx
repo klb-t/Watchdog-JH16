@@ -9,6 +9,8 @@ export function Layout() {
   const access = useAccess();
 
   const navItems: { name: string; href: string; icon: typeof Activity; capability?: Capability }[] = [
+    { name: 'Diagnostics', href: '/diagnostics', icon: Activity, capability: 'diagnostics.view' },
+    { name: 'Workbench', href: '/workbench', icon: FlaskConical, capability: 'workbench.view' },
     { name: 'Responder', href: '/responder', icon: Activity, capability: 'responder.lookup' },
     { name: 'Evidence review', href: '/evidence', icon: ClipboardCheck, capability: 'evidence.review' },
     { name: 'Dashboard', href: '/', icon: LayoutDashboard, capability: 'run.view' },
