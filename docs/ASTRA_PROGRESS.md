@@ -96,3 +96,11 @@ reviewed regional source coverage, advanced statistics, uncertainty bands/chorop
 route-hypothesis tools and the automated paper pipeline. The existing JH16 fixture check remains
 a pipeline self-check, never independent replication. Bundled clinical sources remain proposals;
 only clearly fictional records are approved in isolated tests.
+
+
+The first workbench CI run (`34321165187`, head `9e8b63f`) passed 259/262 tests; all three
+new browser scenarios stopped on exact select-control labels. Browser artifacts showed the
+pages loaded correctly and no JavaScript exceptions; nested option text polluted the labels.
+Added explicit accessible names to the new selects. A separate large-trace regression exposed
+an unusable ZIP fallback above the 4 MB preview cap; the preview now reads bounded complete
+records, labels truncation and still permits the full ZIP. The dedicated >4 MB test passes.

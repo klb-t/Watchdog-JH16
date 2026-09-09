@@ -33,7 +33,11 @@ before(async () => {
   page = await context.newPage(); page.setDefaultTimeout(15_000); page.on('pageerror', error => browserErrors.push(error.message));
 });
 afterEach(async t => {
-  if (page) await page.screenshot({ path: path.join(artifacts, `${t.name.replace(/[^a-zA-Z0-9]/g, '-').slice(0, 90)}.png`), fullPage: true });
+  if (page) {
+    const name = t.name.replace(/[^a-zA-Z0-9]/g, '-').slice(0, 90);
+    await page.screenshot({ path: path.join(artifacts, `${name}.png`), fullPage: true });
+    writeFileSync(path.join(artifacts, `${name}.html`), await page.content());
+  }
   await context?.setOffline(false);
 });
 after(async () => {
@@ -107,7 +111,7 @@ test('E5 browser: regional figures, 3D camera, context tools, statistics, favour
   await page.getByLabel('Saved figure name', { exact: true }).fill('Fictional publication figure');
   await page.getByRole('button', { name: 'Save figure and settings', exact: true }).click();
   await page.getByText(/Saved immutable figure/).waitFor();
-  await page.screenshot({ path: path.join(artifacts, 'workbench-3d.png'), fullPage: true });
+  await page.locator('svg[role=group]').screenshot({ path: path.join(artifacts, 'workbench-3d.png') });
   await page.reload();
   await page.getByLabel('Saved figures and favourites', { exact: true }).locator('option').filter({ hasText: 'Fictional publication figure' }).waitFor({ state: 'attached' });
   const savedId = await page.getByLabel('Saved figures and favourites', { exact: true }).locator('option').last().getAttribute('value');
@@ -125,7 +129,7 @@ test('E5 browser: regional figures, 3D camera, context tools, statistics, favour
   await page.getByText('Publication style and camera', { exact: true }).click();
   await page.getByLabel('Map zoom', { exact: true }).focus(); await page.getByLabel('Map zoom', { exact: true }).press('End');
   await page.getByLabel('centerLongitude', { exact: true }).fill('6'); await page.getByLabel('centerLatitude', { exact: true }).fill('52');
-  await page.screenshot({ path: path.join(artifacts, 'workbench-map.png'), fullPage: true });
+  await page.locator('svg[role=group]').screenshot({ path: path.join(artifacts, 'workbench-map.png') });
   await page.getByLabel('Filter column', { exact: true }).selectOption('language');
   await page.getByLabel('Value / from', { exact: true }).fill('nl'); await page.getByRole('button', { name: 'Add filter', exact: true }).click();
   assert.equal(await page.locator('svg [data-row-id]').count(), 3);

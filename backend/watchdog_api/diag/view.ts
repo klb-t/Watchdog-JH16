@@ -1,4 +1,4 @@
-import { readdirSync, existsSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, existsSync, statSync, openSync, readSync, closeSync } from 'node:fs';
 import path from 'node:path';
 import { tracer } from '../utils/tracer';
 import { redact, redactText } from '../utils/redaction';
@@ -16,10 +16,16 @@ export function listTraces() {
 }
 export function readTrace(date: string, id: string) {
   const dir = traceDirectory(date, id);
+  let truncated = false;
   const read = (name: string) => {
     const file = path.join(dir, name); if (!existsSync(file)) return [];
-    if (statSync(file).size > 4_000_000) throw new Error('Trace exceeds the interactive limit. Download the diagnostic bundle.');
-    return readFileSync(file, 'utf8').trim().split('\n').filter(Boolean).map(line => { try { return redact(JSON.parse(line)); } catch { return { warning: 'Incomplete final log entry', text: redactText(line) }; } });
+    const bytes = Math.min(statSync(file).size, 4_000_000), fd = openSync(file, 'r'), buffer = Buffer.alloc(bytes);
+    let length = 0; try { length = readSync(fd, buffer, 0, bytes, 0); } finally { closeSync(fd); }
+    const limited = statSync(file).size > length; truncated ||= limited;
+    const text = buffer.subarray(0, length).toString('utf8');
+    // Exclude a partially read final record; the complete bytes remain in the ZIP.
+    return (limited ? text.slice(0, text.lastIndexOf('\n') + 1) : text).trim().split('\n').filter(Boolean).map(line => { try { return redact(JSON.parse(line)); } catch { return { warning: 'Incomplete final log entry', text: redactText(line) }; } });
   };
-  return { date, id, events: read('events.jsonl'), errors: read('errors.jsonl') };
+  const events = read('events.jsonl'), errors = read('errors.jsonl');
+  return { date, id, events, errors, truncated };
 }

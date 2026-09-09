@@ -69,14 +69,14 @@ function ResponderContent({ query, setQuery, profile, setProfile }: {
       <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">
         {<label className="field-control">{query.mode === 'symptoms' ? 'Symptom name (source vocabulary)' : query.mode === 'market' ? 'Market group or localized label' : 'Pill name or logo'}
           <input value={query.term} maxLength={100} onChange={e => change('term', e.target.value)} autoComplete="off" /></label>}
-        {query.mode === 'pill' && <><label className="field-control">Color<select value={query.color} onChange={e => change('color', e.target.value)}><option value="">Any color</option>{profile.colors.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}</select></label>
+        {query.mode === 'pill' && <><label className="field-control">Color<select aria-label="Color" value={query.color} onChange={e => change('color', e.target.value)}><option value="">Any color</option>{profile.colors.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}</select></label>
           <label className="field-control">Shape<input value={query.shape} maxLength={100} onChange={e => change('shape', e.target.value)} /></label>
           <label className="field-control">Score line / reverse inscription<input value={query.scoreLine} maxLength={100} onChange={e => change('scoreLine', e.target.value)} /></label></>}
-        <label className="field-control">Region<select value={query.regionId} onChange={e => change('regionId', e.target.value)}>{profile.regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select></label>
+        <label className="field-control">Region<select aria-label="Region" value={query.regionId} onChange={e => change('regionId', e.target.value)}>{profile.regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}</select></label>
         <label className="field-control">From date<input type="date" value={query.from ?? ''} onChange={e => change('from', e.target.value || null)} /></label>
         <label className="field-control">To / status as of date<input type="date" value={query.to ?? ''} onChange={e => change('to', e.target.value || null)} /></label>
-        {query.mode === 'market' && <><label className="field-control">Label language<select value={query.language} onChange={e => change('language', e.target.value)}>{['nl', 'en', 'pl'].map(l => <option key={l}>{l}</option>)}</select></label>
-          <label className="field-control">Label expansion<select value={query.expansionMode} onChange={e => change('expansionMode', e.target.value as FieldQuery['expansionMode'])}>
+        {query.mode === 'market' && <><label className="field-control">Label language<select aria-label="Label language" value={query.language} onChange={e => change('language', e.target.value)}>{['nl', 'en', 'pl'].map(l => <option key={l}>{l}</option>)}</select></label>
+          <label className="field-control">Label expansion<select aria-label="Label expansion" value={query.expansionMode} onChange={e => change('expansionMode', e.target.value as FieldQuery['expansionMode'])}>
             <option value="STRICT_CANONICAL">Canonical group only</option><option value="LOCALIZED_SYNONYMS">Reviewed localized market labels</option></select></label></>}
       </div>
       {query.mode === 'symptoms' && <fieldset className="mt-4"><legend className="font-medium">Sourced symptom associations</legend>
