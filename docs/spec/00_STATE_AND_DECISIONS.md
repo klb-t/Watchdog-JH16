@@ -522,3 +522,15 @@ provenance with file hashes, independent verification and the actual rendered SV
 code is shared between browser and server. Legacy run/resource API ownership gates also apply
 to workbench-created results, preventing access through an older route. See WORKBENCH.md and
 ASTRA_PROGRESS.md for verified behavior, test evidence and remaining scope.
+
+
+### E5.5 implementation checkpoint — 2026-09-10
+
+Regional fills use separately versioned/reviewed geometry with exact identifiers and optional
+explicit mapping data. Missing values, absent observations, ambiguous multi-row joins and
+unmatched source codes remain distinct; no aggregation is inferred. Polygon/MultiPolygon,
+holes, time/panels, color classes and alpha use the shared renderer and persist in favourites.
+Boundary ID/hash pins are access-checked during save, restore and export. Publication packages
+preserve original GeoJSON, geometry receipts and independently verifiable join reports. The
+bundled map requires explicit import and review; its pre-existing collapsed PRK part is retained
+and flagged. Transform DAGs, advanced spatial/causal methods and paper generation remain open.

@@ -5,13 +5,17 @@ import type { WorkbenchProfile } from '../../../../shared/workbench';
 import type { ObjectStore } from '../../storage/object_store';
 import { canonicalHash, canonicalizeJson } from '../../domain/canonical';
 import { DatasetRecord, FigureSpec, SavedFigure, validateDataset, FigureSchema, checkFigureBindings, selectionIdentity } from '../../../../shared/workbench';
+import { GeographyRepository } from './geography';
+import { checkGeographyBinding } from '../../../../shared/geography';
+import { WorkbenchError } from './workbench_error';
+export { WorkbenchError } from './workbench_error';
 import { appendAudit } from './audit';
 import type { MethodSpec, AnalysisArtifact, TypedSeries } from '../../domain/method_spec';
 import { assertTransition, type RunState } from '../../domain/run_state';
 
-export class WorkbenchError extends Error { readonly code = 'workbench_error'; constructor(message: string, readonly status = 400) { super(message); } }
 export class WorkbenchRepository {
-  constructor(private readonly db: Database, readonly store: ObjectStore) {}
+  readonly geography: GeographyRepository;
+  constructor(private readonly db: Database, readonly store: ObjectStore) { this.geography = new GeographyRepository(db, store); }
   archiveProfile(input: WorkbenchProfile): WorkbenchProfile {
     const profile = validateWorkbenchProfile(input);
     this.db.prepare('INSERT OR IGNORE INTO workbench_profiles VALUES (?,?,?)')
@@ -85,9 +89,15 @@ export class WorkbenchRepository {
     const spec = FigureSchema.parse(input), record = await this.getDataset(spec.datasetId, actor);
     if (!record || record.contentHash !== spec.datasetHash) throw new WorkbenchError('An accessible, currently approved dataset with the exact figure hash is required.', 409);
     checkFigureBindings(spec, record.document);
+    const geometry = spec.geography ? await this.geography.get(spec.geography.layerId, actor) : null;
+    if (spec.geography) {
+      if (!geometry) throw new WorkbenchError('An accessible, currently approved geometry layer is required.', 409);
+      checkGeographyBinding(spec, geometry);
+    }
     const result = spec.analysis ? await this.resultForFigure(spec, actor) : null;
-    if (result && !await this.getDataset(spec.datasetId, actor)) throw new WorkbenchError('Dataset approval was revoked.', 409);
-    return { record, spec, result };
+    if ((result || geometry) && !await this.getDataset(spec.datasetId, actor)) throw new WorkbenchError('Dataset approval was revoked.', 409);
+    if (geometry && !await this.geography.get(geometry.id, actor)) throw new WorkbenchError('Geometry approval was revoked.', 409);
+    return { record, spec, result, geometry };
   }
   private async resultForFigure(spec: FigureSpec, actor: string) {
     const ref = spec.analysis!, method = this.method(ref.methodId);

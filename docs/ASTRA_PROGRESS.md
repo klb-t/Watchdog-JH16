@@ -139,3 +139,25 @@ unit/contract/scientific/integration tests passed. New Chromium scenarios verify
 standalone verification, historical-profile import, save and reload. Their CI result must be
 checked after publication. The SVG is the portable figure snapshot; automatic paper writing,
 advanced methods/layers and live-source expansion remain unfinished as recorded in the ledger.
+
+
+## 2026-09-10 — reviewed regional boundaries
+
+Published head `1ae7cce` passed Actions run `34358165042`: 268/268 tests, no failures or skips,
+clean installation, typecheck, production build and JH16 demo. The browser evidence includes
+standalone rendered SVG, package verification and historical-profile restoration.
+
+E5.5 adds source-preserving GeoJSON/boundary imports, WORM versions and independent review,
+sharing and revocation. Exact regional joins retain zero, missingness, absent observations,
+ambiguous duplicates and unmatched IDs. The shared choropleth renderer, manual/equal-interval
+classes, labels/alpha/time/panels, fit controls, inspector and favourite settings reach the UI.
+Exports include pinned geometry and independently verified row-to-region reports.
+
+The initial geographic regression caught a collapsed PRK island in the already-rounded bundled
+world map; an explicit retain-and-flag policy preserves those original coordinates and warns
+in source review and SVG. No geometry repair or scientific aggregation was introduced.
+
+Local validation: all 265 unit/contract/scientific/integration tests passed. The new production
+Chromium scenario covers GeoJSON field mapping, individual review, ambiguity, explicit joins,
+time/panels, saved/favourite restoration, independently rendered SVG, ZIP verification, mobile
+layout and revoked approval. Its final CI result is recorded on PR #1 after publication.

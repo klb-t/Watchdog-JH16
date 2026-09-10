@@ -51,8 +51,12 @@ export const FigureSchema = z.object({ version: z.literal('figure-1'), rendererV
     fontSize: z.number().min(8).max(24), labels: z.boolean(), grid: z.boolean(), legend: z.boolean(),
     domainScope: z.enum(['dataset', 'filtered']).optional(),
     xScale: z.enum(['linear', 'log']), yScale: z.enum(['linear', 'log']) }).strict(),
-  camera: z.object({ yaw: z.number().min(-180).max(180), pitch: z.number().min(-90).max(90), zoom: z.number().min(0.5).max(8), centerLongitude: z.number().min(-180).max(180), centerLatitude: z.number().min(-90).max(90) }).strict(),
+  camera: z.object({ yaw: z.number().min(-180).max(180), pitch: z.number().min(-90).max(90), zoom: z.number().min(0.5).max(4096), centerLongitude: z.number().min(-180).max(180), centerLatitude: z.number().min(-90).max(90) }).strict(),
   timeValue: z.union([z.string(), z.number(), z.null()]),
+  geography: z.object({ version: z.literal('region-map-1'), layerId: z.string().min(1), layerHash: hash,
+    mappings: z.record(z.string().max(1000), z.string().min(1).max(200)),
+    classification: z.object({ mode: z.enum(['equal_interval', 'manual']), breaks: z.array(z.number().finite()).max(20) }).strict(),
+  }).strict().optional(),
   analysis: z.object({ methodId: text, methodHash: hash, resultHash: hash }).strict().nullable(),
 }).strict();
 export type FigureSpec = z.infer<typeof FigureSchema>;
@@ -84,16 +88,26 @@ export function selectionIdentity(spec: FigureSpec, columns: string[]) {
 }
 export function checkFigureProfile(spec: FigureSpec, profile: WorkbenchProfile) {
   if (spec.profileHash !== profile.contentHash) throw new WorkbenchInputError('This figure pins a different visualization profile. Restore that profile before rendering or exporting; settings will not be silently substituted.');
-  if (!['scatter', 'line', 'bar', 'scatter3d', 'map'].includes(spec.renderer)) throw new WorkbenchInputError(`Renderer implementation '${spec.renderer}' is unavailable in this release.`);
+  if (!['scatter', 'line', 'bar', 'scatter3d', 'map', 'choropleth'].includes(spec.renderer)) throw new WorkbenchInputError(`Renderer implementation '${spec.renderer}' is unavailable in this release.`);
   if (!profile.renderers.some(r => r.id === spec.renderer) || !profile.palettes.some(p => p.id === spec.style.palette)) throw new WorkbenchInputError('Unknown renderer or palette profile.');
   if (spec.renderer === 'scatter3d' && !spec.channels.z) throw new WorkbenchInputError('The 3D renderer requires a Z column.');
   if (spec.renderer === 'map' && (spec.style.xScale !== 'linear' || spec.style.yScale !== 'linear')) throw new WorkbenchInputError('Geographic coordinates must use linear longitude/latitude axes.');
+  if (spec.geography && spec.renderer !== 'choropleth') throw new WorkbenchInputError('Boundary-layer settings require the choropleth renderer.');
+  if (spec.renderer === 'choropleth') {
+    if (!spec.geography || !spec.channels.region || !spec.channels.color) throw new WorkbenchInputError('Choose an approved boundary layer, REGION identifier and numeric COLOR column.');
+    if (spec.channels.z || spec.channels.size || spec.channels.series) throw new WorkbenchInputError('Region fills do not encode Z, SIZE or SERIES. Use panels, time or another renderer for these dimensions.');
+    const { mode, breaks } = spec.geography.classification;
+    const colors = profile.palettes.find(p => p.id === spec.style.palette)!.colors;
+    if (mode === 'manual' && (breaks.length !== colors.length - 1 || breaks.some((v, i) => i > 0 && v <= breaks[i - 1]))) throw new WorkbenchInputError('Manual classes need one fewer strictly increasing boundary than palette colors.');
+    if (mode === 'equal_interval' && breaks.length) throw new WorkbenchInputError('Equal-interval classes cannot include unused manual boundaries.');
+  }
   if (spec.renderer === 'bar' && spec.style.yScale === 'log') throw new WorkbenchInputError('Bars require a linear Y axis with an explicit zero baseline. Use a scatter or line view for logarithmic values.');
 }
 export function checkFigureBindings(spec: FigureSpec, document: DatasetDocument) {
+  if ((spec.renderer === 'choropleth') !== Boolean(spec.geography)) throw new WorkbenchInputError('A region map requires pinned boundary settings; other renderers cannot use those settings.');
   const columns = new Map(document.columns.map(c => [c.key, c]));
   for (const value of Object.values(spec.channels)) if (value && !columns.has(value)) throw new WorkbenchInputError(`Unknown figure column '${value}'.`);
-  for (const name of ['y', ...(spec.renderer === 'scatter3d' ? ['x', 'z'] : []), 'size', 'alpha']) {
+  for (const name of ['y', ...(spec.renderer === 'scatter3d' ? ['x', 'z'] : []), ...(spec.renderer === 'choropleth' ? ['color'] : []), 'size', 'alpha']) {
     const key = spec.channels[name as keyof FigureSpec['channels']];
     if (key && columns.get(key)!.type !== 'number') throw new WorkbenchInputError(`${name.toUpperCase()} requires a numeric column.`);
   }

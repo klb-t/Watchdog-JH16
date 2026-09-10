@@ -4,10 +4,14 @@ import { workbenchApi, downloadText, downloadBlob } from '../lib/workbench_clien
 import { defaultFigure, filterRows, type DatasetRecord, type FigureSpec, type SavedFigure, type WorkbenchProfile, selectionIdentity } from '../../shared/workbench';
 import { DatasetImport } from '../components/DatasetImport';
 import { FigureCanvas } from '../components/FigureCanvas';
+import { GeometryLayers } from '../components/GeometryLayers';
+import { RegionControls, RegionInspector } from '../components/RegionControls';
+import { fitGeometry, type GeometryLayerRecord } from '../../shared/geography';
 
 export function Workbench() {
   const access = useAccess(), svgRef = useRef<SVGSVGElement>(null);
   const [currentProfile, setCurrentProfile] = useState<WorkbenchProfile | null>(null), [records, setRecords] = useState<DatasetRecord[]>([]), [saved, setSaved] = useState<SavedFigure[]>([]);
+  const [geometryLayers, setGeometryLayers] = useState<GeometryLayerRecord[]>([]), [inspectedRegion, setInspectedRegion] = useState<string | null>(null);
   const [archivedProfile, setArchivedProfile] = useState<WorkbenchProfile | null>(null);
   const [datasetId, setDatasetId] = useState(''), [spec, setSpecState] = useState<FigureSpec | null>(null);
   function setSpec(update: FigureSpec | null | ((value: FigureSpec | null) => FigureSpec | null)) {
@@ -24,10 +28,11 @@ export function Workbench() {
   const [method, setMethod] = useState<any>(null), [methodReviewed, setMethodReviewed] = useState(false), [analysis, setAnalysis] = useState<any>(null), [playing, setPlaying] = useState(false);
   const profile = spec && spec.profileHash !== currentProfile?.contentHash ? (archivedProfile?.contentHash === spec.profileHash ? archivedProfile : null) : currentProfile;
   const tiers = profile?.evidenceDisplay;
+  const geometry = geometryLayers.find(r => r.id === spec?.geography?.layerId && r.contentHash === spec?.geography?.layerHash);
   const record = records.find(r => r.id === datasetId), columns = record?.document.columns ?? [];
   async function load() {
-    const [p, d, f] = await Promise.all([workbenchApi('profile'), workbenchApi('datasets'), workbenchApi('figures')]);
-    setCurrentProfile(p); setRecords(d.records); setSaved(f.figures);
+    const [p, d, f, g] = await Promise.all([workbenchApi('profile'), workbenchApi('datasets'), workbenchApi('figures'), workbenchApi('geometry-layers')]);
+    setCurrentProfile(p); setRecords(d.records); setSaved(f.figures); setGeometryLayers(g.records);
   }
   useEffect(() => { load().catch(e => setError(e.message)); }, []);
   useEffect(() => {
@@ -37,6 +42,7 @@ export function Workbench() {
     return () => { active = false; };
   }, [spec?.profileHash, currentProfile?.contentHash, archivedProfile?.contentHash]);
   useEffect(() => { setMethod(null); setAnalysis(null); }, [spec?.channels.x, spec?.channels.y, spec?.channels.time, spec?.filters, spec?.selectedIds, spec?.timeValue, datasetId]);
+  useEffect(() => { setInspectedRegion(null); setInspected(null); }, [datasetId, spec?.geography?.layerId]);
   const frames = record && spec?.channels.time ? [...new Set(record.document.rows.map(r => r.values[spec.channels.time!]).filter(v => v !== null))].sort((a, b) => typeof a === 'number' && typeof b === 'number' ? a - b : String(a).localeCompare(String(b))) : [];
   useEffect(() => {
     if (!playing || !spec || !frames.length) return;
@@ -50,6 +56,15 @@ export function Workbench() {
   async function act(fn: () => Promise<void>) { setBusy(true); setError(''); try { await fn(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }
   const style = <K extends keyof FigureSpec['style']>(key: K, value: FigureSpec['style'][K]) => setSpec(s => s ? { ...s, style: { ...s.style, [key]: value } } : s);
   const channel = (key: keyof FigureSpec['channels'], value: string) => setSpec(s => s ? { ...s, channels: { ...s.channels, [key]: value || null }, ...(key === 'time' ? { timeValue: null } : {}) } : s);
+  function selectRow(id: string) { setSpec(s => s ? { ...s, selectedIds: s.selectedIds.includes(id) ? s.selectedIds.filter(v => v !== id) : [...s.selectedIds, id] } : s); }
+  function changeRenderer(renderer: string) {
+    if (!spec) return;
+    const next = { ...spec, renderer };
+    if (renderer !== 'choropleth') { delete next.geography; next.camera = { ...next.camera, zoom: Math.min(8, next.camera.zoom) }; }
+    else next.channels = { ...next.channels, z: null, size: null, series: null };
+    if (renderer === 'map' || renderer === 'choropleth') next.style = { ...next.style, xScale: 'linear', yScale: 'linear' };
+    setSpec(next); setInspectedRegion(null);
+  }
   async function exportFigure(format: 'svg' | 'csv' | 'json' | 'zip') {
     if (!spec) return;
     setPlaying(false);
@@ -68,11 +83,13 @@ export function Workbench() {
     const restored = await workbenchApi('figures/restore', { figure: input.figure, profile: input.profile });
     setPlaying(false); setInspected(null); setArchivedProfile(restored.profile);
     setRecords(rows => [...rows.filter(r => r.id !== restored.dataset.id), restored.dataset]);
+    if (restored.geometry) setGeometryLayers(rows => [...rows.filter(r => r.id !== restored.geometry.id), restored.geometry]);
     setDatasetId(restored.dataset.id); setSpec(restored.figure);
     setNotice('Figure and historical profile restored against the currently approved source data. Save to add it to your figures.');
   }
   const tools = () => <div className="flex flex-wrap gap-2" aria-label="Figure tools">
     <button className="field-button" disabled={!spec} onClick={() => setSpec(s => s ? { ...s, selectedIds: [] } : s)}>Clear selection</button>
+    {spec?.renderer === 'choropleth' && geometry?.approvalState === 'APPROVED' && <button className="field-button" onClick={() => setSpec({ ...spec, camera: { ...spec.camera, ...fitGeometry(geometry.document.features) } })}>Fit complete boundary layer</button>}
     {profile?.methods.map(m => <button key={m.id} className="field-button" title={m.description} disabled={busy || !spec || !access.capabilities.includes('workbench.analyze')} onClick={() => { setMenu(false); void act(async () => {
       const data = await workbenchApi('methods', { figure: spec, method: m.id }); setMethod(data.method); setMethodReviewed(false); setAnalysis(null);
       setNotice('Analysis specification prepared. Review its inputs, missing-value policy and assumptions before approval.');
@@ -93,6 +110,7 @@ export function Workbench() {
         const { record: imported } = await workbenchApi('datasets', document); await load(); setDatasetId(imported.id); setSpec(null); setReviewed(false); setShare(false);
         setNotice('Dataset imported as proposed. Inspect every mapping before approval.');
       }); }} />}
+      <GeometryLayers records={geometryLayers} busy={busy} act={act} onChanged={load} />
       {!records.length && <p className="field-panel">No accessible approved aggregate datasets yet. Regional Trends, context and sentiment views need sourced data imports; no live feed or sample trend is fabricated.</p>}
       {record && <section className="field-panel"><h2>{record.document.name}</h2><p>{record.document.description}</p>
         <p className="text-sm mt-2"><a href={record.document.source.url}>{record.document.source.publisher} · {record.document.source.title}</a> · retrieved {record.document.source.retrievedAt} · {record.document.rows.length} records</p>
@@ -114,21 +132,22 @@ export function Workbench() {
         <section className="field-panel"><div className="flex flex-wrap items-center justify-between gap-3"><h2>Figure builder</h2><button className="field-button" onClick={() => setMenu(!menu)} aria-expanded={menu}>Tools / context menu</button></div>
           <p className="text-sm text-slate-600 mt-2">Hover or focus a mark to inspect its source values. Click or press Enter to select it. Right-click, Shift+F10 or the Tools button opens the same palette. Statistics use the selected rows, or all filtered rows when no selection is made.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-            <label className="field-control">View type<select aria-label="View type" value={spec.renderer} onChange={e => setSpec({ ...spec, renderer: e.target.value, style: e.target.value === 'map' ? { ...spec.style, xScale: 'linear', yScale: 'linear' } : spec.style })}>{profile.renderers.map(r => <option key={r.id} value={r.id}>{r.label}</option>)}</select></label>
-            {Object.entries(spec.channels).filter(([key]) => key !== 'region' || spec.renderer === 'map').map(([key, value]) => <label className="field-control" key={key}>{key.toUpperCase()} channel<select aria-label={`${key.toUpperCase()} channel`} value={value ?? ''} onChange={e => channel(key as any, e.target.value)}>
+            <label className="field-control">View type<select aria-label="View type" value={spec.renderer} onChange={e => changeRenderer(e.target.value)}>{profile.renderers.map(r => <option key={r.id} value={r.id}>{r.label}</option>)}</select></label>
+            {Object.entries(spec.channels).filter(([key]) => (key !== 'region' || ['map', 'choropleth'].includes(spec.renderer)) && !(spec.renderer === 'choropleth' && ['z', 'size', 'series'].includes(key))).map(([key, value]) => <label className="field-control" key={key}>{key.toUpperCase()} channel<select aria-label={`${key.toUpperCase()} channel`} value={value ?? ''} onChange={e => channel(key as any, e.target.value)}>
               {!['x', 'y'].includes(key) && <option value="">None / constant</option>}{columns.map(c => <option value={c.key} key={c.key}>{c.label} ({c.type})</option>)}</select></label>)}
             <label className="field-control">Palette<select aria-label="Palette" value={spec.style.palette} onChange={e => style('palette', e.target.value)}>{profile.palettes.map(p => <option key={p.id} value={p.id}>{p.label}</option>)}</select></label>
             <label className="field-control">Scale domain<select aria-label="Scale domain" value={spec.style.domainScope ?? 'filtered'} onChange={e => style('domainScope', e.target.value as 'dataset' | 'filtered')}><option value="dataset">Whole dataset · stable through time</option><option value="filtered">Filtered frame · rescale</option></select></label>
-            {(['xScale', 'yScale'] as const).map(key => <label className="field-control" key={key}>{key}<select aria-label={key} value={spec.style[key]} disabled={spec.renderer === 'map'} onChange={e => style(key, e.target.value as any)}><option value="linear">Linear</option><option value="log">Log10 · excludes nonpositive values</option></select></label>)}
+            {(['xScale', 'yScale'] as const).map(key => <label className="field-control" key={key}>{key}<select aria-label={key} value={spec.style[key]} disabled={['map', 'choropleth'].includes(spec.renderer)} onChange={e => style(key, e.target.value as any)}><option value="linear">Linear</option><option value="log">Log10 · excludes nonpositive values</option></select></label>)}
           </div>
           <div className="flex flex-wrap gap-4 mt-4">{(['labels', 'grid', 'legend'] as const).map(key => <label className="text-sm" key={key}><input type="checkbox" checked={spec.style[key]} onChange={e => style(key, e.target.checked)} /> {key}</label>)}</div>
           <details className="mt-4"><summary>Publication style and camera</summary><div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-3">
             {(['title', 'subtitle', 'xLabel', 'yLabel'] as const).map(key => <label className="field-control" key={key}>{key}<input value={spec.style[key]} onChange={e => style(key, e.target.value)} /></label>)}
             {([{ key: 'opacity', min: 0.1, max: 1, step: 0.05 }, { key: 'pointSize', min: 2, max: 20, step: 1 }, { key: 'lineWidth', min: 0.5, max: 8, step: 0.5 }, { key: 'fontSize', min: 8, max: 24, step: 1 }] as const).map(c => <label className="field-control" key={c.key}>{c.key}: {spec.style[c.key]}<input type="range" min={c.min} max={c.max} step={c.step} value={spec.style[c.key]} onChange={e => style(c.key, Number(e.target.value))} /></label>)}
             {spec.renderer === 'scatter3d' && (['yaw', 'pitch', 'zoom'] as const).map(key => <label className="field-control" key={key}>Camera {key}<input type="range" min={key === 'zoom' ? 0.5 : key === 'pitch' ? -90 : -180} max={key === 'zoom' ? 8 : key === 'pitch' ? 90 : 180} step={key === 'zoom' ? 0.1 : 1} value={spec.camera[key]} onChange={e => setSpec({ ...spec, camera: { ...spec.camera, [key]: Number(e.target.value) } })} /></label>)}
-            {spec.renderer === 'map' && <><label className="field-control">Map zoom<input type="range" min={0.5} max={8} step={0.1} value={spec.camera.zoom} onChange={e => setSpec({ ...spec, camera: { ...spec.camera, zoom: Number(e.target.value) } })} /></label>
+            {['map', 'choropleth'].includes(spec.renderer) && <><label className="field-control">Map zoom<input type={spec.renderer === 'choropleth' ? 'number' : 'range'} min={0.5} max={spec.renderer === 'choropleth' ? 4096 : 8} step={0.1} value={spec.camera.zoom} onChange={e => setSpec({ ...spec, camera: { ...spec.camera, zoom: Number(e.target.value) } })} /></label>
               {(['centerLongitude', 'centerLatitude'] as const).map(key => <label className="field-control" key={key}>{key}<input type="number" min={key === 'centerLongitude' ? -180 : -90} max={key === 'centerLongitude' ? 180 : 90} value={spec.camera[key]} onChange={e => setSpec({ ...spec, camera: { ...spec.camera, [key]: Number(e.target.value) } })} /></label>)}</>}
           </div></details>
+          {spec.renderer === 'choropleth' && <RegionControls record={record} spec={spec} profile={profile} layers={geometryLayers} onChange={setSpec} />}
           <fieldset className="mt-4 border-t pt-4"><legend className="font-medium">Geography, language, time and other column filters</legend><div className="flex flex-wrap gap-2 items-end mt-2">
             <label className="field-control">Filter column<select aria-label="Filter column" value={filterColumn} onChange={e => setFilterColumn(e.target.value)}><option value="">Select column</option>{columns.map(c => <option value={c.key} key={c.key}>{c.label}</option>)}</select></label>
             <label className="field-control">Operator<select aria-label="Operator" value={filterOperator} onChange={e => setFilterOperator(e.target.value)}><option value="equals">Equals</option><option value="contains">Contains</option><option value="range">Range (inclusive)</option></select></label>
@@ -146,14 +165,20 @@ export function Workbench() {
         </section>
         {menu && <div className="field-panel border-indigo-400" role="dialog" aria-label="Context tools" onKeyDown={e => { if (e.key === 'Escape') setMenu(false); }}>
           <div className="flex justify-between mb-3"><strong>Tools · {spec.selectedIds.length} selected rows</strong><button className="field-button" onClick={() => setMenu(false)}>Close tools</button></div>{tools()}</div>}
-        <div className="mt-5"><FigureCanvas record={record} spec={spec} profile={profile} svgRef={svgRef} onInspect={setInspected} onMenu={() => setMenu(true)} onSelect={id => setSpec(s => s ? { ...s, selectedIds: s.selectedIds.includes(id) ? s.selectedIds.filter(v => v !== id) : [...s.selectedIds, id] } : s)} /></div>
+        <div className="mt-5"><FigureCanvas record={record} spec={spec} profile={profile} geometry={geometry} svgRef={svgRef} onInspect={setInspected} onRegionInspect={setInspectedRegion} onMenu={() => setMenu(true)} onSelect={selectRow} /></div>
+        {spec.renderer === 'choropleth' && <RegionInspector record={record} spec={spec} profile={profile} geometry={geometry} inspectedId={inspectedRegion} onInspect={setInspected} onSelect={selectRow} />}
         {inspected && <aside className="field-panel" aria-label="Inspected observation"><strong>{inspected.id}</strong><p className="text-sm">{tiers[inspected.evidenceTier].icon} {tiers[inspected.evidenceTier].label} · ✓ Approved mapping · {inspected.qualityFlags.join(' · ')}</p>
           <dl className="field-metadata text-sm">{columns.map(c => <div key={c.key}><dt className="font-medium">{c.label}{c.unit ? ` [${c.unit}]` : ''}</dt><dd>{inspected.values[c.key] === null ? `Missing: ${inspected.missingReasons[c.key]}` : String(inspected.values[c.key])}</dd></div>)}</dl></aside>}
         <div className="field-panel flex flex-wrap gap-3 items-end"><label className="field-control">Saved figure name<input value={spec.name} onChange={e => setSpec({ ...spec, name: e.target.value })} /></label>
           <label className="text-sm pb-2"><input type="checkbox" checked={favorite} onChange={e => setFavorite(e.target.checked)} /> Add to favourites</label>
           <button className="field-button primary" disabled={busy || !access.capabilities.includes('figure.manage')} onClick={() => act(async () => { const data = await workbenchApi('figures', { spec, favorite }); await load(); setNotice(`Saved immutable figure ${data.figure.hash}.`); })}>Save figure and settings</button>
           {spec.analysis && !analysis && <button className="field-button" disabled={busy} onClick={() => act(async () => { const verified = await workbenchApi('export', { figure: spec, format: 'analysis' }); downloadText('watchdog-analysis.json', JSON.stringify(verified, null, 2), 'application/json'); })}>Download saved analysis and provenance</button>}
-          <label className="field-control">Reuse a favourite visual style<select aria-label="Reuse a favourite visual style" value="" onChange={e => { const f = saved.find(f => f.id === e.target.value); if (f) setSpec({ ...spec, renderer: f.spec.renderer, profileHash: f.spec.profileHash, style: { ...f.spec.style }, camera: { ...f.spec.camera } }); }}><option value="">Keep current style</option>{saved.filter(f => f.favorite).map(f => <option key={f.id} value={f.id}>{f.spec.name}</option>)}</select></label>
+          <label className="field-control">Reuse a favourite visual style<select aria-label="Reuse a favourite visual style" value="" onChange={e => { const f = saved.find(f => f.id === e.target.value); if (f) {
+            const next = { ...spec, renderer: f.spec.renderer, profileHash: f.spec.profileHash, style: { ...f.spec.style }, camera: { ...f.spec.camera } };
+            delete next.geography;
+            if (f.spec.geography) { next.geography = structuredClone(f.spec.geography); next.channels = { ...next.channels, z: null, size: null, series: null }; }
+            setSpec(next);
+          } }}><option value="">Keep current style</option>{saved.filter(f => f.favorite).map(f => <option key={f.id} value={f.id}>{f.spec.name}</option>)}</select></label>
         </div>
         {method && <section className="field-panel"><h2>{method.spec.name} · {method.approvalState}</h2><p className="text-sm">Data, selection, units, missing-value policy and method are pinned. Changing figure styling does not change this calculation.</p>
           <pre className="text-xs max-h-80 overflow-auto p-3 bg-slate-50 mt-3">{JSON.stringify(method.spec, null, 2)}</pre>

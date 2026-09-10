@@ -7,6 +7,7 @@ import { requireCapability } from './auth_routes';
 import { WorkbenchRepository, WorkbenchError } from '../db/repositories/workbench';
 import { WorkbenchService } from '../workbench/service';
 import { checkProviderProfile, checkFigureProfile, validateWorkbenchProfile } from '../config/workbench';
+import { bundledWorldLayer } from '../config/geography';
 import { publicationSvg, researchPackage } from '../workbench/publication';
 import { tracer } from '../utils/tracer';
 const requestId = () => tracer.getContext()?.request_id ?? randomUUID();
@@ -36,6 +37,20 @@ export function buildWorkbenchRouter(repo: WorkbenchRepository, service: Workben
   router.post('/datasets/:id/revoke', requireCapability('dataset.approve'), boundary('dataset_revoke', async (req, res) => {
     await repo.revokeDataset(req.params.id, req.principal!.id, requestId()); res.json({ revoked: true });
   }));
+  router.get('/geometry-layers', boundary('geometry_list', async (req, res) => res.json({ records: await repo.geography.list(req.principal!.id, can(req.principal!.roles, 'dataset.review')) })));
+  router.get('/geometry-catalog/world', requireCapability('dataset.import'), boundary('geometry_catalog', (_req, res) => res.json({ document: bundledWorldLayer() })));
+  router.post('/geometry-layers', requireCapability('dataset.import'), boundary('geometry_import', async (req, res) => {
+    const record = await repo.geography.import(req.body, req.principal!.id, requestId());
+    tracer.result({ geometryId: record.id, hash: record.contentHash, featureCount: record.document.features.length });
+    res.status(201).json({ record });
+  }));
+  router.post('/geometry-layers/:id/approve', requireCapability('dataset.approve'), boundary('geometry_approve', async (req, res) => {
+    const body = approval.extend({ shareAggregate: z.boolean() }).parse(req.body);
+    res.json({ record: await repo.geography.approve(req.params.id, req.principal!.id, body.expectedHash, body.shareAggregate, requestId()) });
+  }));
+  router.post('/geometry-layers/:id/revoke', requireCapability('dataset.approve'), boundary('geometry_revoke', async (req, res) => {
+    await repo.geography.revoke(req.params.id, req.principal!.id, requestId()); res.json({ revoked: true });
+  }));
   router.get('/figures', boundary('figures', (req, res) => res.json({ figures: repo.figures(req.principal!.id) })));
   router.post('/figures', requireCapability('figure.manage'), boundary('figure_save', async (req, res) => {
     const { spec, favorite } = z.object({ spec: FigureSchema, favorite: z.boolean() }).strict().parse(req.body);
@@ -48,25 +63,25 @@ export function buildWorkbenchRouter(repo: WorkbenchRepository, service: Workben
     const verified = await repo.requireFigure(body.figure, req.principal!.id);
     repo.archiveProfile(profile);
     repo.audit(req.principal!.id, 'figure.restore', verified.record.id, requestId(), { profileHash: profile.contentHash, datasetHash: verified.record.contentHash });
-    res.json({ figure: verified.spec, profile, dataset: verified.record });
+    res.json({ figure: verified.spec, profile, dataset: verified.record, geometry: verified.geometry });
   }));
   router.post('/export', boundary('figure_export', async (req, res) => {
     const { figure, format } = z.object({ figure: FigureSchema, format: z.enum(['csv', 'json', 'svg', 'analysis', 'zip']) }).strict().parse(req.body);
-    const profile = service.profileForFigure(figure), { record, spec, result } = await repo.requireFigure(figure, req.principal!.id);
+    const profile = service.profileForFigure(figure), { record, spec, result, geometry } = await repo.requireFigure(figure, req.principal!.id);
     if (format === 'analysis' && !result) throw new WorkbenchError('The figure has no verified analysis result.', 409);
     if (format === 'zip') {
-      const bundle = researchPackage(record, spec, profile, result);
+      const bundle = researchPackage(record, spec, profile, result, geometry);
       repo.audit(req.principal!.id, 'figure.export', record.id, requestId(), { datasetHash: record.contentHash, format, manifestHash: bundle.manifestHash, archiveHash: bundle.sha256 });
       tracer.result({ format, manifestHash: bundle.manifestHash, bytes: bundle.bytes.length });
       res.setHeader('X-Package-Manifest-SHA256', bundle.manifestHash); res.setHeader('X-Package-SHA256', bundle.sha256);
       res.attachment('watchdog-research-package.zip').type('application/zip').send(bundle.bytes); return;
     }
-    const svg = format === 'svg' ? publicationSvg(record, spec, profile) : null;
+    const svg = format === 'svg' ? publicationSvg(record, spec, profile, geometry) : null;
     repo.audit(req.principal!.id, 'figure.export', record.id, requestId(), { datasetHash: record.contentHash, profileHash: profile.contentHash, format });
     if (format === 'csv') res.type('text/csv').send(csvExport(record, spec));
     else if (format === 'svg') res.type('image/svg+xml').send(svg);
     else if (format === 'analysis') res.json(result);
-    else res.json({ figure: spec, dataset: record, profile, analysis: result });
+    else res.json({ figure: spec, dataset: record, profile, analysis: result, geometry });
   }));
   router.post('/methods', requireCapability('workbench.analyze'), boundary('method_prepare', async (req, res) => {
     const { figure, method } = z.object({ figure: FigureSchema, method: z.string() }).strict().parse(req.body);

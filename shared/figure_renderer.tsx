@@ -1,18 +1,21 @@
 import { useMemo, type RefObject } from 'react';
-import { axisValue, filterRows, checkFigureBindings, checkFigureProfile, type FigureSpec, type DatasetRecord, type WorkbenchProfile } from './workbench';
+import { FigureSchema, axisValue, filterRows, checkFigureBindings, checkFigureProfile, type FigureSpec, type DatasetRecord, type WorkbenchProfile } from './workbench';
 import { project3d, wrapFigureText } from './figure_geometry';
+import { RegionCanvas } from './region_renderer';
+import type { GeometryLayerRecord } from './geography';
 import world from '../config/workbench/world.json';
 type Row = DatasetRecord['document']['rows'][number];
 const distinct = (values: unknown[]) => [...new Set(values.map(v => v === null ? '(missing)' : String(v)))].sort();
 const W = 860, H = 490, M = 60;
-export function FigureCanvas({ record, spec, profile, onSelect, onInspect, onMenu, svgRef, standalone = false }: {
-  record: DatasetRecord; spec: FigureSpec; profile: WorkbenchProfile; standalone?: boolean; onSelect: (id: string) => void;
+export function FigureCanvas({ record, spec, profile, onSelect, onInspect, onMenu, svgRef, geometry, onRegionInspect, standalone = false }: {
+  record: DatasetRecord; spec: FigureSpec; profile: WorkbenchProfile; standalone?: boolean; geometry?: GeometryLayerRecord | null; onRegionInspect?: (id: string) => void; onSelect: (id: string) => void;
   onInspect: (row: Row | null) => void; onMenu: () => void; svgRef: RefObject<SVGSVGElement | null>;
 }) {
   const rows = useMemo(() => filterRows(record.document, spec), [record, spec]);
   const tiers = profile.evidenceDisplay;
-  try { checkFigureProfile(spec, profile); checkFigureBindings(spec, record.document); }
+  try { FigureSchema.parse(spec); checkFigureProfile(spec, profile); checkFigureBindings(spec, record.document); }
   catch (error) { return <p className="field-warning" role="alert">{(error as Error).message}</p>; }
+  if (spec.renderer === 'choropleth') return <RegionCanvas record={record} spec={spec} profile={profile} geometry={geometry} standalone={standalone} svgRef={svgRef} onSelect={onSelect} onInspect={onInspect} onRegionInspect={onRegionInspect} onMenu={onMenu} />;
   const col = (key: string | null) => record.document.columns.find(c => c.key === key);
   const palette = profile.palettes.find(p => p.id === spec.style.palette)!.colors;
   // Legacy saved figures omitted domainScope and retain their original filtered domains.

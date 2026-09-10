@@ -87,6 +87,62 @@ The canonical evidence palette lives in `config/evidence/tier-display.json`, sha
 responder. Data color and alpha channels never replace evidence/review labels or combine them
 into a confidence score. Clinical category order is a separate dimension of the responder UI.
 
+## Reviewed regional boundary maps
+
+Choose **Regions · choropleth** to color polygons from a numeric source column. In **Boundary
+layers**, import mapped JSON or an RFC 7946 GeoJSON FeatureCollection, explicitly select the
+identifier/label properties, and supply source, license and retrieval metadata. The source text
+and mapping are retained. Review and approve the exact boundary hash separately from the data;
+only the owner can change sharing or revoke approval. The bundled world map is offered for
+explicit import, never inserted or approved at startup.
+
+This implementation accepts the [RFC 7946](https://www.rfc-editor.org/rfc/rfc7946) 2D subset:
+closed Polygon/MultiPolygon rings in WGS84 longitude/latitude, with holes and separate islands.
+It rejects legacy CRS overrides, altitude coordinates, unclosed rings, duplicate identifiers
+and uncut antimeridian crossings (a closing edge along a pole is allowed). It does not reproject,
+repair topology or certify disputed boundaries. Limits are 2,000 features, 100,000 positions,
+1 MB source text and the existing 2 MB JSON request limit. Prepare and document a lower-resolution
+source if needed. Self-intersections and hole containment still require source review or a GIS
+validator; successful import is not a topology certificate.
+
+The bundled Natural Earth snapshot has 177 distinct feature IDs. Five upstream `-99` identifiers
+use explicit `NE:name` values rather than invented ISO codes; inspect the identifier table.
+Earlier 0.001-degree rounding collapsed one small PRK polygon. An explicit `retain_and_flag`
+policy retains its coordinates, with a warning in source review and the vector footer. A layer
+without that policy rejects collapsed rings; a feature without any drawable outer ring always
+fails. No geometry is silently deleted or repaired.
+
+Select the approved **Boundary layer**, a **REGION** identifier column and numeric **COLOR**.
+The exact string representation joins to the feature ID; optional explicit mappings handle
+other source codes and are saved with the figure. One row per region and panel yields a fill.
+Zero is a reported value. Missing source values have diagonal hatching; absent observations
+are neutral; multiple rows have crosshatching and remain ambiguous, even if their values agree.
+Unmatched identifiers have a separate report. No mean, sum or inferred route is calculated.
+Time frames and facets can distinguish repeated observations; statistical selection never
+hides conflicting rows from the regional map.
+
+Equal-interval or explicit manual classes, palette, alpha, labels, time, facets and camera are
+saved. Manual thresholds must be strictly increasing with one fewer boundary than palette
+colors; a value equal to a threshold enters the upper class. Whole-dataset domains remain
+stable across frames by default; filtered rescaling is explicitly selectable. Alpha is a
+separate visual channel, never a confidence score. X/Y remain statistical inputs; Z, size and
+series are unavailable for polygon fills. **Fit boundary layer** and **Fit regions with
+observations** set a reproducible extent; regional zoom supports small local layers. Labels use
+an interior display anchor excluding holes, not an inferred geographic measurement.
+
+Hover/focus/click opens region/source inspection. Multiple matching rows can be inspected or
+selected individually for existing reviewed statistics. Right-click, Shift+F10 and the visible
+Tools control reach the same palette. Diagnostics expose exact source/target IDs, missingness,
+ambiguity and current access errors. Import, approval, revocation, save and export are audited;
+request spans connect them to the developer console.
+
+Favourite snapshots and portable workspaces pin the boundary ID/hash and explicit mappings.
+Restoration and every server export recheck current access and approval; a historical receipt
+cannot approve a revoked layer. Research ZIPs add `rendering/geometry.json`, its approval
+receipt, exact original `source.geojson` when supplied, and a complete per-panel `region-join.json`.
+The standalone verifier checks geometry identities and independently rebuilds the row-to-region
+join, in addition to the package inventory. SVG/ZIP export uses the same renderer as the UI.
+
 ## Debugging and boundaries
 
 Developer diagnostics can switch OFF/ERRORS/NORMAL/TRACE, inspect request trace IDs, persisted
@@ -103,7 +159,7 @@ review is limited to the shipped JH2016 method, pins the displayed hash, identif
 from the session and audits the approval. Workbench methods retain their dataset-aware gate.
 
 This slice does not implement a transform DAG, advanced/causal statistics, uncertainty bands,
-choropleths, route graphs, a live Trends feed, sentiment inference or automated paper writing.
+route graphs, a live Trends feed, sentiment inference or automated paper writing.
 Those remain in the ledger. Tests use clearly fictional source records; the application does
 not seed fake regional signals or approve the bundled clinical proposals.
 

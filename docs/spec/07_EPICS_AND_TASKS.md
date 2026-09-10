@@ -388,8 +388,15 @@ requests and admin approval; per-source permissions; developer diagnostics surfa
   rows and optional method/inputs/result/manifest. Standalone verification checks checksums and
   linked identities. Real DB/HTTP tests cover configuration changes, tampering, revocation,
   private-result isolation and numerical replay. Chromium import/download/reload is a CI gate.
+- [x] **E5.5 — Reviewed boundary maps.** Versioned Polygon/MultiPolygon import, exact source
+  mapping and separate owner review/sharing/revocation. Choropleths preserve zero, missing,
+  absent, ambiguous and unmatched observations; explicit mappings, class breaks, alpha,
+  time/facets, labels, extent controls, region inspection and favourites persist. Research ZIPs
+  retain geometry/source/approval and per-panel joins, independently checked by the verifier.
+  Real DB/HTTP and render tests cover joins, hash pins, WORM, access and revocation. Production
+  Chromium import → review → map → save/reload → SVG/ZIP verification is a CI gate.
 - [ ] **E5 remainder.** Transform DAG, advanced reviewed methods, Python sidecar, uncertainty
-  bands, choropleths/graph layers, route-hypothesis workflow, and the full paper pipeline.
+  bands, graph layers, route-hypothesis workflow, and the full paper pipeline.
   Their presence in the following inventory is not an implementation claim.
 
 Contents: dataset import and the transform DAG; the generic method registry beyond the seven
