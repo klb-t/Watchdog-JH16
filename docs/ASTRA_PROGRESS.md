@@ -161,3 +161,12 @@ Local validation: all 265 unit/contract/scientific/integration tests passed. The
 Chromium scenario covers GeoJSON field mapping, individual review, ambiguity, explicit joins,
 time/panels, saved/favourite restoration, independently rendered SVG, ZIP verification, mobile
 layout and revoked approval. Its final CI result is recorded on PR #1 after publication.
+
+Geographic head `a3a275a` passed Actions run `34419687027`: 276/276 tests, clean installation,
+typecheck/build, Chromium production flows and the JH16 demo. Its independently rendered
+regional SVG retains both time panels, polygon holes, class/missingness legends and complete
+source/hash footnotes; the 14-file regional ZIP passes standalone verification. Browser error
+capture is empty. Mobile screenshots revealed that the application scrolls inside `main`, so
+the final UI checks also inspect that container's width and scroll to the region controls and
+inspector. Opaque evidence/source/boundary badges accompany the regional UI independently of
+polygon alpha; exported SVG keeps the same evidence legend and provenance.

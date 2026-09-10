@@ -124,5 +124,9 @@ export function RegionCanvas({ record, spec, profile, geometry, standalone, svgR
       {footer.map((line, i) => <text key={i} y={(legendCount + 2 + i) * lineHeight}>{line}</text>)}
     </g>
   </svg>;
-  return svg;
+  if (standalone) return svg;
+  return <>{svg}<div className="flex flex-wrap gap-2 mt-3" aria-label="Evidence legend">
+    {tiers.map(t => <span className="evidence-badge" key={t} style={{ color: profile.evidenceDisplay[t].color, borderColor: profile.evidenceDisplay[t].color }}>{profile.evidenceDisplay[t].icon} {profile.evidenceDisplay[t].label}</span>)}
+    <span className="evidence-badge">✓ Approved source mapping</span><span className="evidence-badge">✓ Approved boundary mapping</span>
+  </div></>;
 }

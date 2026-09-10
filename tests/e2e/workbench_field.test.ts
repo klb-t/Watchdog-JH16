@@ -280,6 +280,13 @@ test('E5 browser: reviewed regional boundaries, exact joins, time panels and por
   assert.equal(entries.find(e => e.name === 'rendering/source.geojson')!.content.toString(), boundaryDocument.rawInput!.text);
   await page.setViewportSize({ width: 390, height: 844 }); await page.screenshot({ path: path.join(artifacts, 'regional-workbench-mobile.png'), fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), false);
+  assert.equal(await page.locator('main').evaluate(element => element.scrollWidth > element.clientWidth + 1), false, 'the actual scrolling workbench must fit mobile width');
+  await page.getByLabel('Boundary layer', { exact: true }).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: path.join(artifacts, 'regional-controls-mobile.png') });
+  await region('C').first().focus(); await region('C').first().press('Enter');
+  await page.getByLabel('Evidence legend', { exact: true }).scrollIntoViewIfNeeded();
+  assert.deepEqual(await page.getByLabel('Evidence legend', { exact: true }).locator('.evidence-badge').evaluateAll(elements => elements.map(element => getComputedStyle(element).opacity)), ['1', '1', '1']);
+  await page.screenshot({ path: path.join(artifacts, 'regional-inspection-mobile.png') });
   await page.setViewportSize({ width: 1440, height: 1050 });
   await page.getByText('Boundary layers · import, review and versions', { exact: true }).click();
   await page.getByLabel('Review boundary version', { exact: true }).selectOption(layerId);
