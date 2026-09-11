@@ -247,3 +247,44 @@ test('E1.23: results, charts, approval state and export are reachable and correc
   assert.match(body, /run_id,entity_id,metric_key,value_numeric,unit,is_missing/);
   assert.match(body, /missing_count,Pi,,%,true/, 'missing exports as empty with is_missing=true');
 });
+
+test('personal wizard: saved modes, independent scope, explicit method review and real keyless JH16 run on mobile', async () => {
+  const errors: string[] = []; const onError = (e: Error) => errors.push(e.message); page.on('pageerror', onError);
+  try {
+    await page.goto(`${baseUrl}/setup`); await page.waitForSelector('[data-testid="configuration-wizard"]');
+    assert.equal(await page.locator('[data-testid="cost-slider"]').count(), 1);
+    await page.locator('[data-testid="interface-mode"]').selectOption('standard');
+    assert.equal(await page.locator('[data-testid="cost-slider"]').count(), 0, 'economy slider belongs only to simple mode');
+    await page.getByLabel('Gęstość interfejsu').selectOption('compact');
+    await page.locator('[data-testid="settings-save"]').click();
+    await page.getByRole('status').filter({ hasText: 'Ustawienia zapisane.' }).waitFor();
+    await page.reload(); await page.waitForSelector('[data-testid="configuration-wizard"]');
+    assert.equal(await page.locator('[data-testid="interface-mode"]').inputValue(), 'standard');
+    assert.equal(await page.getByLabel('Gęstość interfejsu').inputValue(), 'compact');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator('[data-testid="configuration-wizard"]').scrollIntoViewIfNeeded();
+    const layout = await page.locator('main').evaluate(el => ({ clientWidth: el.clientWidth, scrollWidth: el.scrollWidth }));
+    assert.ok(layout.scrollWidth <= layout.clientWidth + 1, JSON.stringify(layout));
+    fs.mkdirSync('test-artifacts', { recursive: true }); await page.screenshot({ path: 'test-artifacts/wizard-mobile.png', fullPage: true });
+    await page.getByRole('button', { name: 'Dalej: zakres badań' }).click();
+    await page.getByLabel('Nederland', { exact: true }).check();
+    await page.getByLabel('Zasil kartoteki:', { exact: false }).uncheck();
+    await page.getByLabel('Przejrzyj arXiv i Europe PMC', { exact: false }).uncheck();
+    await page.locator('[data-testid="prepare-research-plan"]').click();
+    await page.locator('[data-testid="approve-wizard-method"]').waitFor();
+    assert.equal(await page.locator('[data-testid="launch-research-plan"]').isDisabled(), true);
+    await page.locator('[data-testid="approve-wizard-method"]').check();
+    await page.locator('[data-testid="launch-research-plan"]').click();
+    const link = page.getByRole('link', { name: 'Wyniki JH16', exact: true }); await link.waitFor();
+    const plans = (await (await fetch(`${baseUrl}/api/settings/plans`)).json()).plans;
+    const plan = plans.find((p: any) => p.launch?.runId);
+    assert.deepEqual(plan.body.extensions.geographies, ['NL']); assert.deepEqual(plan.body.extensions.languages, ['en', 'pl']);
+    const runId = plan.launch.runId; let result: any;
+    for (let i = 0; i < 60; i++) { result = await (await fetch(`${baseUrl}/api/runs/${runId}`)).json();
+      if (['COMPLETED', 'FAILED'].includes(result.run.status)) break; await new Promise(r => setTimeout(r, 100)); }
+    assert.equal(result.run.status, 'COMPLETED', result.run.error_details);
+    const csv = await (await fetch(`${baseUrl}/api/runs/${runId}/export?format=csv`)).text();
+    assert.match(csv, /caffeine,Pi,/); assert.equal(plan.launch.jobs.length, 0, 'this test opts out of network collection');
+    assert.deepEqual(errors, []);
+  } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); }
+});

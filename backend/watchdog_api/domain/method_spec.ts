@@ -73,6 +73,8 @@ export interface TypedSeries {
   /** Aligned with `entityIds`; `null` is missing and never coerced to zero. */
   readonly values: readonly (number | null)[];
   readonly entityIds: readonly string[];
+  /** Source-quality flags carried through execution independently of missingness. */
+  readonly qualityFlags?: readonly string[];
 }
 
 export interface AnalysisResultValue {

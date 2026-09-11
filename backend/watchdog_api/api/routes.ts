@@ -23,8 +23,10 @@ import { validateMethodSpec, hashMethodSpec } from '../analysis/method_spec_vali
 import { MethodSpec } from '../domain/method_spec';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import type { AssistantService } from '../services/assistant';
+import { sameOriginMutation } from './automation_routes';
 
-export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository) {
+export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService) {
 const apiRouter = Router();
 
 const orchestrator = new RunOrchestrator(db, store);
@@ -317,6 +319,20 @@ apiRouter.post('/runs/:id/narrative/generate',
     // model rather than a template.
     res.json({ narrative });
   } catch (e) { next(e); }
+});
+
+apiRouter.post('/runs/:id/narrative/automatic', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
+  try {
+    z.object({ consent: z.literal(true) }).strict().parse(req.body);
+    if (!assistant) return res.status(409).json({ error: 'Personal assistant is not configured' });
+    const run = runRepo.getRun(req.params.id)!, results = anRepo.getByRunId(req.params.id), observations = obsRepo.getByRunId(req.params.id);
+    const payload = { presetId: run.preset_id, results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId, valueNumeric: r.valueNumeric, unit: r.unit })),
+      missingCount: observations.filter(o => o.isMissing).length, qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort() };
+    if (!assistant.repo.catalog()) await assistant.refreshCatalog(req.principal!.id);
+    const narrative = await generateNarrativeWithProvider({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
+      templateId: 'jh2016-summary', templateVersion: '1.0', providerId: 'openrouter', model: 'automatic', generator: assistant.generator(req.principal!.id, 'narrative') });
+    res.json({ narrative });
+  } catch (error) { next(error); }
 });
 
 return apiRouter;

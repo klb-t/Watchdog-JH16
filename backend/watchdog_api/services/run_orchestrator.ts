@@ -13,6 +13,10 @@ import { buildManifest, serializeManifest, ManifestFetchRecord, ManifestMissingO
 import { detectDiscontinuities, annotateWithDiscontinuities } from './discontinuity';
 import { AnalysisResultValue } from '../domain/method_spec';
 import { canonicalHash } from '../domain/canonical';
+import { MethodSpecRepository } from '../db/repositories/method_specs';
+import { TypeScriptMethodExecutor } from '../analysis/executor';
+import type { SourceAdapter } from '../sources/base';
+import type { TypedSeries } from '../domain/method_spec';
 
 /**
  * One (entity, dimension) pair to acquire. The preset decides both; the
@@ -33,7 +37,8 @@ export class RunOrchestrator {
 
   constructor(
     private db: BetterSQLite3Database<any>,
-    private store: ObjectStore
+    private store: ObjectStore,
+    private readonly resolveSource: (id: string, owner: string, personal: boolean) => Promise<SourceAdapter> = id => sourceRegistry.resolveAdapter(id)
   ) {
     this.runRepo = new RunRepository(db);
     this.acqRepo = new AcquisitionRepository(db, store);
@@ -108,7 +113,9 @@ export class RunOrchestrator {
         if (runType === 'ACQUISITION' || runType === 'PIPELINE') {
           tracer.emit('START_ACQUISITION', { source: config.source_id });
 
-          const adapter = await sourceRegistry.resolveAdapter(config.source_id);
+          if (config.method_spec_id) this.requirePinnedSpec(config);
+          const adapter = await this.resolveSource(config.source_id, runRecord.owner_principal_id, config.personal_credentials === true);
+          if (config.method_spec_id && !adapter.capabilities().includes('result_count')) throw new Error('The JH16 MethodSpec requires result counts');
           const validated = adapter.validate_params(config.source_params || {});
           if (!validated.valid) throw new Error(`Invalid params: ${validated.errors?.join(', ')}`);
 
@@ -185,19 +192,27 @@ export class RunOrchestrator {
           const observations = this.obsRepo.getByRunId(obsRunId);
 
           stateAtFailure = 'EXECUTING_ANALYSIS';
-          const analyzer = analyzerRegistry.get(config.method_id);
-          const results = analyzer.analyze(observations, {
-            method_id: config.method_id,
-            method_version: analyzer.analyzer_version,
-            parameters: config.method_params ?? {},
-          });
-
-          stateAtFailure = 'PERSISTING_RESULTS';
-          const analysisRunId = this.anRepo.createAnalysisRun(runId, {
-            executorId: analyzer.analyzer_id,
-            executorVersion: analyzer.analyzer_version,
-          });
-          this.anRepo.insertMany(analysisRunId, results);
+          if (config.method_spec_id) {
+            const row = this.requirePinnedSpec(config), spec = JSON.parse(row.spec_json);
+            const entityIds = [...new Set(observations.map(o => o.entityId))].sort();
+            const seriesFor = (role: string): TypedSeries => ({ name: role === 'popularity' ? 'Ni' : 'Ni_harm', unit: 'count', semanticType: 'count', entityIds,
+              values: entityIds.map(id => { const matches = observations.filter(o => o.entityId === id && o.queryRole === role);
+                if (matches.length > 1) throw new Error('Ambiguous JH16 input: multiple counts for one entity and dimension');
+                return matches[0] && !matches[0].isMissing ? matches[0].numericValue : null; }),
+              qualityFlags: [...new Set(observations.filter(o => o.queryRole === role).flatMap(o => [...o.qualityFlags]))].sort() });
+            const inputs = [seriesFor('popularity'), seriesFor('harm')];
+            const artifact = await new TypeScriptMethodExecutor().execute(spec, inputs, { approvable: {
+              id: row.id, kind: 'method_spec', content: spec, approvedHash: row.approved_hash, approvedBy: row.approved_by, approvedAt: row.approved_at } });
+            const analysisRunId = this.anRepo.createAnalysisRun(runId, { methodSpecId: row.id, executorId: artifact.executorId,
+              executorVersion: artifact.executorVersion, inputSeriesIds: entityIds, inputHashes: [canonicalHash(inputs)] });
+            this.anRepo.insertMany(analysisRunId, artifact.results);
+          } else {
+            const analyzer = analyzerRegistry.get(config.method_id);
+            const results = analyzer.analyze(observations, { method_id: config.method_id, method_version: analyzer.analyzer_version, parameters: config.method_params ?? {} });
+            stateAtFailure = 'PERSISTING_RESULTS';
+            const analysisRunId = this.anRepo.createAnalysisRun(runId, { executorId: analyzer.analyzer_id, executorVersion: analyzer.analyzer_version });
+            this.anRepo.insertMany(analysisRunId, results);
+          }
         } else tracer.emit('ANALYSIS_NOT_REQUESTED', { runType });
 
         this.runRepo.updateStatus(runId, 'EXPORTING');
@@ -274,16 +289,18 @@ export class RunOrchestrator {
       },
       presetLocked: Boolean(run.preset_id),
       fetches,
-      analyses: analysisRows.map(a => ({
+      analyses: analysisRows.map(a => {
+        const methods = new MethodSpecRepository(this.db), spec = a.method_spec_id ? methods.get(a.method_spec_id) : null;
+        return {
         method_spec_id: a.method_spec_id ?? null,
-        method_spec_hash: null,
-        approval_state: 'APPROVED',
-        approved_by: null,
+        method_spec_hash: spec?.spec_hash ?? null,
+        approval_state: spec ? methods.readApprovalState(spec.id) : 'APPROVED',
+        approved_by: spec?.approved_by ?? null,
         executor_id: a.executor_id ?? null,
         executor_version: a.executor_version ?? null,
         input_series_ids: JSON.parse(a.input_series_ids_json ?? '[]'),
         input_hashes: JSON.parse(a.input_hashes_json ?? '[]'),
-      })),
+      }; }),
       artifacts: this.artRepo.getArtifacts(runId).map(a => ({
         kind: a.kind, sha256: a.sha256, object_uri: a.object_uri,
       })),
@@ -302,6 +319,14 @@ export class RunOrchestrator {
 
     void (results as readonly AnalysisResultValue[]);
     tracer.emit('MANIFEST_FINALIZED', { runId, sha256 });
+  }
+
+  private requirePinnedSpec(config: any) {
+    const repo = new MethodSpecRepository(this.db), row = repo.get(config.method_spec_id);
+    if (config.method_spec_id !== 'jh2016-faithful' || !row || row.spec_hash !== config.method_spec_hash ||
+      canonicalHash(JSON.parse(row.spec_json)) !== config.method_spec_hash || repo.readApprovalState(row.id) !== 'APPROVED')
+      throw new Error('An individually reviewed, hash-pinned JH16 MethodSpec is required');
+    return row;
   }
 
   submitJob(type: 'ACQUISITION' | 'ANALYSIS' | 'PIPELINE', config: any, ownerPrincipalId?: string): string {

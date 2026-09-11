@@ -69,7 +69,7 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
     for (const series of inputs) {
       // Flags on inputs must reach the output; an analysis that crosses a
       // discontinuity without disclosing it is a defect, not a cosmetic issue.
-      const meta = (series as unknown as { qualityFlags?: string[] }).qualityFlags;
+      const meta = series.qualityFlags;
       for (const f of meta ?? []) qualityFlags.add(f);
     }
 

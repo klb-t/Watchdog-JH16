@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { KeyRound, CheckCircle2, AlertTriangle, CircleDashed, LogIn, LogOut } from 'lucide-react';
+import { ConfigurationWizard } from '../components/ConfigurationWizard';
 
 /**
  * The readiness page (D17).
@@ -9,10 +10,8 @@ import { KeyRound, CheckCircle2, AlertTriangle, CircleDashed, LogIn, LogOut } fr
  * derived server-side from live credential state, so this page cannot claim a
  * provider works when its key has been removed.
  *
- * There is deliberately no field for pasting an API key. Secrets arrive from
- * the environment or the secret store; a form here would put credential
- * handling on an internet-reachable surface and create a second place a key
- * could be persisted.
+ * Personal keys now use the separate encrypted, owner-scoped vault. The
+ * instance readiness below still describes operator-configured providers.
  */
 
 interface ProviderRow {
@@ -127,6 +126,7 @@ export function Setup() {
       </div>
 
       {error && <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-800">{error}</div>}
+      {me && <ConfigurationWizard />}
 
       <section className="space-y-3">
         <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Access</h2>
@@ -170,6 +170,7 @@ export function Setup() {
 
       {readiness && (
         <>
+          <p className="text-sm text-slate-600">Konfiguracja operatora instancji. Poniższe połączenia są niezależne od Twoich osobistych kluczy zapisanych w kreatorze.</p>
           <section className="space-y-3">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
               Language models — narrative and, later, the method compiler

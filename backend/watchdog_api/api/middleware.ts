@@ -3,6 +3,7 @@ import { ZodError } from 'zod';
 import { tracer } from '../utils/tracer';
 import { randomUUID } from 'node:crypto';
 import { authErrorStatus } from './auth_routes';
+import { redact, redactText } from '../utils/redaction';
 
 export function traceMiddleware(req: Request, res: Response, next: NextFunction) {
   const supplied = req.headers['x-trace-id'];
@@ -18,12 +19,15 @@ export function traceMiddleware(req: Request, res: Response, next: NextFunction)
 }
 
 export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {
+  // JSON parser errors can quote submitted secrets before the vault can register
+  // their values. Never log or echo the parser's request fragment.
+  if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: 'INVALID_JSON', message: 'Request body must be valid JSON.' });
   tracer.emitError(err, true);
   
   if (err instanceof ZodError) {
     return res.status(400).json({
       error: 'VALIDATION_ERROR',
-      details: err.issues
+      details: redact(err.issues)
     });
   }
 
@@ -42,6 +46,6 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
 
   res.status(500).json({
     error: 'INTERNAL_ERROR',
-    message: err.message
+    message: redactText(String(err.message))
   });
 }

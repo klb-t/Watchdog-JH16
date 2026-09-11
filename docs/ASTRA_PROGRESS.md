@@ -207,3 +207,25 @@ nine new tests for schedules, restarts/leases, duplicate delivery, cancellation/
 WORM integrity, source response limits, XML parsing, article versions and censored receptor
 data. Chromium adds the daily schedule/scope/pause/mobile workflow in CI. Full behavior and
 limits are documented in `docs/AUTOMATION_AND_MEMORY.md`.
+
+The public-acquisition milestone is published at `35deca9cbac438a428ed5deddc8a70ed22b31d08`.
+GitHub Actions run `34568553854` passed 286/286 tests, installation, typecheck/build,
+Chromium and the JH16 demo. The artifact ZIP digest was verified and the automation
+mobile screenshot inspected. Live development collection retained two compounds,
+200 source activity assertions and 11 raw receipts when the execution was interrupted;
+this is partial coverage, not an exhaustive chemical database.
+
+## E3.6 / E5.6 — personal setup and research launch
+
+Implemented an owner-scoped encrypted key vault, persistent settings, separate LLM/SERP
+limits, public model catalog and automatic cost/context routing for three text tasks.
+The three-step wizard separates language/geography and launches the actual approved
+JH16 MethodSpec flow, selected public jobs and optional daily discovery. A keyless fixture
+control produces 32 observations and source/method hash provenance; repeated launch
+does not duplicate a run. Checked narratives can use the personal router too.
+
+Eight integration tests cover isolation, vault integrity/redaction, budget reservations,
+model routing, SERP counters, protected API writes and the complete fixture launch.
+The added browser scenario tests saved modes, simple-only slider, mobile layout and launch.
+See PERSONAL_SETUP.md for the implemented scope; PRODUCT_PRINCIPLES_AND_NEXT.md preserves
+the maintainer's expanded multi-provider, evidence-based routing and universal intake goals.

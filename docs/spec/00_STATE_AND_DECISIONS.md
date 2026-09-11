@@ -534,3 +534,14 @@ Boundary ID/hash pins are access-checked during save, restore and export. Public
 preserve original GeoJSON, geometry receipts and independently verifiable join reports. The
 bundled map requires explicit import and review; its pre-existing collapsed PRK part is retained
 and flagged. Transform DAGs, advanced spatial/causal methods and paper generation remain open.
+
+### E3.6 / E5.6 checkpoint — 2026-09-11
+
+Durable public acquisition and daily/interval schedules are published and CI-verified.
+The personal wizard adds encrypted owner keys, cost ceilings, archived model prices,
+independent exploration dimensions and an idempotent approved JH16 MethodSpec launch.
+UI modes do not change role grants. See PERSONAL_SETUP.md and ASTRA_PROGRESS.md.
+The latest maintainer direction supersedes the early narrow product scope: goal-oriented
+contextual flows, many provider profiles, measured task routing, arbitrary paper intake
+and tested extension proposals. PRODUCT_PRINCIPLES_AND_NEXT.md records precise acceptance
+criteria and what remains; it is not a list of already implemented capabilities.

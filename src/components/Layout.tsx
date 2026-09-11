@@ -3,10 +3,16 @@ import { Activity, Database, PlayCircle, Settings, LayoutDashboard, FlaskConical
 import { cn } from '../lib/utils';
 import { useAccess } from '../lib/access';
 import type { Capability } from '../../shared/authorization';
+import { useEffect, useState } from 'react';
 
 export function Layout() {
   const location = useLocation();
   const access = useAccess();
+  const [density, setDensity] = useState('comfortable');
+  useEffect(() => { let active = true; setDensity('comfortable');
+    const refresh = () => { if (access.principalId) void fetch('/api/settings', { cache: 'no-store' }).then(r => r.ok ? r.json() : null).then(d => { if (active) setDensity(d?.settings?.value?.density ?? 'comfortable'); }).catch(() => {}); };
+    refresh(); window.addEventListener('watchdog-settings-changed', refresh); return () => { active = false; window.removeEventListener('watchdog-settings-changed', refresh); };
+  }, [access.principalId]);
 
   const navItems: { name: string; href: string; icon: typeof Activity; capability?: Capability }[] = [
     { name: 'Automation', href: '/automation', icon: PlayCircle, capability: 'run.create' },
@@ -25,7 +31,7 @@ export function Layout() {
   ];
 
   return (
-    <div className="flex flex-col md:flex-row h-dvh bg-slate-50 text-slate-900">
+    <div className="flex flex-col md:flex-row h-dvh bg-slate-50 text-slate-900" data-density={density}>
       <div className="md:w-56 shrink-0 bg-white border-r border-slate-200 flex flex-col">
         <div className="h-16 flex items-center px-6 border-b border-slate-200">
           <Activity className="w-6 h-6 text-indigo-600 mr-2" />
@@ -41,7 +47,7 @@ export function Layout() {
                 key={item.name}
                 to={item.href}
                 className={cn(
-                  "flex shrink-0 items-center px-3 py-2.5 text-sm font-medium rounded-md transition-colors",
+                  `flex shrink-0 items-center px-3 ${density === 'compact' ? 'py-1.5' : 'py-2.5'} text-sm font-medium rounded-md transition-colors`,
                   isActive 
                     ? "bg-indigo-50 text-indigo-700" 
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"

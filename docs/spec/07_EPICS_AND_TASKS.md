@@ -7,6 +7,24 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 
 ---
 
+## Continuation checkpoints — 2026-09-11
+
+- [x] **E3.6 — Public acquisition schedules and substance memory.** Durable owned jobs,
+  daily/interval schedules, restart recovery, bounded public source adapters and immutable
+  raw receipts. Published at `35deca9`; CI `34568553854`: 286/286, including Chromium.
+- [x] **E3.7 — Personal settings and keys.** Owner-scoped encrypted vault, immutable settings
+  snapshots, task/catalog provenance, reserved LLM budgets and personal SERP limits.
+  Eight integration tests pass; malformed credential bodies cannot echo key fragments.
+- [x] **E5.6 — Reviewed setup research plan.** Idempotent wizard launch through the actual
+  JH16 MethodSpec executor; 32 fixture observations and manifest approval/hash checked.
+  Separate language/geography and bounded public jobs. Browser coverage added for CI.
+- [ ] **E3.8 — Many personal providers and evidence-based task routing.** See
+  `PRODUCT_PRINCIPLES_AND_NEXT.md`; initial cost/context router is not a benchmark ranking.
+- [ ] **E5.7 — General paper intake and explicit substitution plans.** Source-anchored
+  methodology, required data, attempt meaning and queued, bounded exploratory proposals.
+- [ ] **E5.8 — Tested extension workshop and contextual goal navigation.** Data-preserving
+  parser proposals and contract evidence before activation; no generated empirical values.
+
 ## E0 — Repository audit
 
 Nothing else starts until E0 is done. The specification describes intent; the repository is
