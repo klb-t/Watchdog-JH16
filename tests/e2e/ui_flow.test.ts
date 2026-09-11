@@ -80,6 +80,28 @@ after(async () => {
   }
 });
 
+test('E3 automation: daily schedule, one-click all-discipline scope, pause and mobile layout', async () => {
+  const errors: string[] = []; const onError = (e: Error) => errors.push(e.message); page.on('pageerror', onError);
+  try {
+    await page.goto(`${baseUrl}/automation`); await page.waitForSelector('[data-testid="automation-page"]');
+    await page.locator('[data-testid="discovery-scope"]').selectOption('all_science');
+    await page.locator('[data-testid="schedule-create"]').click();
+    await page.getByRole('status').filter({ hasText: 'Harmonogram zapisany' }).waitFor();
+    const list = await (await fetch(`${baseUrl}/api/automation/schedules`)).json();
+    assert.strictEqual(list.schedules.length, 1); assert.strictEqual(list.schedules[0].request.scope, 'all_science');
+    await page.getByRole('button', { name: 'Wstrzymaj', exact: true }).click();
+    await page.getByRole('button', { name: 'Wznów', exact: true }).waitFor();
+    assert.strictEqual((await (await fetch(`${baseUrl}/api/automation/jobs`)).json()).jobs.length, 0, 'no unsolicited collection on page load or future scheduling');
+    await page.setViewportSize({ width: 390, height: 844 });
+    const layout = await page.locator('main').evaluate(el => ({ clientWidth: el.clientWidth, scrollWidth: el.scrollWidth }));
+    assert.ok(layout.scrollWidth <= layout.clientWidth + 1, JSON.stringify(layout));
+    fs.mkdirSync('test-artifacts', { recursive: true }); await page.screenshot({ path: 'test-artifacts/automation-mobile.png', fullPage: true });
+    await page.goto(`${baseUrl}/memory`); await page.waitForSelector('[data-testid="substance-memory-page"]');
+    await page.getByText('Brak pasujących kartotek.', { exact: false }).waitFor();
+    assert.deepStrictEqual(errors, []);
+  } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); }
+});
+
 // -------------------------------------------------------------------------
 // E1.21 — Study page.
 // -------------------------------------------------------------------------

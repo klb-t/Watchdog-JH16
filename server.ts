@@ -20,6 +20,10 @@ import { FieldReferenceRepository } from './backend/watchdog_api/db/repositories
 import { FieldService } from './backend/watchdog_api/field/service';
 import { loadFieldProfile } from './backend/watchdog_api/config/field';
 import { buildFieldRouter } from './backend/watchdog_api/api/field_routes';
+import { AutomationRepository } from './backend/watchdog_api/db/repositories/automation';
+import { AutomationService } from './backend/watchdog_api/services/automation';
+import { loadAutomationProfile } from './backend/watchdog_api/config/automation';
+import { buildAutomationRouter, buildMemoryRouter } from './backend/watchdog_api/api/automation_routes';
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 3000);
@@ -69,15 +73,20 @@ export async function configureApp() {
   app.use('/api/field', buildFieldRouter(fieldRepository, fieldService));
   const workbench = new WorkbenchRepository(sqlite, store);
   app.use('/api/workbench', buildWorkbenchRouter(workbench, new WorkbenchService(workbench, loadWorkbenchProfile())));
+  const automationRepository = new AutomationRepository(sqlite, store);
+  const automation = new AutomationService(automationRepository, loadAutomationProfile());
+  app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
+  app.use('/api/memory', buildMemoryRouter(automationRepository));
   app.use('/api/diagnostics', buildDiagnosticRouter(new AuditRepository(sqlite)));
   app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite)));
   app.use(errorHandler);
 
-  return { app, identity };
+  return { app, identity, automation };
 }
 
 async function startServer() {
-  const { identity } = await configureApp();
+  const { identity, automation } = await configureApp();
+  automation.start();
   console.log(`Authentication: ${identity.mode} — ${identity.config.reason}`);
   console.log(`Blob store: ${storeBackend}${storeBackend === 'gcs' ? ` (${process.env.GCS_BUCKET})` : ` (${storePath})`}`);
   console.log(`Database:   ${dbPath}`);

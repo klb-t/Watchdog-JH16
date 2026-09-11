@@ -18,6 +18,8 @@ import { Workbench } from './pages/Workbench';
 import { Responder } from './pages/Responder';
 import { EvidenceReview } from './pages/EvidenceReview';
 import { Setup } from './pages/Setup';
+import { Automation } from './pages/Automation';
+import { SubstanceMemory } from './pages/SubstanceMemory';
 import { AccessBoundary, AccessProvider } from './lib/access';
 
 export default function App() {
@@ -39,6 +41,8 @@ export default function App() {
         <Route path="evidence" element={<AccessBoundary capability="evidence.review"><EvidenceReview /></AccessBoundary>} />
         <Route path="setup" element={<Setup />} />
         <Route path="settings" element={<Setup />} />
+        <Route path="automation" element={<AccessBoundary capability="run.create"><Automation /></AccessBoundary>} />
+        <Route path="memory" element={<SubstanceMemory />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes></AccessProvider>

@@ -8,6 +8,7 @@ import { MIGRATION_009_GEOMETRY_LAYERS } from './009_geometry_layers';
 import { MIGRATION_008_WORKBENCH_PROFILES } from './008_workbench_profiles';
 import { MIGRATION_007_WORKBENCH } from './007_workbench';
 import { MIGRATION_006_FIELD_REFERENCE } from './006_field_reference';
+import { MIGRATION_010_AUTOMATION } from './010_automation';
 
 export interface Migration {
   readonly id: string;
@@ -28,7 +29,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '006_field_reference', sql: MIGRATION_006_FIELD_REFERENCE },
   { id: '007_workbench', sql: MIGRATION_007_WORKBENCH },
   { id: '008_workbench_profiles', sql: MIGRATION_008_WORKBENCH_PROFILES },
-  { id: '009_geometry_layers', sql: MIGRATION_009_GEOMETRY_LAYERS }
+  { id: '009_geometry_layers', sql: MIGRATION_009_GEOMETRY_LAYERS },
+  { id: '010_automation', sql: MIGRATION_010_AUTOMATION }
 ];
 
 const MIGRATIONS_TABLE = `

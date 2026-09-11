@@ -176,3 +176,34 @@ workbench (275/276 tests passed; run `34467235948`). The earlier whole-document 
 missed this. Fieldsets and controls now allow their intrinsic width to shrink into the mobile
 column, with control widths bounded by the available space. The browser artifact records
 container/element measurements as well as screenshots; the gate remains strict.
+
+## E3.5 / E6.1 — durable public acquisition, schedules and substance memory
+
+The maintainer explicitly requested cyclic acquisition, daily arXiv discovery, one-click
+expansion beyond the drug domain, populated substance reference memory and automatic model
+selection by budget. The first connected stage is implemented in Automation and Substance
+memory: durable daily/interval schedules, bounded leased jobs, cancellation, current-owner
+authorization checks, missed-slot coalescing, versioned source profiles, five working public
+adapters and archived raw receipts. Public source leases coordinate rate and connection
+limits across worker processes sharing SQLite. No browser or deployment is required to
+remain open, but the server process and durable volume must remain available.
+
+PubChem/ChEMBL/Wikidata/Europe PMC were exercised against live public APIs on 2026-09-11,
+with real responses written to the development memory for caffeine and naloxone. ChEMBL
+pages are deliberately bounded and coverage is explicit; this does not claim exhaustive
+receptor information. Source-backed properties and activities extend the existing graph.
+Assay type/measure, original values, inequality relations, units, target, organism, variants,
+validity flags and attribution stay separate. Import does not imply clinical approval.
+
+The discovery screener preserves actual paper versions and records method hints plus
+explicit prerequisites for re-execution. Arbitrary paper-to-approved-method extraction,
+autonomous hypothesis selection/refinement, advanced statistical safeguards, personal-key
+setup and the configuration wizard remain the next connected stage. No arbitrary paper
+code is executed, no replication verdict is inferred from metadata, and no live source is
+silently substituted for JH16 result counts.
+
+Validation: 274/274 local unit, contract, scientific and integration tests passed, including
+nine new tests for schedules, restarts/leases, duplicate delivery, cancellation/authorization,
+WORM integrity, source response limits, XML parsing, article versions and censored receptor
+data. Chromium adds the daily schedule/scope/pause/mobile workflow in CI. Full behavior and
+limits are documented in `docs/AUTOMATION_AND_MEMORY.md`.
