@@ -7,8 +7,9 @@
 .field-panel { border: 1px solid #cbd5e1; border-radius: .8rem; background: white; padding: 1.25rem; margin-top: 1rem; }
 .field-safety { padding: 1rem 1.5rem; background: #fffbeb; border-bottom: 2px solid #d97706; font-size: .875rem; }
 .field-safety p { margin-top: .4rem; max-width: 90rem; }
-.field-control { display: flex; flex-direction: column; gap: .3rem; font-size: .85rem; font-weight: 600; }
-.field-control input, .field-control select, .field-control textarea, .field-input { border: 1px solid #94a3b8; border-radius: .4rem; background: white; padding: .55rem .65rem; font-weight: 400; min-width: 0; }
+.field-page fieldset { min-inline-size: 0; }
+.field-control { display: flex; flex-direction: column; gap: .3rem; font-size: .85rem; font-weight: 600; min-width: 0; max-width: 100%; }
+.field-control input, .field-control select, .field-control textarea, .field-input { border: 1px solid #94a3b8; border-radius: .4rem; background: white; padding: .55rem .65rem; font-weight: 400; min-width: 0; max-width: 100%; }
 .field-button { display: inline-flex; align-items: center; justify-content: center; padding: .55rem .9rem; border: 1px solid #94a3b8; border-radius: .4rem; background: white; font-size: .875rem; cursor: pointer; }
 .field-button.primary { background: #3730a3; color: white; border-color: #3730a3; }
 .field-button:disabled { opacity: .55; cursor: not-allowed; }

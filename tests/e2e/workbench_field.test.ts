@@ -280,7 +280,18 @@ test('E5 browser: reviewed regional boundaries, exact joins, time panels and por
   assert.equal(entries.find(e => e.name === 'rendering/source.geojson')!.content.toString(), boundaryDocument.rawInput!.text);
   await page.setViewportSize({ width: 390, height: 844 }); await page.screenshot({ path: path.join(artifacts, 'regional-workbench-mobile.png'), fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth + 1), false);
-  assert.equal(await page.locator('main').evaluate(element => element.scrollWidth > element.clientWidth + 1), false, 'the actual scrolling workbench must fit mobile width');
+  const mobileLayout = await page.locator('main').evaluate(main => {
+    const bounds = main.getBoundingClientRect();
+    const overflow = [...main.querySelectorAll('*')].filter((element): element is HTMLElement => element instanceof HTMLElement).filter(element => {
+      if (!element.getClientRects().length || element.getBoundingClientRect().right <= bounds.right + 1) return false;
+      for (let parent = element.parentElement; parent && parent !== main; parent = parent.parentElement)
+        if (getComputedStyle(parent).overflowX !== 'visible') return false;
+      return true;
+    }).slice(0, 30).map(element => ({ tag: element.tagName, className: element.className, label: element.getAttribute('aria-label') ?? element.textContent?.slice(0, 100), width: element.getBoundingClientRect().width, right: element.getBoundingClientRect().right }));
+    return { clientWidth: main.clientWidth, scrollWidth: main.scrollWidth, overflow };
+  });
+  writeFileSync(path.join(artifacts, 'regional-mobile-layout.json'), JSON.stringify(mobileLayout, null, 2));
+  assert.ok(mobileLayout.scrollWidth <= mobileLayout.clientWidth + 1, `The actual scrolling workbench must fit mobile width: ${JSON.stringify(mobileLayout)}`);
   await page.getByLabel('Boundary layer', { exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: path.join(artifacts, 'regional-controls-mobile.png') });
   await region('C').first().focus(); await region('C').first().press('Enter');

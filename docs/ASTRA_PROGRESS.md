@@ -170,3 +170,9 @@ capture is empty. Mobile screenshots revealed that the application scrolls insid
 the final UI checks also inspect that container's width and scroll to the region controls and
 inspector. Opaque evidence/source/boundary badges accompany the regional UI independently of
 polygon alpha; exported SVG keeps the same evidence legend and provenance.
+
+The stricter mobile gate on head `304e77b` caught horizontal overflow inside the scrolling
+workbench (275/276 tests passed; run `34467235948`). The earlier whole-document width check
+missed this. Fieldsets and controls now allow their intrinsic width to shrink into the mobile
+column, with control widths bounded by the available space. The browser artifact records
+container/element measurements as well as screenshots; the gate remains strict.
