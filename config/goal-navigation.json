@@ -1,0 +1,15 @@
+{
+  "version": "goal-navigation-1",
+  "goals": [
+    { "id": "emergency", "label": "Sprawdź objawy lub rozpoznanie próbki", "description": "Interfejs ratownika: dopasowania z podaniem źródeł i ograniczeń identyfikacji.", "href": "/responder", "capability": "responder.lookup", "contexts": ["ratownik", "objawy", "tabletka", "skład", "interakcje", "zatrucie"] },
+    { "id": "memory", "label": "Otwórz kartotekę substancji", "description": "Tożsamość chemiczna, właściwości, badania aktywności i ich pochodzenie.", "href": "/memory", "capability": "responder.lookup|evidence.review", "contexts": ["ratownik", "naukowiec", "chemia", "receptor", "PubChem", "substancja"] },
+    { "id": "geography", "label": "Porównaj obszary na mapie", "description": "Wczytaj dane regionalne, przypisz identyfikatory obszarów i obejrzyj czas, kolor oraz niepewność źródeł.", "href": "/workbench", "capability": "workbench.view", "contexts": ["policjant", "analityk", "geografia", "region", "mapa", "czas", "popularność"] },
+    { "id": "figures", "label": "Przeanalizuj dane i przygotuj wykres", "description": "Import tabeli, metoda, wykresy, ulubione ustawienia i eksport publikacyjny.", "href": "/workbench", "capability": "workbench.view", "contexts": ["naukowiec", "analityk", "wykres", "statystyka", "3D", "4D", "publikacja", "CSV"] },
+    { "id": "paper", "label": "Zaplanuj odtworzenie pracy", "description": "Zapisz tekst, sprawdź metodologię i wymagane dane, rozważ jawne warianty oraz przetestuj ekstraktor.", "href": "/research", "capability": "method.propose", "contexts": ["naukowiec", "artykuł", "replikacja", "metoda", "hipoteza", "parser", "ekstrakcja"] },
+    { "id": "baseline", "label": "Uruchom JH16 i skonfiguruj badania", "description": "Kreator punktu odniesienia, niezależnych języków i geografii, źródeł oraz limitów kosztów.", "href": "/setup", "capability": "run.create", "contexts": ["naukowiec", "JH16", "start", "język", "slang", "dialekt", "sentyment"] },
+    { "id": "schedule", "label": "Zleć cykliczne zbieranie lub przegląd", "description": "Publiczne źródła, literatura, katalog modeli i ograniczona budżetem ocena nowych prac.", "href": "/automation", "capability": "run.create", "contexts": ["naukowiec", "codziennie", "harmonogram", "arxiv", "źródła", "automatyzacja"] },
+    { "id": "review", "label": "Sprawdź pochodzenie i zatwierdź dane", "description": "Przejrzyj dowody przed ich użyciem w projekcji ratownika.", "href": "/evidence", "capability": "evidence.review", "contexts": ["naukowiec", "obiektywność", "kolory", "dowód", "jakość", "zatwierdzenie"] },
+    { "id": "resume", "label": "Wróć do uruchomionego badania", "description": "Stan przetwarzania, wyniki, manifest i historia błędów.", "href": "/runs", "capability": "run.view", "contexts": ["naukowiec", "wznów", "wyniki", "historia", "przerwane"] },
+    { "id": "debug", "label": "Zdiagnozuj działanie systemu", "description": "Flight Recorder, ślady zdarzeń i pakiet diagnostyczny w ramach uprawnień konta.", "href": "/diagnostics", "capability": "diagnostics.view", "contexts": ["debug", "błąd", "diagnostyka", "logi", "programista"] }
+  ]
+}

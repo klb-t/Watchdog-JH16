@@ -248,3 +248,39 @@ catalog refresh is available as a daily/interval scheduled task in the interface
 All 285 local unit/contract/scientific/integration tests passed; production build passed.
 PERSONAL_PROVIDERS.md distinguishes protocol coverage from vendor-account acceptance and
 records remaining direct price feeds, semantic benchmark execution and research intake work.
+
+The provider milestone was published as `2cad3d4`. CI `34594827723` failed only the new
+wizard interaction: the development server reloaded the page between changing its mode
+and density. The browser harness now uses the production-built client, the wizard waits
+for the resolved principal before loading settings, and select controls have explicit
+accessible names. This checkpoint's CI must verify the repair; the earlier run is not green.
+
+## E5.7a / E5.8a — paper intake, extraction workshop and goal navigation
+
+The home page now starts from ten capability-filtered goals stored in a versioned profile.
+The research workspace saves arbitrary submitted text/identifiers and owned discovered
+abstracts with immutable hashes, original receipt lineage and separate language/geography.
+Owned LLM assessments preserve exact unique source quotes, methodological proposals, input
+requirements, missing detail, hypotheses and candidate substitutes. Input truncation and
+source coverage remain explicit. Reused original data is reanalysis; synthetic expert
+responses remain simulation. Assessment never approves or executes an arbitrary method.
+
+Daily/interval paper reviews use the existing durable worker, at most one to five previously
+unattempted eligible documents, current owner authority and personal task budgets. Failed and
+interrupted attempts persist; lease recovery resolves stranded RUNNING assessments without
+automatic rebilling. Explicit failed retries are one-off jobs. New abstract revisions at the
+same URL are retained; unchanged imports and duplicate requests do not duplicate work.
+
+The deterministic extraction workshop supports form-defined or LLM-proposed JSON/CSV copy
+profiles. The model sees structure, not source cell values. Exact-output tests precede hash-
+bound activation; later execution makes no model call. Large integer/decimal lexemes, null,
+missing fields, blank CSV records and quoted newlines retain source provenance. Tests, failed
+trials, raw input and output exports remain available after reload and ownership transfer.
+
+Validation before publication: all 297 local unit/contract/scientific/integration tests pass,
+including 12 new research tests; typecheck and production build pass. Chromium coverage adds
+goal navigation, manual source intake, the keyless mapping form, test/activation/execution,
+exact export, restored history and 390 px mobile width. Its CI outcome will be checked after
+publication. The research/source fixtures are explicitly fictional; no paid LLM call was made.
+RESEARCH_WORKSHOP.md and the split ledger distinguish this connected stage from arbitrary
+replication execution, generated adapter sandboxing and the future statistical paper pipeline.

@@ -4,8 +4,10 @@ A reproducible-research platform for monitoring psychoactive-substance signals. 
 scientific benchmark is a replication of Jankowski & Hoffmann 2016
 ([JMIR 18(2):e38](https://doi.org/10.2196/jmir.4033)).
 
-**Status: Epic E1 complete; the D17 slice makes it deployable and credentialled.** The vertical
-slice runs end to end, offline, on frozen fixtures:
+**Status: active continuation on `astra/watchdog-continuation-20260908`, draft PR #1.**
+Implemented workflows include the JH16 fixture benchmark, responder reference lookup,
+scientific figures and maps, durable public acquisition, substance memory, personal provider
+profiles and the paper/extraction workshop. The benchmark runs end to end offline:
 
 ```
 fixture source → observations → method (proposed → approved) → deterministic compute
@@ -17,7 +19,7 @@ fixture source → observations → method (proposed → approved) → determini
 ```bash
 npm install
 npm run demo:jh16     # the whole slice, offline, no credentials
-npm run test:all      # lint + 231 tests + production build
+npm run test:all      # typecheck, production build and tests (Chromium required)
 npm run dev           # http://localhost:3000 — then open /setup
 ```
 
@@ -39,9 +41,23 @@ more; it is never required to run what exists.
 
 Run it twice: the two directories are byte-identical apart from the run id and timestamps.
 
+The application home page asks what you want to do and links to available workflows:
+
+| Workflow | Guide |
+|---|---|
+| Personal keys, simple/standard/expert/debug settings and JH16 wizard | [Personal setup](docs/PERSONAL_SETUP.md) |
+| Sixteen text endpoints and seven separately routed tasks | [Provider profiles](docs/PERSONAL_PROVIDERS.md) |
+| Daily/interval acquisition, literature and substance/receptor memory | [Automation and memory](docs/AUTOMATION_AND_MEMORY.md) |
+| Figures, maps, saved settings and reproducible publication exports | [Visual workbench](docs/WORKBENCH.md) |
+| Paper methodology, data variants and deterministic parser tests | [Research workshop](docs/RESEARCH_WORKSHOP.md) |
+
+Public-source collection and manual JSON/CSV extraction work without an LLM key. Personal
+model calls require a valid key and price/budget coverage. A provider profile is protocol
+support, not proof that every vendor feature or paid account has been integration-tested.
+
 ## What it currently does
 
-Reproduces every `Pi` and `Hi` value the paper published, from the paper's own Tables 1 and 3,
+The JH16 benchmark reproduces every `Pi` and `Hi` value the paper published, from the paper's own Tables 1 and 3,
 through a declarative `MethodSpec` over seven registered primitives — not through bespoke
 arithmetic.
 
@@ -96,7 +112,8 @@ docs/spec/      the binding specification; 07_EPICS_AND_TASKS.md is the ledger
 ## Where to look first
 
 - `docs/spec/07_EPICS_AND_TASKS.md` — the ledger: what is done, what is next.
-- `docs/spec/00_STATE_AND_DECISIONS.md` — every binding decision (D1–D17) and why.
+- `docs/spec/00_STATE_AND_DECISIONS.md` — binding decisions and continuation checkpoints.
+- `docs/ASTRA_PROGRESS.md` — observed test, CI and publication evidence by milestone.
 - `docs/spec/03_JH2016_CONTRACT.md` — the locked scientific invariants. Highest precedence.
 - `docs/DEPLOY_GCP.md` — deploying to Cloud Run, written for someone who has not used GCP.
 - `docs/AUDIT.md` — the historical E0 audit of the inherited codebase.
@@ -110,8 +127,9 @@ variable to set — never with the word "unavailable".
 
 | | State | Switch on with |
 |---|---|---|
-| Google sign-in, roles `viewer < researcher < admin < dev` | built | `GOOGLE_OAUTH_CLIENT_ID` + `WATCHDOG_GRANTS` + `SESSION_SIGNING_KEY` |
-| OpenRouter, and any OpenAI-compatible endpoint | built | `OPENROUTER_API_KEY` |
+| Google sign-in and capability bundles (including researcher/responder) | built | `GOOGLE_OAUTH_CLIENT_ID` + `WATCHDOG_GRANTS` + `SESSION_SIGNING_KEY` |
+| Sixteen personal text provider profiles | built, bounded text protocols | Own key in Setup; direct providers also need reviewed price profiles |
+| Operator OpenRouter / configured OpenAI-compatible generator | built | `OPENROUTER_API_KEY` and provider configuration |
 | SerpApi live result counts | built | `SERPAPI_API_KEY` |
 | GCS blob store | built | `STORE_BACKEND=gcs` + `GCS_BUCKET` |
 | Cloud Run container and runbook | built | [`docs/DEPLOY_GCP.md`](docs/DEPLOY_GCP.md) |
@@ -137,8 +155,10 @@ Two rules survive the arrival of live providers:
 
 ## Not built yet
 
-The rest of E2–E6, deliberately: the LLM method compiler, the generic workbench and autonomous
-replication engine, and the field/clinical interfaces. Live acquisition, identity and RBAC were
-pulled forward by D17 and are listed above. The schema for the later ones exists and is empty on purpose — cheap
-to seed now, expensive to retrofit — but nothing is built against it. See the epic table in
-`00_STATE_AND_DECISIONS.md`.
+General paper-to-executable-method compilation and autonomous arbitrary replication remain
+open. The intake/workshop records proposals and exact extraction trials; it does not infer
+replication success from a paper abstract. Further scope includes advanced spatial/causal
+statistics, live Trends connectors, generated adapter sandboxing, direct-provider price feeds,
+semantic benchmark execution and evidence-backed paper drafting. Public substance population
+is bounded and partial; it is not an exhaustive receptor or regional clinical database.
+See the current ledger and [product requirements](docs/PRODUCT_PRINCIPLES_AND_NEXT.md).

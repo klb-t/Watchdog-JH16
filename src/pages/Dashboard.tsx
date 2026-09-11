@@ -4,21 +4,35 @@ import { fetchRuns, fetchSources } from '../lib/api';
 import { Run, Source } from '../types';
 import { Activity, Database, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { GoalNavigator } from '../components/GoalNavigator';
+import { useAccess } from '../lib/access';
 
 export function Dashboard() {
+  const access = useAccess();
+  return <DashboardContent key={access.principalId ?? 'pending'} />;
+}
+
+function DashboardContent() {
+  const access = useAccess();
   const [runs, setRuns] = useState<Run[]>([]);
   const [sources, setSources] = useState<Source[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let active = true;
+    setRuns([]); setSources([]);
+    if (!access.principalId || !access.capabilities.includes('run.view')) { setLoading(false); return; }
+    setLoading(true);
     Promise.all([fetchRuns(), fetchSources()])
       .then(([r, s]) => {
+        if (!active) return;
         setRuns(r);
         setSources(s);
         setLoading(false);
       })
-      .catch(console.error);
-  }, []);
+      .catch(e => { if (active) { console.error(e); setLoading(false); } });
+    return () => { active = false; };
+  }, [access.principalId, access.capabilities.join('|')]);
 
   const completedRuns = runs.filter(r => r.status === 'COMPLETED').length;
   const failedRuns = runs.filter(r => r.status === 'FAILED').length;
@@ -26,12 +40,13 @@ export function Dashboard() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
-      <div>
+      <GoalNavigator />
+      {access.capabilities.includes('run.view') && <div>
         <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
         <p className="text-slate-500 mt-1 text-sm">System status and recent activity</p>
-      </div>
+      </div>}
 
-      {loading ? (
+      {access.capabilities.includes('run.view') && (loading ? (
         <div className="animate-pulse space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[1,2,3,4].map(i => <div key={i} className="h-32 bg-white rounded-xl border border-slate-200"></div>)}
@@ -40,7 +55,7 @@ export function Dashboard() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <StatCard title="Active Sources" value={sources.length} icon={Database} />
+            <StatCard title="Registered Sources" value={sources.length} icon={Database} />
             <StatCard title="Active Runs" value={activeRuns} icon={Activity} />
             <StatCard title="Completed" value={completedRuns} icon={CheckCircle2} className="text-emerald-600" />
             <StatCard title="Failed" value={failedRuns} icon={XCircle} className="text-red-600" />
@@ -78,7 +93,7 @@ export function Dashboard() {
             </div>
           </div>
         </>
-      )}
+      ))}
     </div>
   );
 }

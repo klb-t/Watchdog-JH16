@@ -51,6 +51,10 @@ unknown. Fresh default settings do not contain fabricated benchmark scores. The 
 policy does not itself ask an LLM to choose a model or run semantic benchmark suites.
 Those are extension points with the price and provenance gates already in place.
 
+Paper-method and extraction-plan tasks now have connected workflows in the
+[research workshop](RESEARCH_WORKSHOP.md), including bounded scheduled assessments,
+source-quote checks and exact-output parser tests before deterministic execution.
+
 Public OpenRouter catalog refresh can also be selected in Automation and scheduled.
 All generated text remains PROPOSED. Price/settings/task/provider/catalog hashes,
 returned model, usage, latency and uncertain reservations are retained. Native Messages

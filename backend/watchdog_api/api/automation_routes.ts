@@ -28,6 +28,7 @@ export function buildAutomationRouter(repo: AutomationRepository, service: Autom
     if (body.profileHash !== service.profile.contentHash) throw new AutomationError('Source profile changed; reload the displayed plan');
     if (body.request.kind === 'catalog_refresh' && !service.handlers.has(body.request.kind)) throw new AutomationError('Catalog refresh is not configured');
     if (body.request.kind === 'substance_refresh' && !can(req.principal!.roles, 'evidence.import')) return res.status(403).json({ error: 'FORBIDDEN' });
+    if (body.request.kind === 'paper_review' && !can(req.principal!.roles, 'method.propose')) return res.status(403).json({ error: 'FORBIDDEN' });
     const job = repo.enqueue(req.principal!.id, body.request, body.profileHash);
     res.status(202).json({ job }); void service.tick();
   }));
@@ -41,6 +42,7 @@ export function buildAutomationRouter(repo: AutomationRepository, service: Autom
   const save = (edit: boolean) => route((req, res) => {
     const body = scheduleBody.parse(req.body); if (body.profileHash !== service.profile.contentHash) throw new AutomationError('Source profile changed');
     if (body.schedule.request.kind === 'substance_refresh' && !can(req.principal!.roles, 'evidence.import')) return res.status(403).json({ error: 'FORBIDDEN' });
+    if (body.schedule.request.kind === 'paper_review' && !can(req.principal!.roles, 'method.propose')) return res.status(403).json({ error: 'FORBIDDEN' });
     res.status(edit ? 200 : 201).json({ schedule: repo.saveSchedule(req.principal!.id, body.schedule, body.profileHash, new Date(), edit ? req.params.id : undefined, body.expectedHash) });
   });
   router.post('/schedules', save(false)); router.post('/schedules/:id', save(true));

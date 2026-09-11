@@ -14,6 +14,7 @@ export function ConfigurationWizard() {
   const [task, setTask] = useState<AssistantTask>('method_proposal'), [prompt, setPrompt] = useState(''), [proposal, setProposal] = useState<any>(null), [launch, setLaunch] = useState<any>(null);
   const load = async () => { const next = await api('/api/settings'); setData(next); setRecord(next.settings); setValue(next.settings.value); };
   useEffect(() => { let active = true; setData(null); setKey(''); setPlan(null); setProposal(null); setLaunch(null);
+    if (!access.principalId) return () => { active = false; };
     api('/api/settings').then(next => { if (active) { setData(next); setRecord(next.settings); setValue(next.settings.value); } }).catch(e => active && setError(e.message));
     return () => { active = false; };
   }, [access.principalId]);
@@ -56,7 +57,7 @@ export function ConfigurationWizard() {
       <label className="block">Dzienny limit LLM (USD)<input className={formClass} type="number" min={0} max={1000} step="0.1" value={value.assistant.dailyBudgetUsd} onChange={e => patchAssistant({ dailyBudgetUsd: Number(e.target.value) })} /></label>
       {standard && <div className="grid sm:grid-cols-2 gap-3"><label>Limit jednego wywołania (USD)<input className={formClass} type="number" min={0} max={50} step="0.01" value={value.assistant.requestBudgetUsd} onChange={e => patchAssistant({ requestBudgetUsd: Number(e.target.value) })} /></label>
         <label>Dzienny limit zapytań SerpApi<input className={formClass} type="number" min={0} max={10000} value={value.searchDailyRequestLimit} onChange={e => setValue({ ...value, searchDailyRequestLimit: Number(e.target.value) })} /></label>
-        <label>Gęstość interfejsu<select className={formClass} value={value.density} onChange={e => setValue({ ...value, density: e.target.value as any })}><option value="comfortable">Wygodny</option><option value="compact">Kompaktowy</option></select></label>
+        <label>Gęstość interfejsu<select aria-label="Gęstość interfejsu" className={formClass} value={value.density} onChange={e => setValue({ ...value, density: e.target.value as any })}><option value="comfortable">Wygodny</option><option value="compact">Kompaktowy</option></select></label>
         <label className="flex items-center gap-2"><input type="checkbox" checked={value.assistant.allowFree} onChange={e => patchAssistant({ allowFree: e.target.checked })} />Uwzględniaj modele z ceną zero</label></div>}
       <div className="flex flex-wrap gap-2"><button className={buttonClass} disabled={busy} data-testid="settings-save" onClick={() => act(async () => { await save(); await load(); }, 'Ustawienia zapisane.')}>Zapisz ustawienia</button>
         {access.capabilities.includes('provider.view') && <button className="underline text-sm" disabled={busy} onClick={() => act(async () => { await api('/api/settings/catalog/refresh', { consent: true }); await load(); }, 'Publiczny katalog modeli i cen odświeżony.')}>Odśwież katalog modeli i cen</button>}

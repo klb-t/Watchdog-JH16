@@ -15,13 +15,14 @@ export function Layout() {
   }, [access.principalId]);
 
   const navItems: { name: string; href: string; icon: typeof Activity; capability?: Capability }[] = [
+    { name: 'Cele', href: '/', icon: LayoutDashboard },
+    { name: 'Research', href: '/research', icon: FlaskConical, capability: 'method.propose' },
     { name: 'Automation', href: '/automation', icon: PlayCircle, capability: 'run.create' },
     ...((access.capabilities.includes('responder.lookup') || access.capabilities.includes('evidence.review')) ? [{ name: 'Substance memory', href: '/memory', icon: Database }] : []),
     { name: 'Diagnostics', href: '/diagnostics', icon: Activity, capability: 'diagnostics.view' },
     { name: 'Workbench', href: '/workbench', icon: FlaskConical, capability: 'workbench.view' },
     { name: 'Responder', href: '/responder', icon: Activity, capability: 'responder.lookup' },
     { name: 'Evidence review', href: '/evidence', icon: ClipboardCheck, capability: 'evidence.review' },
-    { name: 'Dashboard', href: '/', icon: LayoutDashboard, capability: 'run.view' },
     { name: 'Study', href: '/study', icon: FlaskConical, capability: 'run.create' },
     { name: 'Method', href: '/method', icon: ClipboardCheck, capability: 'method.propose' },
     { name: 'Sources', href: '/sources', icon: Database, capability: 'run.view' },

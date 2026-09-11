@@ -67,6 +67,11 @@ replication verdict, and no fabricated confidence score. Arbitrary paper-to-Meth
 compilation and autonomous hypothesis refinement are further stages. The existing numerical
 executor and immutable JH16 benchmark remain the numerical path.
 
+Discovered abstracts can now be transferred with their source-receipt lineage into the
+[research workshop](RESEARCH_WORKSHOP.md). A separate scheduled paper-review task proposes
+methodology and missing inputs through the owner's LLM budget. It does not replace keyless
+literature scanning or declare that the discovered paper has been replicated.
+
 For a bounded initial population on a local development instance:
 
 ```sh

@@ -22,7 +22,7 @@ export function Automation() {
   const pending = jobs.some(j => ['QUEUED', 'RUNNING'].includes(j.status));
   useEffect(() => { if (!pending) return; const timer = setInterval(() => refresh().catch(e => setError(e.message)), 5000); return () => clearInterval(timer); }, [pending, access.principalId]);
   const act = async (fn: () => Promise<any>, success = '') => { setBusy(true); setError(''); setMessage(''); try { await fn(); setMessage(success); await refresh(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };
-  const changeKind = (kind: string) => { setRequest(structuredClone(kind === 'catalog_refresh' ? { kind, provider: 'openrouter', maxRequests: 1 } : kind === 'paper_scan' ? profile.defaults.paperJob : profile.defaults.substanceJob)); setName(kind === 'catalog_refresh' ? 'Aktualizacja katalogu modeli i cen' : kind === 'paper_scan' ? 'Codzienny przegląd publikacji' : 'Aktualizacja kartotek substancji'); };
+  const changeKind = (kind: string) => { setRequest(structuredClone(kind === 'paper_review' ? { kind, documentId: null, includeDiscoveredAbstracts: true, maxRequests: 1 } : kind === 'catalog_refresh' ? { kind, provider: 'openrouter', maxRequests: 1 } : kind === 'paper_scan' ? profile.defaults.paperJob : profile.defaults.substanceJob)); setName(kind === 'paper_review' ? 'Przegląd metodologii przez LLM' : kind === 'catalog_refresh' ? 'Aktualizacja katalogu modeli i cen' : kind === 'paper_scan' ? 'Codzienny przegląd publikacji' : 'Aktualizacja kartotek substancji'); };
   const patch = (update: any) => setRequest(r => r ? { ...r, ...update } : null);
   const scheduleToggle = (s: ScheduleRecord) => act(() => api(`/api/automation/schedules/${s.id}`, { consent: true, profileHash: profile.contentHash, expectedHash: s.contentHash,
     schedule: { name: s.name, recurrence: s.recurrence, request: s.request, enabled: !s.enabled } }), s.enabled ? 'Harmonogram wstrzymany.' : 'Harmonogram wznowiony.');
@@ -35,22 +35,23 @@ export function Automation() {
       <div className="grid lg:grid-cols-2 gap-4">
         <section className={sectionClass}><h2 className="font-semibold">Plan zbierania</h2>
           <label className="block">Zadanie<select className={formClass} value={request.kind} onChange={e => changeKind(e.target.value)}>
-            <option value="paper_scan">Przegląd prac naukowych</option><option value="catalog_refresh">Katalog modeli i cen OpenRouter</option>{access.capabilities.includes('evidence.import') && <option value="substance_refresh">Pamięć substancji</option>}</select></label>
+            <option value="paper_scan">Przegląd prac naukowych</option>{access.capabilities.includes('method.propose') && <option value="paper_review">Ocena metodologii nowych prac przez LLM</option>}<option value="catalog_refresh">Katalog modeli i cen OpenRouter</option>{access.capabilities.includes('evidence.import') && <option value="substance_refresh">Pamięć substancji</option>}</select></label>
           {request.kind === 'paper_scan' && <>
             <label className="block">Zakres<select className={formClass} value={request.scope} onChange={e => patch({ scope: e.target.value })} data-testid="discovery-scope"><option value="substances">Substancje psychoaktywne</option><option value="all_science">Wszystkie dziedziny w wybranych repozytoriach</option></select></label>
             <label className="block">Okno wyszukiwania (dni)<input type="number" min={1} max={90} className={formClass} value={request.lookbackDays} onChange={e => patch({ lookbackDays: Number(e.target.value) })} /></label>
             <p className="text-xs text-slate-600">arXiv: nowe i zaktualizowane metadane. Europe PMC: data pierwszego indeksowania. Powtórzone rekordy deduplikują się; zmiana treści tworzy nową wersję.</p>
           </>}
+          {request.kind === 'paper_review' && <label className="flex gap-2 text-sm"><input type="checkbox" checked={request.includeDiscoveredAbstracts} onChange={e => patch({ includeDiscoveredAbstracts: e.target.checked })} />Uwzględniaj abstrakty odkryte przez arXiv i Europe PMC</label>}
           {request.kind === 'substance_refresh' && <>
             <label className="block">Dokładne nazwy chemiczne (jedna w wierszu)<textarea className={formClass} rows={4} value={request.names.join('\n')} onChange={e => patch({ names: e.target.value.split('\n') })} /></label>
             <button className="underline text-sm" onClick={() => patch({ names: profile.substanceSeeds })}>Wstaw zestaw {profile.substanceSeeds.length} substancji</button>
             <p className="text-xs text-slate-600">Identyfikacja przez PubChem CID i pełny InChIKey. Nazwa handlowa, grupa leków i konkretna cząsteczka nie są automatycznie utożsamiane.</p>
           </>}
-          {request.kind !== 'catalog_refresh' && <fieldset><legend>Źródła</legend><div className="flex flex-wrap gap-3">{(request.kind === 'paper_scan' ? ['arxiv', 'europe_pmc'] : ['pubchem', 'chembl', 'wikidata', 'europe_pmc']).map(p => <label key={p} className="text-sm flex items-center gap-1"><input type="checkbox" checked={(request.providers as string[]).includes(p)} disabled={p === 'pubchem'}
+          {'providers' in request && <fieldset><legend>Źródła</legend><div className="flex flex-wrap gap-3">{(request.kind === 'paper_scan' ? ['arxiv', 'europe_pmc'] : ['pubchem', 'chembl', 'wikidata', 'europe_pmc']).map(p => <label key={p} className="text-sm flex items-center gap-1"><input type="checkbox" checked={(request.providers as string[]).includes(p)} disabled={p === 'pubchem'}
             onChange={e => patch({ providers: e.target.checked ? [...request.providers, p] : request.providers.filter(id => id !== p) })} />{p}</label>)}</div></fieldset>}
-          <div className="grid grid-cols-2 gap-3"><label>Maks. zapytań<input className={formClass} type="number" min={1} disabled={request.kind === 'catalog_refresh'} max={request.kind === 'paper_scan' ? 40 : 200} value={request.maxRequests} onChange={e => patch({ maxRequests: Number(e.target.value) })} /></label>
+          <div className="grid grid-cols-2 gap-3"><label>Maks. zapytań<input className={formClass} type="number" min={1} disabled={request.kind === 'catalog_refresh'} max={request.kind === 'paper_review' ? 5 : request.kind === 'paper_scan' ? 40 : 200} value={request.maxRequests} onChange={e => patch({ maxRequests: Number(e.target.value) })} /></label>
             {'pageLimit' in request && <label>Maks. stron na źródło<input className={formClass} type="number" min={1} max={request.kind === 'paper_scan' ? 20 : 10} value={request.pageLimit} onChange={e => patch({ pageLimit: Number(e.target.value) })} /></label>}</div>
-          <p className="text-sm">Pobieranie zatrzyma się na ustawionym limicie. Częściowe pokrycie będzie oznaczone. Nie są wykonywane płatne zapytania ani pobierany kod z publikacji.</p>
+          <p className="text-sm">{request.kind === 'paper_review' ? 'Ten plan korzysta z Twojego LLM i zapisanego budżetu. Wybiera najnowsze jeszcze nieanalizowane teksty; abstrakt pozostaje niepełnym źródłem metodologii.' : 'Pobieranie zatrzyma się na ustawionym limicie. Częściowe pokrycie będzie oznaczone. Nie są wykonywane płatne zapytania ani pobierany kod z publikacji.'}</p>
           <button className={buttonClass} disabled={busy} data-testid="automation-run" onClick={() => act(() => api('/api/automation/jobs', { request, profileHash: profile.contentHash, consent: true }), 'Zadanie dodane do kolejki.')}>Uruchom ten plan teraz</button>
         </section>
         <section className={sectionClass}><h2 className="font-semibold">Harmonogram</h2>
@@ -79,6 +80,7 @@ export function Automation() {
         <label className="block">Filtruj tytuł lub wskazówkę<input className={formClass} value={filter} onChange={e => setFilter(e.target.value)} /></label>
         {papers.filter(p => `${p.title} ${p.screening.hints.join(' ')}`.toLowerCase().includes(filter.toLowerCase())).slice(0, 80).map(p => <article className="border-t pt-3 text-sm space-y-2" key={p.id}>
           <a className="font-semibold underline" href={p.url} target="_blank" rel="noreferrer">{p.title}</a><p>{p.provider} · {p.publishedAt ?? 'data niepodana'} · DISCOVERED</p>
+          <Link className="underline" to={`/research?discovery=${encodeURIComponent(p.id)}`}>Przenieś do warsztatu replikacji</Link>
           <p>Wskazówki: {p.screening.hints.join(', ') || 'brak rozpoznanych w metadanych'}</p>
           <details><summary>Co trzeba sprawdzić przed replikacją</summary><ul className="list-disc pl-5">{p.screening.blockers.map(b => <li key={b}>{b}</li>)}</ul>{p.abstract && <p className="mt-2">{p.abstract}</p>}</details>
         </article>)}

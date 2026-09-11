@@ -20,13 +20,14 @@ import { EvidenceReview } from './pages/EvidenceReview';
 import { Setup } from './pages/Setup';
 import { Automation } from './pages/Automation';
 import { SubstanceMemory } from './pages/SubstanceMemory';
+import { Research } from './pages/Research';
 import { AccessBoundary, AccessProvider } from './lib/access';
 
 export default function App() {
   return (
     <AccessProvider><Routes>
       <Route path="/" element={<Layout />}>
-        <Route index element={<AccessBoundary capability="run.view"><Dashboard /></AccessBoundary>} />
+        <Route index element={<Dashboard />} />
         <Route path="sources" element={<AccessBoundary capability="run.view"><Sources /></AccessBoundary>} />
         <Route path="runs" element={<AccessBoundary capability="run.view"><Runs /></AccessBoundary>} />
         <Route path="runs/:id" element={<AccessBoundary capability="run.view"><RunDetails /></AccessBoundary>} />
@@ -43,6 +44,7 @@ export default function App() {
         <Route path="settings" element={<Setup />} />
         <Route path="automation" element={<AccessBoundary capability="run.create"><Automation /></AccessBoundary>} />
         <Route path="memory" element={<SubstanceMemory />} />
+        <Route path="research" element={<AccessBoundary capability="method.propose"><Research /></AccessBoundary>} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes></AccessProvider>

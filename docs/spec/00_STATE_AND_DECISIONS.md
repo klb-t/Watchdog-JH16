@@ -550,3 +550,19 @@ The next checkpoint adds 16 personal text provider profiles and seven task profi
 Direct-provider prices and task benchmarks have explicit reviewed provenance, validity
 and owner scope; unknown quality or price is not inferred from model name or another
 vendor. Details and remaining acquisition/benchmark automation are in PERSONAL_PROVIDERS.md.
+
+### E5.7a / E5.8a checkpoint — 2026-09-11
+
+Arbitrary submitted paper text and discovered abstracts now enter an immutable research
+workspace. Methodology proposals retain exact source anchors and separate missing inputs,
+operations, hypotheses and explicit substitutes. Reusing original data means reanalysis;
+simulated expert answers remain simulation. Assessment is not executable method approval.
+Owned daily/interval reviews respect task budgets, cancellation and no automatic rebilling
+of failed/interrupted attempts. Source revisions retain discovery and raw-receipt lineage.
+
+Strict JSON/CSV copy profiles extend extraction through data, not new bespoke source code.
+LLMs propose structure selectors; deterministic code copies source values as lexical strings.
+Activation requires an exact-output fixture test of the pinned profile. History/raw input,
+provenance and failed trials remain inspectable. Goal navigation leads to existing workflows;
+source/variant/parser forms expose common actions without requiring JSON editing. General
+scientific replication, generated executable modules and advanced inference remain open.

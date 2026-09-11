@@ -29,7 +29,8 @@ export class AutomationRepository {
   }
   authorized(owner: string, request?: JobRequest): boolean {
     const principal = new PrincipalRepository(this.db).get(owner);
-    return !!principal?.active && can(principal.roles, 'run.create') && (request?.kind !== 'substance_refresh' || can(principal.roles, 'evidence.import'));
+    return !!principal?.active && can(principal.roles, 'run.create') && (request?.kind !== 'substance_refresh' || can(principal.roles, 'evidence.import'))
+      && (request?.kind !== 'paper_review' || can(principal.roles, 'method.propose'));
   }
   private decodeJob(row: any): AutomationJob {
     return { id: row.id, ownerId: row.owner_principal_id, scheduleId: row.schedule_id, dueAt: row.due_at, status: row.status,

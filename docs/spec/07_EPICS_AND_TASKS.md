@@ -22,10 +22,19 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   profiles, native Messages, private model catalogs, reviewed price ceilings, seven task
   profiles and comparable reviewed benchmarks plus operational history. 285 local tests
   pass. See PERSONAL_PROVIDERS.md; direct price feeds and semantic benchmark runners remain open.
-- [ ] **E5.7 — General paper intake and explicit substitution plans.** Source-anchored
-  methodology, required data, attempt meaning and queued, bounded exploratory proposals.
-- [ ] **E5.8 — Tested extension workshop and contextual goal navigation.** Data-preserving
-  parser proposals and contract evidence before activation; no generated empirical values.
+- [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
+  discovery receipt lineage, source-anchored methodology and required inputs, explicit
+  reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.
+  See RESEARCH_WORKSHOP.md for the supported text/abstract scope and validation evidence.
+- [ ] **E5.7b — General executable replication and hypothesis studies.** Connect reviewed
+  assessments to frozen MethodSpecs and actual acquired inputs; confirmation partitions,
+  comparison families, hypothesis prioritization and project/draft evidence graphs remain open.
+- [x] **E5.8a — Deterministic JSON/CSV extraction and goal navigation.** Form-based or LLM-
+  proposed copy profiles, exact-output tests, hash-bound activation, lexical provenance,
+  persistent test/execution history and exports; ten capability-filtered goal paths.
+- [ ] **E5.8b — General extension execution and adaptive navigation.** HTML/PDF parsing,
+  sandboxed generated modules, full compatibility contracts, saved workflow favourites
+  and an autonomous natural-language goal planner remain open.
 
 ## E0 — Repository audit
 

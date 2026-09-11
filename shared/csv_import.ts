@@ -1,5 +1,5 @@
 /** RFC4180-style parser: quoting/newlines are syntax, never guessed locale numbers. */
-export function parseCsv(text: string, separator = ','): string[][] {
+export function parseCsv(text: string, separator = ',', preserveBlankRecords = false): string[][] {
   if (![',', ';', '\t'].includes(separator)) throw new Error('Unsupported delimiter.');
   const rows: string[][] = []; let row: string[] = [], value = '', quoted = false, endedQuote = false;
   const input = text.replace(/^\uFEFF/, '');
@@ -12,7 +12,7 @@ export function parseCsv(text: string, separator = ','): string[][] {
     else if (ch === separator) { row.push(value); value = ''; endedQuote = false; }
     else if (ch === '\n' || ch === '\r') {
       if (ch === '\r' && input[i + 1] === '\n') i++;
-      row.push(value); if (row.some(v => v !== '')) rows.push(row); row = []; value = ''; endedQuote = false;
+      row.push(value); if (preserveBlankRecords || row.some(v => v !== '')) rows.push(row); row = []; value = ''; endedQuote = false;
     } else {
       if (endedQuote) throw new Error('Unexpected text after a closing quote.');
       value += ch;

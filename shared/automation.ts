@@ -8,6 +8,9 @@ export const JobRequestSchema = z.discriminatedUnion('kind', [
     scope: z.enum(['substances', 'all_science']), lookbackDays: z.number().int().min(1).max(90),
     maxRequests: z.number().int().min(1).max(40), pageLimit: z.number().int().min(1).max(20) }).strict(),
   z.object({ kind: z.literal('catalog_refresh'), provider: z.literal('openrouter'), maxRequests: z.literal(1) }).strict(),
+  z.object({ kind: z.literal('paper_review'), documentId: z.string().min(1).max(100).nullable(), includeDiscoveredAbstracts: z.boolean(),
+    maxRequests: z.number().int().min(1).max(5), retryFailed: z.boolean().optional() }).strict()
+    .refine(v=>!v.retryFailed||v.documentId!==null,'A retry must identify one document'),
 ]);
 export type JobRequest = z.infer<typeof JobRequestSchema>;
 export const RecurrenceSchema = z.discriminatedUnion('kind', [
@@ -16,7 +19,8 @@ export const RecurrenceSchema = z.discriminatedUnion('kind', [
 ]);
 export type Recurrence = z.infer<typeof RecurrenceSchema>;
 export const ScheduleSchema = z.object({ name: z.string().trim().min(1).max(160), recurrence: RecurrenceSchema,
-  request: JobRequestSchema, enabled: z.boolean() }).strict();
+  request: JobRequestSchema, enabled: z.boolean() }).strict()
+  .refine(v=>v.request.kind!=='paper_review'||!v.request.retryFailed,'Failed paid attempts can be retried only by a one-off job');
 export type ScheduleInput = z.infer<typeof ScheduleSchema>;
 export type JobStatus = 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'PARTIAL' | 'FAILED' | 'CANCELED' | 'INTERRUPTED';
 export interface AutomationJob {

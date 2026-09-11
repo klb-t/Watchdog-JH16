@@ -22,6 +22,7 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
   // JSON parser errors can quote submitted secrets before the vault can register
   // their values. Never log or echo the parser's request fragment.
   if (err?.type === 'entity.parse.failed') return res.status(400).json({ error: 'INVALID_JSON', message: 'Request body must be valid JSON.' });
+  if (err?.type === 'entity.too.large') return res.status(413).json({ error: 'REQUEST_TOO_LARGE', message: 'Request body exceeds the server limit; use a smaller source excerpt or batch.' });
   tracer.emitError(err, true);
   
   if (err instanceof ZodError) {
