@@ -545,3 +545,8 @@ The latest maintainer direction supersedes the early narrow product scope: goal-
 contextual flows, many provider profiles, measured task routing, arbitrary paper intake
 and tested extension proposals. PRODUCT_PRINCIPLES_AND_NEXT.md records precise acceptance
 criteria and what remains; it is not a list of already implemented capabilities.
+
+The next checkpoint adds 16 personal text provider profiles and seven task profiles.
+Direct-provider prices and task benchmarks have explicit reviewed provenance, validity
+and owner scope; unknown quality or price is not inferred from model name or another
+vendor. Details and remaining acquisition/benchmark automation are in PERSONAL_PROVIDERS.md.

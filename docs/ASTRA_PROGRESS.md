@@ -229,3 +229,22 @@ model routing, SERP counters, protected API writes and the complete fixture laun
 The added browser scenario tests saved modes, simple-only slider, mobile layout and launch.
 See PERSONAL_SETUP.md for the implemented scope; PRODUCT_PRINCIPLES_AND_NEXT.md preserves
 the maintainer's expanded multi-provider, evidence-based routing and universal intake goals.
+
+The setup milestone was pushed as `b43f063`. CI `34593495931` reached the complete wizard
+run and caught an incorrect test expectation: caffeine is not one of the locked JH16
+entities. The test now checks every entity in the actual frozen preset. The mobile
+screenshot and all 33 artifact files were retrieved with ZIP digest verification.
+
+## E3.8 — personal provider and task profiles
+
+Added 16 personal provider profiles, a native Anthropic Messages adapter alongside the
+shared Chat Completions adapter, private catalog discovery, reviewed direct-provider price
+ceilings and per-task provider assignments. Seven task profiles now include extraction,
+trip reports, paper methodology and extension proposals. Automatic routing uses comparable
+reviewed task benchmarks and observed operational history where they exist; unknown quality
+is explicit. Direct-provider pricing still needs reviewed profiles. OpenRouter public
+catalog refresh is available as a daily/interval scheduled task in the interface.
+
+All 285 local unit/contract/scientific/integration tests passed; production build passed.
+PERSONAL_PROVIDERS.md distinguishes protocol coverage from vendor-account acceptance and
+records remaining direct price feeds, semantic benchmark execution and research intake work.

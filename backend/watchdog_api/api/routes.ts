@@ -328,9 +328,8 @@ apiRouter.post('/runs/:id/narrative/automatic', requireCapability('narrative.app
     const run = runRepo.getRun(req.params.id)!, results = anRepo.getByRunId(req.params.id), observations = obsRepo.getByRunId(req.params.id);
     const payload = { presetId: run.preset_id, results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId, valueNumeric: r.valueNumeric, unit: r.unit })),
       missingCount: observations.filter(o => o.isMissing).length, qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort() };
-    if (!assistant.repo.catalog()) await assistant.refreshCatalog(req.principal!.id);
     const narrative = await generateNarrativeWithProvider({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
-      templateId: 'jh2016-summary', templateVersion: '1.0', providerId: 'openrouter', model: 'automatic', generator: assistant.generator(req.principal!.id, 'narrative') });
+      templateId: 'jh2016-summary', templateVersion: '1.0', providerId: assistant.provider(req.principal!.id, 'narrative').id, model: 'automatic', generator: assistant.generator(req.principal!.id, 'narrative') });
     res.json({ narrative });
   } catch (error) { next(error); }
 });

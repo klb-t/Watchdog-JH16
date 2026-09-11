@@ -25,12 +25,68 @@ import { buildSettingsRouter } from '../../backend/watchdog_api/api/settings_rou
 import { traceMiddleware, errorHandler } from '../../backend/watchdog_api/api/middleware';
 import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
 import { redact } from '../../backend/watchdog_api/utils/redaction';
+import { loadPersonalProviders } from '../../backend/watchdog_api/config/personal_providers';
+import { ProfileGenerator } from '../../backend/watchdog_api/llm/profile_generator';
 
 const CANARY = 'sk-or-v1-fixture-private-key-6842026';
 const catalogBytes = () => Buffer.from(JSON.stringify({ data: Array.from({ length: 5 }, (_, i) => ({
   id: `fictional/model-${i}`, name: `Test model ${i}`, context_length: 64000, architecture: { input_modalities: ['text'], output_modalities: ['text'] },
   pricing: { prompt: String((i + 1) / 1000000), completion: String(2 * (i + 1) / 1000000), request: '0' }, supported_parameters: ['temperature'],
 })) }));
+
+test('all 16 personal provider profiles execute their real protocol adapter with isolated credentials and bounded requests', async () => {
+  const h = harness(); try {
+    const config = loadPersonalProviders(); assert.equal(config.providers.length, 16);
+    for (const p of config.providers) {
+      h.vault.save(h.owner, p.id, `${CANARY}-${p.id}`); let calls = 0;
+      const adapter = new ProfileGenerator(p, h.vault.resolve(h.owner, p.id), async (url, init) => {
+        calls++; assert.equal(url, p.endpoint); const body = JSON.parse(init.body);
+        assert.equal(body.model, 'fictional/model'); assert.equal(body[p.outputParameter], 1200); assert.equal(body.stream, false); assert.equal(body.tools, undefined);
+        if (p.protocol === 'anthropic') { assert.equal(init.headers['x-api-key'], `${CANARY}-${p.id}`); assert.equal(init.headers.Authorization, undefined); assert.equal(body.system, 'source-grounded'); }
+        else { assert.equal(init.headers.Authorization, `Bearer ${CANARY}-${p.id}`); assert.equal(body.messages[0].content, 'source-grounded'); }
+        return { ok: true, status: 200, text: async () => JSON.stringify(p.protocol === 'anthropic' ? { model: body.model, content: [{ type: 'text', text: 'Test response' }], usage: { input_tokens: 10, output_tokens: 20 } } : { model: body.model, choices: [{ message: { content: 'Test response' } }], usage: { prompt_tokens: 10, completion_tokens: 20 } }) };
+      }, 'fictional/model', 1200);
+      const result = await adapter.generate({ model: 'fictional/model', system: 'source-grounded', prompt: 'test', params: { model: 'evil', max_tokens: 99999, tools: [{ type: 'execute' }] } });
+      assert.equal(result.text, 'Test response'); assert.equal(result.usage.promptTokens, 10); assert.equal(calls, 1);
+      await assert.rejects(() => adapter.generate({ model: 'different', prompt: 'test', params: {} }), /reserved route/); assert.equal(calls, 1);
+    }
+  } finally { h.close(); }
+});
+
+test('direct provider catalogs require their own reviewed prices, remain owner-scoped and route different tasks to different keys', async () => {
+  const h = harness(); try {
+    h.enable(); h.vault.save(h.owner, 'anthropic', CANARY + '-anthropic'); h.vault.save(h.owner, 'openrouter', CANARY);
+    const record = h.repo.get(h.owner, h.profile.defaults);
+    h.repo.save(h.owner, { ...record.value, assistant: { ...record.value.assistant, taskProviders: { trip_report: 'anthropic' } } }, record.hash, h.profile.defaults);
+    const s = new AssistantService(h.repo, h.vault, h.profile, async (url, init) => {
+      assert.equal(String(url), 'https://api.anthropic.com/v1/messages'); assert.equal(new Headers(init?.headers).get('x-api-key'), CANARY + '-anthropic');
+      return new Response(JSON.stringify({ model: 'fictional/direct', content: [{ type: 'text', text: 'Qualitative, proposed interpretation' }], usage: { input_tokens: 100, output_tokens: 20 } }));
+    });
+    await s.buildPersonalCatalog(h.owner, 'anthropic'); assert.equal(s.catalog(h.owner, 'trip_report')!.models.length, 0);
+    await assert.rejects(() => s.propose(h.owner, 'trip_report', 'test'), /No model/);
+    h.repo.saveModelCeiling(h.owner, { provider: 'anthropic', id: 'fictional/direct', contextTokens: 64000, maxOutputTokens: 8000, inputUsdPerMillion: 2, outputUsdPerMillion: 10, requestUsd: 0,
+      source: 'https://example.org/fixture-price', observedAt: new Date().toISOString(), validUntil: new Date(Date.now() + 3600000).toISOString() });
+    await s.buildPersonalCatalog(h.owner, 'anthropic'); assert.equal(h.repo.catalog('anthropic', 'other'), null);
+    const result = await s.propose(h.owner, 'trip_report', 'test'); assert.equal(result.providerKey, 'anthropic'); assert.equal(result.route.provider, 'anthropic');
+    assert.equal(result.route.model.pricePolicy, 'owner-reviewed-ceiling'); assert.equal(h.repo.generations(h.owner)[0].status, 'ESTIMATED');
+    assert.equal(s.provider(h.owner, 'query_expansion').id, 'openrouter');
+  } finally { h.close(); }
+});
+
+test('task routing uses comparable benchmark evidence and operational statistics without treating unknown quality or another suite as measured', () => {
+  const h = harness(); try {
+    const c = normalizeModelCatalog(catalogBytes(), h.profile), settings = structuredClone(h.profile.defaults); settings.assistant.economy = 100;
+    for (const [model, passed, suite] of [['fictional/model-0', 9, 'a'], ['fictional/model-1', 3, 'a'], ['fictional/model-2', 10, 'b']] as const)
+      h.repo.saveBenchmark(h.owner, { provider: 'openrouter', model, task: 'method_proposal', suiteHash: suite.repeat(64), passed, total: 10,
+        source: 'https://example.org/reviewed-fixture-benchmark', observedAt: new Date(Date.now() - (suite === 'b' ? 100000 : 0)).toISOString() });
+    const evidence = h.repo.routingEvidence(h.owner, 'openrouter', 'method_proposal', 30);
+    const route = routeModel('method_proposal', 'test', '', settings, c, h.profile, new Date(), evidence);
+    assert.equal(route.model.id, 'fictional/model-0'); assert.match(route.reason, /benchmarks/);
+    assert.equal(h.repo.routingEvidence('other', 'openrouter', 'method_proposal', 30).length, 0);
+    assert.equal(h.repo.routingEvidence(h.owner, 'openrouter', 'narrative', 30).length, 0);
+    assert.throws(() => h.repo.saveBenchmark(h.owner, { provider: 'openrouter', model: 'x', task: 'narrative', suiteHash: 'a'.repeat(64), passed: 11, total: 10, source: 'https://example.org', observedAt: new Date().toISOString() }));
+  } finally { h.close(); }
+});
 function harness() {
   const dir = mkdtempSync(path.join(tmpdir(), 'watchdog-settings-')), db = new Database(path.join(dir, 'db.sqlite'));
   db.pragma('foreign_keys=ON'); runMigrations(db);

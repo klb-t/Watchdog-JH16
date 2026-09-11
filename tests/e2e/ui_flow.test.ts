@@ -284,7 +284,8 @@ test('personal wizard: saved modes, independent scope, explicit method review an
       if (['COMPLETED', 'FAILED'].includes(result.run.status)) break; await new Promise(r => setTimeout(r, 100)); }
     assert.equal(result.run.status, 'COMPLETED', result.run.error_details);
     const csv = await (await fetch(`${baseUrl}/api/runs/${runId}/export?format=csv`)).text();
-    assert.match(csv, /caffeine,Pi,/); assert.equal(plan.launch.jobs.length, 0, 'this test opts out of network collection');
+    for (const substance of plan.body.baseline.preset.substances) assert.ok(csv.includes(`,${substance.canonical},Pi,`), `missing locked-preset entity ${substance.canonical}`);
+    assert.equal(plan.launch.jobs.length, 0, 'this test opts out of network collection');
     assert.deepEqual(errors, []);
   } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); }
 });

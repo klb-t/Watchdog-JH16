@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import type { AssistantTask, PersonalSettings, ResearchPlanInput, SettingsRecord } from '../../shared/settings';
 import { automationApi as api, formClass, buttonClass, sectionClass } from '../lib/automation_client';
 import { useAccess } from '../lib/access';
+import { ModelProfilesPanel } from './ModelProfilesPanel';
 
 export function ConfigurationWizard() {
   const access = useAccess();
@@ -37,20 +38,21 @@ export function ConfigurationWizard() {
     {step === 1 && <div className={sectionClass}>
       {access.capabilities.includes('provider.view') && <>
         <h3 className="font-semibold">Własne połączenia</h3>
-        <div className="grid sm:grid-cols-2 gap-3"><label>Dostawca klucza<select className={formClass} value={keyProvider} onChange={e => { setKeyProvider(e.target.value); setKey(''); }}><option value="openrouter">OpenRouter · automatyczny wybór LLM</option><option value="serpapi">SerpApi · liczby wyników Google</option></select></label>
+        <div className="grid sm:grid-cols-2 gap-3"><label>Dostawca klucza<select className={formClass} value={keyProvider} onChange={e => { setKeyProvider(e.target.value); setKey(''); }}>{data.providers.providers.map((p: any) => <option key={p.id} value={p.id}>{p.label} · LLM</option>)}<option value="serpapi">SerpApi · liczby wyników Google</option></select></label>
           <label>Klucz API<input type="password" className={formClass} value={key} autoComplete="off" spellCheck={false} onChange={e => setKey(e.target.value)} data-testid="personal-api-key" /></label></div>
         <p className="text-xs text-slate-600">Klucz trafia do szyfrowanego magazynu Twojego konta na serwerze. Nie jest zapisywany w ustawieniach ani w przeglądarce. Zapis nie sprawdza jeszcze akceptacji klucza przez dostawcę.</p>
         <button className={buttonClass} disabled={busy || !key} onClick={() => { const submitted = key; setKey(''); void act(async () => {
           await api('/api/settings/credentials', { provider: keyProvider, apiKey: submitted, consent: true });
-          if (keyProvider === 'openrouter') await save({ ...value, assistant: { ...value.assistant, enabled: true } });
+          if (keyProvider !== 'serpapi') await save({ ...value, assistant: { ...value.assistant, enabled: true, provider: keyProvider, modelPins: {} } });
           await load();
-        }, 'Klucz zapisany. Pole zostało wyczyszczone.'); }}>{keyProvider === 'openrouter' ? 'Zapisz klucz i włącz LLM w ramach budżetu' : 'Zapisz klucz SerpApi'}</button>
-        <div className="flex flex-wrap gap-3 text-sm">{data.credentials.map((c: any) => <div key={c.provider}><b>{c.provider}</b>: {c.status === 'present' ? 'zapisany' : c.status === 'invalid' ? 'nie można odczytać' : 'brak klucza'} {c.status !== 'absent' && <button className="underline" disabled={busy} onClick={() => act(async () => { await api('/api/settings/credentials/remove', { provider: c.provider }); await load(); }, 'Klucz usunięty.')}>Usuń</button>}</div>)}</div>
+        }, 'Klucz zapisany. Pole zostało wyczyszczone.'); }}>{keyProvider !== 'serpapi' ? 'Zapisz klucz i włącz LLM w ramach budżetu' : 'Zapisz klucz SerpApi'}</button>
+        <div className="flex flex-wrap gap-3 text-sm">{data.credentials.filter((c: any) => c.status !== 'absent' || c.provider === keyProvider).map((c: any) => <div key={c.provider}><b>{c.provider}</b>: {c.status === 'present' ? 'zapisany' : c.status === 'invalid' ? 'nie można odczytać' : 'brak klucza'} {c.status !== 'absent' && <button className="underline" disabled={busy} onClick={() => act(async () => { await api('/api/settings/credentials/remove', { provider: c.provider }); await load(); }, 'Klucz usunięty.')}>Usuń</button>}</div>)}</div>
       </>}
       <h3 className="font-semibold pt-2">Koszt pracy modeli</h3>
+      <label className="block">Domyślny dostawca LLM<select className={formClass} value={value.assistant.provider} onChange={e => patchAssistant({ provider: e.target.value, modelPins: {} })}>{data.providers.providers.map((p: any) => <option key={p.id} value={p.id}>{p.label}</option>)}</select></label>
       <label className="flex gap-2 items-center text-sm"><input type="checkbox" checked={value.assistant.enabled} onChange={e => patchAssistant({ enabled: e.target.checked })} />Pozwól korzystać z mojego LLM w zapisanym budżecie</label>
       {!standard && <label className="block">Tanio → większy dopuszczalny koszt · {value.assistant.economy}/100<input type="range" min={0} max={100} className="w-full" value={value.assistant.economy} onChange={e => patchAssistant({ economy: Number(e.target.value) })} data-testid="cost-slider" /></label>}
-      <p className="text-xs">Dobór jest osobny dla każdego zadania. Cena nie jest miarą jakości modelu. W tym trybie system wybiera wyłącznie z modeli wybranego dostawcy, mieszczących się w limitach.</p>
+      <p className="text-xs">Dobór jest osobny dla każdego zadania. Porównywalne testy i historia działania wpływają na wybór w ramach budżetu. Bez testów jakość pozostaje nieznana. W tym trybie system wybiera wyłącznie z modeli wybranego dostawcy, mieszczących się w limitach.</p>
       <label className="block">Dzienny limit LLM (USD)<input className={formClass} type="number" min={0} max={1000} step="0.1" value={value.assistant.dailyBudgetUsd} onChange={e => patchAssistant({ dailyBudgetUsd: Number(e.target.value) })} /></label>
       {standard && <div className="grid sm:grid-cols-2 gap-3"><label>Limit jednego wywołania (USD)<input className={formClass} type="number" min={0} max={50} step="0.01" value={value.assistant.requestBudgetUsd} onChange={e => patchAssistant({ requestBudgetUsd: Number(e.target.value) })} /></label>
         <label>Dzienny limit zapytań SerpApi<input className={formClass} type="number" min={0} max={10000} value={value.searchDailyRequestLimit} onChange={e => setValue({ ...value, searchDailyRequestLimit: Number(e.target.value) })} /></label>
@@ -62,10 +64,11 @@ export function ConfigurationWizard() {
       <p className="text-xs">Dziś zarezerwowane lub oszacowane: {data.budget.reservedOrEstimatedUsd.toFixed(6)} USD. Niepewne rozliczenie pozostaje zarezerwowane. To kontrola wydatków aplikacji, nie faktura dostawcy.</p>
       <details open={standard}><summary>Dobór modeli dla zapisanej konfiguracji</summary>
         {!data.catalog && <p className="text-sm">Katalog pobierze się przed pierwszą propozycją LLM. Możesz go też odświeżyć powyżej, bez płatnego wywołania.</p>}
-        {data.routes.map((r: any) => <div key={r.task} className="border-t pt-2 mt-2 text-xs break-words"><b>{data.profile.tasks.find((t: any) => t.id === r.task)?.label}</b><p>{r.route ? `${r.route.model.id} · maks. ${r.route.maxOutputTokens} tokenów odpowiedzi · przykładowa rezerwacja ${(r.route.reserveMicroUsd / 1000000).toFixed(6)} USD` : r.blocked}</p></div>)}
+        {data.routes.map((r: any) => <div key={r.task} className="border-t pt-2 mt-2 text-xs break-words"><b>{data.profile.tasks.find((t: any) => t.id === r.task)?.label}</b>{r.route && <p>{r.route.provider} · {r.route.reason}</p>}<p>{r.route ? `${r.route.model.id} · maks. ${r.route.maxOutputTokens} tokenów odpowiedzi · przykładowa rezerwacja ${(r.route.reserveMicroUsd / 1000000).toFixed(6)} USD` : r.blocked}</p></div>)}
         {expert && data.catalog && data.profile.tasks.map((t: any) => <label className="block mt-2 text-sm" key={t.id}>{t.label}: przypnij model<select className={formClass} value={value.assistant.modelPins[t.id as AssistantTask] ?? ''} onChange={e => patchAssistant({ modelPins: { ...value.assistant.modelPins, [t.id]: e.target.value || null } })}><option value="">Automatycznie według kosztu</option>{data.catalog.models.map((m: any) => <option key={m.id} value={m.id}>{m.id}</option>)}</select></label>)}
       </details>
     </div>}
+    {step === 1 && standard && access.capabilities.includes('provider.view') && <ModelProfilesPanel data={data} value={value} onPatch={patchAssistant} onSaved={load} />}
     {step === 2 && <div className={sectionClass}>
       <h3 className="font-semibold">Niezależne wymiary badania</h3><p className="text-sm">JH16 pozostaje zablokowanym punktem odniesienia. Poniższy zakres dotyczy nowych, oddzielnych planów eksploracyjnych.</p>
       <fieldset><legend className="font-medium">Języki</legend><div className="flex flex-wrap gap-3">{data.profile.languageProfiles.map((l: any) => <label className="flex gap-1 text-sm" key={l.id}><input type="checkbox" checked={value.research.languages.includes(l.id)} onChange={e => patchResearch({ languages: e.target.checked ? [...value.research.languages, l.id] : value.research.languages.filter(x => x !== l.id) })} />{l.label}</label>)}</div></fieldset>

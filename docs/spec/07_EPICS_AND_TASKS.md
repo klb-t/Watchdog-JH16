@@ -18,8 +18,10 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 - [x] **E5.6 — Reviewed setup research plan.** Idempotent wizard launch through the actual
   JH16 MethodSpec executor; 32 fixture observations and manifest approval/hash checked.
   Separate language/geography and bounded public jobs. Browser coverage added for CI.
-- [ ] **E3.8 — Many personal providers and evidence-based task routing.** See
-  `PRODUCT_PRINCIPLES_AND_NEXT.md`; initial cost/context router is not a benchmark ranking.
+- [x] **E3.8 — Many personal providers and evidence-based task routing.** Sixteen protocol
+  profiles, native Messages, private model catalogs, reviewed price ceilings, seven task
+  profiles and comparable reviewed benchmarks plus operational history. 285 local tests
+  pass. See PERSONAL_PROVIDERS.md; direct price feeds and semantic benchmark runners remain open.
 - [ ] **E5.7 — General paper intake and explicit substitution plans.** Source-anchored
   methodology, required data, attempt meaning and queued, bounded exploratory proposals.
 - [ ] **E5.8 — Tested extension workshop and contextual goal navigation.** Data-preserving

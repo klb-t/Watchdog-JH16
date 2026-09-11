@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import type { CatalogModel, ModelCatalog, ModelRoute, PersonalSettings, AssistantTask } from '../../../shared/settings';
+import type { CatalogModel, ModelCatalog, ModelRoute, PersonalSettings, AssistantTask, RoutingEvidence } from '../../../shared/settings';
 import type { AssistantProfile } from '../config/assistant';
 import { canonicalHash } from '../domain/canonical';
 import { AutomationError } from '../db/repositories/automation';
@@ -32,7 +32,7 @@ export function normalizeModelCatalog(raw: Buffer, profile: AssistantProfile, no
   const body = { provider: 'openrouter' as const, models, rejected, source: profile.catalog.url, fetchedAt: now.toISOString(), rawHash: createHash('sha256').update(raw).digest('hex') };
   return { ...body, hash: canonicalHash(body) };
 }
-export function routeModel(task: AssistantTask, prompt: string, system: string, settings: PersonalSettings, catalog: ModelCatalog, profile: AssistantProfile, now = new Date()): ModelRoute {
+export function routeModel(task: AssistantTask, prompt: string, system: string, settings: PersonalSettings, catalog: ModelCatalog, profile: AssistantProfile, now = new Date(), evidence: RoutingEvidence[] = []): ModelRoute {
   const rule = profile.tasks.find(t => t.id === task); if (!rule) throw new AutomationError('Unknown assistant task');
   const age = now.getTime() - Date.parse(catalog.fetchedAt);
   if (!Number.isFinite(age) || age < -60000 || age > profile.catalog.maxAgeHours * 3600000) throw new AutomationError('Model prices are stale; refresh the catalog before making a paid call');
@@ -45,8 +45,26 @@ export function routeModel(task: AssistantTask, prompt: string, system: string, 
     .filter(c => Number.isSafeInteger(c.reserveMicroUsd) && c.reserveMicroUsd <= Math.floor(settings.assistant.requestBudgetUsd * 1000000))
     .sort((a, b) => a.reserveMicroUsd - b.reserveMicroUsd || a.model.id.localeCompare(b.model.id, 'en'));
   const pin = settings.assistant.modelPins[task];
-  const chosen = pin ? candidates.find(c => c.model.id === pin) : candidates[Math.floor((candidates.length - 1) * rule.maxCostQuantile * settings.assistant.economy / 100)];
+  const preference = settings.mode === 'simple' ? settings.assistant.economy / 100 : rule.maxCostQuantile;
+  const index = Math.floor((candidates.length - 1) * rule.maxCostQuantile * preference), costChoice = candidates[index];
+  const applicable = evidence.filter(e => e.benchmark && e.benchmark.total >= profile.routingEvidence.minimumBenchmarkTrials);
+  // Comparisons only within one declared suite: unrelated leaderboard scales
+  // cannot be combined. The latest observed suite is the reproducible default.
+  const suite = [...applicable].sort((a,b) => b.benchmark!.observedAt.localeCompare(a.benchmark!.observedAt) || a.model.localeCompare(b.model))[0]?.benchmark?.suiteHash;
+  const ranked = costChoice && suite ? candidates.filter(c => c.reserveMicroUsd <= costChoice.reserveMicroUsd).flatMap(c => {
+    const e = applicable.find(e => e.model === c.model.id && e.benchmark!.suiteHash === suite); if (!e) return [];
+    const quality = wilsonLower(e.benchmark!.passed, e.benchmark!.total), op = e.operations;
+    const reliability = op.calls >= profile.routingEvidence.minimumOperationalCalls ? wilsonLower(op.successes, op.calls) : null;
+    return [{ ...c, score: reliability === null ? quality : quality * profile.routingEvidence.benchmarkWeight + reliability * profile.routingEvidence.reliabilityWeight }];
+  }).sort((a,b) => b.score - a.score || a.reserveMicroUsd - b.reserveMicroUsd || a.model.id.localeCompare(b.model.id, 'en')) : [];
+  const chosen = pin ? candidates.find(c => c.model.id === pin) : ranked[0] ?? costChoice;
   if (!chosen) throw new AutomationError(pin ? 'Pinned model is unavailable or outside the token/cost limits' : 'No model fits this task and request budget');
   return { task, ...chosen, catalogHash: catalog.hash, routingProfileHash: profile.contentHash, settingsHash: canonicalHash(settings), inputTokenAllowance, maxOutputTokens: rule.maxOutputTokens,
-    reason: pin ? 'Explicit task model profile' : `Task-specific cost quantile among ${candidates.length} compatible models; price preference is not a quality score` };
+    provider: catalog.provider, evidence,
+    reason: pin ? 'Explicit task model profile; benchmark evidence remains visible' : ranked.length ? `Cost-feasible task benchmarks in suite ${suite}; lower confidence bound and observed reliability` : `Task-specific cost quantile among ${candidates.length} compatible models; quality unknown without comparable task benchmarks` };
+}
+/** Operational assessment only, never a scientific measurement. */
+function wilsonLower(passed: number, total: number): number {
+  const z = 1.96, p = passed / total, a = z * z / total;
+  return (p + a / 2 - z * Math.sqrt(p * (1 - p) / total + a / (4 * total))) / (1 + a);
 }

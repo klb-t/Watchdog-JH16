@@ -22,7 +22,7 @@ export function Automation() {
   const pending = jobs.some(j => ['QUEUED', 'RUNNING'].includes(j.status));
   useEffect(() => { if (!pending) return; const timer = setInterval(() => refresh().catch(e => setError(e.message)), 5000); return () => clearInterval(timer); }, [pending, access.principalId]);
   const act = async (fn: () => Promise<any>, success = '') => { setBusy(true); setError(''); setMessage(''); try { await fn(); setMessage(success); await refresh(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } };
-  const changeKind = (kind: string) => { setRequest(structuredClone(kind === 'paper_scan' ? profile.defaults.paperJob : profile.defaults.substanceJob)); setName(kind === 'paper_scan' ? 'Codzienny przegląd publikacji' : 'Aktualizacja kartotek substancji'); };
+  const changeKind = (kind: string) => { setRequest(structuredClone(kind === 'catalog_refresh' ? { kind, provider: 'openrouter', maxRequests: 1 } : kind === 'paper_scan' ? profile.defaults.paperJob : profile.defaults.substanceJob)); setName(kind === 'catalog_refresh' ? 'Aktualizacja katalogu modeli i cen' : kind === 'paper_scan' ? 'Codzienny przegląd publikacji' : 'Aktualizacja kartotek substancji'); };
   const patch = (update: any) => setRequest(r => r ? { ...r, ...update } : null);
   const scheduleToggle = (s: ScheduleRecord) => act(() => api(`/api/automation/schedules/${s.id}`, { consent: true, profileHash: profile.contentHash, expectedHash: s.contentHash,
     schedule: { name: s.name, recurrence: s.recurrence, request: s.request, enabled: !s.enabled } }), s.enabled ? 'Harmonogram wstrzymany.' : 'Harmonogram wznowiony.');
@@ -35,7 +35,7 @@ export function Automation() {
       <div className="grid lg:grid-cols-2 gap-4">
         <section className={sectionClass}><h2 className="font-semibold">Plan zbierania</h2>
           <label className="block">Zadanie<select className={formClass} value={request.kind} onChange={e => changeKind(e.target.value)}>
-            <option value="paper_scan">Przegląd prac naukowych</option>{access.capabilities.includes('evidence.import') && <option value="substance_refresh">Pamięć substancji</option>}</select></label>
+            <option value="paper_scan">Przegląd prac naukowych</option><option value="catalog_refresh">Katalog modeli i cen OpenRouter</option>{access.capabilities.includes('evidence.import') && <option value="substance_refresh">Pamięć substancji</option>}</select></label>
           {request.kind === 'paper_scan' && <>
             <label className="block">Zakres<select className={formClass} value={request.scope} onChange={e => patch({ scope: e.target.value })} data-testid="discovery-scope"><option value="substances">Substancje psychoaktywne</option><option value="all_science">Wszystkie dziedziny w wybranych repozytoriach</option></select></label>
             <label className="block">Okno wyszukiwania (dni)<input type="number" min={1} max={90} className={formClass} value={request.lookbackDays} onChange={e => patch({ lookbackDays: Number(e.target.value) })} /></label>
@@ -48,7 +48,7 @@ export function Automation() {
           </>}
           {request.kind !== 'catalog_refresh' && <fieldset><legend>Źródła</legend><div className="flex flex-wrap gap-3">{(request.kind === 'paper_scan' ? ['arxiv', 'europe_pmc'] : ['pubchem', 'chembl', 'wikidata', 'europe_pmc']).map(p => <label key={p} className="text-sm flex items-center gap-1"><input type="checkbox" checked={(request.providers as string[]).includes(p)} disabled={p === 'pubchem'}
             onChange={e => patch({ providers: e.target.checked ? [...request.providers, p] : request.providers.filter(id => id !== p) })} />{p}</label>)}</div></fieldset>}
-          <div className="grid grid-cols-2 gap-3"><label>Maks. zapytań<input className={formClass} type="number" min={1} max={request.kind === 'paper_scan' ? 40 : 200} value={request.maxRequests} onChange={e => patch({ maxRequests: Number(e.target.value) })} /></label>
+          <div className="grid grid-cols-2 gap-3"><label>Maks. zapytań<input className={formClass} type="number" min={1} disabled={request.kind === 'catalog_refresh'} max={request.kind === 'paper_scan' ? 40 : 200} value={request.maxRequests} onChange={e => patch({ maxRequests: Number(e.target.value) })} /></label>
             {'pageLimit' in request && <label>Maks. stron na źródło<input className={formClass} type="number" min={1} max={request.kind === 'paper_scan' ? 20 : 10} value={request.pageLimit} onChange={e => patch({ pageLimit: Number(e.target.value) })} /></label>}</div>
           <p className="text-sm">Pobieranie zatrzyma się na ustawionym limicie. Częściowe pokrycie będzie oznaczone. Nie są wykonywane płatne zapytania ani pobierany kod z publikacji.</p>
           <button className={buttonClass} disabled={busy} data-testid="automation-run" onClick={() => act(() => api('/api/automation/jobs', { request, profileHash: profile.contentHash, consent: true }), 'Zadanie dodane do kolejki.')}>Uruchom ten plan teraz</button>

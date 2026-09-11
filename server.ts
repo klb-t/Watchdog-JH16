@@ -89,7 +89,7 @@ export async function configureApp() {
   const assistant = new AssistantService(settings, vault, assistantProfile), search = new PersonalSearch(settings, vault, assistantProfile);
   const plans = new ResearchPlans(settings, automationRepository, assistantProfile, automation.profile,
     new RunOrchestrator(db, store, (id, owner, personal) => search.resolve(id, owner, personal)), new MethodSpecRepository(db), vault);
-  automation.handlers.set('catalog_refresh', async (job, checkpoint) => { checkpoint(); const catalog = await assistant.refreshCatalog(job.ownerId); checkpoint(); return { catalogHash: catalog.hash, models: catalog.models.length }; });
+  automation.handlers.set('catalog_refresh', async (job, checkpoint) => { checkpoint(); const catalog = await assistant.refreshCatalog(job.ownerId, 'openrouter'); checkpoint(); return { requests: 1, catalogHash: catalog.hash, models: catalog.models.length }; });
   app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans));
   app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
   app.use('/api/memory', buildMemoryRouter(automationRepository));

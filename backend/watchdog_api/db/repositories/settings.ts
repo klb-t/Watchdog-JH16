@@ -1,7 +1,7 @@
 import type { Database } from 'better-sqlite3';
 import { randomUUID, createHash } from 'node:crypto';
 import { canonicalHash } from '../../domain/canonical';
-import { SettingsSchema, type PersonalSettings, type SettingsRecord, type ModelCatalog, type ModelRoute } from '../../../../shared/settings';
+import { SettingsSchema, ModelCeilingSchema, BenchmarkSchema, type AssistantTask, type RoutingEvidence, type ModelCeiling, type PersonalSettings, type SettingsRecord, type ModelCatalog, type ModelRoute } from '../../../../shared/settings';
 import { AutomationError } from './automation';
 import { AuditRepository } from './audit';
 import type { ObjectStore } from '../../storage/object_store';
@@ -39,22 +39,58 @@ export class SettingsRepository {
     this.db.prepare('DELETE FROM user_secret_envelopes WHERE owner_principal_id=? AND provider_key=?').run(owner, provider);
     this.audit(owner, 'credential.delete', provider, {});
   }
-  async saveCatalog(catalog: ModelCatalog, raw: Buffer) {
+  async saveCatalog(catalog: ModelCatalog, raw: Buffer, owner?: string) {
     const sha = createHash('sha256').update(raw).digest('hex');
     if (catalog.rawHash !== sha) throw new AutomationError('Catalog raw hash mismatch');
     const uri = await this.store.put(`raw/${sha}`, raw);
     this.db.transaction(() => {
       this.db.prepare('INSERT OR IGNORE INTO raw_blobs VALUES (?,?,?,?,?,?,?)').run(`catalog-${sha}`, sha, uri, raw.length, 'application/json', 'model-catalog', catalog.fetchedAt);
       const blob = this.db.prepare('SELECT id FROM raw_blobs WHERE sha256=?').get(sha) as any;
-      this.db.prepare('INSERT OR IGNORE INTO assistant_catalogs VALUES (?,?,?,?)').run(catalog.hash, JSON.stringify(catalog), catalog.fetchedAt, blob.id);
+      if (catalog.provider === 'openrouter' && !owner) this.db.prepare('INSERT OR IGNORE INTO assistant_catalogs VALUES (?,?,?,?)').run(catalog.hash, JSON.stringify(catalog), catalog.fetchedAt, blob.id);
+      else {
+        if (!owner) throw new AutomationError('A private model catalog requires an owner');
+        this.db.prepare('INSERT OR IGNORE INTO personal_model_catalogs VALUES (?,?,?,?,?,?)').run(owner, catalog.provider, catalog.hash, JSON.stringify(catalog), catalog.fetchedAt, blob.id);
+      }
     })();
   }
-  catalog(): ModelCatalog | null {
-    const row = this.db.prepare('SELECT * FROM assistant_catalogs ORDER BY fetched_at DESC,hash DESC LIMIT 1').get() as any;
+  catalog(provider = 'openrouter', owner?: string): ModelCatalog | null {
+    const row = provider === 'openrouter' ? this.db.prepare('SELECT * FROM assistant_catalogs ORDER BY fetched_at DESC,hash DESC LIMIT 1').get() as any
+      : this.db.prepare('SELECT * FROM personal_model_catalogs WHERE owner_principal_id=? AND provider_key=? ORDER BY fetched_at DESC,hash DESC LIMIT 1').get(owner ?? '', provider) as any;
     if (!row) return null;
     const c = JSON.parse(row.body_json), { hash, ...body } = c;
     if (row.hash !== hash || canonicalHash(body) !== hash) throw new AutomationError('Model catalog integrity mismatch');
     return c;
+  }
+  saveModelCeiling(owner: string, input: unknown) {
+    const value = ModelCeilingSchema.parse(input), hash = canonicalHash(value), now = Date.now();
+    if (Date.parse(value.observedAt) > now + 60000 || Date.parse(value.validUntil) <= now || Date.parse(value.validUntil) - Date.parse(value.observedAt) > 31 * 86400000) throw new AutomationError('A price profile needs current observation and at most 31-day validity');
+    this.db.prepare('INSERT OR IGNORE INTO personal_model_ceilings VALUES (?,?,?,?,?,?)').run(owner, value.provider, value.id, hash, JSON.stringify(value), new Date().toISOString());
+    this.audit(owner, 'model.ceiling.review', hash, { provider: value.provider, model: value.id }); return { value, hash };
+  }
+  ceilings(owner: string, provider: string): { value: ModelCeiling; hash: string }[] {
+    const rows = this.db.prepare('SELECT body_json,hash FROM personal_model_ceilings WHERE owner_principal_id=? AND provider_key=? ORDER BY created_at DESC,rowid DESC').all(owner, provider) as any[];
+    const seen = new Set<string>(); return rows.flatMap(r => { const value = ModelCeilingSchema.parse(JSON.parse(r.body_json));
+      if (canonicalHash(value) !== r.hash) throw new AutomationError('Model ceiling integrity mismatch');
+      if (seen.has(value.id)) return []; seen.add(value.id); return [{ value, hash: r.hash }]; });
+  }
+  saveBenchmark(owner: string, input: unknown) {
+    const b = BenchmarkSchema.parse(input), hash = canonicalHash(b);
+    if (Date.parse(b.observedAt) > Date.now() + 60000) throw new AutomationError('Benchmark cannot be dated in the future');
+    this.db.prepare('INSERT OR IGNORE INTO assistant_benchmarks VALUES (?,?,?,?,?,?,?,?,?,?,?,?)').run(randomUUID(), owner, b.provider, b.model, b.task, b.suiteHash, b.passed, b.total, b.source, b.observedAt, new Date().toISOString(), hash);
+    this.audit(owner, 'benchmark.review', hash, { source: b.source, task: b.task }); return { hash };
+  }
+  routingEvidence(owner: string, provider: string, task: AssistantTask, maxAgeDays: number): RoutingEvidence[] {
+    const since = new Date(Date.now() - maxAgeDays * 86400000).toISOString(), byModel = new Map<string, RoutingEvidence>();
+    const get = (model: string) => { if (!byModel.has(model)) byModel.set(model, { model, benchmark: null, operations: { calls: 0, successes: 0, averageLatencyMs: null } }); return byModel.get(model)!; };
+    const benchmarks = this.db.prepare('SELECT * FROM assistant_benchmarks WHERE owner_principal_id=? AND provider_key=? AND task=? AND observed_at>=? ORDER BY observed_at DESC,rowid DESC').all(owner, provider, task, since) as any[];
+    for (const b of benchmarks) { const row = get(b.model_id); if (!row.benchmark) row.benchmark = { suiteHash: b.suite_hash, passed: b.passed, total: b.total, source: b.source_url, observedAt: b.observed_at, hash: b.content_hash }; }
+    const operations = this.db.prepare('SELECT route_json,result_json,status FROM assistant_reservations WHERE owner_principal_id=? AND created_at>=? AND status<>? ORDER BY created_at,id').all(owner, since, 'RESERVED') as any[];
+    const latency = new Map<string, number[]>();
+    for (const o of operations) { const route = JSON.parse(o.route_json); if ((route.provider ?? 'openrouter') !== provider || route.task !== task) continue;
+      const row = get(route.model.id), result = JSON.parse(o.result_json ?? '{}'); row.operations.calls++; if (o.status !== 'FAILED_RESERVED') row.operations.successes++;
+      if (typeof result.latencyMs === 'number' && Number.isFinite(result.latencyMs)) { const l = latency.get(row.model) ?? []; l.push(result.latencyMs); latency.set(row.model, l); } }
+    for (const row of byModel.values()) { const l = latency.get(row.model); if (l?.length) row.operations.averageLatencyMs = l.reduce((a, b) => a + b, 0) / l.length; }
+    return [...byModel.values()].sort((a,b) => a.model.localeCompare(b.model, 'en'));
   }
   budget(owner: string, day = new Date().toISOString().slice(0, 10)) {
     const r = this.db.prepare('SELECT COALESCE(SUM(charged_micro_usd),0) AS used,COUNT(*) AS calls FROM assistant_reservations WHERE owner_principal_id=? AND day_utc=?').get(owner, day) as any;

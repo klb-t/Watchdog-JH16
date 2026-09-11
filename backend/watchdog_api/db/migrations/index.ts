@@ -10,6 +10,7 @@ import { MIGRATION_007_WORKBENCH } from './007_workbench';
 import { MIGRATION_006_FIELD_REFERENCE } from './006_field_reference';
 import { MIGRATION_010_AUTOMATION } from './010_automation';
 import { MIGRATION_011_PERSONAL_SETTINGS } from './011_personal_settings';
+import { MIGRATION_012_ASSISTANT_PROFILES } from './012_assistant_profiles';
 
 export interface Migration {
   readonly id: string;
@@ -32,7 +33,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '008_workbench_profiles', sql: MIGRATION_008_WORKBENCH_PROFILES },
   { id: '009_geometry_layers', sql: MIGRATION_009_GEOMETRY_LAYERS },
   { id: '010_automation', sql: MIGRATION_010_AUTOMATION },
-  { id: '011_personal_settings', sql: MIGRATION_011_PERSONAL_SETTINGS }
+  { id: '011_personal_settings', sql: MIGRATION_011_PERSONAL_SETTINGS },
+  { id: '012_assistant_profiles', sql: MIGRATION_012_ASSISTANT_PROFILES }
 ];
 
 const MIGRATIONS_TABLE = `
