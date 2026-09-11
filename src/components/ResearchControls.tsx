@@ -46,3 +46,47 @@ export function CopyPlanBuilder({ format,busy,onSave }: {format:'json'|'csv';bus
     <button className={buttonClass} disabled={busy||!CopyPlanSchema.safeParse(value).success} onClick={()=>onSave(value)}>Zapisz mapowanie pól</button></div>
   </div>;
 }
+
+export function ExpectedRecordsForm({fields,busy,onApply,onInvalidate}:{fields:CopyPlan['fields'];busy:boolean;onApply:(value:Record<string,string|null>[])=>void;onInvalidate:()=>void}) {
+  const empty=()=>Object.fromEntries(fields.map(f=>[f.name,''])) as Record<string,string|null>;
+  const [rows,setRows]=useState<Record<string,string|null>[]>([empty()]);
+  const update=(value:Record<string,string|null>[])=>{setRows(value);onInvalidate();};
+  const change=(row:number,key:string,value:string|null)=>update(rows.map((r,i)=>i===row?{...r,[key]:value}:r));
+  return <div className="space-y-3" data-testid="expected-records-form">
+    <h3 className="font-semibold">Wpisz znane wartości kontrolne</h3>
+    <p className="text-sm">Odczytaj je niezależnie ze źródła. Porównamy wszystkie rekordy i ich kolejność. Zapis liczby musi być dokładny; puste pole oznacza pusty tekst, a null brak wartości.</p>
+    {rows.map((row,i)=><fieldset key={i} className="border rounded p-3 min-w-0 space-y-3"><legend>Rekord kontrolny {i+1}</legend>
+      {fields.map(f=><div key={f.name} className="grid sm:grid-cols-[1fr_auto] gap-2 items-end"><label className="min-w-0">{f.name} · rekord {i+1}<input className={formClass} value={row[f.name]??''} disabled={row[f.name]===null} onChange={e=>change(i,f.name,e.target.value)}/></label>
+        <label className="text-sm"><input type="checkbox" checked={row[f.name]===null} onChange={e=>change(i,f.name,e.target.checked?null:'')}/> null · {f.name} · rekord {i+1}</label>
+      </div>)}
+      {rows.length>1 && <button className="underline text-sm" onClick={()=>update(rows.filter((_,j)=>i!==j))}>Usuń rekord kontrolny {i+1}</button>}
+    </fieldset>)}
+    <div className="flex flex-wrap gap-3"><button className="underline text-sm" disabled={rows.length>=20} onClick={()=>update([...rows,empty()])}>Dodaj rekord kontrolny</button>
+      <button className={buttonClass} disabled={busy} onClick={()=>onApply(rows)}>Użyj tych wartości kontrolnych</button></div>
+    <p className="text-xs">Formularz mieści 20 rekordów. Większy zestaw można wkleić w opcjach JSON poniżej.</p>
+  </div>;
+}
+
+export function ExtractionResult({trial}:{trial:any}) {
+  const [cell,setCell]=useState<{row:number;field:string}|null>(null);
+  const result=trial.body.result,records=result?.records??[],fields=Object.keys(records[0]??{}),source=cell?result?.provenance?.[cell.row]?.[cell.field]:null;
+  return <div className="space-y-3" data-testid="extraction-result">
+    <p className="font-semibold">{trial.body.kind==='EXECUTION'?'Wykonano':trial.body.passed?'TEST PASSED':'TEST FAILED'}</p>
+    {trial.body.error && <p className="text-sm text-red-800">{trial.body.error}</p>}
+    {result && <><p className="text-sm">Rekordy: {records.length}. Pokazano {Math.min(records.length,40)}. Kliknij wartość, aby sprawdzić miejsce w źródle. Liczby pozostają dokładnym tekstem źródłowym.</p>
+      <div className="overflow-x-auto max-w-full"><table className="w-full text-sm text-left border-collapse"><caption className="sr-only">Skopiowane rekordy źródłowe</caption>
+        <thead><tr>{fields.map(f=><th key={f} className="p-2 border-b font-semibold">{f}</th>)}</tr></thead>
+        <tbody>{records.slice(0,40).map((r:Record<string,string|null>,i:number)=><tr key={i}>{fields.map(f=><td key={f} className="p-2 border-b align-top">
+          <button className="text-left underline decoration-dotted break-all" aria-label={`Pochodzenie: ${f}, rekord ${i+1}`} onClick={()=>setCell({row:i,field:f})}>{r[f]===null?result.provenance[i][f].missing?'brak pola':'null':r[f]===''?'pusty tekst':r[f]}</button>
+        </td>)}</tr>)}</tbody>
+      </table></div>
+      {source && <div className="rounded bg-slate-50 p-3 text-sm space-y-1" data-testid="copied-cell-origin"><p><b>{cell!.field}</b> · rekord {cell!.row+1}</p>
+        <p className="break-all">{source.pointer!==undefined?`Ścieżka: ${source.pointer}`:`Kolumna: ${source.column}; rekord CSV: ${source.recordIndex+1}`}</p>
+        <p>{source.missing?'Pole nie występuje w źródle.':source.explicitNull?'Źródło zawiera jawne null.':'Wartość skopiowana ze źródła.'}</p>
+        {source.rawLiteral!==undefined&&source.rawLiteral!==null && <p className="break-all">Zapis źródłowy: <code>{source.rawLiteral}</code></p>}
+        <p className="break-all text-xs">SHA-256 źródła: {result.rawHash}</p>
+      </div>}
+    </>}
+    <details><summary>Ślad wykonania i surowe źródło</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-96 overflow-auto">{JSON.stringify(trial,null,2)}</pre></details>
+  </div>;
+}

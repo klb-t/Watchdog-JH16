@@ -329,7 +329,12 @@ test('research workshop: goal navigation, source intake, keyless parser form, ex
     await page.getByRole('status').filter({hasText:'Mapowanie zapisane.'}).waitFor();
     const selected=await page.getByLabel('Wybierz parser',{exact:true}).inputValue();assert.ok(selected);
     assert.equal(await page.getByRole('button',{name:'Aktywuj sprawdzoną wersję'}).isDisabled(),true);
-    await page.getByLabel('Oczekiwane rekordy JSON (wartości tekstowe lub null)').fill(JSON.stringify(expected));
+    await page.getByLabel('value · rekord 1',{exact:true}).fill(expected[0].value);
+    await page.getByLabel('note · rekord 1',{exact:true}).fill(expected[0].note!);
+    await page.getByRole('button',{name:'Dodaj rekord kontrolny',exact:true}).click();
+    await page.getByLabel('value · rekord 2',{exact:true}).fill(expected[1].value);
+    await page.getByLabel('null · note · rekord 2',{exact:true}).check();
+    await page.getByRole('button',{name:'Użyj tych wartości kontrolnych',exact:true}).click();
     await page.getByRole('button',{name:'Testuj dokładne kopiowanie',exact:true}).click();
     await page.getByText('TEST PASSED',{exact:true}).waitFor();
     await page.getByRole('button',{name:'Aktywuj sprawdzoną wersję',exact:true}).click();
@@ -347,11 +352,18 @@ test('research workshop: goal navigation, source intake, keyless parser form, ex
     await page.getByText('Historia testów i wykonań (2)',{exact:true}).click();
     await page.getByRole('button',{name:/^Wykonanie ·/}).click();
     await page.getByRole('status').filter({hasText:'Odtworzono zapisany wynik.'}).waitFor();
-    fs.mkdirSync('test-artifacts',{recursive:true});await page.screenshot({path:'test-artifacts/research-desktop.png',fullPage:true});
+    await page.getByRole('button',{name:'Pochodzenie: value, rekord 1',exact:true}).click();
+    assert.ok((await page.locator('[data-testid="copied-cell-origin"]').textContent())?.includes('/rows/0/value'));
+    assert.ok((await page.locator('[data-testid="copied-cell-origin"]').textContent())?.includes('900719925474099312345'));
+    fs.mkdirSync('test-artifacts',{recursive:true});await page.locator('[data-testid="extraction-result"]').scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/research-desktop.png',fullPage:true});
     await page.setViewportSize({width:390,height:844});
+    await page.locator('[data-testid="extraction-result"]').scrollIntoViewIfNeeded();
     const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));
     assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
     await page.screenshot({path:'test-artifacts/research-mobile.png',fullPage:true});
+    await page.locator('[data-testid="research-page"] > header').scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/research-mobile-start.png',fullPage:true});
     assert.deepEqual(errors,[]);
   } finally {page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
 });

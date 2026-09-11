@@ -284,3 +284,15 @@ exact export, restored history and 390 px mobile width. Its CI outcome will be c
 publication. The research/source fixtures are explicitly fictional; no paid LLM call was made.
 RESEARCH_WORKSHOP.md and the split ledger distinguish this connected stage from arbitrary
 replication execution, generated adapter sandboxing and the future statistical paper pipeline.
+
+Published research head `865e478200cfa145f10f8674f28093fdae4ee38c` passed Actions
+`34634885882`: **311/311 tests**, zero failures/skips, clean installation, typecheck/build,
+Chromium and the 32-observation JH16 self-check. This also verifies the repaired personal
+wizard. The 35-file browser artifact passed its published ZIP SHA-256 check, and the wizard
+and research desktop/mobile screenshots were inspected.
+
+Visual inspection prompted a focused follow-up: expected extraction values now have a
+guided record form, and results render as a table with clickable source-cell provenance.
+The raw debug record stays accessible in a disclosure. The browser flow exercises the
+form and inspector and scrolls the actual application container to capture useful start
+and result screenshots. This follow-up awaits its own CI confirmation after publication.

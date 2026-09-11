@@ -54,11 +54,15 @@ LLM, **Zaproponuj parser** proposes the same profile from field names and struct
 cell values are omitted from that prompt; a key/header can itself contain user-written text.
 The plan permits scalar selection only: no arbitrary scripts, constants or transformations.
 
-Provide independently checked expected records as JSON strings or null. A passing exact
+Enter independently checked expected values in the record form and apply them, or paste
+JSON strings/null in the advanced controls. Editing the form invalidates the previously
+applied expectations until the new values are applied. A passing exact
 output comparison on a nonempty fixture is required to activate that exact candidate hash.
 Tests, including failures, persist with raw input, expected output, actual output and hashes.
 Later execution copies values deterministically without calling a model. History and JSON
-exports remain available after reload, including the raw source and cell provenance.
+exports remain available after reload, including the raw source and cell provenance. A
+readable result table exposes each cell's source location on click; the full technical
+record is available separately in its debug disclosure.
 
 JSON numbers remain lexical strings, preserving large integers, negative zero, trailing zeros
 and exponent notation without floating-point conversion. Explicit null and an absent optional

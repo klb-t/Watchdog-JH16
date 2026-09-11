@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { automationApi as api, formClass, buttonClass, sectionClass } from '../lib/automation_client';
 import { useAccess } from '../lib/access';
 import type { PaperInput, SubstitutionInput } from '../../shared/research';
-import { CopyPlanBuilder, SubstitutionEditor } from '../components/ResearchControls';
+import { CopyPlanBuilder, SubstitutionEditor, ExpectedRecordsForm, ExtractionResult } from '../components/ResearchControls';
 
 export function Research() {
   const access = useAccess();
@@ -17,6 +17,7 @@ function ResearchContent() {
   const [raw,setRaw] = useState(''), [format,setFormat] = useState<'json'|'csv'>('json'), [goal,setGoal] = useState(''), [plan,setPlan] = useState(''), [expected,setExpected] = useState('');
   const [selected,setSelected] = useState<any>(null), [trial,setTrial] = useState<any>(null), [substitution,setSubstitution] = useState<SubstitutionInput|null>(null), [openedSource,setOpenedSource]=useState<any>(null);
   const [trials,setTrials]=useState<any[]>([]);
+  useEffect(()=>{setExpected('');},[selected?.id]);
   const refresh = async () => setData(await api('/api/research'));
   useEffect(() => { let active=true; setData(null); setSelected(null); setTrial(null);
     api('/api/research').then(r => active && setData(r)).catch(e => active && setError(e.message)); return () => { active=false; };
@@ -87,11 +88,12 @@ function ResearchContent() {
       </section>
       <section className={sectionClass}><h2 className="font-semibold">Test i aktywacja</h2>
         <label className="block">Wybierz parser<select aria-label="Wybierz parser" className={formClass} value={selected?.id??''} onChange={e=>{setSelected(data.extractors.find((c:any)=>c.id===e.target.value));setTrial(null);}}><option value="">Wybierz…</option>{data?.extractors.map((c:any)=><option key={c.id} value={c.id}>{c.body.plan.name} · {c.approvalState}</option>)}</select></label>
-        <label className="block">Oczekiwane rekordy JSON (wartości tekstowe lub null)<textarea className={formClass} rows={4} value={expected} onChange={e=>setExpected(e.target.value)}/></label>
+        {selected && <ExpectedRecordsForm key={selected.id} fields={selected.body.plan.fields} busy={busy} onInvalidate={()=>{setExpected('');setNotice('Zmieniono formularz. Zastosuj wartości kontrolne przed testem.');}} onApply={value=>{setExpected(JSON.stringify(value,null,2));setNotice('Zapisano wartości kontrolne do najbliższego testu.');}}/>}
+        <details><summary>Oczekiwane rekordy JSON · opcje zaawansowane</summary><label className="block">Oczekiwane rekordy JSON (wartości tekstowe lub null)<textarea className={formClass} rows={4} value={expected} onChange={e=>setExpected(e.target.value)}/></label></details>
         <div className="flex flex-wrap gap-3"><button className={buttonClass} disabled={busy||!selected||!raw||!expected} onClick={()=>act(async()=>setTrial((await api(`/api/research/extractors/${selected.id}/test`,{raw,expected:JSON.parse(expected)})).trial),'Test zapisany; sprawdź wynik porównania.')}>Testuj dokładne kopiowanie</button>
           {access.capabilities.includes('dataset.approve') && <button className={buttonClass} disabled={busy||!selected||trial?.body.passed!==true||trial?.body.candidateHash!==selected.hash} onClick={()=>act(async()=>setSelected((await api(`/api/research/extractors/${selected.id}/approve`,{expectedHash:selected.hash})).extractor),'Ta wersja parsera została aktywowana.')}>Aktywuj sprawdzoną wersję</button>}
           {access.capabilities.includes('dataset.import') && <button className={buttonClass} disabled={busy||!raw||selected?.approvalState!=='APPROVED'} onClick={()=>act(async()=>setTrial((await api(`/api/research/extractors/${selected.id}/run`,{raw})).trial),'Wykonano bez wywołania LLM.')}>Wykonaj parser bez LLM</button>}</div>
-        {trial && <div><p className="font-semibold">{trial.body.kind==='EXECUTION'?'Wykonano':trial.body.passed?'TEST PASSED':'TEST FAILED'}</p><button className="underline" onClick={saveResult}>Pobierz wynik, surowe źródło i pochodzenie</button><pre className="text-xs whitespace-pre-wrap break-all max-h-96 overflow-auto">{JSON.stringify(trial,null,2)}</pre></div>}
+        {trial && <div className="space-y-3"><ExtractionResult key={trial.id} trial={trial}/><button className="underline text-sm" onClick={saveResult}>Pobierz wynik, surowe źródło i pochodzenie</button></div>}
         {trials.length>0 && <details><summary>Historia testów i wykonań ({trials.length})</summary><ul className="space-y-2 mt-2">{trials.map(t=><li key={t.id}><button className="underline text-sm" onClick={()=>act(async()=>setTrial((await api(`/api/research/trials/${t.id}`)).trial),'Odtworzono zapisany wynik.')}>{t.kind==='EXECUTION'?'Wykonanie':t.passed?'Test PASSED':'Test FAILED'} · {new Date(t.createdAt).toLocaleString()}</button></li>)}</ul></details>}
       </section>
     </>}
