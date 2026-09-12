@@ -118,6 +118,15 @@ docs/spec/      the binding specification; 07_EPICS_AND_TASKS.md is the ledger
 - `docs/DEPLOY_GCP.md` — deploying to Cloud Run, written for someone who has not used GCP.
 - `docs/AUDIT.md` — the historical E0 audit of the inherited codebase.
 
+## Source-linked paper analyses
+
+The Research workshop can now bind a unique source quote (or a saved assessment operation)
+to columns of an approved dataset, review the exact method, execute it without an LLM and
+export a verifiable research package. This currently covers one descriptive, Pearson or
+Spearman operation over all dataset rows. It preserves missingness, data substitutions and
+unresolved paper requirements; it does not establish whole-paper replication.
+See [the paper analysis guide](docs/PAPER_ANALYSES.md).
+
 ## Live providers, sign-in and deployment
 
 Added under D17 because they are what the maintainer tests on first. Everything is derived from

@@ -514,6 +514,15 @@ just because the schema for all three already exists.
 
 ---
 
+## Continued research vertical slices
+
+- [x] **E5.8e — Source-linked selected paper operations.** Manual quote or saved assessment
+  operation -> approved numeric columns and explicit origins/substitutions -> immutable
+  method proposal -> human review -> real describe/Pearson/Spearman execution -> history
+  and portable source-verified ZIP. All data rows, current approval/ownership, exact source
+  anchors and unresolved scope are retained. See `docs/PAPER_ANALYSES.md` and
+  `docs/ASTRA_PROGRESS.md`. This does not mark the general paper compiler complete.
+
 ## Blocked
 
 ### Continuation checkpoint (2026-09-08)

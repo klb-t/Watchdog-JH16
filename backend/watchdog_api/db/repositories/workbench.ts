@@ -11,6 +11,7 @@ import { WorkbenchError } from './workbench_error';
 export { WorkbenchError } from './workbench_error';
 import { appendAudit } from './audit';
 import { ResearchRepository } from './research';
+import { PaperOperationsRepository } from './paper_operations';
 import { verifyDatasetExtraction,datasetExtractionMapping } from '../../workbench/extraction_data';
 import type { MethodSpec, AnalysisArtifact, TypedSeries } from '../../domain/method_spec';
 import { assertTransition, type RunState } from '../../domain/run_state';
@@ -123,6 +124,10 @@ export class WorkbenchRepository {
       throw new WorkbenchError('Analysis result integrity mismatch.', 409);
     const manifest = JSON.parse((await this.store.get(row.manifest_uri)).toString());
     if (canonicalHash(manifest) !== row.manifest_hash || manifest.runId !== result.runId || !manifest.outputs.some((o: any) => o.sha256 === ref.resultHash)) throw new WorkbenchError('Analysis manifest integrity mismatch.', 409);
+    const liveMethod = this.method(ref.methodId);
+    if (!liveMethod || liveMethod.hash !== ref.methodHash || liveMethod.approvalState !== 'APPROVED') throw new WorkbenchError('Method approval was revoked.', 409);
+    const binding = this.paperBinding(actor, ref.methodId);
+    if (canonicalHash(binding) !== canonicalHash(result.paperBinding ?? null)) throw new WorkbenchError('Result paper context mismatch.', 409);
     return { ...result, hash: ref.resultHash, manifest: { hash: row.manifest_hash, document: manifest } };
   }
   async saveFigure(actor: string, spec: FigureSpec, favorite: boolean, requestId: string): Promise<SavedFigure> {
@@ -160,7 +165,15 @@ export class WorkbenchRepository {
       approvalState: row.approved_hash === hash ? 'APPROVED' : 'PROPOSED', approvedBy: row.approved_by, approvedAt: row.approved_at };
   }
   methods(datasetId: string) { return (this.db.prepare('SELECT method_id FROM workbench_method_inputs WHERE dataset_id=? ORDER BY method_id').all(datasetId) as any[]).map(r => this.method(r.method_id)); }
+  paperBinding(actor: string, methodId: string) {
+    const method = this.method(methodId), binding = new PaperOperationsRepository(this.db).forMethod(actor, methodId);
+    const references = method?.spec.assumptions.filter(a => a.startsWith('paper_binding_sha256=')) ?? [];
+    if (references.length && (!binding || references.length !== 1 || references[0] !== `paper_binding_sha256=${binding.hash}`)) throw new WorkbenchError('Paper context is missing or changed.', 409);
+    if (binding && !references.length) throw new WorkbenchError('Method does not pin its paper context.', 409);
+    return binding;
+  }
   approveMethod(id: string, actor: string, expectedHash: string, requestId: string) {
+    this.paperBinding(actor, id);
     const current = this.method(id);
     if (!current || current.hash !== expectedHash) throw new WorkbenchError('Method review hash is stale.', 409);
     this.db.transaction(() => {
@@ -188,7 +201,8 @@ export class WorkbenchRepository {
   async persistResult(runId: string, actor: string, payload: { methodId: string; methodHash: string; datasetHash: string; inputHash: string; artifact: AnalysisArtifact; inputs: TypedSeries[]; [key: string]: unknown }) {
     const hash = canonicalHash(payload), bytes = Buffer.from(canonicalizeJson(payload));
     const uri = await this.store.put(`runs/${runId}/workbench-${hash}.json`, bytes);
-    const method = this.method(payload.methodId)!;
+    const method = this.method(payload.methodId);
+    if (!method || method.hash !== payload.methodHash || method.approvalState !== 'APPROVED') throw new WorkbenchError('Method approval was revoked before finalization.', 409);
     const manifest = { schemaVersion: 'workbench-manifest-1', runId, datasetHash: payload.datasetHash,
       inputs: { combinedHash: payload.inputHash, seriesHashes: payload.inputs.map(series => ({ name: series.name, hash: canonicalHash(series) })) },
       method: { id: method.id, hash: method.hash, approvedHash: method.approvedHash, approvedBy: method.approvedBy, approvedAt: method.approvedAt },
@@ -198,6 +212,11 @@ export class WorkbenchRepository {
       qualityFlags: payload.artifact.qualityFlags, environment: { nodeVersion: process.version } };
     const manifestHash = canonicalHash(manifest), manifestUri = await this.store.put(`runs/${runId}/manifest-${manifestHash}.json`, Buffer.from(canonicalizeJson(manifest)));
     this.db.transaction(() => {
+      // Revocation during either blob write wins over publication of a completed run.
+      const live = this.method(payload.methodId), dataset = this.db.prepare('SELECT * FROM datasets WHERE id=?').get(method.datasetId) as any;
+      if (!live || live.hash !== payload.methodHash || live.approvalState !== 'APPROVED' || live.approvedAt !== method.approvedAt || live.approvedBy !== method.approvedBy || !dataset || dataset.sha256 !== payload.datasetHash || dataset.approved_hash !== payload.datasetHash || !(dataset.owner_principal_id === actor || dataset.visibility === 'shared_aggregate'))
+        throw new WorkbenchError('Dataset or method approval changed before result finalization.', 409);
+      if (canonicalHash(this.paperBinding(actor, method.id)) !== canonicalHash(payload.paperBinding ?? null)) throw new WorkbenchError('Paper context changed before result finalization.', 409);
       const now = new Date().toISOString(), analysisId = `analysis-${runId}`;
       this.db.prepare(`INSERT INTO artifacts(id,run_id,kind,media_type,object_uri,sha256,byte_size,owner_principal_id,visibility,created_at,metadata_json)
         VALUES (?,?,?,?,?,?,?,?,'private',?,?)`).run(randomUUID(), runId, 'workbench_result', 'application/json', uri, hash, bytes.length, actor, now, JSON.stringify({ manifestHash }));

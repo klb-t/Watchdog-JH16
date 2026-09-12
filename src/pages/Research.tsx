@@ -1,3 +1,4 @@
+import { PaperOperations } from '../components/PaperOperations';
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { automationApi as api, formClass, buttonClass, sectionClass } from '../lib/automation_client';
@@ -18,6 +19,7 @@ function ResearchContent() {
   const [raw,setRaw] = useState(''), [format,setFormat] = useState<'json'|'csv'>('json'), [goal,setGoal] = useState(''), [plan,setPlan] = useState(''), [expected,setExpected] = useState('');
   const [selected,setSelected] = useState<any>(null), [trial,setTrial] = useState<any>(null), [substitution,setSubstitution] = useState<SubstitutionInput|null>(null), [openedSource,setOpenedSource]=useState<any>(null);
   const [trials,setTrials]=useState<any[]>([]);
+  const [operationDocument,setOperationDocument]=useState<string|undefined>();
   useEffect(()=>{setExpected('');},[selected?.id]);
   const refresh = async () => setData(await api('/api/research'));
   useEffect(() => { let active=true; setData(null); setSelected(null); setTrial(null);
@@ -37,10 +39,10 @@ function ResearchContent() {
   const saveResult = () => { const blob=new Blob([JSON.stringify(trial,null,2)],{type:'application/json'}), url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='watchdog-extraction.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),0); };
   return <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-5" data-testid="research-page">
     <header><h1 className="text-2xl font-semibold">Warsztat replikacji</h1><p className="text-slate-600 mt-2">Publikacja → metodologia i potrzebne dane → jawne warianty → sprawdzony ekstraktor.</p></header>
-    <div className="flex flex-wrap gap-3"><button className={buttonClass} onClick={()=>setTab('papers')}>Prace i warianty</button><button className={buttonClass} onClick={()=>setTab('extractors')}>Ekstraktory danych</button><button className="underline" onClick={()=>act(async()=>{},'Odświeżono.')}>Odśwież kolejkę</button></div>
+    <div className="flex flex-wrap gap-3"><button className={buttonClass} onClick={()=>setTab('papers')}>Prace i warianty</button><button className={buttonClass} onClick={()=>setTab('extractors')}>Ekstraktory danych</button><button className={buttonClass} onClick={()=>setTab('operations')}>Analizy prac</button><button className="underline" onClick={()=>act(async()=>{},'Odświeżono.')}>Odśwież kolejkę</button></div>
     {error && <p role="alert" className="bg-red-50 text-red-800 p-3 break-words">{error}</p>}{notice && <p role="status">{notice}</p>}
     {activeJobs && <p className="text-sm" role="status">Ocena oczekuje lub trwa. Stan odświeża się automatycznie. <Link to="/automation" className="underline">Otwórz kolejkę, aby wstrzymać zadanie</Link>.</p>}
-    {tab==='papers' ? <>
+    {tab==='operations' ? <PaperOperations key={operationDocument??'catalog'} documents={data?.documents??[]} assessments={data?.assessments??[]} substitutions={data?.substitutions??[]} initialDocumentId={operationDocument}/> : tab==='papers' ? <>
       {params.get('discovery') && <div className={sectionClass}><p>Wybrana praca z przeglądu literatury. Jej abstrakt zachowa oznaczenie niepełnego tekstu.</p><button className={buttonClass} disabled={busy} onClick={()=>act(()=>api('/api/research/papers/discovery',{id:params.get('discovery')}))}>Dodaj odkrytą pracę do warsztatu</button></div>}
       <section className={sectionClass}><h2 className="font-semibold">Dodaj pracę z dowolnej dziedziny</h2>
         <div className="grid sm:grid-cols-2 gap-3"><label>Tytuł<input className={formClass} value={paper.title} onChange={e=>setPaper({...paper,title:e.target.value})}/></label><label>Źródło / DOI / identyfikator<input className={formClass} value={paper.source} onChange={e=>setPaper({...paper,source:e.target.value})}/></label></div>
@@ -59,6 +61,7 @@ function ResearchContent() {
           {openedSource?.id===d.id && <details open><summary>Tekst źródłowy · {d.characterCount} znaków</summary><p className="text-xs break-all">SHA-256 wersji: {openedSource.hash}</p><pre className="text-sm whitespace-pre-wrap break-words max-h-80 overflow-auto">{openedSource.body.text}</pre>
             {openedSource.origins?.map((o:any)=><p key={o.hash} className="text-xs break-all"><a className="underline" href={`/api/memory/receipts/${o.receiptId}/raw`}>Pobierz oryginalną odpowiedź źródła literatury</a> · wersja odkrycia: {o.discoveryHash}</p>)}
           </details>}
+          {d.body.coverage!=='identifier_only' && <button className={buttonClass} onClick={()=>{setOperationDocument(d.id);setTab('operations');}}>Powiąż operację z danymi bez LLM</button>}
           <button className={buttonClass} disabled={busy||d.body.coverage==='identifier_only'||!access.capabilities.includes('run.create')||data.assessments.some((a:any)=>a.documentId===d.id&&a.status!=='FAILED')||data.jobs.some((j:any)=>j.request.documentId===d.id&&['QUEUED','RUNNING'].includes(j.status))} onClick={()=>act(()=>api(`/api/research/papers/${d.id}/assess`,{consent:true,retryFailed:data.assessments.some((a:any)=>a.documentId===d.id&&a.status==='FAILED')}),'Ocena dodana do kolejki. Korzysta z Twojego LLM i jego limitu kosztów.')}>Oceń metodologię w ramach mojego budżetu</button>
           {data.assessments.filter((a:any)=>a.documentId===d.id).map((a:any)=><div key={a.id} className="bg-slate-50 p-3 rounded space-y-2 text-sm"><p className="font-semibold">{a.status} · {a.body?.replicability??'próba w toku lub przerwana'}</p>
             {a.body?.error && <p>Próba nie została ukończona. Możesz ponowić ją po sprawdzeniu <Link to="/setup" className="underline">konfiguracji i budżetu LLM</Link>. Poprzednia próba pozostaje w historii.</p>}

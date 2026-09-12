@@ -464,3 +464,58 @@ test('source-copy browser: explicit column form to reviewed statistics and porta
     assert.deepEqual(errors, []);
   } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); fs.rmSync(publication, { recursive: true, force: true }); }
 });
+
+test('E5.8e: a paper quote binds real source columns to an approved operation, survives reload and exports a verifiable context',async()=>{
+  const errors:string[]=[],onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  const publication=fs.mkdtempSync('/tmp/watchdog-paper-ui-');
+  try {
+    const call=async(route:string,body:unknown)=>{const r=await fetch(baseUrl+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.ok(r.ok,await r.clone().text());return r.json();};
+    const {testDataset}=await import('../helpers/workbench');
+    const document=testDataset();document.key='paper-browser-fixture';document.name='Fictional paper browser inputs';
+    const {record}=await call('/api/workbench/datasets',document);
+    await call(`/api/workbench/datasets/${record.id}/approve`,{expectedHash:record.contentHash,shareAggregate:false});
+    const quote='Pearson correlation compared scores and counts.';
+    const {document:paper}=await call('/api/research/papers',{title:'Fictional paper browser methods',source:'https://example.org/paper-browser-fixture',text:`Software fixture. ${quote} This is not a real study.`,coverage:'excerpt',language:'en',geography:[]});
+    await page.goto(baseUrl+'/research');await page.getByRole('button',{name:'Analizy prac',exact:true}).click();
+    await page.getByLabel('Praca i sposób wskazania metody',{exact:true}).selectOption(`paper:${paper.id}`);
+    await page.getByText('Zapisany tekst pracy · excerpt',{exact:true}).waitFor();
+    await page.getByLabel('Dokładny cytat opisujący operację',{exact:true}).fill(quote);
+    await page.getByLabel('Operacja statystyczna',{exact:true}).selectOption('pearson');
+    await page.getByLabel('Zatwierdzony zbiór danych',{exact:true}).selectOption(record.id);
+    await page.getByLabel('Kolumna A',{exact:true}).selectOption('interest');await page.getByLabel('Kolumna B',{exact:true}).selectOption('mentions');
+    for(const key of ['A','B']) {
+      await page.getByLabel(`Pochodzenie danych ${key}`,{exact:true}).selectOption('synthetic_scenario');
+      await page.getByLabel(`Co reprezentuje kolumna ${key} i jakie ma ograniczenia?`,{exact:true}).fill('Synthetic software test values; not real observations.');
+    }
+    assert.equal(await page.getByLabel('Postępowanie z brakami',{exact:true}).inputValue(),'exclude');
+    await page.getByLabel('Zakres analizy i odstępstwa od pracy',{exact:true}).fill('Selected association only; expert panel and full study design are outside this test.');
+    await page.setViewportSize({width:390,height:844});await page.getByLabel('Dokładny cytat opisujący operację',{exact:true}).scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}));assert.ok(layout.scroll<=layout.width+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/paper-operation-mobile.png',fullPage:false});
+    await page.getByRole('button',{name:'Przygotuj plan analizy pracy',exact:true}).click();
+    await page.locator('[data-testid="paper-operation-review"]').waitFor();
+    const id=await page.getByLabel('Zapisany plan',{exact:true}).inputValue();assert.ok(id);
+    assert.ok(await page.getByRole('button',{name:'Zatwierdź metodę tej analizy',exact:true}).isDisabled());
+    assert.equal(await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).count(),0);
+    await page.getByLabel('Sprawdziłem cytat, interpretację, dane i tę specyfikację.',{exact:true}).check();
+    await page.getByRole('button',{name:'Zatwierdź metodę tej analizy',exact:true}).click();
+    await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).click();
+    await page.locator('[data-testid="paper-operation-result"]').waitFor();
+    assert.match((await page.locator('[data-testid="paper-operation-result"]').textContent())!,/SIMULATION_NOT_EMPIRICAL_EVIDENCE/);
+    await page.setViewportSize({width:1280,height:900});await page.locator('[data-testid="paper-operation-result"]').scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/paper-operation-result-desktop.png',fullPage:false});
+    await page.reload();await page.getByRole('button',{name:'Analizy prac',exact:true}).click();
+    await page.getByLabel('Zapisany plan',{exact:true}).selectOption(id);
+    await page.getByRole('button',{name:'Pokaż zapisany wynik',exact:true}).click();await page.locator('[data-testid="paper-operation-result"]').waitFor();
+    const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'Pobierz pakiet z publikacją',exact:true}).click();
+    const file=await downloading;await file.saveAs('test-artifacts/paper-operation-package.zip');
+    const entries=readZip(fs.readFileSync((await file.path())!));
+    const binding=JSON.parse(entries.find(e=>e.name==='research/paper-binding.json')!.content.toString());assert.equal(binding.body.document.hash,paper.hash);assert.equal(binding.body.anchor.quote,quote);
+    const result=JSON.parse(entries.find(e=>e.name==='analysis/result.json')!.content.toString());assert.equal(result.artifact.results[0].valueNumeric,1);assert.equal(result.artifact.results[0].statisticMetadata.n,4);
+    assert.equal(result.paperBinding.hash,binding.hash);assert.equal(binding.body.replicability,'NOT_YET_ESTABLISHED');
+    for(const e of entries){const f=path.join(publication,e.name);fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,e.content);}
+    const manifest=JSON.parse(entries.find(e=>e.name==='package-manifest.json')!.content.toString());
+    fs.writeFileSync('test-artifacts/paper-operation-verification.txt',execFileSync(process.execPath,[path.join(publication,'verify.mjs'),publication,canonicalHash(manifest)],{encoding:'utf8'}));
+    assert.deepEqual(errors,[]);
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
+});

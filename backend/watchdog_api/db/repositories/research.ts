@@ -76,6 +76,12 @@ export class ResearchRepository {
     this.db.prepare('INSERT OR IGNORE INTO research_substitutions VALUES (?,?,?,?,?)').run(id, owner, hash, JSON.stringify(body), new Date().toISOString());
     this.audit(owner, 'paper.substitution.propose', id, { hash, meaning }); return { id, hash, body };
   }
+  substitutionRecord(owner: string, id: string) {
+    const r = this.db.prepare('SELECT * FROM research_substitutions WHERE owner_principal_id=? AND id=?').get(owner,id) as any;
+    if (!r) return null; const body=JSON.parse(r.body_json);
+    if(canonicalHash(body)!==r.content_hash)throw new AutomationError('Substitution integrity mismatch');
+    return {id:r.id,hash:r.content_hash,body};
+  }
   substitutions(owner: string) { return (this.db.prepare('SELECT * FROM research_substitutions WHERE owner_principal_id=? ORDER BY created_at DESC,id LIMIT 200').all(owner) as any[]).map(r => {
     const body=JSON.parse(r.body_json); if(canonicalHash(body)!==r.content_hash)throw new AutomationError('Substitution integrity mismatch');
     return { id:r.id,hash:r.content_hash,body };

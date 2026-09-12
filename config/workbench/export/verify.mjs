@@ -101,6 +101,45 @@ try {
     const columnNames = method.steps[0].primitive === 'describe' ? [figure.channels.y] : [figure.channels.x, figure.channels.y];
     const selection = { datasetHash: figure.datasetHash, columns: columnNames, filters: figure.filters, selectedIds: [...new Set(figure.selectedIds)].sort(), time: figure.channels.time, timeValue: figure.timeValue };
     check(method.assumptions.includes(`selection_sha256=${hash(selection)}`), 'Figure and method selections disagree.');
+    const paperReferences = method.assumptions.filter(a => a.startsWith('paper_binding_sha256='));
+    if (result.paperBinding || paperReferences.length) {
+      const binding = json('research/paper-binding.json'), b = binding.body;
+      check(hash(binding) === hash(result.paperBinding) && hash(b) === binding.hash, 'Paper context identity mismatch.');
+      check(paperReferences.length === 1 && paperReferences[0] === `paper_binding_sha256=${binding.hash}`, 'Method does not pin the exact paper context.');
+      check(binding.methodId === result.methodId && b.version === 'paper-operation-1' && b.replicability === 'NOT_YET_ESTABLISHED' && b.scope === 'selected_operation_all_dataset_rows' && b.originsVerified === false, 'Unsupported paper analysis scope.');
+      check(b.datasetId === figure.datasetId && b.datasetHash === figure.datasetHash, 'Paper dataset mismatch.');
+      check(hash(b.document.body) === b.document.hash, 'Paper document mismatch.');
+      check(Number.isInteger(b.excerptCharacters) && b.excerptCharacters > 0 && b.excerptCharacters <= b.document.body.text.length, 'Invalid paper excerpt length.');
+      const excerpt = b.document.body.text.slice(0, b.excerptCharacters), anchor = b.anchor;
+      check(anchor.quote.length > 0 && sha(excerpt) === anchor.textHash && excerpt.indexOf(anchor.quote) === anchor.startUtf16 && anchor.endUtf16 === anchor.startUtf16 + anchor.quote.length && excerpt.indexOf(anchor.quote, anchor.startUtf16 + 1) === -1, 'Paper quote does not match its unique source span.');
+      if (b.source.kind === 'assessment_operation') {
+        const a = b.assessment, operation = a?.body?.assessment?.operations[b.source.operationIndex];
+        check(a && a.id === b.source.assessmentId && a.hash === b.source.assessmentHash && hash(a.body) === a.hash && a.documentId === b.document.id && a.body.documentHash === b.document.hash && a.body.excerptHash === hash(excerpt) && a.body.excerptCharacters === b.excerptCharacters, 'Assessment source mismatch.');
+        check(operation && operation.name === b.method && hash(operation.anchor) === hash(anchor), 'Assessment operation mismatch.');
+        check(hash(b.otherOperations) === hash(a.body.assessment.operations.filter((_,i) => i !== b.source.operationIndex)) && hash(b.ambiguities) === hash(a.body.assessment.ambiguities), 'Omitted paper limitations.');
+        check(hash(b.unboundRequirements) === hash(a.body.assessment.dataRequirements.filter(r => !b.bindings.some(v => v.requirementId === r.id))), 'Omitted unbound requirements.');
+      } else check(b.source.kind === 'manual_quote' && b.source.documentId === b.document.id && b.source.documentHash === b.document.hash && b.source.quote === anchor.quote && b.excerptCharacters === b.document.body.text.length && b.assessment === null, 'Manual paper source mismatch.');
+      const { contentHash: uiHash, ...uiProfile } = b.profile;
+      check(hash(uiProfile) === uiHash, 'Paper UI profile mismatch.');
+      check(['describe','pearson','spearman'].includes(b.method) && method.steps.length === 1 && method.steps[0].primitive === b.method && method.steps[0].missingPolicy === b.missingPolicy, 'Paper operation or missing policy mismatch.');
+      check(figure.filters.length === 0 && figure.selectedIds.length === 0 && figure.channels.time === null && figure.timeValue === null, 'Paper scope requires all dataset rows.');
+      check(b.bindings.length === columnNames.length && inputs.length === b.bindings.length, 'Paper input count mismatch.');
+      const rawHash = dataset.sourceCopy?.rawHash ?? (dataset.rawInput ? sha(dataset.rawInput.text) : null);
+      for (let i=0; i<b.bindings.length; i++) {
+        const v=b.bindings[i], column=dataset.columns.find(c=>c.key===v.column), input=inputs[i];
+        check(v.role === (i===0?'a':'b') && v.column === columnNames[i] && column && hash(column) === hash(v.columnDefinition), 'Paper column binding mismatch.');
+        check(input.name === v.role && input.unit === column.unit && input.semanticType === column.semanticType && hash(input.entityIds) === hash(dataset.rows.map(r=>r.id)) && hash(input.values) === hash(dataset.rows.map(r=>r.values[v.column])), 'Paper inputs do not reproduce the declared source columns.');
+        if (v.substitution) {
+          const sub=v.substitution;
+          check(hash(sub.body) === sub.hash && sub.body.assessmentId === b.assessment?.id && sub.body.assessmentHash === b.assessment?.hash && sub.body.requirementId === v.requirementId && sub.body.kind === v.origin, 'Paper substitution mismatch.');
+          check(v.sourceFileVerified === !!sub.body.sourceHash && (!sub.body.sourceHash || sub.body.sourceHash === rawHash), 'Substitution raw file hash mismatch.');
+        }
+      }
+      const origins=b.bindings.map(v=>v.origin);
+      const meaning=origins.includes('synthetic_scenario')?'SIMULATION_NOT_EMPIRICAL_EVIDENCE':origins.every(o=>o==='original_data_reuse')?'REANALYSIS_NOT_INDEPENDENT_REPLICATION':origins.some(o=>['prior_dataset','proxy_measure','new_expert_panel'].includes(o))?'EXPLORATORY_METHOD_VARIANT':'SCOPED_ANALYSIS_NOT_REPLICATION';
+      check(b.meaning === meaning && hash(b.evidenceTiers) === hash([...new Set(dataset.rows.map(r=>r.evidenceTier))]), 'Paper interpretation or evidence tiers changed.');
+    } else check(!names.has('research/paper-binding.json'), 'Unexpected paper context.');
+
   } else check(manifest.identity.resultHash === null && manifest.identity.analysisManifestHash === null, 'Unexpected analysis reference.');
   console.log(`Verified ${names.size} files and linked figure/data/profile/geometry/analysis identities.\nPackage manifest SHA-256: ${packageHash}`);
   console.log(process.argv[3] ? 'Matches the independently supplied manifest hash.' : 'No independent hash supplied: internal consistency checked, not authorship.');

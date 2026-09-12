@@ -1,3 +1,6 @@
+import { randomUUID } from 'node:crypto';
+import { tracer } from '../utils/tracer';
+import { PaperOperationService, loadPaperOperationProfile } from '../services/paper_operations';
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
 import { requireCapability } from './auth_routes';
@@ -15,11 +18,29 @@ import { loadExtractionDatasetProfile } from '../config/extraction_dataset';
 const route = (fn: (req: Request,res: Response) => unknown) => (req: Request,res: Response,next: NextFunction) => {
   Promise.resolve().then(() => fn(req,res)).catch(e => e instanceof AutomationError || e instanceof WorkbenchError ? res.status(e.status).json({ error: e.code, message: e.message }) : next(e));
 };
-export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntakeService, extraction: ExtractionWorkshop, automation: AutomationRepository, worker: AutomationService, datasets?:ExtractionDatasetService) {
+export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntakeService, extraction: ExtractionWorkshop, automation: AutomationRepository, worker: AutomationService, datasets?:ExtractionDatasetService, operations?:PaperOperationService) {
   const router = Router(); router.use(requireCapability('method.propose')); router.use(sameOriginMutation);
   router.use((_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
   router.get('/', route((req,res) => res.json({ datasetProfile: loadExtractionDatasetProfile(), documents: repo.documents(req.principal!.id).map(d=>({ ...d, body:{...d.body,text:undefined}, characterCount:d.body.text.length })), assessments: repo.assessments(req.principal!.id),
     substitutions: repo.substitutions(req.principal!.id), extractors: repo.extractors(req.principal!.id), jobs:automation.jobs(req.principal!.id).filter(j=>j.request.kind==='paper_review') })));
+  const op = () => { if (!operations) throw new WorkbenchError('Paper operations are not configured.', 503); return operations; };
+  router.get('/operations', route((req,res) => res.json({profile:loadPaperOperationProfile(),operations:op().list(req.principal!.id)})));
+  router.get('/operations/:id', route((req,res) => res.json({operation:op().get(req.principal!.id,req.params.id)})));
+  router.post('/operations',requireCapability('workbench.analyze'),route(async(req,res)=>res.status(201).json({operation:await op().prepare(req.principal!.id,req.body,tracer.getContext()?.request_id??randomUUID())})));
+  router.post('/operations/:id/approve',requireCapability('method.approve'),route(async(req,res)=>{
+    const b=z.object({expectedHash:z.string(),methodHash:z.string()}).strict().parse(req.body);
+    res.json({operation:await op().approve(req.principal!.id,req.params.id,b.expectedHash,b.methodHash,tracer.getContext()?.request_id??randomUUID())});
+  }));
+  router.post('/operations/:id/execute',requireCapability('workbench.analyze'),route(async(req,res)=>{
+    const b=z.object({expectedHash:z.string()}).strict().parse(req.body);
+    res.json({result:await op().execute(req.principal!.id,req.params.id,b.expectedHash,tracer.getContext()?.request_id??randomUUID())});
+  }));
+  router.get('/operations/:id/runs/:runId',route(async(req,res)=>res.json(await op().result(req.principal!.id,req.params.id,req.params.runId))));
+  router.get('/operations/:id/runs/:runId/export',route(async(req,res)=>{
+    const bundle=await op().export(req.principal!.id,req.params.id,req.params.runId);
+    res.setHeader('X-Package-Manifest-SHA256',bundle.manifestHash);res.setHeader('X-Package-SHA256',bundle.sha256);
+    res.attachment('watchdog-paper-analysis.zip').type('application/zip').send(bundle.bytes);
+  }));
   router.post('/papers', route((req,res) => res.status(201).json({ document: repo.saveDocument(req.principal!.id,req.body) })));
   router.get('/papers/:id', route((req,res) => { const document=repo.document(req.principal!.id,req.params.id);if(!document)throw new AutomationError('Document not found',404);res.json({document}); }));
   router.post('/papers/discovery', route((req,res) => { const b = z.object({ id: z.string() }).strict().parse(req.body); res.status(201).json({ document: paper.intakeDiscovery(req.principal!.id,b.id) }); }));

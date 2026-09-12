@@ -1,3 +1,5 @@
+import { PaperOperationService } from './backend/watchdog_api/services/paper_operations';
+import { PaperOperationsRepository } from './backend/watchdog_api/db/repositories/paper_operations';
 import express from 'express';
 import { buildDiagnosticRouter } from './backend/watchdog_api/api/diagnostic_routes';
 import { AuditRepository } from './backend/watchdog_api/db/repositories/audit';
@@ -86,7 +88,8 @@ export async function configureApp() {
   const fieldService = new FieldService(fieldRepository, loadFieldProfile());
   app.use('/api/field', buildFieldRouter(fieldRepository, fieldService));
   const workbench = new WorkbenchRepository(sqlite, store);
-  app.use('/api/workbench', buildWorkbenchRouter(workbench, new WorkbenchService(workbench, loadWorkbenchProfile())));
+  const workbenchService = new WorkbenchService(workbench, loadWorkbenchProfile());
+  app.use('/api/workbench', buildWorkbenchRouter(workbench, workbenchService));
   const automationRepository = new AutomationRepository(sqlite, store);
   const automation = new AutomationService(automationRepository, loadAutomationProfile());
   const settings = new SettingsRepository(sqlite, store), assistantProfile = loadAssistantProfile();
@@ -97,7 +100,7 @@ export async function configureApp() {
     new RunOrchestrator(db, store, (id, owner, personal) => search.resolve(id, owner, personal)), new MethodSpecRepository(db), vault);
   automation.handlers.set('catalog_refresh', async (job, checkpoint) => { checkpoint(); const catalog = await assistant.refreshCatalog(job.ownerId, 'openrouter'); checkpoint(); return { requests: 1, catalogHash: catalog.hash, models: catalog.models.length }; });
   automation.handlers.set('paper_review', (job, checkpoint) => papers.reviewJob(job,checkpoint));
-  app.use('/api/research', buildResearchRouter(research, papers, extraction, automationRepository, automation,new ExtractionDatasetService(research,workbench)));
+  app.use('/api/research', buildResearchRouter(research, papers, extraction, automationRepository, automation,new ExtractionDatasetService(research,workbench),new PaperOperationService(new PaperOperationsRepository(sqlite),research,workbenchService)));
   app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans));
   app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
   app.use('/api/memory', buildMemoryRouter(automationRepository));

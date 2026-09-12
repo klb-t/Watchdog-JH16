@@ -173,3 +173,10 @@ executable-method compilation, automatic arbitrary replication, discovery/confir
 partitions, comparison-family correction, hypothesis prioritization, project evidence graphs,
 paper drafting and sandboxed generated modules remain open. Existing JH16 and workbench
 execution are available independently; their results are not implied by a paper assessment.
+
+## Execute a source-linked operation
+
+The **Analizy prac** tab now connects a saved source quote or assessment operation to an
+approved dataset, reviewed method, deterministic execution and a verifiable publication
+package. It supports a selected describe/Pearson/Spearman operation, preserving unresolved
+requirements and explicit data substitutions. See [the step-by-step guide](PAPER_ANALYSES.md).

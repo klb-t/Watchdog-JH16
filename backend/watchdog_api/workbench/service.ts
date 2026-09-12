@@ -1,5 +1,5 @@
 import { canonicalHash } from '../domain/canonical';
-import type { MethodSpec, TypedSeries, SemanticType } from '../domain/method_spec';
+import type { MethodSpec, TypedSeries, SemanticType, MissingPolicy } from '../domain/method_spec';
 import { TypeScriptMethodExecutor } from '../analysis/executor';
 import { assertValidMethodSpec } from '../analysis/method_spec_validation';
 import { WorkbenchRepository, WorkbenchError } from '../db/repositories/workbench';
@@ -18,7 +18,7 @@ export class WorkbenchService {
     checkFigureProfile(figure, profile);
     return profile;
   }
-  async prepare(actor: string, figure: FigureSpec, method: string, requestId: string) {
+  async prepare(actor: string, figure: FigureSpec, method: string, requestId: string, context?: { assumptions: string[]; rationale: string; missingPolicy: MissingPolicy }) {
     const profile = this.profileForFigure(figure);
     const { record, spec: f } = await this.repo.requireFigure(figure, actor);
     if (!['describe', 'pearson', 'spearman'].includes(method) || !profile.methods.some(m => m.id === method)) throw new WorkbenchError('Unknown method profile.');
@@ -29,11 +29,12 @@ export class WorkbenchService {
     const inputs = columns.map((c, i) => ({ name: i === 0 ? 'a' : 'b', unit: c.unit!, semanticType: c.semanticType as SemanticType }));
     const selection = { ...f, analysis: null }; // Exact filters/selection are pinned; styling is not an analysis input.
     const methodSpec: MethodSpec = { specVersion: '1.0', name: `${method} / ${record.document.name}`, inputs,
-      steps: [{ id: 'statistic', primitive: method, inputs: method === 'describe' ? { series: 'a' } : { x: 'a', y: 'b' }, params: {}, missingPolicy: method === 'describe' ? 'propagate' : 'exclude',
-        rationale: profile.methods.find(m => m.id === method)!.description }],
+      steps: [{ id: 'statistic', primitive: method, inputs: method === 'describe' ? { series: 'a' } : { x: 'a', y: 'b' }, params: {}, missingPolicy: context?.missingPolicy ?? (method === 'describe' ? 'propagate' : 'exclude'),
+        rationale: context?.rationale ?? profile.methods.find(m => m.id === method)!.description }],
       outputs: [{ name: method, unit: method === 'describe' ? columns[0].unit! : 'dimensionless', semanticType: method === 'describe' ? inputs[0].semanticType : 'coefficient', fromStep: 'statistic' }],
       assumptions: [`dataset_id=${record.id}`, `dataset_sha256=${record.contentHash}`, `selection_sha256=${canonicalHash(selectionIdentity(f, names))}`,
         `comparison_scope=${record.document.comparisonScope}`, `normalization=${record.document.normalization}`,
+        ...(context?.assumptions ?? []),
         'Exploratory description or association only. This does not establish causation, population prevalence or distribution routes.'] };
     assertValidMethodSpec(methodSpec);
     return this.repo.proposeMethod(actor, record.id, methodSpec, { figure: selection, columns: names }, requestId);
@@ -43,6 +44,7 @@ export class WorkbenchService {
     if (!method || method.approvalState !== 'APPROVED') throw new WorkbenchError('An individually approved method is required.', 409);
     const { record, spec: figure } = await this.repo.requireFigure(method.selection.figure, actor);
     const profile = this.profileForFigure(figure);
+    const paperBinding = this.repo.paperBinding(actor, method.id);
     const runId = this.repo.createRun(actor, { methodId, methodHash: method.hash, datasetHash: record.contentHash, selection: method.selection });
     return tracer.runWithSpan('workbench', 'analysis', async () => {
       try {
@@ -61,7 +63,7 @@ export class WorkbenchService {
         this.repo.transitionRun(runId, 'EXPORTING');
         const result = { version: 'workbench-result-1', runId, datasetHash: record.contentHash, methodId, methodHash: method.hash,
           selection: method.selection, methodSpec: method.spec, inputs: series, source: record.document.source, comparisonScope: record.document.comparisonScope,
-          profile,
+          profile, ...(paperBinding ? { paperBinding } : {}),
           artifact, inputHash: canonicalHash(series), inputRowIds: rows.map(r => r.id), traceId: tracer.getContext()?.trace_id };
         const saved = await this.repo.persistResult(runId, actor, result);
         this.repo.transitionRun(runId, 'COMPLETED'); this.repo.audit(actor, 'workbench.analysis', runId, requestId, { resultHash: saved.hash, methodHash: method.hash });

@@ -369,3 +369,55 @@ captures the template controls at 390 px. Its outcome will be checked on the new
 
 Pre-push verification: **307/307 local tests passed**, zero failures/skips, with clean
 type checking and production build. CI must validate the new browser template interactions.
+
+
+Published E5.8d head `e607a3c9eaff1a92ca48298f77d01b9c63580c7e` passed Actions
+`34678349652`: **322/322 tests**, zero failures/skips, Chromium, build and JH16 demo.
+The 41-file browser artifact matched SHA-256
+`1ced1c48f4adaee92c21a9cdb80e2df3ce58f3cc7465ae2b9826d4fc3c4860bf`.
+The 390px mapping/template controls were inspected and the offline package verified.
+
+## E5.8e — source-linked paper operations
+
+Research now has a keyless vertical flow: a saved paper -> exact unique quote or saved
+assessment operation -> approved numeric source columns with explicit units, origins and
+interpretations -> immutable proposed method -> individual hash-bound approval -> actual
+executor result -> persisted history -> publication ZIP. The presentation profile is
+validated against the registered executor policies and archived in the context.
+
+The bounded operation set is describe, Pearson and Spearman. A plan covers all rows of one
+approved dataset, with the registered missingness policy chosen explicitly. Assessment
+operations retain their exact excerpt anchors (UTF-16 offsets plus UTF-8 text hash), even
+when a quote repeats outside the assessed excerpt. Unsupported operations cannot be silently
+substituted. Scope/deviation notes, unbound data requirements, other operations and source
+ambiguities remain attached. User-declared origins are not promoted into verified provenance.
+Reused original data are reanalysis, synthetic inputs are simulation, alternatives are
+exploratory variants. None establishes complete or independent replication.
+
+A saved substitution must match the owned assessment, requirement, declared origin and exact
+version. When its source file hash is supplied, it must match the preserved raw file, not a
+hash of the normalized DatasetDocument. Existing evidence tiers remain independent of origin
+labels and human method approval. The optional LLM assessment is still only a proposal.
+
+Migration 015 stores immutable owned paper-operation contexts; published migrations remain
+unchanged. The exact context hash is in MethodSpec assumptions. Generic workbench execution
+and export preserve paper context and enforce paper ownership even for a shared aggregate
+input dataset. Current dataset and method approval are rechecked after asynchronous storage
+before finalizing a result, and after loading a historical result. A revoked approval causes
+a failed run with no finalized artifact, manifest or numeric result rows.
+
+The portable verifier now checks linked paper/document/assessment/substitution identities,
+source quote offsets, column definitions, all copied numeric inputs, missing policies and
+scope labels. Exports include the full submitted text and source datasets; the UI explains
+this before download. Source-linked SVG captions identify the selected-operation scope.
+Tests recalculate through the real executor and reject rehashed numeric input substitutions.
+The general prose-to-JH16 compiler and arbitrary whole-paper replication remain open.
+
+A test isolation fault exposed during full validation was corrected: the diagnostics test
+suite now cleans only its own temporary log directory, preventing interference with sibling
+tests or application logs. No production trace behavior was changed.
+
+Pre-push regression: **316/316 local unit/contract/scientific/integration tests passed**,
+zero failures/skips; type checking and production build passed. The added browser scenario
+will be checked on the exact published head, with mobile/desktop captures and offline ZIP
+verification retained in the CI artifact.
