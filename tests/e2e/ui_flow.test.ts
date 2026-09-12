@@ -517,5 +517,8 @@ test('E5.8e: a paper quote binds real source columns to an approved operation, s
     const manifest=JSON.parse(entries.find(e=>e.name==='package-manifest.json')!.content.toString());
     fs.writeFileSync('test-artifacts/paper-operation-verification.txt',execFileSync(process.execPath,[path.join(publication,'verify.mjs'),publication,canonicalHash(manifest)],{encoding:'utf8'}));
     assert.deepEqual(errors,[]);
+  }catch(error){
+    fs.writeFileSync('test-artifacts/paper-operation-failure.json',JSON.stringify({message:String(error),pageErrors:errors,url:page.url(),body:await page.locator('body').innerText()},null,2));
+    await page.screenshot({path:'test-artifacts/paper-operation-failure.png',fullPage:false});throw error;
   }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
 });

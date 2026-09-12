@@ -421,3 +421,10 @@ Pre-push regression: **316/316 local unit/contract/scientific/integration tests 
 zero failures/skips; type checking and production build passed. The added browser scenario
 will be checked on the exact published head, with mobile/desktop captures and offline ZIP
 verification retained in the CI artifact.
+
+
+First E5.8e CI run `34706939744` on `57ad945` passed 331/332 tests. The new browser
+case stopped at exact label lookup on the source selector before executing the flow.
+Select controls now have explicit accessible names matching their visible captions;
+failure artifacts also retain the page state and browser errors for diagnosis. Follow-up
+CI must complete the new flow before this stage is reported as browser-verified.
