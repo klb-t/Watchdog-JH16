@@ -577,3 +577,11 @@ including unselected fields, accompany later publication. Export packages replay
 numeric conversion offline. Decimal precision loss is rejected; calculations remain binary64.
 This stage connects acquired values to existing statistics; it does not infer an executable
 method from a paper, generate missing observations or certify an independent replication.
+
+### E5.8d checkpoint — reusable mapping profiles
+
+Named private extraction mappings now survive repeated source imports as immutable templates.
+Reuse restores explicit settings for the exact parser; it never supplies old observations,
+citations, evidence classifications or approvals. Origin IDs/hashes and later mapping edits
+remain visible in provenance. The normal dataset/method review and numeric precision contract
+continue to apply. This is a saved workflow step, not autonomous arbitrary-paper execution.

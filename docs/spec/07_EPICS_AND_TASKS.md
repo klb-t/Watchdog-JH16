@@ -39,7 +39,11 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   units, missingness and evidence classification; raw-source/execution lineage checked
   during import, owned dataset deep link, existing method review and statistical executor.
   Publication ZIP replays exact copying and conversion without external dependencies.
-  Six integration tests pass; new browser coverage is verified separately in CI.
+  Published `9f5b38d`; CI `34663543418`: 319/319, including the complete browser flow.
+- [x] **E5.8d — Reusable extraction mapping templates.** Private immutable mapping snapshots
+  from successfully imported data, pinned parser/data origins, explicit reuse and an accurate
+  modification flag. No source values, citation, evidence tier or approval is copied from the
+  old dataset. Restart/ownership-transfer and precision/lineage tests pass; browser reuse added.
 
 ## E0 — Repository audit
 

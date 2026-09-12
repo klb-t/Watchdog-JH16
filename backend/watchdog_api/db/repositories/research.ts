@@ -4,6 +4,7 @@ import { canonicalHash } from '../../domain/canonical';
 import { AutomationError } from './automation';
 import { PaperInputSchema, SubstitutionSchema, CopyPlanSchema, type PaperDocument } from '../../../../shared/research';
 import { AuditRepository } from './audit';
+import { ExtractionMappingTemplateSchema,type ExtractionMappingTemplateRecord } from '../../../../shared/research_dataset';
 
 export class ResearchRepository {
   constructor(private readonly db: Database) {}
@@ -90,6 +91,26 @@ export class ResearchRepository {
     return { id, hash: r.content_hash, body, approvalState: r.approved_hash === r.content_hash ? 'APPROVED' : 'PROPOSED' };
   }
   extractors(owner: string) { return (this.db.prepare('SELECT id FROM extraction_candidates WHERE owner_principal_id=? ORDER BY created_at DESC,id LIMIT 100').all(owner) as any[]).map(r => this.extractor(owner, r.id)!); }
+  mappingTemplate(owner:string,id:string):ExtractionMappingTemplateRecord|null {
+    const row=this.db.prepare('SELECT * FROM extraction_mapping_templates WHERE owner_principal_id=? AND id=?').get(owner,id) as any;
+    if(!row)return null;const body=ExtractionMappingTemplateSchema.parse(JSON.parse(row.body_json));
+    if(canonicalHash(body)!==row.content_hash||body.candidateId!==row.candidate_id||body.sourceDatasetId!==row.source_dataset_id)throw new AutomationError('Mapping template integrity mismatch');
+    return {id:row.id,hash:row.content_hash,body,createdAt:row.created_at};
+  }
+  mappingTemplates(owner:string,candidateId:string) {
+    if(!this.extractor(owner,candidateId))throw new AutomationError('Owned extractor not found',404);
+    return (this.db.prepare('SELECT id FROM extraction_mapping_templates WHERE owner_principal_id=? AND candidate_id=? ORDER BY created_at DESC,id LIMIT 100').all(owner,candidateId) as {id:string}[]).map(r=>this.mappingTemplate(owner,r.id)!);
+  }
+  saveMappingTemplate(owner:string,input:unknown) {
+    const body=ExtractionMappingTemplateSchema.parse(input),candidate=this.extractor(owner,body.candidateId),trial=this.trial(owner,body.sourceTrialId);
+    const dataset=this.db.prepare('SELECT sha256 FROM datasets WHERE id=? AND owner_principal_id=?').get(body.sourceDatasetId,owner) as any;
+    if(!candidate||candidate.hash!==body.candidateHash||candidate.approvalState!=='APPROVED'||!dataset||dataset.sha256!==body.sourceDatasetHash||!trial||trial.hash!==body.sourceTrialHash||trial.candidateId!==candidate.id||trial.body.kind!=='EXECUTION')throw new AutomationError('Template requires its owned source dataset and activated parser execution');
+    const hash=canonicalHash(body),existing=this.db.prepare('SELECT id FROM extraction_mapping_templates WHERE owner_principal_id=? AND content_hash=?').get(owner,hash) as {id:string}|undefined;
+    if(existing)return this.mappingTemplate(owner,existing.id)!;
+    const id=canonicalHash({owner,hash});
+    this.db.prepare('INSERT INTO extraction_mapping_templates VALUES (?,?,?,?,?,?,?)').run(id,owner,candidate.id,body.sourceDatasetId,hash,JSON.stringify(body),new Date().toISOString());
+    this.audit(owner,'extraction.mapping_template.save',id,{hash,sourceDatasetHash:body.sourceDatasetHash});return this.mappingTemplate(owner,id)!;
+  }
   saveTrial(owner: string, candidateId: string, body: unknown) {
     if (!this.extractor(owner, candidateId)) throw new AutomationError('Extractor not found', 404);
     const hash = canonicalHash(body), id = randomUUID(); this.db.prepare('INSERT INTO extraction_trials VALUES (?,?,?,?,?,?)').run(id, owner, candidateId, JSON.stringify(body), hash, new Date().toISOString());

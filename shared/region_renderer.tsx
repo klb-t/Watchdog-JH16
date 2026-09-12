@@ -50,7 +50,7 @@ export function RegionCanvas({ record, spec, profile, geometry, standalone, svgR
     'One source observation per region and panel. Multiple rows remain ambiguous; no sum, mean or other aggregate is inferred.',
     'Selection highlights source rows; it does not hide observations or resolve an ambiguous join. Missing is not zero.',
     `Projection: equirectangular longitude/latitude (WGS84). Polygon area on the page is not a geographic area estimate.`,
-    `Data: ${record.document.source.publisher}; ${record.document.source.title}; retrieved ${record.document.source.retrievedAt}.`,
+    `Data: ${record.document.source.publisher}; ${record.document.source.title}; ${record.document.sourceCopy ? 'copied' : 'retrieved'} ${record.document.source.retrievedAt}.`,
     record.document.source.url,
     `Normalization: ${record.document.normalization}; comparison: ${record.document.comparisonScope}.`,
     `Boundaries: ${geometry.document.source.publisher}; ${geometry.document.name}; ${geometry.document.source.license}; retrieved ${geometry.document.source.retrievedAt}.`,

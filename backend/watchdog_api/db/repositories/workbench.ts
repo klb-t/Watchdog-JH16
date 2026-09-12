@@ -11,7 +11,7 @@ import { WorkbenchError } from './workbench_error';
 export { WorkbenchError } from './workbench_error';
 import { appendAudit } from './audit';
 import { ResearchRepository } from './research';
-import { verifyDatasetExtraction } from '../../workbench/extraction_data';
+import { verifyDatasetExtraction,datasetExtractionMapping } from '../../workbench/extraction_data';
 import type { MethodSpec, AnalysisArtifact, TypedSeries } from '../../domain/method_spec';
 import { assertTransition, type RunState } from '../../domain/run_state';
 
@@ -35,6 +35,9 @@ export class WorkbenchRepository {
     const doc = validateDataset(input), contentHash = canonicalHash(doc), id = `dataset-${contentHash}-${canonicalHash(actor).slice(0, 10)}`;
     const requireOwnedExtraction=()=>{if(!doc.sourceCopy)return;const ref=doc.sourceCopy,research=new ResearchRepository(this.db),trial=research.trial(actor,ref.trialId),candidate=research.extractor(actor,ref.candidateId);
       if(!trial||trial.hash!==ref.trialHash||trial.body.kind!=='EXECUTION'||!candidate||candidate.hash!==ref.candidateHash||candidate.approvalState!=='APPROVED'||trial.candidateId!==candidate.id||trial.body.candidateHash!==candidate.hash||trial.body.raw!==ref.raw||canonicalHash(candidate.body.plan)!==canonicalHash(ref.plan))throw new WorkbenchError('Dataset requires its owned, exact extraction execution and activated parser.',409);
+      if(ref.mappingTemplate){const t=research.mappingTemplate(actor,ref.mappingTemplate.id);
+        if(!t||t.hash!==ref.mappingTemplate.hash||t.body.candidateId!==candidate.id||t.body.candidateHash!==candidate.hash||ref.mappingTemplate.modified!==(canonicalHash(datasetExtractionMapping(doc))!==canonicalHash(t.body.mapping)))throw new WorkbenchError('Mapping template lineage or modification flag mismatch.',409);
+      }
     };
     requireOwnedExtraction();verifyDatasetExtraction(doc);
     const bytes = Buffer.from(canonicalizeJson(doc)), uri = await this.store.put(`raw/${contentHash}`, bytes);

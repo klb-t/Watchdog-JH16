@@ -52,7 +52,7 @@ export function FigureCanvas({ record, spec, profile, onSelect, onInspect, onMen
     ...(spec.style.legend ? [`Color: ${spec.channels.color ?? 'constant'}; size: ${spec.channels.size ?? 'constant'}; alpha: ${spec.channels.alpha ?? 'constant'}; opacity: ${spec.style.opacity}.`,
       ...(spec.channels.size ? [`Size: ${numericRange(spec.channels.size).join(' to ')} → 0.5 to 2 times marker radius.`] : []),
       ...(spec.channels.alpha ? [`Alpha: ${numericRange(spec.channels.alpha).join(' to ')} → 0.15 to 1 times display opacity.`] : [])] : []),
-    `Source: ${record.document.source.publisher}; ${record.document.source.title}; retrieved ${record.document.source.retrievedAt.slice(0, 10)}.`,
+    `Source: ${record.document.source.publisher}; ${record.document.source.title}; ${record.document.sourceCopy ? 'copied' : 'retrieved'} ${record.document.source.retrievedAt.slice(0, 10)}.`,
     `Normalization: ${record.document.normalization}; comparison: ${record.document.comparisonScope}.`,
     record.document.source.url,
     'Missing ≠ zero. Missing size/alpha uses a neutral mark with a dashed outline. Evidence tier, source mapping approval and quality flags are independent.',

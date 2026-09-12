@@ -37,6 +37,17 @@ export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntake
     if(!datasets)throw new AutomationError('Dataset handoff is not configured');
     res.status(201).json({record:await datasets.create(req.principal!.id,req.params.id,req.body)});
   }));
+  router.get('/trials/:id/templates',route((req,res)=>{
+    if(!datasets)throw new AutomationError('Dataset handoff is not configured');res.json({templates:datasets.templates(req.principal!.id,req.params.id)});
+  }));
+  router.post('/trials/:id/template',requireCapability('dataset.import'),route((req,res)=>{
+    const b=z.object({id:z.string().min(1),expectedHash:z.string()}).strict().parse(req.body);
+    if(!datasets)throw new AutomationError('Dataset handoff is not configured');res.json({template:datasets.applyTemplate(req.principal!.id,req.params.id,b.id,b.expectedHash)});
+  }));
+  router.post('/mapping-templates',requireCapability('dataset.import'),route(async(req,res)=>{
+    const b=z.object({datasetId:z.string().min(1),expectedHash:z.string(),name:z.string().trim().min(1).max(100)}).strict().parse(req.body);
+    if(!datasets)throw new AutomationError('Dataset handoff is not configured');res.status(201).json({template:await datasets.saveTemplate(req.principal!.id,b.datasetId,b.expectedHash,b.name)});
+  }));
   router.post('/extractors/propose', route(async (req,res) => {
     const b = z.object({ raw: z.string().max(2000000),format:z.enum(['json','csv']),goal:z.string().trim().min(1).max(2000),consent:z.literal(true) }).strict().parse(req.body);
     res.status(201).json({ extractor: await extraction.propose(req.principal!.id,b.raw,b.format,b.goal) });

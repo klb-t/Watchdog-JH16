@@ -20,6 +20,9 @@ owned dataset for review. Statistics reject missing units or nonnumeric semantic
 source files (including unselected fields) accompany later sharing and research ZIP exports.
 The standalone package verifier replays extraction and type conversion; see
 [Research workshop](RESEARCH_WORKSHOP.md#continue-from-copied-values-into-statistics).
+Saved extractor mapping templates reduce repeated column setup. They preserve settings and
+their version history; new source values, citations, evidence tiers and approvals stay separate.
+Figure source captions distinguish a copy execution date from a remote retrieval date.
 
 Repeated imports retain separate events while identical raw documents share one blob. Identical
 documents imported by two owners have distinct approval contexts. Only the owner can publish

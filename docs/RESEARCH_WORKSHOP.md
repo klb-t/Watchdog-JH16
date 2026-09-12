@@ -110,6 +110,27 @@ independently supplied package-manifest hash; internal consistency alone cannot 
 a replacement archive. Statistical results remain linked to their exact executor and inputs;
 the portable verifier does not itself rerun statistical calculations.
 
+## Reuse a mapping for subsequent files
+
+After creating a source-copy dataset, give its mapping a name and choose **Zapisz mapowanie
+jako szablon**. Templates are private, immutable versions tied to that exact activated parser
+and originating dataset/execution hashes. Saving the same named snapshot again deduplicates;
+another name or mapping creates a new version. They persist in SQLite and follow the supported
+local-to-account ownership transfer without changing their content hashes.
+
+For a later execution of the same parser, **Użyj wybranego szablonu** restores column names,
+types, units, missingness policy, measure, normalization, language meaning and comparison scope.
+Check that these settings still describe the new file. Templates exclude source observations,
+citation, evidence classification and approvals. The current file keeps its own source ID and
+raw values; a new dataset still needs its existing review. Applying is explicit and makes no
+model call. A different parser version or changed review hash is rejected.
+
+The new dataset records the template ID/hash and whether its mapping was subsequently edited.
+The backend derives this modification flag from the stored template and actual final mapping;
+it cannot be falsified through generic dataset import. The final mapping and raw source remain
+inside the publication package for replay. The template's origin reference describes where
+settings came from, not evidence that the new source has the same reliability or comparability.
+
 Limits: 2,000,000 source bytes, 10,000 output rows, 30 fields, 64 JSON levels and 100,000 nodes.
 Model structure discovery visits at most 500 paths and the first member of each array.
 The HTTP JSON body limit is 2 MiB including expected output and encoding, so practical input

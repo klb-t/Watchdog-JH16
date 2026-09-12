@@ -12,6 +12,7 @@ import { MIGRATION_010_AUTOMATION } from './010_automation';
 import { MIGRATION_011_PERSONAL_SETTINGS } from './011_personal_settings';
 import { MIGRATION_012_ASSISTANT_PROFILES } from './012_assistant_profiles';
 import { MIGRATION_013_RESEARCH_INTAKE } from './013_research_intake';
+import { MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES } from './014_extraction_mapping_templates';
 
 export interface Migration {
   readonly id: string;
@@ -36,7 +37,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '010_automation', sql: MIGRATION_010_AUTOMATION },
   { id: '011_personal_settings', sql: MIGRATION_011_PERSONAL_SETTINGS },
   { id: '012_assistant_profiles', sql: MIGRATION_012_ASSISTANT_PROFILES },
-  { id: '013_research_intake', sql: MIGRATION_013_RESEARCH_INTAKE }
+  { id: '013_research_intake', sql: MIGRATION_013_RESEARCH_INTAKE },
+  { id: '014_extraction_mapping_templates', sql: MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES }
 ];
 
 const MIGRATIONS_TABLE = `

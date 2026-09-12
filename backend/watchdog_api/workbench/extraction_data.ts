@@ -2,6 +2,12 @@ import { validateDataset,WorkbenchInputError,type DatasetDocument } from '../../
 import type { SourceCopy } from '../../../shared/source_copy';
 import { copySource } from '../sources/copy_plan';
 import { canonicalHash } from '../domain/canonical';
+import { extractionMapping } from '../../../shared/research_dataset';
+
+export function datasetExtractionMapping(doc:DatasetDocument) {
+  if(!doc.sourceCopy)throw new WorkbenchInputError('Source extraction lineage is required.');
+  return extractionMapping({...doc,columns:doc.columns.map(c=>({...c,...doc.sourceCopy!.mappings.find(m=>m.key===c.key)!}))});
+}
 
 /** Decimal equality ignores lexical exponent/trailing zeros but never rounds a
  * source decimal into a different decimal before binary64 analysis. */

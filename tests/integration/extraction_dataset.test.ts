@@ -33,6 +33,7 @@ import { defaultFigure } from '../../shared/workbench';
 import type { ExtractionDatasetInput } from '../../shared/research_dataset';
 import type { CopyPlan } from '../../shared/research';
 import { loadExtractionDatasetProfile } from '../../backend/watchdog_api/config/extraction_dataset';
+import { PrincipalRepository } from '../../backend/watchdog_api/db/repositories/principals';
 
 const owner = 'local-user';
 const plan: CopyPlan = { version: 'copy-plan-1', name: 'Fictional numeric fixture', format: 'json', rowsPointer: '/rows', fields: [
@@ -147,7 +148,9 @@ test('extraction references require owned execution and exact hashes; generic da
 
 test('source-copy publication replays offline without installed dependencies and detects rehashed false source spans', async () => {
   const h = setup(); try {
-    const d = await h.bridge.create(owner, h.execution.id, input(h.execution.hash));
+    const source = await h.bridge.create(owner, h.execution.id, input(h.execution.hash));
+    const template=await h.bridge.saveTemplate(owner,source.id,source.contentHash,'Portable mapping fixture');
+    const d = await h.bridge.create(owner, h.execution.id, {...input(h.execution.hash),template:{id:template.id,expectedHash:template.hash}});
     const approved = (await h.wb.approveDataset(d.id, owner, d.contentHash, false, 'test'))!;
     const figure = defaultFigure(approved, h.statistics.profile); figure.channels.x = 'x'; figure.channels.y = 'y';
     const method = await h.statistics.prepare(owner, figure, 'pearson', 'test'); h.wb.approveMethod(method.id, owner, method.hash, 'test');
@@ -155,6 +158,8 @@ test('source-copy publication replays offline without installed dependencies and
     const verified = await h.wb.requireFigure(figure, owner), exported = researchPackage(approved, figure, h.statistics.profile, verified.result);
     const directory = path.join(h.dir, 'publication'); mkdirSync(directory);
     const entries = readZip(exported.bytes);
+    assert.match(entries.find(e => e.name === 'figure.svg')!.content.toString(), /; copied /, 'copy execution date is not remote source retrieval');
+    assert.equal(JSON.parse(entries.find(e=>e.name==='dataset.json')!.content.toString()).sourceCopy.mappingTemplate.hash,template.hash);
     for (const entry of entries) { const f = path.join(directory, entry.name); mkdirSync(path.dirname(f), { recursive: true }); writeFileSync(f, entry.content); }
     const run = (hash = exported.manifestHash) => spawnSync(process.execPath, [path.join(directory, 'verify.mjs'), directory, hash], { cwd: directory, encoding: 'utf8', timeout: 10000 });
     const replay = run(); assert.equal(replay.status, 0, replay.stderr); assert.match(replay.stdout, /Matches the independently supplied/);
@@ -187,6 +192,74 @@ test('source-copy API enforces capabilities, origins, stale review and numeric v
     roles = ['researcher']; assert.equal((await call({ ...input(h.execution.hash), expectedTrialHash: '0'.repeat(64) })).status, 409);
     const invalid = input(h.execution.hash); invalid.columns[0].sourceField = 'missing'; assert.equal((await call(invalid)).status, 400);
     const response = await call(); assert.equal(response.status, 201); assert.equal(response.headers.get('Cache-Control'), 'no-store');
-    assert.equal((await response.json()).record.approvalState, 'PROPOSED');
+    const record=(await response.json()).record;assert.equal(record.approvalState, 'PROPOSED');
+    const base=`http://127.0.0.1:${(server.address() as any).port}/api/research`;
+    const save=(headers={})=>fetch(base+'/mapping-templates',{method:'POST',headers:{'Content-Type':'application/json',...headers},body:JSON.stringify({datasetId:record.id,expectedHash:record.contentHash,name:'API template'})});
+    assert.equal((await save({Origin:'https://unrelated.example'})).status,403);
+    const saved=await save();assert.equal(saved.status,201);const {template}=await saved.json();
+    const templates=()=>fetch(base+`/trials/${h.execution.id}/templates`);
+    assert.equal((await (await templates()).json()).templates[0].hash,template.hash);
+    actor='other';assert.equal((await templates()).status,409);assert.equal((await save()).status,409);
+    actor=owner;roles=['responder'];assert.equal((await save()).status,403);
   } finally { if (server) await new Promise<void>(r => server!.close(() => r())); h.close(); }
+});
+
+test('mapping templates reuse settings with new source values, never old observations, citations, evidence or approval',async()=>{
+  const h=setup();try{
+    const first=input(h.execution.hash);first.evidenceTier='PRIMARY_EMPIRICAL';first.source.url='https://example.org/fictional-old-source';
+    const d=await h.bridge.create(owner,h.execution.id,first);
+    const t=await h.bridge.saveTemplate(owner,d.id,d.contentHash,'Fictional reusable mapping');
+    assert.equal(t.hash,canonicalHash(t.body));assert.equal(t.body.sourceDatasetHash,d.contentHash);
+    assert.equal((await h.bridge.saveTemplate(owner,d.id,d.contentHash,t.body.name)).id,t.id);
+    for(const key of ['rows','raw','source','evidenceTier','expectedTrialHash','approvalState'])assert.ok(!(key in t.body.mapping));
+    const fresh=h.extract.run(owner,h.candidate.id,'{"rows":[{"x":9,"y":18}]}');
+    const applied=h.bridge.applyTemplate(owner,fresh.id,t.id,t.hash);
+    const settings={...input(fresh.hash),...applied.body.mapping,template:{id:t.id,expectedHash:t.hash}};
+    const next=await h.bridge.create(owner,fresh.id,settings);
+    assert.equal(next.approvalState,'PROPOSED');assert.equal(next.document.rows[0].values.x,9);assert.equal(next.document.rows[0].evidenceTier,'UNKNOWN');
+    assert.notEqual(next.document.source.url,first.source.url);assert.notEqual(next.document.sourceCopy!.rawHash,d.document.sourceCopy!.rawHash);
+    assert.deepEqual(next.document.sourceCopy!.mappingTemplate,{id:t.id,hash:t.hash,modified:false});
+    settings.columns[0].unit='mg';const modified=await h.bridge.create(owner,fresh.id,settings);
+    assert.equal(modified.document.sourceCopy!.mappingTemplate!.modified,true);
+    const forged=structuredClone(modified.document);forged.sourceCopy!.mappingTemplate!.modified=false;
+    await assert.rejects(()=>h.wb.importDataset(forged,owner,'test'),/modification flag/);
+    const renamed=await h.bridge.saveTemplate(owner,d.id,d.contentHash,'Second immutable version');assert.notEqual(renamed.id,t.id);
+    assert.equal(h.bridge.templates(owner,fresh.id).length,2);
+  }finally{h.close();}
+});
+
+test('mapping templates reject foreign/stale/parser-changed references and still enforce source precision',async()=>{
+  const h=setup();try{
+    const d=await h.bridge.create(owner,h.execution.id,input(h.execution.hash)),t=await h.bridge.saveTemplate(owner,d.id,d.contentHash,'Bound fixture');
+    await assert.rejects(()=>h.bridge.saveTemplate('other',d.id,d.contentHash,'Foreign'),/Owned/);
+    await assert.rejects(()=>h.bridge.saveTemplate(owner,d.id,'f'.repeat(64),'Stale'),/exact hash/);
+    assert.throws(()=>h.bridge.applyTemplate(owner,h.execution.id,t.id,'f'.repeat(64)),/review hash/);
+    assert.throws(()=>h.bridge.applyTemplate('other',h.execution.id,t.id,t.hash),/owned execution/);
+    assert.throws(()=>h.bridge.templates(owner,h.trial.id),/owned execution/);
+    const other=h.research.saveExtractor(owner,plan,{kind:'different-parser-version'});
+    h.extract.test(owner,other.id,raw,expected);h.research.approveExtractor(owner,other.id,other.hash);
+    const different=h.extract.run(owner,other.id,raw);
+    assert.throws(()=>h.bridge.applyTemplate(owner,different.id,t.id,t.hash),/exact parser/);
+    const huge=h.extract.run(owner,h.candidate.id,'{"rows":[{"x":1e999,"y":2}]}');
+    await assert.rejects(()=>h.bridge.create(owner,huge.id,{...input(huge.hash),...t.body.mapping,template:{id:t.id,expectedHash:t.hash}}),/precision or range/);
+    const forged=structuredClone(d.document);forged.sourceCopy!.mappingTemplate={id:t.id,hash:'f'.repeat(64),modified:false};
+    await assert.rejects(()=>h.wb.importDataset(forged,owner,'test'),/template lineage/);
+    h.db.prepare('UPDATE extraction_candidates SET approved_hash=NULL WHERE id=?').run(h.candidate.id);
+    assert.throws(()=>h.bridge.applyTemplate(owner,h.execution.id,t.id,t.hash),/activated parser/);
+  }finally{h.close();}
+});
+
+test('mapping templates persist across repository restart and supported account transfer without changing hashes',async()=>{
+  const h=setup();let reopened:Database.Database|undefined;try{
+    const d=await h.bridge.create(owner,h.execution.id,input(h.execution.hash)),t=await h.bridge.saveTemplate(owner,d.id,d.contentHash,'Durable fixture');
+    assert.throws(()=>h.db.prepare('UPDATE extraction_mapping_templates SET body_json=? WHERE id=?').run('{}',t.id),/WORM/);
+    const filename=path.join(h.dir,'restart.sqlite');await h.db.backup(filename);reopened=new Database(filename);reopened.pragma('foreign_keys=ON');
+    const research=new ResearchRepository(reopened);assert.deepEqual(research.mappingTemplate(owner,t.id),t);
+    const principals=new PrincipalRepository(reopened);principals.upsertOnSignIn({id:'signed-in',email:null,displayName:null,role:'researcher',identityProvenance:'test',at:new Date().toISOString()});
+    const moved=principals.migrateLocalUserRows('signed-in');assert.equal(moved.extraction_mapping_templates,1);
+    assert.equal(research.mappingTemplate(owner,t.id),null);assert.equal(research.mappingTemplate('signed-in',t.id)!.hash,t.hash);
+    const bridge=new ExtractionDatasetService(research,new WorkbenchRepository(reopened,h.store));
+    assert.equal(bridge.applyTemplate('signed-in',h.execution.id,t.id,t.hash).hash,t.hash);
+    assert.equal((await bridge.saveTemplate('signed-in',d.id,d.contentHash,t.body.name)).id,t.id,'transfer does not duplicate the immutable profile');
+  }finally{reopened?.close();h.close();}
 });

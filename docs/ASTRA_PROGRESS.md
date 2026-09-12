@@ -336,3 +336,36 @@ MDMA refresh `0edcf078-98bc-4446-8222-f8969f73b5a2` succeeded: 44 ChEMBL activit
 records and seven successful responses. Earlier ketamine/fentanyl/MDMA collection was interrupted
 and retained partial results. No complete receptor coverage or clinical validation is implied.
 This runtime database is not shipped in Git; each instance collects through its own public job.
+
+Published E5.8c head `9f5b38d5b98077e2085f6c4c8f56f8db4c6398c9` passed Actions
+`34663543418`: **319/319 tests**, zero failures/skips, Chromium, build and JH16 demo. Its
+40-file browser artifact matched SHA-256
+`b8f0c04c3bb932b8474316bef89e54ffed77bd0ef83cbcffc580f1d40abc1221`.
+The mobile mapping controls and desktop figure were inspected; the exported package's
+independent offline verifier passed. A follow-up fixes source-date captions on both figures
+and regional maps to say copied for extraction dates, preserving remote retrieval wording
+for other source types.
+
+## E5.8d — reusable extraction mapping templates
+
+A successfully imported source-copy dataset can save its mapping as a named immutable
+private profile. The template records its exact parser, original dataset and trial hashes,
+column definitions, units/missingness, measure, normalization, language meaning and comparison
+scope. It excludes raw observations, citation, evidence tier and approval. Applying to a new
+execution is explicit, requires the same activated parser and retains the new source identity.
+The resulting dataset records the template ID/hash and a backend-checked modification flag.
+Whole raw source and final mappings continue to replay through the offline publication export.
+
+Migration 014 adds the owned immutable template table. Existing datasets and migration 013
+are unchanged. Template hashes and origin IDs survive database restart and supported account
+transfer. Repeated identical saves deduplicate; edited snapshots create new versions. The UI
+uses its validated presentation profile and disables edits while applying or saving a request.
+
+Three new integration tests plus expanded HTTP/publication tests verify actual new source
+values, isolated citations/evidence, stale/foreign/parser-mismatched references, precision
+rejection, modification flags, storage restart and ownership transfer. The browser flow now
+saves a mapping, reloads, applies it to a later execution, verifies fresh source values and
+captures the template controls at 390 px. Its outcome will be checked on the new published head.
+
+Pre-push verification: **307/307 local tests passed**, zero failures/skips, with clean
+type checking and production build. CI must validate the new browser template interactions.

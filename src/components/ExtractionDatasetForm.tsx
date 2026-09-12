@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { automationApi, formClass, buttonClass } from '../lib/automation_client';
-import { ExtractionDatasetSchema, type ExtractionDatasetInput } from '../../shared/research_dataset';
+import { ExtractionDatasetSchema, type ExtractionDatasetInput, type ExtractionMappingTemplateRecord } from '../../shared/research_dataset';
 import type { CopyPlan } from '../../shared/research';
 import type { ExtractionDatasetProfile } from '../../shared/extraction_dataset_profile';
 
@@ -20,6 +20,8 @@ export function ExtractionDatasetForm({ trial, plan, profile }: { trial: any; pl
       languageMeaning: 'unknown', evidenceTier: 'UNKNOWN', columns };
   });
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [created, setCreated] = useState<any>(null);
+  const [templates,setTemplates]=useState<ExtractionMappingTemplateRecord[]>([]),[templateId,setTemplateId]=useState(''),[templateName,setTemplateName]=useState(plan.name.slice(0,100)),[notice,setNotice]=useState('');
+  useEffect(()=>{let active=true;automationApi(`/api/research/trials/${trial.id}/templates`).then(r=>{if(active){setTemplates(r.templates);setTemplateId(r.templates[0]?.id??'');}}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[trial.id]);
   function update(next: Settings) { setSettings(next); setCreated(null); setError(''); }
   function column(i: number, change: Partial<Settings['columns'][number]>) {
     update({ ...settings, columns: settings.columns.map((c, j) => j === i ? { ...c, ...change } : c) });
@@ -33,9 +35,29 @@ export function ExtractionDatasetForm({ trial, plan, profile }: { trial: any; pl
       setCreated(response.record);
     } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   }
+  async function applyTemplate() {
+    const selected=templates.find(t=>t.id===templateId);if(!selected)return;
+    setBusy(true);setError('');setNotice('');
+    try{const {template:t}=await automationApi(`/api/research/trials/${trial.id}/template`,{id:selected.id,expectedHash:selected.hash});
+      update({...settings,...t.body.mapping,template:{id:t.id,expectedHash:t.hash}});setNotice(l.templateApplied);
+    }catch(e){setError((e as Error).message);}finally{setBusy(false);}
+  }
+  async function saveTemplate() {
+    if(!created)return;setBusy(true);setError('');setNotice('');
+    try{const {template}=await automationApi('/api/research/mapping-templates',{datasetId:created.id,expectedHash:created.contentHash,name:templateName});
+      const refreshed=await automationApi(`/api/research/trials/${trial.id}/templates`);setTemplates(refreshed.templates);setTemplateId(template.id);setNotice(l.templateSaved);
+    }catch(e){setError((e as Error).message);}finally{setBusy(false);}
+  }
   return <details className="border-t pt-3 space-y-3" data-testid="extraction-dataset-form">
     <summary className="font-semibold cursor-pointer">{l.heading}</summary>
+    <fieldset disabled={busy} className="space-y-3 min-w-0">
     <p className="text-sm">{l.introduction}</p>
+    <div className="border rounded p-3 space-y-3" data-testid="mapping-templates"><h3 className="font-medium">{l.templates}</h3><p className="text-sm">{l.templateExplanation}</p>
+      {templates.length>0 ? <><label className="block">{l.templateSelect}<select aria-label={l.templateSelect} className={formClass} value={templateId} onChange={e=>setTemplateId(e.target.value)}><option value="">{l.templateNone}</option>{templates.map(t=><option key={t.id} value={t.id}>{t.body.name} · {t.hash.slice(0,8)}</option>)}</select></label>
+        <button className={buttonClass} disabled={!templateId} onClick={()=>void applyTemplate()}>{l.templateApply}</button>
+        <details><summary>{l.templateOrigin}</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-64 overflow-auto">{JSON.stringify(templates.find(t=>t.id===templateId),null,2)}</pre></details>
+      </> : <p className="text-xs">{l.templateSaveHint}</p>}
+    </div>
     <div className="grid sm:grid-cols-2 gap-3">
       <label>{l.name}<input className={formClass} value={settings.name} onChange={e => update({ ...settings, name: e.target.value })}/></label>
       <label>{l.measure}<input className={formClass} value={settings.measure} onChange={e => update({ ...settings, measure: e.target.value })}/></label>
@@ -65,7 +87,10 @@ export function ExtractionDatasetForm({ trial, plan, profile }: { trial: any; pl
     </fieldset>
     <p className="text-xs">{l.sharing}</p>
     {error && <p role="alert" className="bg-red-50 text-red-800 p-3 break-words">{error}</p>}
+    {notice && <p role="status" className="text-sm">{notice}</p>}
     <button className={buttonClass} disabled={busy} onClick={() => void create()}>{l.create}</button>
     {created && <p role="status" className="text-sm">{l.saved} · {created.approvalState}. <Link className="underline font-medium" to={`/workbench?dataset=${encodeURIComponent(created.id)}`}>{l.open}</Link></p>}
+    {created && <div className="border-t pt-3 space-y-2"><label className="block">{l.templateName}<input className={formClass} value={templateName} maxLength={100} onChange={e=>setTemplateName(e.target.value)}/></label><button className={buttonClass} disabled={!templateName.trim()} onClick={()=>void saveTemplate()}>{l.templateSave}</button></div>}
+    </fieldset>
   </details>;
 }

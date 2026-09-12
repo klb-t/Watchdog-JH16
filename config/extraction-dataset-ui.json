@@ -41,7 +41,18 @@
     "sharing": "Bez adresu zapisujemy identyfikator zawartości SHA-256. Zbiór i eksport zawierają cały przekazany plik, również niewybrane pola. Przy późniejszym udostępnianiu zbioru będzie dostępny także ten plik.",
     "create": "Utwórz zbiór do przeglądu",
     "saved": "Zbiór zapisany",
-    "open": "Otwórz ten zbiór w warsztacie statystycznym"
+    "open": "Otwórz ten zbiór w warsztacie statystycznym",
+    "templates": "Zapisane szablony mapowania",
+    "templateSelect": "Szablon dla tego parsera",
+    "templateNone": "Wybierz szablon…",
+    "templateExplanation": "Szablon przenosi kolumny, jednostki, braki i kontekst porównania. Każdy nowy plik zachowuje własne dane, źródło i klasyfikację dowodu. Sprawdź, czy ustawienia nadal pasują.",
+    "templateApply": "Użyj wybranego szablonu",
+    "templateApplied": "Zastosowano szablon. Przejrzyj ustawienia dla nowego źródła.",
+    "templateSaveHint": "Po utworzeniu zbioru możesz zapisać jego ustawienia mapowania do kolejnych plików.",
+    "templateName": "Nazwa szablonu mapowania",
+    "templateSave": "Zapisz mapowanie jako szablon",
+    "templateSaved": "Zapisano niezmienną wersję szablonu.",
+    "templateOrigin": "Pochodzenie szablonu i jego wersja"
   },
   "choices": {
     "types": {
