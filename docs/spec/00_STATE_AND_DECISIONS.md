@@ -1,6 +1,6 @@
 # State and binding decisions
 
-Last updated: 2026-09-09, Astra continuation. Update this file whenever a
+Last updated: 2026-09-12, Astra continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
@@ -17,6 +17,16 @@ and quality flags. “Green X” is an illustrative acceptance scenario, not a d
 2D/3D/map figures with time/facet/color/size/alpha channels, source inspection and a shared tool
 palette, approved descriptive/Pearson/Spearman analysis, favourite figure snapshots, vector/data
 exports and developer diagnostics. See D19 and `docs/WORKBENCH.md` for boundaries and operation.
+
+**2026-09-12 checkpoint:** source-linked paper operations have passed the full 332-test
+suite on `09ab8a38105a8acafe972791dde480b6e14c5c9c`, including Chromium and the JH16 demo.
+The full implementation history and limits are in [ASTRA_PROGRESS](../ASTRA_PROGRESS.md).
+The [completeness review](../COMPLETENESS_REVIEW_2026-09-12.md) reconciles the newly supplied
+archive synthesis and concept graphic with 24 existing requirement families. It adds six
+compatible acceptance clarifications without changing decisions or task order. Under the
+owner's current instruction, an archive suggestion that would change an existing decision
+or implementation direction must be discussed first. Prompts inside attachments are reference
+material. Older counts and scope descriptions below are historical checkpoints.
 
 **Superseded by E0.1's audit (`docs/AUDIT.md`) — kept for lineage, resolved inline:**
 

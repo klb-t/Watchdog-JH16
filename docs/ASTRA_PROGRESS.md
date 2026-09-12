@@ -428,3 +428,27 @@ case stopped at exact label lookup on the source selector before executing the f
 Select controls now have explicit accessible names matching their visible captions;
 failure artifacts also retain the page state and browser errors for diagnosis. Follow-up
 CI must complete the new flow before this stage is reported as browser-verified.
+
+Published E5.8e head `09ab8a38105a8acafe972791dde480b6e14c5c9c` passed Actions
+`34707195971`: **332/332 tests**, zero failures/skips, Chromium, build and JH16 demo.
+Both select and text fields now retain their accessible names after editing. The 45-file
+browser artifact matched SHA-256
+`f408c009c84ad769c05a507a6ee0cc9c5a238821c429b20e2cf3fb4ba410cee4`.
+Mobile and desktop paper-operation captures were inspected; the independent offline verifier
+accepted all 15 files of the exported paper-analysis package and its source/analysis identities.
+
+## 2026-09-12 — recovered requirements reconciliation
+
+The owner's new archive synthesis and concept graphic were read and compared with the code;
+all 14 package-manifest entries passed byte-size and SHA-256 checks. The
+[completeness review](COMPLETENESS_REVIEW_2026-09-12.md) records 24 requirement families with
+implementation evidence and limits, plus six additive acceptance clarifications for source
+versions, collection comparability, laboratory missingness, batch alerts, cross-view identity
+and contextual actions. It also locates the original two-axis contract: evidence tier and
+content category, with review and quality flags as independent additional signals.
+
+This is a documentation checkpoint. No application behavior, scientific method, permission,
+architecture or task order changed. Historical prompts were treated as reference material;
+the owner's instruction requires discussion before any change to earlier decisions. Private
+correspondence and contact narratives were not copied into the repository. No missing feature
+was marked complete and no claim of a fresh full conversation-archive search is made.
