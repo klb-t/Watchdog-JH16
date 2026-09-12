@@ -41,6 +41,16 @@ try {
   check(hash(profileDocument) === contentHash && contentHash === figure.profileHash && contentHash === manifest.identity.profileHash, 'Profile identity mismatch.');
   check(figure.rendererVersion === manifest.identity.rendererVersion, 'Renderer identity mismatch.');
   if (dataset.rawInput) check(names.has('source.csv') && read('source.csv').equals(Buffer.from(dataset.rawInput.text)), 'Raw CSV source mismatch.');
+  if(dataset.sourceCopy){
+    check(hash(json('extraction/source-copy.json'))===hash(dataset.sourceCopy),'Extraction lineage mismatch.');
+    const sourceName=`extraction/source.${dataset.sourceCopy.plan.format}`;
+    check(names.has(sourceName)&&sha(read(sourceName))===dataset.sourceCopy.rawHash&&read(sourceName).equals(Buffer.from(dataset.sourceCopy.raw)),'Raw extraction source mismatch.');
+    check(names.has('extraction/replay.cjs'),'Missing extraction replay implementation.');
+    const {createRequire}=await import('node:module');
+    const replay=createRequire(import.meta.url)(path.join(root,'extraction/replay.cjs'));
+    const copied=replay.verifyDatasetExtraction(dataset);
+    check(hash(copied)===hash(json('extraction/copied.json')),'Extraction output does not replay from source.');
+  }
   if (figure.renderer === 'map') json('rendering/basemap.json');
   if (figure.geography) {
     const geometry = json('rendering/geometry.json'), geometryReceipt = json('rendering/geometry-receipt.json');

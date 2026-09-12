@@ -79,14 +79,28 @@ test('job/profile integrity failures do not jam later jobs; one source connectio
     assert.throws(() => h.db.prepare('UPDATE automation_profiles SET body_json=?').run('{}'), /WORM/);
     const first = h.repo.enqueue(h.owner, h.request, h.profile.contentHash);
     h.db.prepare('UPDATE automation_jobs SET request_hash=? WHERE id=?').run('0'.repeat(64), first.id);
+    const malformed = h.repo.enqueue(h.owner, h.request, h.profile.contentHash);
+    h.db.prepare('UPDATE automation_jobs SET request_json=? WHERE id=?').run('{', malformed.id);
     const later = h.repo.enqueue(h.owner, h.request, h.profile.contentHash, new Date(Date.now() + 1000));
-    const claim = h.repo.claim(new Date(), 60000)!;
+    const claim = h.repo.claim(new Date(), 60000, [h.request.kind])!;
+    assert.equal((h.db.prepare('SELECT error_code FROM automation_jobs WHERE id=?').get(malformed.id) as any).error_code, 'SNAPSHOT_INTEGRITY_MISMATCH');
     assert.equal(h.repo.job(first.id, h.owner)!.error, 'SNAPSHOT_INTEGRITY_MISMATCH'); assert.equal(claim.job.id, later.id);
     const lock = h.repo.sourceLease('arxiv', 3100, 1000); assert.equal(lock.waitMs, 0);
     assert.throws(() => h.repo.sourceLease('arxiv', 3100, 1001), /another worker/);
     h.repo.releaseSource('arxiv', lock.token);
     assert.equal(h.repo.sourceLease('arxiv', 3100, 1001).waitMs, 3099);
   } finally { h.close(); }
+});
+
+test('a public-only worker leaves assistant jobs for a worker with the registered handler',async()=>{
+  const h=harness();try{
+    const pending=h.repo.enqueue(h.owner,{kind:'catalog_refresh',provider:'openrouter',maxRequests:1},h.profile.contentHash);
+    const scan=h.repo.enqueue(h.owner,{...h.request,providers:['arxiv']},h.profile.contentHash,new Date(Date.now()+1000));
+    const worker=new AutomationService(h.repo,h.profile,async()=>response(atom()),async()=>{});await worker.tick();
+    assert.equal(h.repo.job(pending.id,h.owner)!.status,'QUEUED');assert.equal(h.repo.job(scan.id,h.owner)!.status,'SUCCEEDED');
+    worker.handlers.set('catalog_refresh',async()=>({fixture:true}));await worker.tick();
+    assert.equal(h.repo.job(pending.id,h.owner)!.status,'SUCCEEDED');
+  }finally{h.close();}
 });
 
 test('arXiv parser handles namespaces, entities, versions and CDATA; rejects DTDs and malformed feeds', () => {

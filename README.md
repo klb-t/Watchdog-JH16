@@ -49,7 +49,7 @@ The application home page asks what you want to do and links to available workfl
 | Sixteen text endpoints and seven separately routed tasks | [Provider profiles](docs/PERSONAL_PROVIDERS.md) |
 | Daily/interval acquisition, literature and substance/receptor memory | [Automation and memory](docs/AUTOMATION_AND_MEMORY.md) |
 | Figures, maps, saved settings and reproducible publication exports | [Visual workbench](docs/WORKBENCH.md) |
-| Paper methodology, data variants and deterministic parser tests | [Research workshop](docs/RESEARCH_WORKSHOP.md) |
+| Paper methodology, data variants, deterministic parser tests and source-to-statistics handoff | [Research workshop](docs/RESEARCH_WORKSHOP.md) |
 
 Public-source collection and manual JSON/CSV extraction work without an LLM key. Personal
 model calls require a valid key and price/budget coverage. A provider profile is protocol

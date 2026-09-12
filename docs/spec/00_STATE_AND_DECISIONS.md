@@ -566,3 +566,14 @@ Activation requires an exact-output fixture test of the pinned profile. History/
 provenance and failed trials remain inspectable. Goal navigation leads to existing workflows;
 source/variant/parser forms expose common actions without requiring JSON editing. General
 scientific replication, generated executable modules and advanced inference remain open.
+
+### E5.8c checkpoint — 2026-09-12
+
+A tested parser execution can now become a proposed statistical dataset through explicit
+column types, units, missingness and source context. Import preserves and verifies the exact
+source/execution lineage. The interface links directly to that dataset's existing review and
+analysis workflow. Profile data controls the new form's wording/options. Whole source files,
+including unselected fields, accompany later publication. Export packages replay copying and
+numeric conversion offline. Decimal precision loss is rejected; calculations remain binary64.
+This stage connects acquired values to existing statistics; it does not infer an executable
+method from a paper, generate missing observations or certify an independent replication.

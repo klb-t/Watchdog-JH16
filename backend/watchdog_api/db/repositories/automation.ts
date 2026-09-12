@@ -91,22 +91,25 @@ export class AutomationRepository {
       return count;
     }).immediate();
   }
-  claim(now: Date, leaseMs: number): { job: AutomationJob; token: string; profile: AutomationProfile } | null {
+  claim(now: Date, leaseMs: number, supportedKinds?: string[]): { job: AutomationJob; token: string; profile: AutomationProfile } | null {
     return this.db.transaction(() => {
       this.db.prepare("UPDATE automation_jobs SET status='INTERRUPTED',error_code='WORKER_LEASE_EXPIRED',finished_at=?,lease_token=NULL WHERE status='RUNNING' AND lease_until<=?")
         .run(now.toISOString(), now.toISOString());
-      const rows = this.db.prepare("SELECT * FROM automation_jobs WHERE status='QUEUED' ORDER BY created_at,id LIMIT 20").all() as any[];
+      const kinds=supportedKinds?[...new Set(supportedKinds)]:null;
+      if(kinds && !kinds.length)return null;
+      const rows = this.db.prepare("SELECT * FROM automation_jobs WHERE status='QUEUED'"+
+        (kinds?` AND CASE WHEN json_valid(request_json) THEN json_extract(request_json,'$.kind') IN (${kinds.map(()=>'?').join(',')}) ELSE 1 END`:'')+" ORDER BY created_at,id LIMIT 20").all(...(kinds??[])) as any[];
       for (const row of rows) {
-        if (!this.authorized(row.owner_principal_id, JSON.parse(row.request_json))) {
-          this.db.prepare("UPDATE automation_jobs SET status='CANCELED',error_code='OWNER_CAPABILITY_REVOKED',finished_at=? WHERE id=?").run(now.toISOString(), row.id); continue;
-        }
-        let profile: AutomationProfile;
+        let profile: AutomationProfile, request: JobRequest;
         try {
           profile = this.profile(row.profile_hash);
-          JobRequestSchema.parse(JSON.parse(row.request_json));
+          request = JobRequestSchema.parse(JSON.parse(row.request_json));
           if (canonicalHash({ request: JSON.parse(row.request_json), profileHash: profile.contentHash }) !== row.request_hash) throw new Error('Mismatch');
         } catch {
           this.db.prepare("UPDATE automation_jobs SET status='FAILED',error_code='SNAPSHOT_INTEGRITY_MISMATCH',finished_at=? WHERE id=?").run(now.toISOString(), row.id); continue;
+        }
+        if (!this.authorized(row.owner_principal_id, request)) {
+          this.db.prepare("UPDATE automation_jobs SET status='CANCELED',error_code='OWNER_CAPABILITY_REVOKED',finished_at=? WHERE id=?").run(now.toISOString(), row.id); continue;
         }
         const token = randomUUID();
         this.db.prepare("UPDATE automation_jobs SET status='RUNNING',lease_token=?,lease_until=?,started_at=? WHERE id=? AND status='QUEUED'")

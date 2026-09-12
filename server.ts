@@ -9,6 +9,7 @@ import path from 'path';
 import url from 'node:url';
 import { buildApiRouter } from './backend/watchdog_api/api/routes';
 import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middleware';
+import { ExtractionDatasetService } from './backend/watchdog_api/services/extraction_dataset';
 import { buildIdentity, assertAuthSafeForEnvironment, readAuthConfig } from './backend/watchdog_api/identity';
 import { buildAuthRouter, principalMiddleware } from './backend/watchdog_api/api/auth_routes';
 import { PrincipalRepository } from './backend/watchdog_api/db/repositories/principals';
@@ -96,7 +97,7 @@ export async function configureApp() {
     new RunOrchestrator(db, store, (id, owner, personal) => search.resolve(id, owner, personal)), new MethodSpecRepository(db), vault);
   automation.handlers.set('catalog_refresh', async (job, checkpoint) => { checkpoint(); const catalog = await assistant.refreshCatalog(job.ownerId, 'openrouter'); checkpoint(); return { requests: 1, catalogHash: catalog.hash, models: catalog.models.length }; });
   automation.handlers.set('paper_review', (job, checkpoint) => papers.reviewJob(job,checkpoint));
-  app.use('/api/research', buildResearchRouter(research, papers, extraction, automationRepository, automation));
+  app.use('/api/research', buildResearchRouter(research, papers, extraction, automationRepository, automation,new ExtractionDatasetService(research,workbench)));
   app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans));
   app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
   app.use('/api/memory', buildMemoryRouter(automationRepository));

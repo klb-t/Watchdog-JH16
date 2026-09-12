@@ -4,6 +4,7 @@ import { automationApi as api, formClass, buttonClass, sectionClass } from '../l
 import { useAccess } from '../lib/access';
 import type { PaperInput, SubstitutionInput } from '../../shared/research';
 import { CopyPlanBuilder, SubstitutionEditor, ExpectedRecordsForm, ExtractionResult } from '../components/ResearchControls';
+import { ExtractionDatasetForm } from '../components/ExtractionDatasetForm';
 
 export function Research() {
   const access = useAccess();
@@ -93,7 +94,9 @@ function ResearchContent() {
         <div className="flex flex-wrap gap-3"><button className={buttonClass} disabled={busy||!selected||!raw||!expected} onClick={()=>act(async()=>setTrial((await api(`/api/research/extractors/${selected.id}/test`,{raw,expected:JSON.parse(expected)})).trial),'Test zapisany; sprawdź wynik porównania.')}>Testuj dokładne kopiowanie</button>
           {access.capabilities.includes('dataset.approve') && <button className={buttonClass} disabled={busy||!selected||trial?.body.passed!==true||trial?.body.candidateHash!==selected.hash} onClick={()=>act(async()=>setSelected((await api(`/api/research/extractors/${selected.id}/approve`,{expectedHash:selected.hash})).extractor),'Ta wersja parsera została aktywowana.')}>Aktywuj sprawdzoną wersję</button>}
           {access.capabilities.includes('dataset.import') && <button className={buttonClass} disabled={busy||!raw||selected?.approvalState!=='APPROVED'} onClick={()=>act(async()=>setTrial((await api(`/api/research/extractors/${selected.id}/run`,{raw})).trial),'Wykonano bez wywołania LLM.')}>Wykonaj parser bez LLM</button>}</div>
-        {trial && <div className="space-y-3"><ExtractionResult key={trial.id} trial={trial}/><button className="underline text-sm" onClick={saveResult}>Pobierz wynik, surowe źródło i pochodzenie</button></div>}
+        {trial && <div className="space-y-3"><ExtractionResult key={trial.id} trial={trial}/><button className="underline text-sm" onClick={saveResult}>Pobierz wynik, surowe źródło i pochodzenie</button>
+          {trial.body.kind==='EXECUTION' && selected?.hash===trial.body.candidateHash && selected.approvalState==='APPROVED' && data?.datasetProfile && access.capabilities.includes('dataset.import') && <ExtractionDatasetForm key={`${trial.id}:${data.datasetProfile.contentHash}`} trial={trial} plan={selected.body.plan} profile={data.datasetProfile}/>}
+        </div>}
         {trials.length>0 && <details><summary>Historia testów i wykonań ({trials.length})</summary><ul className="space-y-2 mt-2">{trials.map(t=><li key={t.id}><button className="underline text-sm" onClick={()=>act(async()=>setTrial((await api(`/api/research/trials/${t.id}`)).trial),'Odtworzono zapisany wynik.')}>{t.kind==='EXECUTION'?'Wykonanie':t.passed?'Test PASSED':'Test FAILED'} · {new Date(t.createdAt).toLocaleString()}</button></li>)}</ul></details>}
       </section>
     </>}

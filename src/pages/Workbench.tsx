@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAccess } from '../lib/access';
 import { workbenchApi, downloadText, downloadBlob } from '../lib/workbench_client';
 import { defaultFigure, filterRows, type DatasetRecord, type FigureSpec, type SavedFigure, type WorkbenchProfile, selectionIdentity } from '../../shared/workbench';
@@ -9,7 +10,14 @@ import { RegionControls, RegionInspector } from '../components/RegionControls';
 import { fitGeometry, type GeometryLayerRecord } from '../../shared/geography';
 
 export function Workbench() {
+  const access = useAccess();
+  return <WorkbenchContent key={access.principalId ?? 'pending'} />;
+}
+
+function WorkbenchContent() {
   const access = useAccess(), svgRef = useRef<SVGSVGElement>(null);
+  const [params] = useSearchParams(), openedDataset = useRef<string | null>(null);
+  const requestedDataset = params.get('dataset');
   const [currentProfile, setCurrentProfile] = useState<WorkbenchProfile | null>(null), [records, setRecords] = useState<DatasetRecord[]>([]), [saved, setSaved] = useState<SavedFigure[]>([]);
   const [geometryLayers, setGeometryLayers] = useState<GeometryLayerRecord[]>([]), [inspectedRegion, setInspectedRegion] = useState<string | null>(null);
   const [archivedProfile, setArchivedProfile] = useState<WorkbenchProfile | null>(null);
@@ -35,6 +43,12 @@ export function Workbench() {
     setCurrentProfile(p); setRecords(d.records); setSaved(f.figures); setGeometryLayers(g.records);
   }
   useEffect(() => { load().catch(e => setError(e.message)); }, []);
+  useEffect(() => {
+    if (!currentProfile || !requestedDataset || openedDataset.current === requestedDataset) return;
+    openedDataset.current = requestedDataset;
+    if (records.some(r => r.id === requestedDataset)) selectDataset(requestedDataset);
+    else setError('The requested dataset is unavailable for this account.');
+  }, [currentProfile, requestedDataset, records]);
   useEffect(() => {
     if (!spec || spec.profileHash === currentProfile?.contentHash || spec.profileHash === archivedProfile?.contentHash) return;
     let active = true;
@@ -113,9 +127,10 @@ export function Workbench() {
       <GeometryLayers records={geometryLayers} busy={busy} act={act} onChanged={load} />
       {!records.length && <p className="field-panel">No accessible approved aggregate datasets yet. Regional Trends, context and sentiment views need sourced data imports; no live feed or sample trend is fabricated.</p>}
       {record && <section className="field-panel"><h2>{record.document.name}</h2><p>{record.document.description}</p>
-        <p className="text-sm mt-2"><a href={record.document.source.url}>{record.document.source.publisher} · {record.document.source.title}</a> · retrieved {record.document.source.retrievedAt} · {record.document.rows.length} records</p>
+        <p className="text-sm mt-2">{record.document.source.url.startsWith('https:') ? <a href={record.document.source.url}>{record.document.source.publisher} · {record.document.source.title}</a> : <span>{record.document.source.publisher} · {record.document.source.title} · content-addressed source</span>} · recorded {record.document.source.retrievedAt} · {record.document.rows.length} records</p>
         <p className="text-sm">Measure: {record.document.measure} · normalization: {record.document.normalization} · language: {record.document.languageMeaning}</p>
         <p className="text-sm">Comparison scope: {record.document.comparisonScope}</p>
+        {record.document.sourceCopy && <div className="text-sm space-y-1 mt-2" data-testid="dataset-extraction-origin"><p>Copied from a tested parser execution. Explicit column types and missing-value policies retain the complete original source. Numeric conversion: {record.document.sourceCopy.numericPolicy}.</p><p className="break-all">Source SHA-256: {record.document.sourceCopy.rawHash}</p><p className="break-all">Execution: {record.document.sourceCopy.trialId} · {record.document.sourceCopy.trialHash}</p><p>Sharing or exporting this dataset includes the complete source file, including fields that were not selected.</p></div>}
         <div className="field-warning text-sm">{(profile ?? currentProfile).providerProfiles.find(p => p.id === record.document.providerProfileId)?.notices.map(n => <p key={n}>{n}</p>)}</div>
         <details><summary>Source mapping, column definitions and full provenance</summary><pre className="max-h-80 overflow-auto bg-slate-50 p-3 mt-3 text-xs">{JSON.stringify(record, null, 2)}</pre></details>
         {access.capabilities.includes('dataset.approve') && record.ownerId === access.principalId && <div className="mt-4 space-y-3">

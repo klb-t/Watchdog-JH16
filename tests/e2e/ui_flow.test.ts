@@ -1,9 +1,11 @@
 import { test, before, after } from 'node:test';
 import * as assert from 'node:assert';
 import { chromium, Browser, Page } from 'playwright';
-import { spawn, ChildProcess } from 'node:child_process';
+import { spawn, ChildProcess, execFileSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { readZip } from '../../backend/watchdog_api/utils/zip';
+import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
 
 /**
  * E1.21-E1.23 — browser-driven end-to-end tests against fixtures.
@@ -366,4 +368,74 @@ test('research workshop: goal navigation, source intake, keyless parser form, ex
     await page.screenshot({path:'test-artifacts/research-mobile-start.png',fullPage:true});
     assert.deepEqual(errors,[]);
   } finally {page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
+
+test('source-copy browser: explicit column form to reviewed statistics and portable replay package', async () => {
+  const errors: string[] = [], onError = (e: Error) => errors.push(e.message); page.on('pageerror', onError);
+  const publication = fs.mkdtempSync('/tmp/watchdog-copy-browser-');
+  try {
+    const call = async (route: string, body: unknown) => {
+      const response = await fetch(`${baseUrl}/api/research${route}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      assert.ok(response.ok, await response.clone().text()); return response.json();
+    };
+    const plan = { version: 'copy-plan-1', name: 'Fictional bridge browser fixture', format: 'json', rowsPointer: '/rows', fields: [
+      { name: 'x', selector: '/x', required: true }, { name: 'y', selector: '/y', required: true }] };
+    const raw = '{"rows":[{"x":1.00,"y":2},{"x":2,"y":4},{"x":3,"y":6}]}';
+    const { extractor } = await call('/extractors', plan);
+    await call(`/extractors/${extractor.id}/test`, { raw, expected: [{ x: '1.00', y: '2' }, { x: '2', y: '4' }, { x: '3', y: '6' }] });
+    await call(`/extractors/${extractor.id}/approve`, { expectedHash: extractor.hash });
+    const { trial } = await call(`/extractors/${extractor.id}/run`, { raw });
+    await page.goto(baseUrl + '/research'); await page.getByRole('button', { name: 'Ekstraktory danych', exact: true }).click();
+    await page.getByLabel('Wybierz parser', { exact: true }).selectOption(extractor.id);
+    await page.getByText('Historia testów i wykonań (2)', { exact: true }).click();
+    await page.getByRole('button', { name: /^Wykonanie ·/ }).click();
+    await page.getByText('Przygotuj te dane do analizy', { exact: true }).click();
+    await page.getByLabel('Nazwa zbioru', { exact: true }).fill('Fictional copied scores for browser');
+    await page.getByLabel('Co mierzą dane?', { exact: true }).fill('Fictional scores');
+    await page.getByLabel('Zakres porównywalności', { exact: true }).fill('Three fictional paired observations');
+    for (const n of [1, 2]) {
+      await page.getByLabel(`Typ kolumny ${n}`, { exact: true }).selectOption('number');
+      await page.getByLabel(`Jednostka kolumny ${n}`, { exact: true }).fill('dimensionless');
+    }
+    assert.equal(await page.getByLabel('Klasyfikacja dowodu', { exact: true }).inputValue(), 'UNKNOWN');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator('[data-testid="extraction-dataset-form"]').scrollIntoViewIfNeeded();
+    const layout = await page.locator('main').evaluate(el => ({ width: el.clientWidth, scroll: el.scrollWidth }));
+    assert.ok(layout.scroll <= layout.width + 1, JSON.stringify(layout));
+    await page.screenshot({ path: 'test-artifacts/extraction-dataset-mobile.png', fullPage: true });
+    await page.getByRole('button', { name: 'Utwórz zbiór do przeglądu', exact: true }).click();
+    await page.getByRole('link', { name: 'Otwórz ten zbiór w warsztacie statystycznym', exact: true }).click();
+    const datasetId = new URL(page.url()).searchParams.get('dataset'); assert.ok(datasetId);
+    await page.getByLabel(/I checked the source, column mapping/).waitFor();
+    assert.equal(await page.getByLabel('Dataset', { exact: true }).inputValue(), datasetId);
+    assert.ok((await page.locator('[data-testid="dataset-extraction-origin"]').textContent())?.includes(trial.hash));
+    assert.equal(await page.getByRole('button', { name: 'Run approved analysis', exact: true }).count(), 0);
+    await page.getByLabel(/I checked the source, column mapping/).check();
+    await page.getByRole('button', { name: 'Approve this dataset mapping', exact: true }).click();
+    await page.getByLabel('X channel', { exact: true }).selectOption('field_1');
+    await page.getByLabel('Y channel', { exact: true }).selectOption('field_2');
+    await page.getByRole('button', { name: 'Pearson correlation', exact: true }).click();
+    await page.getByLabel(/I reviewed these exact inputs/).check();
+    await page.getByRole('button', { name: 'Approve this analysis specification', exact: true }).click();
+    await page.getByRole('button', { name: 'Run approved analysis', exact: true }).click();
+    await page.getByRole('button', { name: 'Download analysis and provenance', exact: true }).waitFor();
+    const download = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export research package (ZIP)', exact: true }).click();
+    const file = await download; await file.saveAs('test-artifacts/extraction-analysis-package.zip');
+    const entries = readZip(fs.readFileSync((await file.path())!));
+    const document = JSON.parse(entries.find(e => e.name === 'dataset.json')!.content.toString());
+    assert.equal(document.sourceCopy.raw, raw); assert.equal(document.sourceCopy.trialHash, trial.hash);
+    assert.equal(document.rows[0].values.field_1, 1); assert.equal(document.rows[0].evidenceTier, 'UNKNOWN');
+    const result = JSON.parse(entries.find(e => e.name === 'analysis/result.json')!.content.toString());
+    assert.equal(result.artifact.results[0].valueNumeric, 1); assert.equal(result.artifact.results[0].statisticMetadata.n, 3);
+    for (const entry of entries) { const f = path.join(publication, entry.name); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, entry.content); }
+    const manifest = JSON.parse(entries.find(e => e.name === 'package-manifest.json')!.content.toString());
+    fs.writeFileSync('test-artifacts/extraction-analysis-verification.txt', execFileSync(process.execPath, [path.join(publication, 'verify.mjs'), publication, canonicalHash(manifest)], { encoding: 'utf8' }));
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.locator('svg [data-row-id="source-row-1"]').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: 'test-artifacts/extraction-analysis-desktop.png', fullPage: true });
+    await page.reload(); await page.getByLabel('X channel', { exact: true }).waitFor();
+    assert.equal(await page.getByLabel('Dataset', { exact: true }).inputValue(), datasetId);
+    assert.deepEqual(errors, []);
+  } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); fs.rmSync(publication, { recursive: true, force: true }); }
 });

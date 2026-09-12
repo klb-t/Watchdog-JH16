@@ -13,6 +13,14 @@ measure, language semantics, normalization and comparison scope. A suppressed va
 silently rounded. JSON editing supports source-specific mappings without guessing locale or
 geocoding a place name. All imports are PROPOSED; approving a mapping is a separate action.
 
+The research extractor also hands off a dataset directly through **Przygotuj te dane do
+analizy**. Its explicit type/unit/missingness form preserves the tested parser execution,
+raw source, exact copied lexemes and field mappings. The workbench deep link opens that exact
+owned dataset for review. Statistics reject missing units or nonnumeric semantics. Original
+source files (including unselected fields) accompany later sharing and research ZIP exports.
+The standalone package verifier replays extraction and type conversion; see
+[Research workshop](RESEARCH_WORKSHOP.md#continue-from-copied-values-into-statistics).
+
 Repeated imports retain separate events while identical raw documents share one blob. Identical
 documents imported by two owners have distinct approval contexts. Only the owner can publish
 or revoke an aggregate dataset. Institutional profiles cannot import, curate or expose private

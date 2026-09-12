@@ -22,7 +22,7 @@ export class AutomationService {
     this.running = true;
     try {
       this.repo.dispatchDue();
-      const claim = this.repo.claim(new Date(), this.profile.worker.leaseMs); if (!claim) return;
+      const claim = this.repo.claim(new Date(), this.profile.worker.leaseMs,['substance_refresh','paper_scan',...this.handlers.keys()]); if (!claim) return;
       const { job, token, profile } = claim;
       let canceled = false;
       const checkpoint = () => {

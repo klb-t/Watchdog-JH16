@@ -71,6 +71,45 @@ CSV provenance records row and column. Blank CSV records and quoted newlines are
 Duplicate JSON keys, duplicate CSV headers, non-scalar fields and malformed row widths fail.
 Numeric parsing, units and scientific analysis remain separate explicit operations.
 
+## Continue from copied values into statistics
+
+For an execution of an activated parser, open **Przygotuj te dane do analizy**. The form
+uses the validated, hashed `config/extraction-dataset-ui.json` wording/choice profile and
+maps source fields to named columns with explicit types, units, numeric semantics and an
+optional empty-text-as-missing policy. Every field starts as text and evidence starts as
+UNKNOWN. Fill the citation, measure, normalization and comparison scope. Language meaning
+remains separate from geography. A one-field source gets an explicitly labelled text row
+identifier; it is metadata, not a fabricated measurement. The API also permits choosing a
+subset or multiple declared mappings of a copied field.
+
+The versioned `decimal-roundtrip-binary64-1` policy accepts finite decimal values only when
+their decimal value survives conversion and integers are in the safe range. It rejects
+precision loss, underflow, locale guessing and overflow; keep those fields as text. Ordinary
+decimals such as 0.1 still use binary floating-point in statistics, not arbitrary-precision
+arithmetic. Original lexemes such as `1.00` and `-0` remain in the raw source. Absent fields,
+explicit nulls and declared empty-text missingness retain different reasons.
+
+The resulting owned dataset is PROPOSED and opens directly in `/workbench?dataset=…`.
+Review its source, mapping, units and context before approval. Existing descriptive/Pearson/
+Spearman methods then use the actual mapped values and retain their normal separate method
+review. Parser activation and dataset approval do not upgrade the evidence classification.
+This is a connection to existing statistics, not automatic compilation of a paper's method.
+
+Datasets pin the execution/candidate hashes, copy plan, original UTF-8 source and field
+mappings. Import replays copying and verifies every row; generic dataset JSON import cannot
+claim someone else's execution or alter mapped values. Missing HTTPS citations use the real
+`urn:sha256:` content identifier. Source dates record execution, not a guessed publication or
+retrieval date. The complete source, including unselected fields, accompanies the dataset and
+any later sharing/export; both forms expose this before publication.
+
+Research ZIP exports include `extraction/source-copy.json`, `extraction/copied.json`, the
+original JSON/CSV and `extraction/replay.cjs`. The standalone `verify.mjs` replays the same
+versioned parser and numeric mapping locally, with no installed packages, database, LLM or
+network access. It checks exact values and source spans as well as file hashes. Keep the
+independently supplied package-manifest hash; internal consistency alone cannot authenticate
+a replacement archive. Statistical results remain linked to their exact executor and inputs;
+the portable verifier does not itself rerun statistical calculations.
+
 Limits: 2,000,000 source bytes, 10,000 output rows, 30 fields, 64 JSON levels and 100,000 nodes.
 Model structure discovery visits at most 500 paths and the first member of each array.
 The HTTP JSON body limit is 2 MiB including expected output and encoding, so practical input
@@ -92,6 +131,8 @@ cannot leave a linked assessment permanently RUNNING. Repeating a default reques
 automatically repeats an attempted assessment; a failed attempt needs explicit one-off retry.
 Scheduled retry of a possibly billed failed request is rejected. Finished outcomes, source
 versions and test records remain immutable, including after supported ownership transfer.
+Workers claim only their supported job kinds. A public collection CLI leaves queued personal
+model/catalog jobs for a worker with the corresponding registered handler.
 
 ## Verification and remaining scope
 
@@ -101,6 +142,10 @@ cover source spans, failed/duplicate attempts, cancellation, lease recovery, bud
 bounded scheduling, ownership transfer, exact lexical copying and persistent trial history.
 The Chromium flow uses the real built client/server for goal search, paper intake, a manual
 parser, test/activation/execution, export, reload and mobile width. No paid account is used.
+The source-to-statistics tests exercise numeric precision rejection, distinct missingness,
+owner transfer during storage, unit requirements, actual paired analysis and offline export
+replay. A second browser flow covers the mapping form, mobile width, exact dataset deep link,
+review, analysis, ZIP verification and reload.
 
 This is the connected intake/assessment/substitution/extraction stage. General paper-to-
 executable-method compilation, automatic arbitrary replication, discovery/confirmation

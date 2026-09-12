@@ -104,7 +104,7 @@ export class ResearchRepository {
   trial(owner:string,id:string) {
     const r=this.db.prepare('SELECT * FROM extraction_trials WHERE owner_principal_id=? AND id=?').get(owner,id) as any;
     if(!r)return null;const body=JSON.parse(r.body_json);if(canonicalHash(body)!==r.content_hash)throw new AutomationError('Extraction trial integrity mismatch');
-    return {id:r.id,hash:r.content_hash,body,createdAt:r.created_at};
+    return {id:r.id,hash:r.content_hash,body,createdAt:r.created_at,candidateId:r.candidate_id};
   }
   approveExtractor(owner: string, id: string, expectedHash: string) {
     const c = this.extractor(owner, id); if (!c || c.hash !== expectedHash) throw new AutomationError('Extractor review hash changed');

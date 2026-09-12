@@ -1,15 +1,17 @@
 /** Domain-neutral, versioned data and figure contracts. No drug-specific concepts. */
 import { z } from 'zod';
 import { EVIDENCE_TIERS } from '../backend/watchdog_api/domain/evidence_tier';
+import { SourceCopySchema } from './source_copy';
 export class WorkbenchInputError extends Error { readonly code = 'validation_error'; }
 const key = z.string().regex(/^[a-zA-Z][a-zA-Z0-9_.:-]{0,99}$/);
 const text = z.string().trim().min(1).max(500);
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
 const cell = z.union([z.string().max(1000), z.number().finite(), z.null()]);
-const citation = z.object({ url: z.url().refine(s => new URL(s).protocol === 'https:' && !new URL(s).username && !new URL(s).password),
+const citation = z.object({ url: z.string().refine(s => /^urn:sha256:[a-f0-9]{64}$/.test(s) || (()=>{try{const u=new URL(s);return u.protocol==='https:'&&!u.username&&!u.password;}catch{return false;}})()),
   title: text, publisher: text, retrievedAt: z.iso.datetime(), license: text, sourceRecordId: text }).strict();
 export const DatasetSchema = z.object({ version: z.literal('workbench-dataset-1'), key, name: text, description: text,
   source: citation, providerProfileId: key,
+  sourceCopy:SourceCopySchema.optional(),
   rawInput: z.object({ mediaType: z.literal('text/csv'), text: z.string().max(1_000_000), separator: z.enum([',', ';', '\t']), headerRecord: z.number().int().min(1) }).strict().optional(),
   measure: text, normalization: z.enum(['none', 'within_export_0_100', 'consistently_scaled', 'unknown']),
   comparisonScope: text, languageMeaning: z.enum(['query_term_language', 'corpus_language', 'interface_language', 'unknown']),

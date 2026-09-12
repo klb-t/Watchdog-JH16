@@ -295,4 +295,44 @@ Visual inspection prompted a focused follow-up: expected extraction values now h
 guided record form, and results render as a table with clickable source-cell provenance.
 The raw debug record stays accessible in a disclosure. The browser flow exercises the
 form and inspector and scrolls the actual application container to capture useful start
-and result screenshots. This follow-up awaits its own CI confirmation after publication.
+and result screenshots. Published as `3ea14e96e50ee92d152329ab735da6514a4f759f`;
+Actions `34635584729` passed **311/311 tests**. Its 36-file artifact matched the published
+ZIP digest and the desktop/mobile result and start screenshots were inspected.
+
+## 2026-09-12 — E5.8c: source extraction to statistical analysis
+
+An activated extractor execution now feeds the existing visual/statistical workbench through
+an explicit type/unit/missingness/citation form. UI wording and choices are a separate validated,
+hashed profile. Text and UNKNOWN evidence are the initial defaults. A source row identifier is
+text metadata, never an invented measurement. Missing HTTPS citations use a raw-content SHA-256
+URN, and the source date records execution rather than claiming a remote retrieval date.
+
+The import retains execution/candidate hashes, exact raw input, copy plan, mapping and distinct
+null/absent/empty reasons. It replays copying and typed conversion, rejects decimal precision
+loss, unsafe integers and guessed locale, and rechecks owned execution after blob I/O. Numeric
+analysis uses binary64; the raw source retains the original lexemes. The dataset starts as
+PROPOSED, opens by exact ID in the workbench, and uses existing dataset/method review. Approval
+never upgrades evidence. The whole original file, including unselected fields, accompanies
+sharing and export; the interface exposes this before publication.
+
+The publication ZIP includes raw source, copied records/cell spans, type mappings and a bundled
+replay implementation. Its standalone Node verifier replays extraction offline and detects
+false provenance even after file hashes are updated. It does not rerun statistical calculations.
+The general paper-to-executable-method compiler and independent replication remain open.
+
+A public-only worker now claims only supported kinds, leaving personal LLM/catalog jobs for
+registered handlers. Malformed queued source JSON is recorded as an integrity failure without
+jamming the next supported job. No automatic retry or extra paid call is introduced.
+
+Validation before publication: six source-to-statistics integration tests plus the worker-kind
+regression pass. These run real SQLite, HTTP, source copying, numeric analysis and an independent
+export-verifier subprocess. Full local regression: **304/304 passed**, zero skips; typecheck and
+production build pass. A new Chromium path covers the mobile mapping form, exact dataset link,
+reviewed Pearson fixture, export verification and reload; its CI result will be checked after push.
+
+Development public collection now retains five substance identities and 572 sourced activity
+assertions. There are 38 request receipts (37 HTTP 200, one interrupted/error response). The
+MDMA refresh `0edcf078-98bc-4446-8222-f8969f73b5a2` succeeded: 44 ChEMBL activities, 25 Europe PMC
+records and seven successful responses. Earlier ketamine/fentanyl/MDMA collection was interrupted
+and retained partial results. No complete receptor coverage or clinical validation is implied.
+This runtime database is not shipped in Git; each instance collects through its own public job.

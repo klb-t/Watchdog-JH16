@@ -10,6 +10,8 @@ import { checkGeographyBinding } from '../../../../shared/geography';
 import { WorkbenchError } from './workbench_error';
 export { WorkbenchError } from './workbench_error';
 import { appendAudit } from './audit';
+import { ResearchRepository } from './research';
+import { verifyDatasetExtraction } from '../../workbench/extraction_data';
 import type { MethodSpec, AnalysisArtifact, TypedSeries } from '../../domain/method_spec';
 import { assertTransition, type RunState } from '../../domain/run_state';
 
@@ -31,7 +33,12 @@ export class WorkbenchRepository {
   }
   async importDataset(input: unknown, actor: string, requestId: string): Promise<DatasetRecord> {
     const doc = validateDataset(input), contentHash = canonicalHash(doc), id = `dataset-${contentHash}-${canonicalHash(actor).slice(0, 10)}`;
+    const requireOwnedExtraction=()=>{if(!doc.sourceCopy)return;const ref=doc.sourceCopy,research=new ResearchRepository(this.db),trial=research.trial(actor,ref.trialId),candidate=research.extractor(actor,ref.candidateId);
+      if(!trial||trial.hash!==ref.trialHash||trial.body.kind!=='EXECUTION'||!candidate||candidate.hash!==ref.candidateHash||candidate.approvalState!=='APPROVED'||trial.candidateId!==candidate.id||trial.body.candidateHash!==candidate.hash||trial.body.raw!==ref.raw||canonicalHash(candidate.body.plan)!==canonicalHash(ref.plan))throw new WorkbenchError('Dataset requires its owned, exact extraction execution and activated parser.',409);
+    };
+    requireOwnedExtraction();verifyDatasetExtraction(doc);
     const bytes = Buffer.from(canonicalizeJson(doc)), uri = await this.store.put(`raw/${contentHash}`, bytes);
+    requireOwnedExtraction();
     this.db.transaction(() => {
       const now = new Date().toISOString();
       this.db.prepare('INSERT OR IGNORE INTO raw_blobs(id,sha256,object_uri,byte_size,media_type,retention_class,created_at) VALUES (?,?,?,?,?,?,?)')

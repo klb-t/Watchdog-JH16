@@ -35,6 +35,11 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 - [ ] **E5.8b — General extension execution and adaptive navigation.** HTML/PDF parsing,
   sandboxed generated modules, full compatibility contracts, saved workflow favourites
   and an autonomous natural-language goal planner remain open.
+- [x] **E5.8c — Source extraction to reviewed statistical data.** Explicit field types,
+  units, missingness and evidence classification; raw-source/execution lineage checked
+  during import, owned dataset deep link, existing method review and statistical executor.
+  Publication ZIP replays exact copying and conversion without external dependencies.
+  Six integration tests pass; new browser coverage is verified separately in CI.
 
 ## E0 — Repository audit
 
