@@ -1,5 +1,5 @@
 import type { Database } from 'better-sqlite3';
-import { Role } from '../../identity/roles';
+import { Role, isRole } from '../../identity/roles';
 
 /**
  * The one place principal rows and ownership transfer are written.
@@ -13,8 +13,9 @@ export interface PrincipalRow {
   id: string;
   email: string | null;
   display_name: string | null;
-  /** Joined from `principal_roles`; the highest rung held. */
+  /** Legacy single-profile presentation; null when multiple profiles apply. */
   role: Role | null;
+  roles: Role[];
   identity_provenance: string;
   active: number;
   created_at: string;
@@ -29,12 +30,9 @@ export interface PrincipalRow {
 const SELECT_PRINCIPALS = `
   SELECT p.id, p.email, p.display_name, p.identity_provenance, p.active,
          p.created_at, p.last_seen_at,
-         (SELECT pr.role_id FROM principal_roles pr
+         (SELECT json_group_array(role_id) FROM (SELECT pr.role_id FROM principal_roles pr
            WHERE pr.principal_id = p.id
-           ORDER BY CASE pr.role_id
-             WHEN 'dev' THEN 0 WHEN 'admin' THEN 1
-             WHEN 'researcher' THEN 2 WHEN 'viewer' THEN 3 ELSE 4 END
-           LIMIT 1) AS role
+           ORDER BY pr.role_id)) AS roles_json
   FROM principals p
 `;
 
@@ -62,11 +60,18 @@ export class PrincipalRepository {
   constructor(private readonly sqlite: Database) {}
 
   get(id: string): PrincipalRow | undefined {
-    return this.sqlite.prepare(`${SELECT_PRINCIPALS} WHERE p.id = ?`).get(id) as PrincipalRow | undefined;
+    const row = this.sqlite.prepare(`${SELECT_PRINCIPALS} WHERE p.id = ?`).get(id);
+    return row ? this.decode(row) : undefined;
   }
 
   list(): PrincipalRow[] {
-    return this.sqlite.prepare(`${SELECT_PRINCIPALS} ORDER BY p.id`).all() as PrincipalRow[];
+    return this.sqlite.prepare(`${SELECT_PRINCIPALS} ORDER BY p.id`).all().map(row => this.decode(row));
+  }
+
+  private decode(raw: unknown): PrincipalRow {
+    const { roles_json, ...row } = raw as Omit<PrincipalRow, 'role' | 'roles'> & { roles_json: string };
+    const roles = (JSON.parse(roles_json) as unknown[]).filter(isRole);
+    return { ...row, roles, role: roles.length === 1 ? roles[0] : null };
   }
 
   /**

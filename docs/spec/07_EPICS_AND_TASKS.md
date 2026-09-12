@@ -7,6 +7,44 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 
 ---
 
+## Continuation checkpoints — 2026-09-11
+
+- [x] **E3.6 — Public acquisition schedules and substance memory.** Durable owned jobs,
+  daily/interval schedules, restart recovery, bounded public source adapters and immutable
+  raw receipts. Published at `35deca9`; CI `34568553854`: 286/286, including Chromium.
+- [x] **E3.7 — Personal settings and keys.** Owner-scoped encrypted vault, immutable settings
+  snapshots, task/catalog provenance, reserved LLM budgets and personal SERP limits.
+  Eight integration tests pass; malformed credential bodies cannot echo key fragments.
+- [x] **E5.6 — Reviewed setup research plan.** Idempotent wizard launch through the actual
+  JH16 MethodSpec executor; 32 fixture observations and manifest approval/hash checked.
+  Separate language/geography and bounded public jobs. Browser coverage added for CI.
+- [x] **E3.8 — Many personal providers and evidence-based task routing.** Sixteen protocol
+  profiles, native Messages, private model catalogs, reviewed price ceilings, seven task
+  profiles and comparable reviewed benchmarks plus operational history. 285 local tests
+  pass. See PERSONAL_PROVIDERS.md; direct price feeds and semantic benchmark runners remain open.
+- [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
+  discovery receipt lineage, source-anchored methodology and required inputs, explicit
+  reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.
+  See RESEARCH_WORKSHOP.md for the supported text/abstract scope and validation evidence.
+- [ ] **E5.7b — General executable replication and hypothesis studies.** Connect reviewed
+  assessments to frozen MethodSpecs and actual acquired inputs; confirmation partitions,
+  comparison families, hypothesis prioritization and project/draft evidence graphs remain open.
+- [x] **E5.8a — Deterministic JSON/CSV extraction and goal navigation.** Form-based or LLM-
+  proposed copy profiles, exact-output tests, hash-bound activation, lexical provenance,
+  persistent test/execution history and exports; ten capability-filtered goal paths.
+- [ ] **E5.8b — General extension execution and adaptive navigation.** HTML/PDF parsing,
+  sandboxed generated modules, full compatibility contracts, saved workflow favourites
+  and an autonomous natural-language goal planner remain open.
+- [x] **E5.8c — Source extraction to reviewed statistical data.** Explicit field types,
+  units, missingness and evidence classification; raw-source/execution lineage checked
+  during import, owned dataset deep link, existing method review and statistical executor.
+  Publication ZIP replays exact copying and conversion without external dependencies.
+  Published `9f5b38d`; CI `34663543418`: 319/319, including the complete browser flow.
+- [x] **E5.8d — Reusable extraction mapping templates.** Private immutable mapping snapshots
+  from successfully imported data, pinned parser/data origins, explicit reuse and an accurate
+  modification flag. No source values, citation, evidence tier or approval is copied from the
+  old dataset. Restart/ownership-transfer and precision/lineage tests pass; browser reuse added.
+
 ## E0 — Repository audit
 
 Nothing else starts until E0 is done. The specification describes intent; the repository is
@@ -347,6 +385,17 @@ condition; PostgreSQL and S3 migration; a real worker process.
 
 ## E4 — Identity
 
+- [x] **E4.2 — Peer capability profiles.** One shared resolver, `/auth/me` union, UI navigation
+  and route gates, additive role migration, full principal role sets. Matrix + real HTTP tests
+  verify researcher/responder separation, combined profiles, restricted institutional access,
+  admin/developer distinction and the legacy `dev` alias. Supersedes the old ladder below.
+
+- [x] **E4.4 — Run/resource ownership.** Legacy run lists and all descendants enforce ownership;
+  raw blobs require an owned fetch event. New runs/artifacts inherit the signed-in principal.
+  Source-run reuse is owner-gated. Legacy approval is scoped to the shipped method, requires
+  the displayed hash, derives the reviewer from the session and writes an audit event.
+  HTTP tests include workbench-result bypass attempts and separate acquisition/analysis runs.
+
 Contents: OIDC behind `IdentityProvider`; role ladder `viewer < researcher < admin < dev`
 (recovered pre-MVP requirement, folded in here per the conflict resolution in
 `00_STATE_AND_DECISIONS.md`); RBAC capability matrix; migration of `local-user` rows; access
@@ -354,6 +403,39 @@ requests and admin approval; per-source permissions; developer diagnostics surfa
 `dev` role.
 
 ## E5 — Workbench and replication engine
+
+- [x] **E5.1 — Versioned source tables.** JSON/CSV import, original CSV retention, explicit
+  column types/units/missing reasons/provider/comparison context, WORM hashes and separate
+  retrieval/import events. Individual hash-bound approval, revocation and aggregate sharing.
+  Real database/HTTP tests verify access isolation and missingness.
+- [x] **E5.2 — First visual workbench.** 2D scatter, line, observation bars, orthographic 3D
+  and Natural Earth geographic markers; filters, time frames, panels, color/size/alpha/labels,
+  camera controls, inspect/select, shared visible/context palette, exact saved figures and
+  favourites. SVG/CSV/JSON exports pin source and profile identity. Render tests cover missing
+  values, log gaps, discontinuities, map units and 3D geometry. Browser workflow is a CI gate.
+- [x] **E5.3 — Reviewed exploratory analysis.** Existing describe/Pearson/Spearman primitives
+  behind individual MethodSpec approval; inputs/selections are hash-bound. Existing runs,
+  analysis tables, artifacts and manifests persist deterministic results with replay inputs.
+  Saved result references reject forged hashes, changed selections, other owners and revocation.
+- [x] **E4.3 — Developer diagnostics UI.** Capability-gated mode control, recent request
+  metadata, persisted traces/errors and redacted ZIP download. Mode changes are audited;
+  concurrent spans retain unique ordered sequence numbers.
+- [x] **E5.4 — Reproducible publication package.** WORM profile snapshots; automatic historical
+  palette/style restoration and portable figure JSON import. Browser and server exports share
+  one SVG renderer. Deterministic ZIP includes full data, figure, profile, source CSV, selected
+  rows and optional method/inputs/result/manifest. Standalone verification checks checksums and
+  linked identities. Real DB/HTTP tests cover configuration changes, tampering, revocation,
+  private-result isolation and numerical replay. Chromium import/download/reload is a CI gate.
+- [x] **E5.5 — Reviewed boundary maps.** Versioned Polygon/MultiPolygon import, exact source
+  mapping and separate owner review/sharing/revocation. Choropleths preserve zero, missing,
+  absent, ambiguous and unmatched observations; explicit mappings, class breaks, alpha,
+  time/facets, labels, extent controls, region inspection and favourites persist. Research ZIPs
+  retain geometry/source/approval and per-panel joins, independently checked by the verifier.
+  Real DB/HTTP and render tests cover joins, hash pins, WORM, access and revocation. Production
+  Chromium import → review → map → save/reload → SVG/ZIP verification is a CI gate.
+- [ ] **E5 remainder.** Transform DAG, advanced reviewed methods, Python sidecar, uncertainty
+  bands, graph layers, route-hypothesis workflow, and the full paper pipeline.
+  Their presence in the following inventory is not an implementation claim.
 
 Contents: dataset import and the transform DAG; the generic method registry beyond the seven
 primitives, including the baseline statistical family (Pearson/Spearman/Kendall, regression,
@@ -365,15 +447,24 @@ the replication engine per `08_REPLICATION_ENGINE.md`, including the later auton
 replication-agent pipeline (`DISCOVERED → SCREENED → METHOD_EXTRACTED → ... → REPORT_DRAFTED`)
 and the rule that a replication assessment never collapses method/data/population/analysis
 fidelity into one score; the paper pipeline; the visualisation registry (line/bar/scatter,
-uncertainty bands, region maps, provider-discontinuity markers, graph-neighbourhood views). A
-3D region×substance×metric cube is preserved as a candidate only — not a dependency of anything
-above it, and not scheduled.
+uncertainty bands, region maps, provider-discontinuity markers, graph-neighbourhood views). 3D and further visual channels were explicitly brought forward by the owner; see D19 and
+`13_VISUAL_WORKBENCH.md`. Orthographic 3D is implemented in E5.2.
 
 This epic is explicitly domain-neutral (D13): everything here must work for an arbitrary
 dataset, not only the drug vertical, and nothing in this list may be implemented by importing
 a drug-specific concept into the generic method registry.
 
 ## E6 — Field and clinical interfaces
+
+- [x] **E6.1 — Reviewed responder references.** Versioned sample/alert/assertion import into
+  the existing graph, individual approval/revocation, regional pill/market/symptom lookup,
+  fixed twelve-category reference cards and independent evidence/review/quality signals.
+  Bundled real-source mappings remain PROPOSED until reviewed. See `docs/FIELD_REFERENCE.md`.
+- [x] **E6.2 — Bounded offline reference access.** Hash-checked principal snapshots, TTL,
+  static production shell, cached-source age and offline audit outbox with idempotent sync.
+  Backend/render/client tests pass; production browser reload is an explicit CI gate.
+- [ ] **E6 remainder.** Automated alert classification/queues, additional reviewed source
+  coverage, public-health policy timelines and the public harm-reduction surface.
 
 Contents: the substance-centric knowledge graph and assertion mechanism per
 `12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` — populating `assertions`, `targets`,
@@ -423,7 +514,24 @@ just because the schema for all three already exists.
 
 ---
 
+## Continued research vertical slices
+
+- [x] **E5.8e — Source-linked selected paper operations.** Manual quote or saved assessment
+  operation -> approved numeric columns and explicit origins/substitutions -> immutable
+  method proposal -> human review -> real describe/Pearson/Spearman execution -> history
+  and portable source-verified ZIP. All data rows, current approval/ownership, exact source
+  anchors and unresolved scope are retained. See `docs/PAPER_ANALYSES.md` and
+  `docs/ASTRA_PROGRESS.md`. This does not mark the general paper compiler complete.
+
 ## Blocked
+
+### Continuation checkpoint (2026-09-08)
+
+- [x] **E0.6 — Portable clean install and test entrypoints.** Repair missing optional-platform
+  lock entries; use Node's tsx loader without a CLI IPC server. Lockfile consistency,
+  production build and offline JH16 demo checked. Baseline 227/231 passed; four browser tests
+  blocked by absent Chromium/download timeout, not by a reported application assertion.
+  See `docs/ASTRA_PROGRESS.md` for exact environment limits.
 
 *Nothing. E1.20's tolerance bands, the one item that was blocked, were proposed against the
 primary source and then registered under authority the maintainer delegated explicitly. The

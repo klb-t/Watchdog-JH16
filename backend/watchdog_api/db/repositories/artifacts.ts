@@ -1,8 +1,7 @@
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
-import { manifests, artifacts } from '../schema';
+import { manifests, artifacts, runs } from '../schema';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { LOCAL_USER_ID, DEFAULT_VISIBILITY } from '../../domain/principal';
 
 export const MANIFEST_SCHEMA_VERSION = '1.0';
 
@@ -42,6 +41,8 @@ export class ArtifactRepository {
     metadata?: Record<string, unknown>;
   }): string {
     const id = randomUUID();
+    const run = this.db.select().from(runs).where(eq(runs.id, input.runId)).get();
+    if (!run) throw new Error('An artifact requires an existing owning run.');
     this.db.insert(artifacts).values({
       id,
       run_id: input.runId,
@@ -51,8 +52,8 @@ export class ArtifactRepository {
       sha256: input.sha256,
       byte_size: input.byteSize ?? null,
       immutable: 1,
-      owner_principal_id: LOCAL_USER_ID,
-      visibility: DEFAULT_VISIBILITY,
+      owner_principal_id: run.owner_principal_id,
+      visibility: run.visibility,
       created_at: new Date().toISOString(),
       metadata_json: input.metadata ? JSON.stringify(input.metadata) : null,
     }).run();

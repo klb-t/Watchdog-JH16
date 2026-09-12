@@ -1,4 +1,5 @@
-import { test, beforeEach, afterEach } from 'node:test';
+import { tmpdir } from 'node:os';
+import { test, beforeEach, afterEach, after } from 'node:test';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -10,7 +11,10 @@ import { buildErrorEnvelope } from '../../backend/watchdog_api/utils/errors';
 import { buildDiagnosticBundle } from '../../backend/watchdog_api/diag/bundle';
 import { createZip, readZip } from '../../backend/watchdog_api/utils/zip';
 
-const DIAG_ROOT = path.join(process.cwd(), 'diagnostics');
+const previousLogDir = tracer.getLogDir();
+const DIAG_ROOT = fs.mkdtempSync(path.join(tmpdir(), 'watchdog-diagnostics-test-'));
+tracer.setLogDir(DIAG_ROOT);
+after(() => { tracer.setLogDir(previousLogDir); cleanup(); });
 
 function cleanup() {
   if (fs.existsSync(DIAG_ROOT)) fs.rmSync(DIAG_ROOT, { recursive: true, force: true });

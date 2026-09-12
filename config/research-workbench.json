@@ -1,0 +1,10 @@
+{
+  "version": "research-workbench-1",
+  "substitutionKinds": [
+    { "id": "original_data_reuse", "label": "Oryginalny zbiór danych", "meaning": "Reanaliza oryginalnych obserwacji; nie jest niezależną replikacją." },
+    { "id": "prior_dataset", "label": "Inny istniejący zbiór", "meaning": "Wariant eksploracyjny. Trzeba porównać konstrukt, próbę i sposób zbierania danych." },
+    { "id": "proxy_measure", "label": "Miara zastępcza", "meaning": "Wariant eksploracyjny. Związek miary zastępczej z badanym konstruktem wymaga walidacji." },
+    { "id": "new_expert_panel", "label": "Nowy panel ekspertów", "meaning": "Wariant z nową próbą. Dane pozostają niedostępne, dopóki nie zostaną faktycznie zebrane." },
+    { "id": "synthetic_scenario", "label": "Scenariusz symulacyjny", "meaning": "Symulacja; nie stanowi empirycznych odpowiedzi ekspertów ani dowodu potwierdzającego hipotezę." }
+  ]
+}

@@ -51,8 +51,8 @@ export function MethodReview() {
       const res = await fetch(`/api/method-specs/${view!.id}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // A named human actor is required; there is no bulk approve.
-        body: JSON.stringify({ approved_by: 'local-user' }),
+        // Review pins the displayed content. The server identifies the signed-in actor.
+        body: JSON.stringify({ expectedHash: view!.spec_hash }),
       });
       if (!res.ok) throw new Error((await res.json()).message ?? 'approval failed');
       await load();

@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import {
-  Identity, buildIdentity, authorize, Capability, RBAC, ROLES,
+  Identity, buildIdentity, authorize, Capability, capabilitiesFor, ROLES, AUTHORIZATION_PROFILE_VERSION,
   SESSION_COOKIE_NAME, sessionCookieHeader, clearSessionCookieHeader,
   principalIdFor, emailFingerprint, TokenRejectedError, ForbiddenError, UnauthenticatedError,
 } from '../identity';
@@ -85,7 +85,6 @@ export function buildAuthRouter(deps: AuthDeps): Router {
 
   router.get('/me', (req, res) => {
     if (!req.principal) return res.status(401).json({ error: { code: 'unauthenticated' } });
-    const role = req.principal.roles[0];
     res.json({
       principal: {
         id: req.principal.id,
@@ -95,7 +94,8 @@ export function buildAuthRouter(deps: AuthDeps): Router {
       },
       // Sent so the UI hides what the user cannot do, rather than offering
       // buttons that fail. The server still enforces every one of them.
-      capabilities: RBAC[role as keyof typeof RBAC] ?? [],
+      capabilities: capabilitiesFor(req.principal.roles),
+      authorization_profile_version: AUTHORIZATION_PROFILE_VERSION,
     });
   });
 
@@ -154,7 +154,7 @@ export function buildAuthRouter(deps: AuthDeps): Router {
     res.json({ signed_out: true });
   });
 
-  router.get('/principals', requireCapability('principal.manage'), (_req, res) => {
+  router.get('/principals', requireCapability('principal.view'), (_req, res) => {
     res.json({
       principals: deps.principals.list().map(p => ({
         id: p.id,
@@ -163,6 +163,7 @@ export function buildAuthRouter(deps: AuthDeps): Router {
         email_fingerprint: p.email ? emailFingerprint(p.email) : null,
         display_name: p.display_name,
         role: p.role,
+        roles: p.roles,
         identity_provenance: p.identity_provenance,
         created_at: p.created_at,
         last_seen_at: p.last_seen_at,

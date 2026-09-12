@@ -34,7 +34,7 @@ test('Flight Recorder - Context propagation and events', async () => {
   assert.ok(childEvent, 'Child span event should exist');
   assert.strictEqual(childEvent.context.parent_span_id, stateBeforeEvent.context.span_id, 'Child span should link to parent span');
   
-  fs.rmSync(path.join(process.cwd(), 'diagnostics'), { recursive: true, force: true });
+  fs.rmSync(logDir, { recursive: true, force: true });
 });
 
 test('Flight Recorder - Error Causal Chain', async () => {
@@ -65,5 +65,20 @@ test('Flight Recorder - Error Causal Chain', async () => {
   assert.strictEqual(errorObj.cause_chain[0].message, "Root cause network failure");
   assert.strictEqual(errorObj.cause_chain[0].error_code, "NET_ERR");
   
-  fs.rmSync(path.join(process.cwd(), 'diagnostics'), { recursive: true, force: true });
+  fs.rmSync(logDir, { recursive: true, force: true });
+});
+
+test('Flight Recorder - concurrent sibling spans retain a unique ordered trace sequence', async () => {
+  const previous = tracer.getMode(); tracer.setMode('TRACE');
+  const id = `concurrent-${Date.now()}`, directory = tracer.traceDir(id);
+  try {
+    await tracer.runWithSpan('test', 'parent', async () => {
+      await Promise.all(['first', 'second'].map(name => tracer.runWithSpan('test', name, async () => {
+        tracer.input({ name }); await Promise.resolve(); tracer.result({ name });
+      })));
+    }, { trace_id: id });
+    const events = fs.readFileSync(path.join(directory, 'events.jsonl'), 'utf8').trim().split('\n').map(line => JSON.parse(line));
+    assert.deepEqual(events.map(e => e.context.sequence_no), events.map((_, index) => index + 1));
+    assert.equal(new Set(events.map(e => e.context.span_id)).size, 3);
+  } finally { tracer.setMode(previous); fs.rmSync(directory, { recursive: true, force: true }); }
 });

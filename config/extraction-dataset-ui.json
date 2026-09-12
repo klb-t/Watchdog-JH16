@@ -1,0 +1,100 @@
+{
+  "version": "extraction-dataset-ui-1",
+  "labels": {
+    "nameSuffix": " · dane",
+    "description": "Dane skopiowane z przekazanego źródła. Mapowanie wymaga przeglądu.",
+    "sourceTitle": "Plik przekazany do ekstraktora",
+    "sourcePublisher": "Nieustalony",
+    "sourceLicense": "Nieustalona",
+    "measureDefault": "Do określenia na podstawie źródła",
+    "scopeDefault": "Zakres porównywalności do sprawdzenia",
+    "rowLabel": "Rekord źródłowy",
+    "rowDescription": "Identyfikator kolejności w źródle; metadane, nie pomiar.",
+    "sourceField": "Pole źródłowe:",
+    "rowMetadata": "Metadane: kolejność rekordu źródłowego",
+    "heading": "Przygotuj te dane do analizy",
+    "introduction": "Wybierz typy, jednostki i znaczenie kolumn. Kopiowanie nie ustala jakości dowodu: domyślnie pozostaje ona nieznana. Nowy zbiór trafi do przeglądu w warsztacie statystycznym.",
+    "name": "Nazwa zbioru",
+    "measure": "Co mierzą dane?",
+    "datasetDescription": "Opis zbioru",
+    "scope": "Zakres porównywalności",
+    "mapping": "Mapowanie skopiowanych pól",
+    "precision": "Liczby liczymy w binary64. Konwersja, która zmienia zapis dziesiętny wartości lub przekracza dokładny zakres liczb całkowitych, zostanie odrzucona. Taki identyfikator lub pomiar można zachować jako tekst. Oryginalny zapis zawsze pozostaje w źródle.",
+    "label": "Etykieta",
+    "labelAria": "Etykieta kolumny",
+    "type": "Typ",
+    "typeAria": "Typ kolumny",
+    "unit": "Jednostka",
+    "unitAria": "Jednostka kolumny",
+    "unitPlaceholder": "np. mg, nM, dimensionless",
+    "semantics": "Znaczenie",
+    "semanticsAria": "Znaczenie kolumny",
+    "key": "Identyfikator kolumny",
+    "keyAria": "Identyfikator kolumny",
+    "columnDescription": "Opis",
+    "columnDescriptionAria": "Opis kolumny",
+    "emptyAsMissing": "Pusty tekst w tym polu oznacza brak danych",
+    "sourceContext": "Źródło i kontekst",
+    "evidence": "Klasyfikacja dowodu",
+    "normalization": "Normalizacja",
+    "language": "Znaczenie języka",
+    "sharing": "Bez adresu zapisujemy identyfikator zawartości SHA-256. Zbiór i eksport zawierają cały przekazany plik, również niewybrane pola. Przy późniejszym udostępnianiu zbioru będzie dostępny także ten plik.",
+    "create": "Utwórz zbiór do przeglądu",
+    "saved": "Zbiór zapisany",
+    "open": "Otwórz ten zbiór w warsztacie statystycznym",
+    "templates": "Zapisane szablony mapowania",
+    "templateSelect": "Szablon dla tego parsera",
+    "templateNone": "Wybierz szablon…",
+    "templateExplanation": "Szablon przenosi kolumny, jednostki, braki i kontekst porównania. Każdy nowy plik zachowuje własne dane, źródło i klasyfikację dowodu. Sprawdź, czy ustawienia nadal pasują.",
+    "templateApply": "Użyj wybranego szablonu",
+    "templateApplied": "Zastosowano szablon. Przejrzyj ustawienia dla nowego źródła.",
+    "templateSaveHint": "Po utworzeniu zbioru możesz zapisać jego ustawienia mapowania do kolejnych plików.",
+    "templateName": "Nazwa szablonu mapowania",
+    "templateSave": "Zapisz mapowanie jako szablon",
+    "templateSaved": "Zapisano niezmienną wersję szablonu.",
+    "templateOrigin": "Pochodzenie szablonu i jego wersja"
+  },
+  "choices": {
+    "types": {
+      "text": "Tekst — dokładna wartość źródłowa",
+      "number": "Liczba do analizy",
+      "date": "Data ISO"
+    },
+    "semantics": {
+      "dimension": "Wymiar / identyfikator",
+      "count": "Liczebność",
+      "proportion": "Proporcja",
+      "percentage": "Procent",
+      "score": "Wartość / wynik",
+      "rank": "Ranga",
+      "coefficient": "Współczynnik"
+    },
+    "normalization": {
+      "unknown": "Nieustalona",
+      "none": "Brak",
+      "within_export_0_100": "0–100 wewnątrz jednego eksportu",
+      "consistently_scaled": "Wspólna, zweryfikowana skala"
+    },
+    "language": {
+      "unknown": "Nieustalone / nie dotyczy",
+      "query_term_language": "Język zapytań",
+      "corpus_language": "Język korpusu",
+      "interface_language": "Język interfejsu źródła"
+    },
+    "source": {
+      "title": "Tytuł źródła",
+      "publisher": "Wydawca źródła",
+      "license": "Licencja danych",
+      "sourceRecordId": "Identyfikator źródła",
+      "url": "Adres HTTPS źródła (opcjonalnie)"
+    },
+    "evidence": {
+      "PRIMARY_EMPIRICAL": "Pierwotne dane empiryczne",
+      "CURATED_SECONDARY": "Opracowanie wtórne",
+      "RAW_OBSERVATIONAL": "Surowa obserwacja",
+      "MODELED_PREDICTED": "Wynik modelu / predykcja",
+      "SPECULATIVE": "Spekulacja",
+      "UNKNOWN": "Nieustalona"
+    }
+  }
+}

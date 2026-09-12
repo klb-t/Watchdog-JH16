@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "automation-profile-1",
+  "label": "Public reference and reproducibility discovery",
+  "verifiedOn": "2026-09-11",
+  "worker": { "pollMs": 5000, "leaseMs": 120000, "heartbeatMs": 15000, "requestTimeoutMs": 20000, "maxResponseBytes": 5000000 },
+  "sources": [
+    { "id": "pubchem", "source": "chemical_reference", "label": "PubChem · identity and chemistry", "implemented": true, "keyRequired": false, "minIntervalMs": 1000, "origin": "https://pubchem.ncbi.nlm.nih.gov", "pathPrefix": "/rest/pug/", "documentation": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest", "license": "PubChem source-specific provenance; NCBI data usage policies", "purpose": "Exact compound identity and reported structural properties. No automatic class-to-molecule equivalence." },
+    { "id": "chembl", "source": "pharmacology_activity", "label": "ChEMBL · target and assay measurements", "implemented": true, "keyRequired": false, "minIntervalMs": 1000, "origin": "https://www.ebi.ac.uk", "pathPrefix": "/chembl/api/data/", "documentation": "https://chembl.gitbook.io/chembl-interface-documentation/web-services/chembl-data-web-services", "license": "ChEMBL CC BY-SA 3.0; retain original document and assay attribution", "purpose": "Ki, Kd, IC50 and EC50, with relations, units, assay descriptions and organism. Assay activity does not establish a clinical interaction." },
+    { "id": "wikidata", "source": "multilingual_entity_reference", "label": "Wikidata · multilingual names and Wikipedia links", "implemented": true, "keyRequired": false, "minIntervalMs": 1000, "origin": "https://www.wikidata.org", "pathPrefix": "/w/api.php", "documentation": "https://www.wikidata.org/wiki/Wikidata:Data_access", "license": "Wikidata structured data CC0; linked Wikipedia pages have their own licenses", "purpose": "Identity verified against the complete InChIKey. Language labels are not geographic observations." },
+    { "id": "europe_pmc", "source": "scientific_literature", "label": "Europe PMC · literature metadata", "implemented": true, "keyRequired": false, "minIntervalMs": 1000, "origin": "https://www.ebi.ac.uk", "pathPrefix": "/europepmc/webservices/rest/", "documentation": "https://europepmc.org/RestfulWebService", "license": "Europe PMC service terms; article-specific rights retained; metadata only", "purpose": "Bibliographic discovery and source-reported hit counts. These counts are not SERP Ni or harm measurements." },
+    { "id": "arxiv", "source": "preprint_metadata", "label": "arXiv · new preprints", "implemented": true, "keyRequired": false, "minIntervalMs": 3100, "origin": "https://export.arxiv.org", "pathPrefix": "/api/query", "documentation": "https://info.arxiv.org/help/api/user-manual.html", "license": "arXiv API terms; per-paper full-text licenses apply separately", "purpose": "Daily metadata discovery. A preprint or keyword match is not evidence that its claims are reproducible." },
+    { "id": "bindingdb", "source": "pharmacology_activity", "label": "BindingDB", "implemented": false, "keyRequired": false, "documentation": "https://www.bindingdb.org", "license": "Source-specific import profile required", "purpose": "Additional affinity measurements; adapter pending." },
+    { "id": "iuphar", "source": "pharmacology_activity", "label": "IUPHAR / Guide to Pharmacology", "implemented": false, "keyRequired": false, "documentation": "https://www.guidetopharmacology.org/webServices.jsp", "license": "Source-specific attribution required", "purpose": "Curated receptor pharmacology; adapter pending." },
+    { "id": "drugbank", "source": "chemical_reference", "label": "DrugBank", "implemented": false, "keyRequired": true, "documentation": "https://go.drugbank.com", "license": "Configured authorized data access required", "purpose": "No automatic collection until an applicable access profile is configured." }
+  ],
+  "substanceSeeds": ["caffeine", "nicotine", "ethanol", "amphetamine", "methamphetamine", "MDMA", "ketamine", "cocaine", "heroin", "morphine", "fentanyl", "naloxone", "buprenorphine", "methadone", "diazepam", "alprazolam", "LSD", "psilocin", "mephedrone", "gamma-hydroxybutyric acid"],
+  "discovery": {
+    "screeningVersion": "metadata-screening-1",
+    "arxivSubstanceQuery": "(all:psychoactive OR all:narcotic OR all:opioid OR all:psychedelic OR all:cannabis OR all:amphetamine OR all:substance-abuse)",
+    "europePmcSubstanceQuery": "(psychoactive OR narcotic OR opioid OR psychedelic OR cannabis OR amphetamine OR substance abuse)",
+    "methodHints": ["correlation", "regression", "bootstrap", "permutation", "meta-analysis", "open data", "github", "reproducib"],
+    "blockers": ["Full method and input data have not been verified", "No approved executable MethodSpec is linked", "Claims and tolerances must be frozen before comparison"]
+  },
+  "defaults": {
+    "substanceJob": { "kind": "substance_refresh", "names": ["caffeine", "ketamine", "naloxone"], "providers": ["pubchem", "chembl", "wikidata", "europe_pmc"], "maxRequests": 60, "pageLimit": 2 },
+    "paperJob": { "kind": "paper_scan", "providers": ["arxiv", "europe_pmc"], "scope": "substances", "lookbackDays": 7, "maxRequests": 8, "pageLimit": 4 },
+    "recurrence": { "kind": "daily_utc", "hour": 6, "minute": 0 }
+  }
+}

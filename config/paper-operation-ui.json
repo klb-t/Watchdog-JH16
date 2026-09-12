@@ -1,0 +1,78 @@
+{
+  "version": "paper-operation-ui-1",
+  "title": "Analizy prac",
+  "introduction": "Powiąż cytat z konkretnymi kolumnami i sprawdź metodę przed obliczeniami. Działa bez klucza LLM. Każdy plan obejmuje jedną operację i wszystkie wiersze wybranego zbioru.",
+  "scopeLabel": "Analiza wybranej części pracy; replikacja całości nie została ustalona.",
+  "methods": [
+    {
+      "id": "describe",
+      "label": "Statystyki opisowe",
+      "missingPolicies": [
+        "propagate"
+      ],
+      "renderer": "bar"
+    },
+    {
+      "id": "pearson",
+      "label": "Korelacja Pearsona",
+      "missingPolicies": [
+        "exclude",
+        "fail"
+      ],
+      "renderer": "scatter"
+    },
+    {
+      "id": "spearman",
+      "label": "Korelacja rang Spearmana",
+      "missingPolicies": [
+        "exclude",
+        "fail"
+      ],
+      "renderer": "scatter"
+    }
+  ],
+  "origins": [
+    {
+      "id": "unspecified",
+      "label": "Pochodzenie jeszcze nieustalone"
+    },
+    {
+      "id": "new_observations",
+      "label": "Nowe obserwacje (deklaracja użytkownika)"
+    },
+    {
+      "id": "original_data_reuse",
+      "label": "Dane oryginalnej pracy — reanaliza"
+    },
+    {
+      "id": "prior_dataset",
+      "label": "Inny istniejący zbiór"
+    },
+    {
+      "id": "proxy_measure",
+      "label": "Miara zastępcza"
+    },
+    {
+      "id": "new_expert_panel",
+      "label": "Nowy panel ekspertów"
+    },
+    {
+      "id": "synthetic_scenario",
+      "label": "Dane symulowane"
+    }
+  ],
+  "missingPolicies": [
+    {
+      "id": "propagate",
+      "label": "Raportuj liczbę braków i statystyki dostępnych wartości"
+    },
+    {
+      "id": "exclude",
+      "label": "Wyklucz braki z obliczeń (pary dla korelacji)"
+    },
+    {
+      "id": "fail",
+      "label": "Przerwij, jeśli są braki"
+    }
+  ]
+}

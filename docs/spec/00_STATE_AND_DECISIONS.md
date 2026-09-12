@@ -1,11 +1,22 @@
 # State and binding decisions
 
-Last updated: 2026-08-19, after E0 and E1 completed in full. Update this file whenever a
+Last updated: 2026-09-09, Astra continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**2026-09-08 continuation:** see `docs/ASTRA_PROGRESS.md` for the re-run baseline and runtime
+limits. D18 below supersedes every old ordinal-role description in this document. The owner
+has prioritised the general responder vertical (pill/market-label/region/time → composition →
+cited reference facts and interactions), including evidence tier, category ordering, approval
+and quality flags. “Green X” is an illustrative acceptance scenario, not a domain restriction.
+
+**2026-09-09 workbench checkpoint:** implemented versioned JSON/CSV imports and aggregate sharing,
+2D/3D/map figures with time/facet/color/size/alpha channels, source inspection and a shared tool
+palette, approved descriptive/Pearson/Spearman analysis, favourite figure snapshots, vector/data
+exports and developer diagnostics. See D19 and `docs/WORKBENCH.md` for boundaries and operation.
 
 **Superseded by E0.1's audit (`docs/AUDIT.md`) — kept for lineage, resolved inline:**
 
@@ -431,6 +442,48 @@ decisions to the maintainer, so the adapters are built complete and left credent
 reports `absent` until a key is present in the environment. No account is created and no
 spending is committed by the agent.
 
+### D18 — Capability bundles and responder priority (owner correction, 2026-09-08)
+
+The earlier ladder was the first implementation. `researcher` and `responder` are peers;
+their union grants both workflows. `institutional` and `law_enforcement` grant restricted
+reference lookup, with no private research, evidence curation, audit-history review or role
+management. `admin` is operational; `developer` adds principal management and diagnostics.
+`dev` remains an equivalent compatibility alias for existing grants and signed sessions.
+
+The single versioned MVP profile is `shared/authorization.ts`; API enforcement and `/auth/me`
+use its union resolver. The UI consumes those capabilities for navigation and route gates.
+The principal repository preserves the full set instead of choosing an ordinal maximum.
+New role rows are an additive migration; existing OIDC subjects and ownership remain intact.
+
+The owner has brought the responder vertical forward after this foundation. The compiler,
+worker and generic-workbench tasks remain open; their unfinished status does not block the
+explicitly requested E6 flow. Keep the graph and its four independent presentation dimensions
+(evidence tier, content category, approval and quality flags) general, not tied to one pill.
+
+### D19 — Visual workbench, institutional aggregates and profile identity (2026-09-09)
+
+The owner's subsequent instructions explicitly bring forward maps, chart/map tool palettes,
+favourites, publication settings, 3D and additional dimensions; spec/13 records the authority
+and supersedes E5's old unscheduled-3D wording. This is a working first workbench slice, not
+completion of the full advanced-statistics, causal-analysis or paper-generation backlog.
+
+Datasets are versioned source documents with per-owner approval and explicit aggregate sharing.
+Institutional profiles see approved shared aggregates, keep their own figure/result history,
+and do not acquire private research, curation or diagnostic permissions. A figure pins its
+source hash, renderer version and visualization-profile hash. An altered profile is reported
+as unavailable for that figure, never silently substituted. Full profiles accompany exports.
+Providers, renderers, palettes and shared evidence displays are validated configuration.
+
+Method proposals pin the exact statistical inputs, units, filters and missing-value policy;
+individual human approval is required. Styling does not change the statistical method hash.
+Runs use the existing deterministic primitives, state machine, analysis tables, object store
+and immutable manifests. Result links are checked against ownership, current approval and
+selection identity. No live Trends access, synthetic surveillance feed, sentiment model or
+verified distribution-route engine is claimed. Imported annotations preserve their own tiers.
+
+Developer diagnostics expose redacted request metadata, persisted trace events/errors and ZIP
+bundles. Concurrent spans now share one trace sequence. Changes to recorder mode are audited.
+
 ## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.
@@ -459,3 +512,76 @@ Do not block on these. Proceed with the stated default and flag the assumption.
 
 Only E0 and E1 are broken into tasks in `07_EPICS_AND_TASKS.md`. Later epics are deliberately
 coarse; they will be decomposed when their turn comes, against the repository as it is then.
+
+
+### E5.4 implementation checkpoint — 2026-09-09
+
+Visualization settings now resolve immutable archived profiles; portable imports cannot restore
+source approval or someone else's analysis. Publication ZIPs retain complete source and method
+provenance with file hashes, independent verification and the actual rendered SVG. Rendering
+code is shared between browser and server. Legacy run/resource API ownership gates also apply
+to workbench-created results, preventing access through an older route. See WORKBENCH.md and
+ASTRA_PROGRESS.md for verified behavior, test evidence and remaining scope.
+
+
+### E5.5 implementation checkpoint — 2026-09-10
+
+Regional fills use separately versioned/reviewed geometry with exact identifiers and optional
+explicit mapping data. Missing values, absent observations, ambiguous multi-row joins and
+unmatched source codes remain distinct; no aggregation is inferred. Polygon/MultiPolygon,
+holes, time/panels, color classes and alpha use the shared renderer and persist in favourites.
+Boundary ID/hash pins are access-checked during save, restore and export. Publication packages
+preserve original GeoJSON, geometry receipts and independently verifiable join reports. The
+bundled map requires explicit import and review; its pre-existing collapsed PRK part is retained
+and flagged. Transform DAGs, advanced spatial/causal methods and paper generation remain open.
+
+### E3.6 / E5.6 checkpoint — 2026-09-11
+
+Durable public acquisition and daily/interval schedules are published and CI-verified.
+The personal wizard adds encrypted owner keys, cost ceilings, archived model prices,
+independent exploration dimensions and an idempotent approved JH16 MethodSpec launch.
+UI modes do not change role grants. See PERSONAL_SETUP.md and ASTRA_PROGRESS.md.
+The latest maintainer direction supersedes the early narrow product scope: goal-oriented
+contextual flows, many provider profiles, measured task routing, arbitrary paper intake
+and tested extension proposals. PRODUCT_PRINCIPLES_AND_NEXT.md records precise acceptance
+criteria and what remains; it is not a list of already implemented capabilities.
+
+The next checkpoint adds 16 personal text provider profiles and seven task profiles.
+Direct-provider prices and task benchmarks have explicit reviewed provenance, validity
+and owner scope; unknown quality or price is not inferred from model name or another
+vendor. Details and remaining acquisition/benchmark automation are in PERSONAL_PROVIDERS.md.
+
+### E5.7a / E5.8a checkpoint — 2026-09-11
+
+Arbitrary submitted paper text and discovered abstracts now enter an immutable research
+workspace. Methodology proposals retain exact source anchors and separate missing inputs,
+operations, hypotheses and explicit substitutes. Reusing original data means reanalysis;
+simulated expert answers remain simulation. Assessment is not executable method approval.
+Owned daily/interval reviews respect task budgets, cancellation and no automatic rebilling
+of failed/interrupted attempts. Source revisions retain discovery and raw-receipt lineage.
+
+Strict JSON/CSV copy profiles extend extraction through data, not new bespoke source code.
+LLMs propose structure selectors; deterministic code copies source values as lexical strings.
+Activation requires an exact-output fixture test of the pinned profile. History/raw input,
+provenance and failed trials remain inspectable. Goal navigation leads to existing workflows;
+source/variant/parser forms expose common actions without requiring JSON editing. General
+scientific replication, generated executable modules and advanced inference remain open.
+
+### E5.8c checkpoint — 2026-09-12
+
+A tested parser execution can now become a proposed statistical dataset through explicit
+column types, units, missingness and source context. Import preserves and verifies the exact
+source/execution lineage. The interface links directly to that dataset's existing review and
+analysis workflow. Profile data controls the new form's wording/options. Whole source files,
+including unselected fields, accompany later publication. Export packages replay copying and
+numeric conversion offline. Decimal precision loss is rejected; calculations remain binary64.
+This stage connects acquired values to existing statistics; it does not infer an executable
+method from a paper, generate missing observations or certify an independent replication.
+
+### E5.8d checkpoint — reusable mapping profiles
+
+Named private extraction mappings now survive repeated source imports as immutable templates.
+Reuse restores explicit settings for the exact parser; it never supplies old observations,
+citations, evidence classifications or approvals. Origin IDs/hashes and later mapping edits
+remain visible in provenance. The normal dataset/method review and numeric precision contract
+continue to apply. This is a saved workflow step, not autonomous arbitrary-paper execution.

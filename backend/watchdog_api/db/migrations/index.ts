@@ -3,6 +3,17 @@ import { MIGRATION_001_INITIAL_SCHEMA } from './001_initial_schema';
 import { MIGRATION_002_ASSERTIONS } from './002_assertions';
 import { MIGRATION_003_QUERY_PLAN_IDENTITY } from './003_query_plan_identity';
 import { MIGRATION_004_PRINCIPALS } from './004_principals';
+import { MIGRATION_005_ROLE_PROFILES } from './005_role_profiles';
+import { MIGRATION_009_GEOMETRY_LAYERS } from './009_geometry_layers';
+import { MIGRATION_008_WORKBENCH_PROFILES } from './008_workbench_profiles';
+import { MIGRATION_007_WORKBENCH } from './007_workbench';
+import { MIGRATION_006_FIELD_REFERENCE } from './006_field_reference';
+import { MIGRATION_010_AUTOMATION } from './010_automation';
+import { MIGRATION_011_PERSONAL_SETTINGS } from './011_personal_settings';
+import { MIGRATION_012_ASSISTANT_PROFILES } from './012_assistant_profiles';
+import { MIGRATION_013_RESEARCH_INTAKE } from './013_research_intake';
+import { MIGRATION_015_PAPER_OPERATIONS } from './015_paper_operations';
+import { MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES } from './014_extraction_mapping_templates';
 
 export interface Migration {
   readonly id: string;
@@ -18,7 +29,18 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '001_initial_schema', sql: MIGRATION_001_INITIAL_SCHEMA },
   { id: '002_assertions', sql: MIGRATION_002_ASSERTIONS },
   { id: '003_query_plan_identity', sql: MIGRATION_003_QUERY_PLAN_IDENTITY },
-  { id: '004_principals', sql: MIGRATION_004_PRINCIPALS }
+  { id: '004_principals', sql: MIGRATION_004_PRINCIPALS },
+  { id: '005_role_profiles', sql: MIGRATION_005_ROLE_PROFILES },
+  { id: '006_field_reference', sql: MIGRATION_006_FIELD_REFERENCE },
+  { id: '007_workbench', sql: MIGRATION_007_WORKBENCH },
+  { id: '008_workbench_profiles', sql: MIGRATION_008_WORKBENCH_PROFILES },
+  { id: '009_geometry_layers', sql: MIGRATION_009_GEOMETRY_LAYERS },
+  { id: '010_automation', sql: MIGRATION_010_AUTOMATION },
+  { id: '011_personal_settings', sql: MIGRATION_011_PERSONAL_SETTINGS },
+  { id: '012_assistant_profiles', sql: MIGRATION_012_ASSISTANT_PROFILES },
+  { id: '013_research_intake', sql: MIGRATION_013_RESEARCH_INTAKE },
+  { id: '014_extraction_mapping_templates', sql: MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES },
+  { id: '015_paper_operations', sql: MIGRATION_015_PAPER_OPERATIONS }
 ];
 
 const MIGRATIONS_TABLE = `
