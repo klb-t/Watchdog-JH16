@@ -1,17 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { MemorySubstance } from '../../shared/automation';
 import { automationApi as api, formClass, sectionClass } from '../lib/automation_client';
 import { useAccess } from '../lib/access';
+import { SourceHistory } from '../components/SourceHistory';
 export function SubstanceMemory() {
   const access = useAccess(), [query, setQuery] = useState(''), [list, setList] = useState<{id: string; name: string}[]>([]);
   const [selected, setSelected] = useState<MemorySubstance | null>(null), [error, setError] = useState('');
+  const selectionRequest = useRef(0);
   const [target, setTarget] = useState(''), [measure, setMeasure] = useState('all'), [human, setHuman] = useState(false), [limit, setLimit] = useState(100);
-  useEffect(() => { let active = true; setSelected(null); setList([]);
+  useEffect(() => { let active = true; selectionRequest.current++; setSelected(null); setList([]);
     const timer = setTimeout(() => api(`/api/memory/substances?q=${encodeURIComponent(query)}`).then(r => { if (active) setList(r.substances); }).catch(e => active && setError(e.message)), 200);
-    return () => { active = false; clearTimeout(timer); };
+    return () => { active = false; selectionRequest.current++; clearTimeout(timer); };
   }, [query, access.principalId]);
-  const open = async (id: string) => { setError(''); try { setSelected((await api(`/api/memory/substances/${encodeURIComponent(id)}`)).substance); setLimit(100); } catch (e) { setError((e as Error).message); } };
+  const open = async (id: string) => { const request = ++selectionRequest.current; setError(''); setSelected(null);
+    try { const result = await api(`/api/memory/substances/${encodeURIComponent(id)}`); if (selectionRequest.current === request) { setSelected(result.substance); setLimit(100); } }
+    catch (e) { if (selectionRequest.current === request) setError((e as Error).message); } };
   const activities = selected?.activities.filter(a => (measure === 'all' || a.value.measure === measure) && (!human || a.value.organism === 'Homo sapiens') &&
     `${a.value.targetName} ${a.value.targetId} ${a.value.assayDescription}`.toLowerCase().includes(target.toLowerCase())) ?? [];
   return <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-5" data-testid="substance-memory-page">
@@ -42,6 +46,7 @@ export function SubstanceMemory() {
           </article>)}
           {activities.length > limit && <button className="underline" onClick={() => setLimit(n => n + 100)}>Pokaż kolejne 100 pomiarów</button>}
         </section>
+        <SourceHistory key={`${access.principalId}:${selected.id}`} substanceId={selected.id}/>
         <section className={sectionClass}><h2 className="font-semibold">Chemia, bibliografia, Wikipedia i historia pobrań</h2>
           {selected.records.map(r => <details className="border-t pt-2 text-sm" key={r.id}><summary>{r.provider} · {r.kind} · {r.receipt.fetchedAt}</summary>
             <p className="text-xs break-words">{r.receipt.license}</p><a className="underline" href={r.receipt.url} target="_blank" rel="noreferrer">Źródło</a> · <a className="underline" href={`/api/memory/receipts/${r.receipt.id}/raw`}>Zapisane dane</a>

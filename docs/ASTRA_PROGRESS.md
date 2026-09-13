@@ -452,3 +452,35 @@ architecture or task order changed. Historical prompts were treated as reference
 the owner's instruction requires discussion before any change to earlier decisions. Private
 correspondence and contact narratives were not copied into the repository. No missing feature
 was marked complete and no claim of a fresh full conversation-archive search is made.
+
+## 2026-09-13 — E3.9 source history and structural comparisons
+
+The completeness-review checkpoint `f61daa0cb00b4395f5905dcdfba53327a1aff419` passed
+Actions `34725743645`: 332/332 tests, no failures/skips, Chromium, build and JH16 demo.
+The owner then explicitly asked to keep implementing compatible improvements and generalizations.
+
+Source content already deduplicated, but a repeated fetch lost its direct association with
+that content version. Migration 016 adds the immutable association journal and backfills only
+proven first receipts, with an explicit legacy marker. New associations capture the source
+profile and validate the stored receipt in the content-write transaction. Observed source
+rows and receipts cannot be rewritten/deleted. No published migration was edited.
+
+The memory page now has source-context groups, paged check timelines, distinct-version and
+occurrence counts, first/last successful check times, structural comparison and JSON export.
+The comparator is a reusable pure JSON module; labels, colors/icons and limits are validated
+profile data. Absent/null/zero/type distinctions and exact decimal text survive comparison.
+Arrays are positional, different source contexts cannot be silently combined, and traversal
+limits are explicit. The export includes both record snapshots, receipts, context and profile;
+its CLI verifier checks a separately supplied expected hash and recalculates the differences.
+
+Selection changes invalidate old comparisons and ignore stale asynchronous responses. TRACE
+records comparison identity, inputs and limit status. Existing source/raw views and clinical
+review/evidence rules remain in place. See [SOURCE_HISTORY](SOURCE_HISTORY.md) for operation
+and the limits of source change interpretation and historical coverage.
+
+Pre-push checks: TypeScript and production build passed; **327/327 local unit/contract/scientific/
+integration tests passed**, zero failures/skips. Eleven new cases cover migration, repeats,
+reversions, restart, pagination, source-context boundaries, immutable/atomic writes, access,
+real adapter execution with fictional source responses, exact comparison and offline tamper
+checks. The new Chromium scenario also exercises saved JSON verification and 390px layout;
+its result will be checked on the published head before claiming browser validation.

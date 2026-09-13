@@ -147,7 +147,8 @@ test('substance memory preserves exact identities, censored Ki/IC50, units, orga
   const h = harness(); try {
     const j = h.repo.enqueue(h.owner, h.profile.defaults.substanceJob, h.profile.contentHash);
     const receipt = await h.repo.receipt(j.id, 'chembl', 'https://www.ebi.ac.uk/chembl/api/data/activity.json', 200, Buffer.from('fictional test fixture'), 'test fixture');
-    const subject = h.repo.putCompound(99999999, 'Fictional compound', { InChIKey: 'AAAAAAAAAAAAAA-BBBBBBBBBB-C' }, receipt);
+    const identityReceipt = await h.repo.receipt(j.id, 'pubchem', 'https://pubchem.ncbi.nlm.nih.gov/fixture', 200, Buffer.from('fictional identity fixture'), 'test fixture');
+    const subject = h.repo.putCompound(99999999, 'Fictional compound', { InChIKey: 'AAAAAAAAAAAAAA-BBBBBBBBBB-C' }, identityReceipt);
     const raw = { activity_id: 999999991, molecule_chembl_id: 'CHEMBL99999999', target_chembl_id: 'CHEMBL99999998', target_pref_name: 'Fictional receptor subtype',
       standard_type: 'Ki', standard_value: '1.2', standard_relation: '<', standard_units: 'nM', target_organism: 'Rattus norvegicus', assay_type: 'B' };
     const ki = normalizeActivity(raw)!; h.repo.activity(subject, ki, receipt); h.repo.activity(subject, ki, receipt);

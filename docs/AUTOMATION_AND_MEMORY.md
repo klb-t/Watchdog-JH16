@@ -53,6 +53,11 @@ to responder and evidence-review profiles without a new prompt at every lookup. 
 not injected into the separately curated responder treatment/interaction projection.
 Clinical assertions still require that projection's explicit source review.
 
+The [source-history view](SOURCE_HISTORY.md) now retains repeated successful checks of the same
+record and compares exact stored versions within one source context. It distinguishes content
+changes from repeated checks, preserves reversions, exposes historical-coverage limits and
+exports both selected snapshots with a reproducible structural comparison.
+
 ## Discovery and autonomy
 
 One selector expands substance-focused searches to all disciplines covered by the selected

@@ -1,0 +1,30 @@
+{
+  "version": "source-history-ui-1",
+  "labels": {
+    "title": "Historia źródeł i porównanie wersji",
+    "introduction": "Wybierz źródło i dwa zapisane sprawdzenia, aby zobaczyć dokładne różnice w zachowanych rekordach.",
+    "coverage": "Historia obejmuje udane pobrania powiązane z tym rodzajem rekordu. Błędy pobierania i pozostałe odpowiedzi są w historii zadań. Zmiana rekordu nie przesądza o zmianie wiedzy naukowej ani sytuacji na rynku.",
+    "legacy": "Starsze dane zachowały tylko pierwsze powiązane pobranie każdej wersji. Wcześniejsze powtórne sprawdzenia mogły nie zostać powiązane; nie odtwarzamy ich przez domysł.",
+    "source": "Źródło i kontekst pobrania", "older": "Sprawdzenie A", "newer": "Sprawdzenie B",
+    "compare": "Porównaj zapisane dane", "export": "Pobierz porównanie JSON", "refresh": "Odśwież historię",
+    "loadGroups": "Pokaż kolejne źródła", "loadOlder": "Pokaż starsze sprawdzenia", "empty": "Brak powiązanej historii źródła.",
+    "choose": "Wybierz źródło, aby otworzyć jego historię.", "observations": "powiązanych sprawdzeń", "versions": "różnych wersji treści",
+    "firstSeen": "Pierwsze zapisane sprawdzenie", "lastChecked": "Ostatnie udane powiązane sprawdzenie",
+    "versionFirst": "Pierwsze sprawdzenie tej treści", "versionLast": "Ostatnie sprawdzenie tej treści",
+    "context": "Kontekst porównania", "timeline": "Zapisane sprawdzenia", "details": "Pochodzenie i identyfikatory",
+    "raw": "Pobrana odpowiedź źródła", "before": "Wartość A", "after": "Wartość B", "path": "Ścieżka JSON Pointer",
+    "change": "Rodzaj różnicy", "absent": "Pole nieobecne", "equal": "Zachowane rekordy mają identyczną treść.",
+    "different": "Zachowane rekordy różnią się treścią.", "truncated": "Osiągnięto limit porównania. Lista różnic jest częściowa; pełne migawki są w eksporcie JSON.",
+    "loading": "Wczytywanie…", "profile": "Profil porównania", "noComparison": "Wybierz dwa sprawdzenia i uruchom porównanie.",
+    "arrayMeaning": "Tablice są porównywane według pozycji. Zmiana kolejności może dać kilka różnic. Daty i rewizje wpisane przez źródło pozostają polami jego treści; czas pobrania jest osobny.",
+    "sameObservation": "Potrzebne są dwa różne zapisane sprawdzenia.", "error": "Nie udało się wczytać historii",
+    "counts": "Zakres zapisanej historii", "snapshot": "Pełne migawki i parametry porównania"
+  },
+  "transitions": {
+    "FIRST_LINKED": { "label": "Pierwsze powiązane sprawdzenie", "icon": "＋", "color": "#334155" },
+    "UNCHANGED": { "label": "Treść bez zmiany względem poprzedniego sprawdzenia", "icon": "＝", "color": "#1e40af" },
+    "CHANGED": { "label": "Treść zmieniona względem poprzedniego sprawdzenia", "icon": "Δ", "color": "#92400e" }
+  },
+  "changes": { "added": "Dodano", "removed": "Usunięto", "changed": "Zmieniono" },
+  "limits": { "groups": 40, "observations": 40, "changes": 300, "nodes": 100000, "depth": 80, "previewCharacters": 2000 }
+}

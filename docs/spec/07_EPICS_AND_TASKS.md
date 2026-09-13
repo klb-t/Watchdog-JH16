@@ -22,6 +22,12 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   profiles, native Messages, private model catalogs, reviewed price ceilings, seven task
   profiles and comparable reviewed benchmarks plus operational history. 285 local tests
   pass. See PERSONAL_PROVIDERS.md; direct price feeds and semantic benchmark runners remain open.
+- [x] **E3.9 — Linked source checks and structural version comparison.** Migration 016
+  preserves each record/receipt association, with explicit legacy coverage. Context-bound
+  history, repeated checks/reversions, pagination and a profile-driven comparison UI extend
+  substance memory. Portable JSON retains both snapshots and a verified deterministic diff.
+  Eleven new unit/integration cases pass; full local regression is 327/327. Chromium coverage
+  is added for the published CI run. See SOURCE_HISTORY.md for the exact supported scope.
 - [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.

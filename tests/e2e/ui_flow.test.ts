@@ -6,6 +6,10 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { readZip } from '../../backend/watchdog_api/utils/zip';
 import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
+import Database from 'better-sqlite3';
+import { AutomationRepository } from '../../backend/watchdog_api/db/repositories/automation';
+import { LocalFileSystemStore } from '../../backend/watchdog_api/storage/object_store';
+import { sourceSnapshot } from '../fixtures/source_history';
 
 /**
  * E1.21-E1.23 — browser-driven end-to-end tests against fixtures.
@@ -110,6 +114,53 @@ test('E3 automation: daily schedule, one-click all-discipline scope, pause and m
 // -------------------------------------------------------------------------
 // E1.21 — Study page.
 // -------------------------------------------------------------------------
+
+test('E3.9: source history compares preserved values, exports a verifiable snapshot and survives mobile reload',async()=>{
+  const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  const db=new Database(DB_PATH);db.pragma('foreign_keys=ON');
+  let latest:Awaited<ReturnType<typeof sourceSnapshot>>;
+  try{
+    const repo=new AutomationRepository(db,new LocalFileSystemStore(STORE_PATH));
+    const first={fixture:true,amount:'1.00',missing:null,zero:0},changed={fixture:true,amount:'2.00',added:null,zero:0};
+    for(const [index,value] of [first,first,changed,changed].entries()){
+      latest=await sourceSnapshot(db,repo,value,{at:`2026-09-0${index+1}T12:00:00.000Z`});
+    }
+  }finally{db.close();}
+  try{
+    await page.goto(`${baseUrl}/memory`);await page.getByRole('button',{name:'Fictional source-history compound',exact:false}).click();
+    const panel=page.locator('[data-testid="source-history"]');await panel.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(latest!.sequence));
+    await panel.getByText('4 powiązanych sprawdzeń · 2 różnych wersji treści',{exact:true}).waitFor();
+    const completed=page.waitForResponse(r=>r.url().includes(`/api/memory/substances/${encodeURIComponent(latest!.id)}/compare?`) && r.status()===200);
+    await panel.getByRole('button',{name:'Porównaj zapisane dane',exact:true}).click();
+    const response=await completed,result=await response.json();assert.equal(response.headers()['x-content-sha256'],result.contentHash);
+    const comparison=panel.locator('[data-testid="source-comparison"]');await comparison.getByText('Zachowane rekordy różnią się treścią.',{exact:true}).waitFor();
+    assert.match((await comparison.textContent())!,/"1.00"/);assert.match((await comparison.textContent())!,/"2.00"/);
+    assert.match((await comparison.textContent())!,/Pole nieobecne/);assert.match((await comparison.textContent())!,/null/);
+    await page.setViewportSize({width:390,height:844});await comparison.scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
+    fs.mkdirSync('test-artifacts',{recursive:true});await page.screenshot({path:'test-artifacts/source-history-mobile.png',fullPage:false});
+    const downloading=page.waitForEvent('download');await panel.getByRole('button',{name:'Pobierz porównanie JSON',exact:true}).click();
+    await (await downloading).saveAs('test-artifacts/source-comparison.json');
+    const saved=JSON.parse(fs.readFileSync('test-artifacts/source-comparison.json','utf8'));
+    assert.equal(canonicalHash(saved.body),result.contentHash);
+    fs.writeFileSync('test-artifacts/source-comparison-verification.txt',execFileSync(process.execPath,['--import','tsx','scripts/verify_source_comparison.ts',
+      'test-artifacts/source-comparison.json',result.contentHash],{encoding:'utf8'}));
+    const before=panel.getByLabel('Sprawdzenie A',{exact:true});await before.selectOption({index:2});
+    assert.equal(await panel.locator('[data-testid="source-comparison"]').count(),0,'changing an input clears the old comparison');
+    await panel.getByRole('button',{name:'Porównaj zapisane dane',exact:true}).click();
+    await panel.getByText('Zachowane rekordy mają identyczną treść.',{exact:true}).waitFor();
+    await page.reload();await page.getByRole('button',{name:'Fictional source-history compound',exact:false}).click();
+    await panel.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(latest!.sequence));
+    await panel.locator('summary').filter({hasText:'Zapisane sprawdzenia'}).click();
+    await panel.getByText('Treść bez zmiany względem poprzedniego sprawdzenia',{exact:false}).first().waitFor();
+    await page.setViewportSize({width:1280,height:900});await panel.scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/source-history-desktop.png',fullPage:false});
+    assert.deepEqual(errors,[]);
+  }catch(error){
+    fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-history-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));
+    await page.screenshot({path:'test-artifacts/source-history-failure.png',fullPage:false});throw error;
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
 
 test('E1.21: the Study page drives a full fixture run from the UI', async () => {
   await page.goto(`${baseUrl}/study`);

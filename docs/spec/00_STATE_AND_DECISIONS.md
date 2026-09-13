@@ -1,11 +1,19 @@
 # State and binding decisions
 
-Last updated: 2026-09-12, Astra continuation. Update this file whenever a
+Last updated: 2026-09-13, Astra continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**2026-09-13 source-history checkpoint:** E3.9 implements linked successful source checks,
+version histories and structural comparisons over existing substance reference records.
+Migration 016 preserves repeated checks and marks the limited legacy backfill. Comparison
+is constrained to the same source context and exports exact record snapshots with a verifier.
+Presentation and traversal limits are validated profile data. See [SOURCE_HISTORY](../SOURCE_HISTORY.md)
+and [ASTRA_PROGRESS](../ASTRA_PROGRESS.md) for validation and boundaries; earlier decisions,
+source approval and the scientific methodology remain in force.
 
 **2026-09-08 continuation:** see `docs/ASTRA_PROGRESS.md` for the re-run baseline and runtime
 limits. D18 below supersedes every old ordinal-role description in this document. The owner

@@ -5,8 +5,11 @@ import { AutomationError, AutomationRepository } from '../db/repositories/automa
 import { AutomationService } from '../services/automation';
 import { JobRequestSchema, ScheduleSchema } from '../../../shared/automation';
 import { can } from '../../../shared/authorization';
+import { SourceHistoryError } from '../../../shared/source_history';
+import { loadSourceHistoryProfile } from '../config/source_history';
+import { tracer } from '../utils/tracer';
 const route = (fn: (req: Request, res: Response) => unknown) => (req: Request, res: Response, next: NextFunction) => {
-  Promise.resolve().then(() => fn(req, res)).catch(error => error instanceof AutomationError ? res.status(error.status).json({ error: error.code, message: error.message }) : next(error));
+  Promise.resolve().then(() => fn(req, res)).catch(error => error instanceof AutomationError || error instanceof SourceHistoryError ? res.status(error.status).json({ error: error.code, message: error.message }) : next(error));
 };
 /** Also used by the writable key surface; cross-site callers cannot mutate local-mode state. */
 export function sameOriginMutation(req: Request, res: Response, next: NextFunction) {
@@ -51,12 +54,30 @@ export function buildAutomationRouter(repo: AutomationRepository, service: Autom
 }
 export function buildMemoryRouter(repo: AutomationRepository) {
   const router = Router();
+  const historyProfile = loadSourceHistoryProfile();
+  const sequence = z.coerce.number().int().positive().max(Number.MAX_SAFE_INTEGER);
   router.use((req, res, next) => {
     if (!req.principal) return res.status(401).json({ error: 'UNAUTHENTICATED' });
     if (!can(req.principal.roles, 'responder.lookup') && !can(req.principal.roles, 'evidence.review')) return res.status(403).json({ error: 'FORBIDDEN' });
     res.setHeader('Cache-Control', 'no-store'); next();
   });
   router.get('/substances', (req, res) => res.json({ substances: repo.substanceList(String(req.query.q ?? '').slice(0, 160)) }));
+  router.get('/history/profile', (_req,res) => res.json({ profile: historyProfile }));
+  router.get('/substances/:id/history', route((req,res) => {
+    const q = z.object({ offset: z.coerce.number().int().min(0).max(1000000).optional() }).strict().parse(req.query);
+    res.json(repo.history.groups(req.params.id,historyProfile.limits.groups,q.offset));
+  }));
+  router.get('/substances/:id/history/:anchor', route((req,res) => {
+    const q = z.object({ before: sequence.optional() }).strict().parse(req.query);
+    res.json(repo.history.page(req.params.id,sequence.parse(req.params.anchor),historyProfile.limits.observations,q.before));
+  }));
+  router.get('/substances/:id/compare', route((req,res) => {
+    const q = z.object({ from: sequence, to: sequence, context: z.string().regex(/^[a-f0-9]{64}$/) }).strict().parse(req.query);
+    const comparison = repo.history.compare(req.params.id,q.from,q.to,q.context,historyProfile);
+    tracer.emit('MEMORY_SOURCE_COMPARISON', { contextHash: comparison.body.contextHash, comparisonHash: comparison.contentHash,
+      from: q.from, to: q.to, equal: comparison.body.equal, truncated: comparison.body.difference.truncated });
+    res.setHeader('X-Content-SHA256',comparison.contentHash); res.json(comparison);
+  }));
   router.get('/substances/:id', route((req, res) => {
     const substance = repo.substance(req.params.id); if (!substance) throw new AutomationError('Substance not found', 404);
     res.json({ substance });

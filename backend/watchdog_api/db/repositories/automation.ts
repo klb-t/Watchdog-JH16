@@ -8,10 +8,12 @@ import { JobRequestSchema, ScheduleSchema, nextOccurrence } from '../../../../sh
 import type { AutomationJob, ScheduleRecord, ScheduleInput, JobRequest, JobStatus, PublicReceipt, PaperRecord, MemorySubstance } from '../../../../shared/automation';
 import type { AutomationProfile } from '../../config/automation';
 import type { ObjectStore } from '../../storage/object_store';
+import { ReferenceHistoryRepository } from './reference_history';
 
 export class AutomationError extends Error { readonly code = 'automation_error'; constructor(message: string, readonly status = 409) { super(message); } }
 export class AutomationRepository {
-  constructor(private readonly db: Database, private readonly store: ObjectStore) {}
+  readonly history: ReferenceHistoryRepository;
+  constructor(private readonly db: Database, private readonly store: ObjectStore) { this.history = new ReferenceHistoryRepository(db); }
   audit(owner: string, action: string, id: string, detail: unknown = {}) {
     new AuditRepository(this.db).append(owner, action, 'automation', id, 'automation', detail);
   }
@@ -198,9 +200,12 @@ export class AutomationRepository {
   }
   record(id: string, provider: string, kind: string, value: unknown, receipt: PublicReceipt) {
     const hash = canonicalHash({ id, provider, kind, value }), key = `reference-${hash}`;
-    this.db.prepare('INSERT OR IGNORE INTO substance_reference_records VALUES (?,?,?,?,?,?,?,?)')
-      .run(key, id, provider, kind, JSON.stringify(value), hash, receipt.id, receipt.fetchedAt);
-    return key;
+    return this.db.transaction(() => {
+      this.db.prepare('INSERT OR IGNORE INTO substance_reference_records VALUES (?,?,?,?,?,?,?,?)')
+        .run(key, id, provider, kind, JSON.stringify(value), hash, receipt.id, receipt.fetchedAt);
+      this.history.observe(key, receipt);
+      return key;
+    })();
   }
   activity(subject: string, value: any, receipt: PublicReceipt) {
     const target = `chembl:${value.targetId}`, hash = canonicalHash({ subject, value }), id = `activity-${hash}`;
