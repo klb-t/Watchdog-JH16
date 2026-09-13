@@ -133,7 +133,7 @@ test('E3.5: a production start with ephemeral storage exits non-zero', () => {
   let failed = false;
   let output = '';
   try {
-    output = execFileSync('npx', ['tsx', 'server.ts'], {
+    output = execFileSync(process.execPath, ['--import', 'tsx', 'server.ts'], {
       env: {
         ...process.env,
         NODE_ENV: 'production',

@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { createHash } from 'node:crypto';
 import { randomUUID } from 'node:crypto';
-import { fetchEvents, rawBlobs } from '../schema';
+import { fetchEvents, rawBlobs, runs } from '../schema';
 import { ObjectStore } from '../../storage/object_store';
 import type { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
 
@@ -103,5 +103,14 @@ export class AcquisitionRepository {
 
   getRawBlob(id: string) {
     return this.db.select().from(rawBlobs).where(eq(rawBlobs.id, id)).get();
+  }
+
+  getOwnedRawBlob(id: string, actor: string) {
+    // Blobs deduplicate across owners. Access follows an owned acquisition
+    // event, never knowledge of a content hash or the first blob creator.
+    const event = this.db.select({ id: fetchEvents.id }).from(fetchEvents)
+      .innerJoin(runs, eq(runs.id, fetchEvents.run_id))
+      .where(and(eq(fetchEvents.raw_blob_id, id), eq(runs.owner_principal_id, actor))).get();
+    return event ? this.getRawBlob(id) : undefined;
   }
 }

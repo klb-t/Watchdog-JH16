@@ -97,8 +97,14 @@ export class RunRepository {
     return this.db.select().from(runs).where(eq(runs.id, id)).get();
   }
 
-  getRuns(limit: number = 50) {
-    const all = this.db.select().from(runs).all();
+  getOwnedRun(id: string, actor: string) {
+    const run = this.getRun(id);
+    return run?.owner_principal_id === actor ? run : undefined;
+  }
+
+  getRuns(limit: number = 50, actor?: string) {
+    const all = actor === undefined ? this.db.select().from(runs).all()
+      : this.db.select().from(runs).where(eq(runs.owner_principal_id, actor)).all();
     return all
       .sort((a, b) => {
         const t = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();

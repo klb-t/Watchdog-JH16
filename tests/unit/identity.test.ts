@@ -3,7 +3,7 @@ import * as assert from 'node:assert';
 import Database from 'better-sqlite3';
 import { generateKeyPairSync, createSign, randomBytes } from 'node:crypto';
 import {
-  ROLES, RBAC, CAPABILITIES, can, highestRole,
+  ROLES, RBAC, CAPABILITIES, can, capabilitiesFor,
   ForbiddenError, UnauthenticatedError,
 } from '../../backend/watchdog_api/identity/roles';
 import {
@@ -22,20 +22,26 @@ import { clearRegisteredSecrets } from '../../backend/watchdog_api/utils/redacti
 // The RBAC matrix.
 // -------------------------------------------------------------------------
 
-test('E4.1: the matrix is exhaustive and the ladder is monotonic', () => {
+test('E4.2: every role has an explicit capability bundle; researcher and responder are peers', () => {
   for (const role of ROLES) {
-    assert.ok(Array.isArray(RBAC[role]), `${role} has no row`);
-    for (const c of RBAC[role]) {
-      assert.ok((CAPABILITIES as readonly string[]).includes(c), `${role} grants unknown '${c}'`);
-    }
+    for (const capability of RBAC[role]) assert.ok(CAPABILITIES.includes(capability));
   }
-  // Each rung must contain the one below it, or "higher role" is meaningless.
-  const ladder = ['viewer', 'researcher', 'admin', 'dev'] as const;
-  for (let i = 1; i < ladder.length; i++) {
-    for (const c of RBAC[ladder[i - 1]]) {
-      assert.ok(RBAC[ladder[i]].includes(c), `${ladder[i]} must retain '${c}' from ${ladder[i - 1]}`);
-    }
+  assert.ok(can(['researcher'], 'method.approve'));
+  assert.ok(!can(['researcher'], 'responder.lookup'));
+  assert.ok(can(['responder'], 'responder.lookup'));
+  assert.ok(!can(['responder'], 'method.approve'));
+  for (const role of ['institutional', 'law_enforcement']) {
+    assert.ok(can([role], 'responder.lookup'));
+    for (const forbidden of ['run.view', 'evidence.approve', 'diagnostics.view', 'principal.manage'] as const)
+      assert.ok(!can([role], forbidden));
   }
+  assert.ok(!can(['admin'], 'principal.manage'));
+  assert.ok(can(['admin'], 'principal.view'));
+  assert.deepStrictEqual(capabilitiesFor(['developer']), [...CAPABILITIES]);
+  assert.deepStrictEqual(capabilitiesFor(['dev']), capabilitiesFor(['developer']));
+  const union = capabilitiesFor(['researcher', 'responder']);
+  assert.ok(union.includes('responder.lookup') && union.includes('method.approve'));
+  assert.deepStrictEqual(union, capabilitiesFor(['responder', 'researcher', 'researcher']));
 });
 
 test('E4.1: the specific separations the ladder exists for', () => {
@@ -53,8 +59,7 @@ test('E4.1: authorisation fails closed on unknown or absent roles', () => {
   assert.ok(!can([], 'run.view'));
   assert.ok(!can(['reseacher'], 'run.view'), 'a typo must remove access, never grant a default');
   assert.ok(!can(['admin '], 'run.view'));
-  assert.strictEqual(highestRole(['viewer', 'admin', 'nonsense']), 'admin');
-  assert.strictEqual(highestRole(['nonsense']), null);
+  assert.deepStrictEqual(capabilitiesFor(['nonsense', '__proto__', 'constructor']), []);
 
   assert.throws(() => authorize(null, 'run.view'), UnauthenticatedError);
   assert.throws(() => authorize(

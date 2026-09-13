@@ -9,3 +9,4 @@ coverage/
 data/
 diagnostics/
 runs/
+test-artifacts/

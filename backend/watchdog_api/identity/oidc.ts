@@ -1,6 +1,6 @@
 import { createHash, createHmac, createPublicKey, verify as cryptoVerify, timingSafeEqual } from 'node:crypto';
 import { Principal, IdentityProvider } from '../domain/principal';
-import { Role, highestRole, isRole } from './roles';
+import { Role, isRole } from './roles';
 import { SecretStore, secretStore as defaultSecretStore } from '../secrets';
 
 /**

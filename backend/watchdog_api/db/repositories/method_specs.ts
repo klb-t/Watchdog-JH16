@@ -41,12 +41,14 @@ export class MethodSpecRepository {
   }
 
   /** One human action approves one spec. There is no bulk approve. */
-  approve(id: string, approvedBy: string, approvedAt: string) {
+  approve(id: string, approvedBy: string, approvedAt: string, expectedHash?: string) {
     if (!approvedBy || approvedBy.trim() === '') {
       throw new Error('Approval requires an identified human actor.');
     }
     const row = this.get(id);
     if (!row) throw new Error(`No such method spec: ${id}`);
+    if (canonicalHash(JSON.parse(row.spec_json)) !== row.spec_hash || expectedHash !== undefined && expectedHash !== row.spec_hash)
+      throw new Error('Method integrity or review hash mismatch.');
     this.db.update(methodSpecs)
       .set({ approval_state: 'APPROVED', approved_hash: row.spec_hash,
              approved_by: approvedBy, approved_at: approvedAt })

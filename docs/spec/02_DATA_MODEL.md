@@ -333,3 +333,15 @@ Every finalised run writes a manifest artifact containing at least:
 A manifest that omits a substitution, a missing value or a flag is a defect of the highest
 severity in this project. The manifest is the scientific claim; everything else is working
 material.
+
+
+## Visualization profile archive (E5.4)
+
+`workbench_profiles(content_hash, profile_json, archived_at)` stores generic, validated profile
+snapshots. The hash covers configuration and evidence-display data; the embedded contentHash
+is excluded from that identity. Inserts deduplicate by hash. SQLite triggers reject UPDATE
+and DELETE. Startup archives the current configuration; saved figures resolve their pinned
+hash. Verified figure import can restore an absent snapshot without changing any approval or
+source record. Profiles contain no account or credential data. Export package manifests record
+file hashes separately from domain identities; figure, dataset, profile and execution identities
+are all cross-checked.

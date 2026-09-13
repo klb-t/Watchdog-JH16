@@ -17,7 +17,7 @@ const RUNS = path.join(ROOT, 'runs');
 
 function runDemo(): string {
   const before = new Set(fs.existsSync(RUNS) ? fs.readdirSync(RUNS) : []);
-  execFileSync('npx', ['tsx', 'scripts/demo_jh16.ts'], { cwd: ROOT, stdio: 'pipe' });
+  execFileSync(process.execPath, ['--import', 'tsx', 'scripts/demo_jh16.ts'], { cwd: ROOT, stdio: 'pipe' });
   const after = fs.readdirSync(RUNS).filter(d => !before.has(d));
   assert.strictEqual(after.length, 1, 'the demo should produce exactly one run directory');
   return path.join(RUNS, after[0]);
