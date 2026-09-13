@@ -26,8 +26,15 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   preserves each record/receipt association, with explicit legacy coverage. Context-bound
   history, repeated checks/reversions, pagination and a profile-driven comparison UI extend
   substance memory. Portable JSON retains both snapshots and a verified deterministic diff.
-  Eleven new unit/integration cases pass; full local regression is 327/327. Chromium coverage
-  is added for the published CI run. See SOURCE_HISTORY.md for the exact supported scope.
+  Published head `609fa64` passed 344/344 tests in Actions `34738595749`, including Chromium.
+  See SOURCE_HISTORY.md for the exact supported scope.
+- [x] **E3.10 — Optional collection purpose and frozen acquisition context.** Baseline,
+  research and monitoring use the existing public queue/scheduler. Migration 017 snapshots
+  purpose and actual request hash in jobs/receipts; histories and exports keep contexts
+  distinct while identical content deduplicates. Old contexts/hashes stay unclassified.
+  Five integration cases and full local regression pass: 332/332, zero failures/skips.
+  Browser schedule/history cases are extended for CI. See COLLECTION_CONTEXT.md; named
+  collections, resolution/retention policies, geographic collection and alerts remain open.
 - [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.

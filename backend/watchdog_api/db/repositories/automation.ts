@@ -1,6 +1,6 @@
 import type { Database } from 'better-sqlite3';
 import { createHash, randomUUID } from 'node:crypto';
-import { canonicalHash } from '../../domain/canonical';
+import { canonicalHash, canonicalizeJson } from '../../domain/canonical';
 import { AuditRepository } from './audit';
 import { PrincipalRepository } from './principals';
 import { can } from '../../../../shared/authorization';
@@ -9,6 +9,7 @@ import type { AutomationJob, ScheduleRecord, ScheduleInput, JobRequest, JobStatu
 import type { AutomationProfile } from '../../config/automation';
 import type { ObjectStore } from '../../storage/object_store';
 import { ReferenceHistoryRepository } from './reference_history';
+import { collectionContext, decodeCollectionContext } from '../../utils/collection_context';
 
 export class AutomationError extends Error { readonly code = 'automation_error'; constructor(message: string, readonly status = 409) { super(message); } }
 export class AutomationRepository {
@@ -38,7 +39,7 @@ export class AutomationRepository {
     return { id: row.id, ownerId: row.owner_principal_id, scheduleId: row.schedule_id, dueAt: row.due_at, status: row.status,
       request: JSON.parse(row.request_json), requestHash: row.request_hash, createdAt: row.created_at, startedAt: row.started_at,
       finishedAt: row.finished_at, result: row.result_json ? JSON.parse(row.result_json) : null, error: row.error_code,
-      cancelRequested: !!row.cancel_requested };
+      cancelRequested: !!row.cancel_requested, ...decodeCollectionContext(row.collection_context_json) };
   }
   jobs(owner: string) { return this.db.prepare('SELECT * FROM automation_jobs WHERE owner_principal_id=? ORDER BY created_at DESC,id DESC LIMIT 100').all(owner).map(r => this.decodeJob(r)); }
   job(id: string, owner: string): AutomationJob | null {
@@ -47,8 +48,9 @@ export class AutomationRepository {
   }
   enqueue(owner: string, input: unknown, profileHash: string, now = new Date(), scheduleId: string | null = null, dueAt = now.toISOString()): AutomationJob {
     const request = JobRequestSchema.parse(input), id = randomUUID(), hash = canonicalHash({ request, profileHash });
-    this.db.prepare(`INSERT INTO automation_jobs(id,owner_principal_id,schedule_id,due_at,status,request_json,request_hash,profile_hash,created_at)
-      VALUES (?,?,?,?,'QUEUED',?,?,?,?)`).run(id, owner, scheduleId, dueAt, JSON.stringify(request), hash, profileHash, now.toISOString());
+    const collection=collectionContext(request);
+    this.db.prepare(`INSERT INTO automation_jobs(id,owner_principal_id,schedule_id,due_at,status,request_json,request_hash,profile_hash,created_at${collection?',collection_context_json':''})
+      VALUES (?,?,?,?,'QUEUED',?,?,?,?${collection?',?':''})`).run(id, owner, scheduleId, dueAt, JSON.stringify(request), hash, profileHash, now.toISOString(),...(collection?[canonicalizeJson(collection)]:[]));
     this.audit(owner, 'automation.enqueue', id, { requestHash: hash, kind: request.kind });
     return this.job(id, owner)!;
   }
@@ -106,6 +108,7 @@ export class AutomationRepository {
         try {
           profile = this.profile(row.profile_hash);
           request = JobRequestSchema.parse(JSON.parse(row.request_json));
+          if(canonicalHash(collectionContext(request)??null)!==canonicalHash(decodeCollectionContext(row.collection_context_json).collection??null))throw new Error('Collection context mismatch');
           if (canonicalHash({ request: JSON.parse(row.request_json), profileHash: profile.contentHash }) !== row.request_hash) throw new Error('Mismatch');
         } catch {
           this.db.prepare("UPDATE automation_jobs SET status='FAILED',error_code='SNAPSHOT_INTEGRITY_MISMATCH',finished_at=? WHERE id=?").run(now.toISOString(), row.id); continue;
@@ -151,6 +154,9 @@ export class AutomationRepository {
   releaseSource(provider: string, token: string) { this.db.prepare('UPDATE public_source_leases SET lease_until=0 WHERE provider=? AND token=?').run(provider, token); }
   async receipt(jobId: string, provider: string, url: string, status: number, bytes: Buffer | null, license: string, error: string | null = null): Promise<PublicReceipt> {
     const id = randomUUID(), now = new Date().toISOString(), sha = bytes ? createHash('sha256').update(bytes).digest('hex') : '';
+    const job=this.db.prepare('SELECT * FROM automation_jobs WHERE id=?').get(jobId) as any;
+    if(!job)throw new AutomationError('Job not found',404);
+    const collection=decodeCollectionContext(job.collection_context_json);
     const uri = bytes ? await this.store.put(`raw/${sha}`, bytes) : null;
     let blobId: string | null = null;
     this.db.transaction(() => {
@@ -158,9 +164,10 @@ export class AutomationRepository {
         this.db.prepare('INSERT OR IGNORE INTO raw_blobs VALUES (?,?,?,?,?,?,?)').run(`public-${sha}`, sha, uri, bytes.length, 'application/octet-stream', 'public-source-response', now);
         blobId = (this.db.prepare('SELECT id FROM raw_blobs WHERE sha256=?').get(sha) as any).id;
       }
-      this.db.prepare('INSERT INTO public_fetch_receipts VALUES (?,?,?,?,?,?,?,?,?,?)').run(id, jobId, provider, url, now, blobId, status, 'public-adapters-1', license, error);
+      this.db.prepare(`INSERT INTO public_fetch_receipts(id,job_id,provider,url,fetched_at,raw_blob_id,http_status,adapter_version,license,error_code${collection.collection?',collection_context_json':''})
+        VALUES (?,?,?,?,?,?,?,?,?,?${collection.collection?',?':''})`).run(id, jobId, provider, url, now, blobId, status, 'public-adapters-1', license, error,...(collection.collection?[canonicalizeJson(collection.collection)]:[]));
     })();
-    return { id, jobId, provider, url, fetchedAt: now, sha256: sha, httpStatus: status, bytes: bytes?.length ?? 0, adapterVersion: 'public-adapters-1', license };
+    return { id, jobId, provider, url, fetchedAt: now, sha256: sha, httpStatus: status, bytes: bytes?.length ?? 0, adapterVersion: 'public-adapters-1', license, ...collection };
   }
   receipts(jobId: string, owner: string) {
     if (!this.job(jobId, owner)) throw new AutomationError('Job not found', 404);
@@ -170,7 +177,7 @@ export class AutomationRepository {
     const r = this.db.prepare('SELECT f.*,b.sha256,b.byte_size FROM public_fetch_receipts f LEFT JOIN raw_blobs b ON f.raw_blob_id=b.id WHERE f.id=?').get(id) as any;
     if (!r) throw new AutomationError('Receipt not found', 404);
     return { id, jobId: r.job_id, provider: r.provider, url: r.url, fetchedAt: r.fetched_at, sha256: r.sha256 ?? '',
-      httpStatus: r.http_status, bytes: r.byte_size ?? 0, adapterVersion: r.adapter_version, license: r.license };
+      httpStatus: r.http_status, bytes: r.byte_size ?? 0, adapterVersion: r.adapter_version, license: r.license, ...decodeCollectionContext(r.collection_context_json) };
   }
   async raw(id: string): Promise<Buffer> {
     const row = this.db.prepare('SELECT b.* FROM public_fetch_receipts f JOIN raw_blobs b ON f.raw_blob_id=b.id WHERE f.id=?').get(id) as any;

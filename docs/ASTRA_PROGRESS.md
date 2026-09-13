@@ -484,3 +484,44 @@ reversions, restart, pagination, source-context boundaries, immutable/atomic wri
 real adapter execution with fictional source responses, exact comparison and offline tamper
 checks. The new Chromium scenario also exercises saved JSON verification and 390px layout;
 its result will be checked on the published head before claiming browser validation.
+
+Published E3.9 head `609fa64b798677365dc2d3876283adac08afdc76` passed Actions
+`34738595749`: **344/344 tests**, zero failures/skips, Chromium, build and JH16 demo.
+CI uploaded the browser evidence and verified the downloaded comparison JSON inside its
+browser test. A separate artifact download for manual visual inspection returned HTTP 403;
+that additional inspection was not performed or claimed.
+
+## 2026-09-13 — E3.10 collection purposes over one pipeline
+
+The lifecycle specification calls for baseline, ad-hoc research and monitoring to remain
+metadata over shared acquisition/storage. The repository already had the public pipeline
+and source history, but had no explicit collection-purpose field. This additive stage adds
+an optional purpose to substance refresh and paper scan plans, including saved schedules.
+Validated, hashed profile data supplies labels and explanations in the interface.
+
+Queueing freezes purpose plus a canonical hash of the actual acquisition request. Every
+receipt captures this context, including HTTP/transport failures. The hash excludes intent
+but includes query/provider order, scope and limits; source-profile identity stays separate.
+Changed purposes or parameters create distinct reference-history contexts. Identical content
+still deduplicates, with preserved separate receipt associations. The comparison export
+retains the context on both snapshots and its verifier checks it. Job and source-history
+details expose the context for inspection without adding other owner query names to shared
+reference records.
+
+Migration 017 leaves old rows unclassified and protects new context fields against updates.
+Omitting purpose preserves legacy request/context/profile hashes and exported comparisons.
+No defaults, wizard launch, evidence classification, scientific method, role grant or
+earlier design decision was changed. Request-signature equality does not establish equal
+sampling cadence or scientific comparability. This implements part of clarification A02;
+named project collections, resolution/retention policies, geographic acquisition filters,
+materialized series and alerts remain open. See [COLLECTION_CONTEXT](COLLECTION_CONTEXT.md).
+
+The first full local run found a layer-boundary violation in the new validation helper;
+it was moved out of the pure domain layer without relaxing the architecture test.
+Final pre-push checks: **332/332 local unit/contract/scientific/integration tests passed**,
+zero failures/skips, plus TypeScript and production build. Five new integration cases cover
+legacy upgrade, request integrity, scheduled context, success/error receipts, history
+separation and offline tamper detection. The existing Chromium schedule/history flows now
+also test purpose selection, pause persistence and separate baseline/research contexts;
+their results will be checked on the published head. No paid or live public-source calls
+were made for this stage.

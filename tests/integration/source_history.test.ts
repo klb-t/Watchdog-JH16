@@ -88,7 +88,7 @@ test('source-history migration backfills only proven first receipts and never gu
     const id='pubchem:999999991',value={fixture:true,amount:'1.00'},hash=canonicalHash({id,provider:'pubchem',kind:'properties',value});
     h.db.prepare('INSERT INTO substances(id,canonical_name,normalized_name,created_at) VALUES (?,?,?,?)').run(id,'Legacy fictional fixture',id,first.fetchedAt);
     h.db.prepare('INSERT INTO substance_reference_records VALUES (?,?,?,?,?,?,?,?)').run(`reference-${hash}`,id,'pubchem','properties',JSON.stringify(value),hash,first.id,first.fetchedAt);
-    assert.deepEqual(runMigrations(h.db).applied,['016_reference_observations']);assert.deepEqual(runMigrations(h.db).applied,[]);
+    assert.deepEqual(runMigrations(h.db).applied,MIGRATIONS.filter(m=>m.id>='016').map(m=>m.id));assert.deepEqual(runMigrations(h.db).applied,[]);
     const group=h.repo.history.groups(id,10).groups[0];assert.equal(group.observations,1);assert.equal(group.legacyObservations,1);
     assert.equal(h.repo.history.page(id,group.anchor,10).entries[0].origin,'legacy_first_receipt');
     const next=await h.repo.receipt(j.id,'pubchem',first.url,200,Buffer.from('fixture'),'test');h.repo.record(id,'pubchem','properties',value,next);

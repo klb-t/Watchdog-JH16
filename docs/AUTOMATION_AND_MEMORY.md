@@ -14,6 +14,12 @@ effects. Pause cancels queued occurrences; Stop requests cancellation at the nex
 acquisition checkpoint. Current principal activity and capabilities are checked during
 execution. A later run can retry failed collection; existing observations are preserved.
 
+Public jobs can declare a [collection purpose](COLLECTION_CONTEXT.md): baseline, research
+or monitoring. The schedule, dispatched job and receipts preserve that choice and a hash
+of the actual acquisition parameters. Source history keeps changed plans and purposes
+separate. Earlier plans remain unclassified; purpose alone does not change resolution,
+retention, geography or alert behavior.
+
 Every job pins the validated, hashed source profile. Each HTTP response is archived before
 parsing, including error responses. Receipts identify the exact URL, provider, timestamp,
 adapter version, byte count, hash and attribution. Requests have time, byte, page and total

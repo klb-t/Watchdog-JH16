@@ -10,6 +10,8 @@ import Database from 'better-sqlite3';
 import { AutomationRepository } from '../../backend/watchdog_api/db/repositories/automation';
 import { LocalFileSystemStore } from '../../backend/watchdog_api/storage/object_store';
 import { sourceSnapshot } from '../fixtures/source_history';
+import { loadAutomationProfile } from '../../backend/watchdog_api/config/automation';
+import { withCollectionPurpose } from '../../shared/collection';
 
 /**
  * E1.21-E1.23 — browser-driven end-to-end tests against fixtures.
@@ -94,12 +96,16 @@ test('E3 automation: daily schedule, one-click all-discipline scope, pause and m
   try {
     await page.goto(`${baseUrl}/automation`); await page.waitForSelector('[data-testid="automation-page"]');
     await page.locator('[data-testid="discovery-scope"]').selectOption('all_science');
+    await page.getByLabel('Cel zbierania danych',{exact:true}).selectOption('baseline');
     await page.locator('[data-testid="schedule-create"]').click();
     await page.getByRole('status').filter({ hasText: 'Harmonogram zapisany' }).waitFor();
     const list = await (await fetch(`${baseUrl}/api/automation/schedules`)).json();
     assert.strictEqual(list.schedules.length, 1); assert.strictEqual(list.schedules[0].request.scope, 'all_science');
+    assert.deepStrictEqual(list.schedules[0].request.collection,{version:'collection-purpose-1',purpose:'baseline'});
     await page.getByRole('button', { name: 'Wstrzymaj', exact: true }).click();
     await page.getByRole('button', { name: 'Wznów', exact: true }).waitFor();
+    const paused=await (await fetch(`${baseUrl}/api/automation/schedules`)).json();
+    assert.deepStrictEqual(paused.schedules[0].request.collection,list.schedules[0].request.collection);
     assert.strictEqual((await (await fetch(`${baseUrl}/api/automation/jobs`)).json()).jobs.length, 0, 'no unsolicited collection on page load or future scheduling');
     await page.setViewportSize({ width: 390, height: 844 });
     const layout = await page.locator('main').evaluate(el => ({ clientWidth: el.clientWidth, scrollWidth: el.scrollWidth }));
@@ -119,17 +125,21 @@ test('E3.9: source history compares preserved values, exports a verifiable snaps
   const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
   const db=new Database(DB_PATH);db.pragma('foreign_keys=ON');
   let latest:Awaited<ReturnType<typeof sourceSnapshot>>;
+  let research:Awaited<ReturnType<typeof sourceSnapshot>>;
   try{
     const repo=new AutomationRepository(db,new LocalFileSystemStore(STORE_PATH));
     const first={fixture:true,amount:'1.00',missing:null,zero:0},changed={fixture:true,amount:'2.00',added:null,zero:0};
+    const request=withCollectionPurpose(loadAutomationProfile().defaults.substanceJob,'baseline');
     for(const [index,value] of [first,first,changed,changed].entries()){
-      latest=await sourceSnapshot(db,repo,value,{at:`2026-09-0${index+1}T12:00:00.000Z`});
+      latest=await sourceSnapshot(db,repo,value,{at:`2026-09-0${index+1}T12:00:00.000Z`,request});
     }
+    research=await sourceSnapshot(db,repo,changed,{request:withCollectionPurpose(request,'research')});
   }finally{db.close();}
   try{
     await page.goto(`${baseUrl}/memory`);await page.getByRole('button',{name:'Fictional source-history compound',exact:false}).click();
     const panel=page.locator('[data-testid="source-history"]');await panel.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(latest!.sequence));
     await panel.getByText('4 powiązanych sprawdzeń · 2 różnych wersji treści',{exact:true}).waitFor();
+    await panel.getByText('Cel zbierania danych: Baza odniesienia',{exact:true}).waitFor();
     const completed=page.waitForResponse(r=>r.url().includes(`/api/memory/substances/${encodeURIComponent(latest!.id)}/compare?`) && r.status()===200);
     await panel.getByRole('button',{name:'Porównaj zapisane dane',exact:true}).click();
     const response=await completed,result=await response.json();assert.equal(response.headers()['x-content-sha256'],result.contentHash);
@@ -143,6 +153,8 @@ test('E3.9: source history compares preserved values, exports a verifiable snaps
     await (await downloading).saveAs('test-artifacts/source-comparison.json');
     const saved=JSON.parse(fs.readFileSync('test-artifacts/source-comparison.json','utf8'));
     assert.equal(canonicalHash(saved.body),result.contentHash);
+    assert.equal(saved.body.context.collection.purpose,'baseline');
+    assert.deepStrictEqual(saved.body.to.receipt.collection,saved.body.context.collection);
     fs.writeFileSync('test-artifacts/source-comparison-verification.txt',execFileSync(process.execPath,['--import','tsx','scripts/verify_source_comparison.ts',
       'test-artifacts/source-comparison.json',result.contentHash],{encoding:'utf8'}));
     const before=panel.getByLabel('Sprawdzenie A',{exact:true});await before.selectOption({index:2});
@@ -155,6 +167,10 @@ test('E3.9: source history compares preserved values, exports a verifiable snaps
     await panel.getByText('Treść bez zmiany względem poprzedniego sprawdzenia',{exact:false}).first().waitFor();
     await page.setViewportSize({width:1280,height:900});await panel.scrollIntoViewIfNeeded();
     await page.screenshot({path:'test-artifacts/source-history-desktop.png',fullPage:false});
+    await panel.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(research!.sequence));
+    await panel.getByText('1 powiązanych sprawdzeń · 1 różnych wersji treści',{exact:true}).waitFor();
+    await panel.getByText('Cel zbierania danych: Badanie',{exact:true}).waitFor();
+    assert.equal(await panel.getByRole('button',{name:'Porównaj zapisane dane',exact:true}).isEnabled(),false);
     assert.deepEqual(errors,[]);
   }catch(error){
     fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-history-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));

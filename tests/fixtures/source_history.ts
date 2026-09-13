@@ -1,15 +1,17 @@
 import type { Database } from 'better-sqlite3';
 import type { AutomationRepository } from '../../backend/watchdog_api/db/repositories/automation';
 import { loadAutomationProfile } from '../../backend/watchdog_api/config/automation';
+import type { JobRequest } from '../../shared/automation';
 
 /** Isolated fictional records. Jobs are closed in the enqueue transaction so a live test worker cannot fetch them. */
 export async function sourceSnapshot(db: Database, repo: AutomationRepository, value: unknown, options: {
   cid?: number; name?: string; provider?: string; kind?: string; url?: string; at?: string; profileHash?: string; adapterVersion?: string;
+  request?:JobRequest;
 } = {}) {
   const profile = loadAutomationProfile(); repo.archiveProfile(profile);
   const cid = options.cid ?? 999999991, id = `pubchem:${cid}`, provider = options.provider ?? 'pubchem', kind = options.kind ?? 'properties';
   const job = db.transaction(() => {
-    const job = repo.enqueue('local-user',profile.defaults.substanceJob,options.profileHash ?? profile.contentHash);
+    const job = repo.enqueue('local-user',options.request??profile.defaults.substanceJob,options.profileHash ?? profile.contentHash);
     repo.cancel(job.id,'local-user'); return job;
   })();
   let receipt = await repo.receipt(job.id,provider,options.url ?? 'https://pubchem.ncbi.nlm.nih.gov/fictional-source-history-fixture',200,

@@ -2,26 +2,27 @@ import type { Database } from 'better-sqlite3';
 import type { PublicReceipt } from '../../../../shared/automation';
 import { compareJson, SourceHistoryError, SourceHistoryProfileSchema } from '../../../../shared/source_history';
 import type { SourceContext, SourceObservation, SourceHistoryEntry, SourceHistoryGroup, SourceHistoryPage, SourceComparison, SourceHistoryProfile, JsonValue } from '../../../../shared/source_history';
-import { canonicalHash } from '../../domain/canonical';
+import { canonicalHash,canonicalizeJson } from '../../domain/canonical';
+import { decodeCollectionContext } from '../../utils/collection_context';
 
 const joins = `FROM substance_reference_observations o
  JOIN substance_reference_records r ON r.id=o.record_id
  JOIN public_fetch_receipts f ON f.id=o.receipt_id
  LEFT JOIN raw_blobs b ON b.id=f.raw_blob_id`;
 const fields = `o.sequence,o.origin,o.source_profile_hash,r.id AS record_id,r.substance_id,r.provider,r.kind,r.content_hash,r.value_json,
- f.id AS receipt_id,f.provider AS receipt_provider,f.url,f.fetched_at,f.job_id,f.http_status,f.adapter_version,f.license,
+ f.id AS receipt_id,f.provider AS receipt_provider,f.url,f.fetched_at,f.job_id,f.http_status,f.adapter_version,f.license,f.collection_context_json,
  b.sha256,b.byte_size`;
-const contextFields = 'r.substance_id,r.provider,r.kind,f.url,f.adapter_version,o.source_profile_hash';
-const contextWhere = 'r.substance_id=? AND r.provider=? AND r.kind=? AND f.url=? AND f.adapter_version=? AND o.source_profile_hash=?';
-const contextValues = (c: SourceContext) => [c.substanceId,c.provider,c.kind,c.url,c.adapterVersion,c.sourceProfileHash];
+const contextFields = 'r.substance_id,r.provider,r.kind,f.url,f.adapter_version,o.source_profile_hash,f.collection_context_json';
+const contextWhere = 'r.substance_id=? AND r.provider=? AND r.kind=? AND f.url=? AND f.adapter_version=? AND o.source_profile_hash=? AND f.collection_context_json IS ?';
+const contextValues = (c: SourceContext) => [c.substanceId,c.provider,c.kind,c.url,c.adapterVersion,c.sourceProfileHash,c.collection?canonicalizeJson(c.collection):null];
 function context(row: any): SourceContext {
   return { substanceId: row.substance_id, provider: row.provider, kind: row.kind, url: row.url,
-    adapterVersion: row.adapter_version, sourceProfileHash: row.source_profile_hash };
+    adapterVersion: row.adapter_version, sourceProfileHash: row.source_profile_hash, ...decodeCollectionContext(row.collection_context_json) };
 }
 function receipt(row: any): PublicReceipt {
   return { id: row.receipt_id, provider: row.receipt_provider, url: row.url, fetchedAt: row.fetched_at,
     sha256: row.sha256 ?? '', httpStatus: row.http_status, bytes: row.byte_size ?? 0,
-    adapterVersion: row.adapter_version, jobId: row.job_id, license: row.license };
+    adapterVersion: row.adapter_version, jobId: row.job_id, license: row.license, ...decodeCollectionContext(row.collection_context_json) };
 }
 function observation(row: any): SourceObservation {
   return { sequence: row.sequence, recordId: row.record_id, contentHash: row.content_hash, origin: row.origin, receipt: receipt(row) };
@@ -60,7 +61,7 @@ export class ReferenceHistoryRepository {
       COUNT(DISTINCT r.id) AS versions,MIN(f.fetched_at) AS first_seen,MAX(f.fetched_at) AS last_checked,
       SUM(CASE WHEN o.origin='legacy_first_receipt' THEN 1 ELSE 0 END) AS legacy
       ${joins} WHERE r.substance_id=? GROUP BY ${contextFields}
-      ORDER BY r.provider,r.kind,f.url,f.adapter_version,o.source_profile_hash LIMIT ? OFFSET ?`).all(id,limit+1,offset) as any[];
+      ORDER BY r.provider,r.kind,f.url,f.adapter_version,o.source_profile_hash,f.collection_context_json LIMIT ? OFFSET ?`).all(id,limit+1,offset) as any[];
     return { groups: rows.slice(0,limit).map(row => ({ context: context(row), contextHash: canonicalHash(context(row)), anchor: row.anchor,
       observations: row.observations, versions: row.versions, firstObservedAt: row.first_seen, lastObservedAt: row.last_checked, legacyObservations: row.legacy })),
       nextOffset: rows.length > limit ? offset + limit : null };
@@ -97,7 +98,7 @@ export class ReferenceHistoryRepository {
       const a = this.row(id,from), b = this.row(id,to), ctx = context(a), contextHash = canonicalHash(ctx);
       if (from === to) throw new SourceHistoryError('Choose two different source observations');
       if (contextHash !== expectedContextHash || canonicalHash(context(b)) !== contextHash)
-        throw new SourceHistoryError('Comparisons require the same substance, source URL, record kind, adapter and source profile');
+        throw new SourceHistoryError('Comparisons require the same substance, source URL, record kind, adapter, source profile and collection context');
       const { contentHash: profileHash, ...profileBody } = profile;
       SourceHistoryProfileSchema.parse(profileBody);
       if (canonicalHash(profileBody) !== profileHash) throw new SourceHistoryError('Comparison profile hash mismatch');

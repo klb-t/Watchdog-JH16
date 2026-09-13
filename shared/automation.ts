@@ -1,12 +1,13 @@
 import { z } from 'zod';
+import { CollectionIntentSchema, type CollectionContext } from './collection';
 
 export const JobRequestSchema = z.discriminatedUnion('kind', [
   z.object({ kind: z.literal('substance_refresh'), names: z.array(z.string().trim().min(2).max(160)).min(1).max(30),
     providers: z.array(z.enum(['pubchem', 'chembl', 'wikidata', 'europe_pmc'])).min(1).max(4).refine(p => p.includes('pubchem') && new Set(p).size === p.length, 'PubChem identity resolution is required; providers must be unique'),
-    maxRequests: z.number().int().min(1).max(200), pageLimit: z.number().int().min(1).max(10) }).strict(),
+    maxRequests: z.number().int().min(1).max(200), pageLimit: z.number().int().min(1).max(10), collection:CollectionIntentSchema.optional() }).strict(),
   z.object({ kind: z.literal('paper_scan'), providers: z.array(z.enum(['arxiv', 'europe_pmc'])).min(1).max(2),
     scope: z.enum(['substances', 'all_science']), lookbackDays: z.number().int().min(1).max(90),
-    maxRequests: z.number().int().min(1).max(40), pageLimit: z.number().int().min(1).max(20) }).strict(),
+    maxRequests: z.number().int().min(1).max(40), pageLimit: z.number().int().min(1).max(20), collection:CollectionIntentSchema.optional() }).strict(),
   z.object({ kind: z.literal('catalog_refresh'), provider: z.literal('openrouter'), maxRequests: z.literal(1) }).strict(),
   z.object({ kind: z.literal('paper_review'), documentId: z.string().min(1).max(100).nullable(), includeDiscoveredAbstracts: z.boolean(),
     maxRequests: z.number().int().min(1).max(5), retryFailed: z.boolean().optional() }).strict()
@@ -26,7 +27,7 @@ export type JobStatus = 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'PARTIAL' | 'FAILED
 export interface AutomationJob {
   id: string; ownerId: string; scheduleId: string | null; dueAt: string; status: JobStatus;
   request: JobRequest; requestHash: string; createdAt: string; startedAt: string | null; finishedAt: string | null;
-  result: Record<string, unknown> | null; error: string | null; cancelRequested: boolean;
+  result: Record<string, unknown> | null; error: string | null; cancelRequested: boolean; collection?:CollectionContext;
 }
 export interface ScheduleRecord extends ScheduleInput { id: string; contentHash: string; nextDueAt: string; updatedAt: string }
 
@@ -43,7 +44,7 @@ export function nextOccurrence(recurrence: Recurrence, after: Date, previousDue?
 }
 
 export interface PublicReceipt { id: string; provider: string; url: string; fetchedAt: string; sha256: string;
-  httpStatus: number; bytes: number; adapterVersion: string; jobId: string; license: string }
+  httpStatus: number; bytes: number; adapterVersion: string; jobId: string; license: string; collection?:CollectionContext }
 export interface PaperRecord {
   id: string; provider: 'arxiv' | 'europe_pmc'; sourceId: string; title: string; abstract: string | null;
   authors: string[]; doi: string | null; url: string; publishedAt: string | null; updatedAt: string | null;

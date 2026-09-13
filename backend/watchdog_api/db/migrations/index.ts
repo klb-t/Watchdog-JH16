@@ -15,6 +15,7 @@ import { MIGRATION_013_RESEARCH_INTAKE } from './013_research_intake';
 import { MIGRATION_015_PAPER_OPERATIONS } from './015_paper_operations';
 import { MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES } from './014_extraction_mapping_templates';
 import { MIGRATION_016_REFERENCE_OBSERVATIONS } from './016_reference_observations';
+import { MIGRATION_017_COLLECTION_CONTEXT } from './017_collection_context';
 
 export interface Migration {
   readonly id: string;
@@ -42,7 +43,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '013_research_intake', sql: MIGRATION_013_RESEARCH_INTAKE },
   { id: '014_extraction_mapping_templates', sql: MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES },
   { id: '015_paper_operations', sql: MIGRATION_015_PAPER_OPERATIONS },
-  { id: '016_reference_observations', sql: MIGRATION_016_REFERENCE_OBSERVATIONS }
+  { id: '016_reference_observations', sql: MIGRATION_016_REFERENCE_OBSERVATIONS },
+  { id: '017_collection_context', sql: MIGRATION_017_COLLECTION_CONTEXT }
 ];
 
 const MIGRATIONS_TABLE = `

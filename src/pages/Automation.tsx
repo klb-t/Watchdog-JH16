@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom';
 import type { AutomationJob, JobRequest, PaperRecord, ScheduleRecord, Recurrence } from '../../shared/automation';
 import { automationApi as api, formClass, buttonClass, sectionClass } from '../lib/automation_client';
 import { useAccess } from '../lib/access';
+import {withCollectionPurpose,type CollectionProfile} from '../../shared/collection';
 
 export function Automation() {
   const access = useAccess();
   const [profile, setProfile] = useState<any>(null), [jobs, setJobs] = useState<AutomationJob[]>([]), [schedules, setSchedules] = useState<ScheduleRecord[]>([]);
+  const [collectionProfile,setCollectionProfile]=useState<CollectionProfile|null>(null);
+  const purposeLabel=(request:JobRequest)=>collectionProfile?.purposes[('collection' in request?request.collection?.purpose:undefined)??'unspecified'].label;
   const [papers, setPapers] = useState<PaperRecord[]>([]), [status, setStatus] = useState<any>(null), [error, setError] = useState('');
   const [request, setRequest] = useState<JobRequest | null>(null), [busy, setBusy] = useState(false), [message, setMessage] = useState('');
   const [name, setName] = useState('Codzienny przegląd publikacji'), [recurrence, setRecurrence] = useState<Recurrence>({ kind: 'daily_utc', hour: 6, minute: 0 });
@@ -17,6 +20,7 @@ export function Automation() {
   };
   useEffect(() => { let active = true; setProfile(null); setJobs([]); setPapers([]); setDetail(null);
     api('/api/automation/profile').then(p => { if (active) { setProfile(p); setRequest(p.defaults.paperJob); } }).catch(e => active && setError(e.message));
+    api('/api/automation/collection-profile').then(p=>{if(active)setCollectionProfile(p.profile);}).catch(e=>active&&setError(e.message));
     refresh().catch(e => active && setError(e.message)); return () => { active = false; };
   }, [access.principalId]);
   const pending = jobs.some(j => ['QUEUED', 'RUNNING'].includes(j.status));
@@ -34,8 +38,15 @@ export function Automation() {
     {!profile || !request ? <p role="status">Wczytywanie profili…</p> : <>
       <div className="grid lg:grid-cols-2 gap-4">
         <section className={sectionClass}><h2 className="font-semibold">Plan zbierania</h2>
-          <label className="block">Zadanie<select className={formClass} value={request.kind} onChange={e => changeKind(e.target.value)}>
+          <label className="block">Zadanie<select aria-label="Zadanie" className={formClass} value={request.kind} disabled={busy} onChange={e => changeKind(e.target.value)}>
             <option value="paper_scan">Przegląd prac naukowych</option>{access.capabilities.includes('method.propose') && <option value="paper_review">Ocena metodologii nowych prac przez LLM</option>}<option value="catalog_refresh">Katalog modeli i cen OpenRouter</option>{access.capabilities.includes('evidence.import') && <option value="substance_refresh">Pamięć substancji</option>}</select></label>
+          {collectionProfile && (request.kind==='paper_scan'||request.kind==='substance_refresh') && <fieldset className="space-y-2" data-testid="collection-purpose">
+            <label className="block">{collectionProfile.label}<select aria-label={collectionProfile.label} className={formClass} value={request.collection?.purpose??'unspecified'} disabled={busy}
+              onChange={e=>setRequest(withCollectionPurpose(request,e.target.value as keyof CollectionProfile['purposes']))}>
+              {Object.entries(collectionProfile.purposes).map(([id,p])=><option key={id} value={id}>{p.label}</option>)}
+            </select></label><p className="text-sm">{collectionProfile.purposes[request.collection?.purpose??'unspecified'].description}</p>
+            <details><summary className="text-xs">{collectionProfile.explanation}</summary><p className="text-xs text-slate-600">{collectionProfile.scopeNote}</p></details>
+          </fieldset>}
           {request.kind === 'paper_scan' && <>
             <label className="block">Zakres<select className={formClass} value={request.scope} onChange={e => patch({ scope: e.target.value })} data-testid="discovery-scope"><option value="substances">Substancje psychoaktywne</option><option value="all_science">Wszystkie dziedziny w wybranych repozytoriach</option></select></label>
             <label className="block">Okno wyszukiwania (dni)<input type="number" min={1} max={90} className={formClass} value={request.lookbackDays} onChange={e => patch({ lookbackDays: Number(e.target.value) })} /></label>
@@ -64,6 +75,7 @@ export function Automation() {
           <p className="text-sm">Proces wykonawczy: {status?.enabled ? 'aktywny' : 'uruchamiany przez zadanie API / proces serwera'}</p>
           {schedules.map(s => <article key={s.id} className="border-t pt-3 text-sm"><b>{s.name}</b><p>{s.enabled ? 'Włączony' : 'Wstrzymany'} · następny termin {s.nextDueAt}</p>
             <p>{s.request.kind === 'paper_scan' ? s.request.scope : s.request.kind} · limit {s.request.maxRequests} zapytań</p>
+            {(s.request.kind==='paper_scan'||s.request.kind==='substance_refresh')&&<p>{purposeLabel(s.request)}</p>}
             <button className="underline mr-3" disabled={busy} onClick={() => scheduleToggle(s)}>{s.enabled ? 'Wstrzymaj' : 'Wznów'}</button>
             <button className="underline" onClick={() => { setRequest(s.request); setRecurrence(s.recurrence); setName(`${s.name} — nowa wersja`); }}>Skopiuj do planu</button></article>)}
         </section>
@@ -71,6 +83,7 @@ export function Automation() {
       <section className={sectionClass}><div className="flex justify-between gap-3"><h2 className="font-semibold">Ostatnie zadania</h2><button className="underline text-sm" onClick={() => act(refresh)}>Odśwież</button></div>
         {!jobs.length && <p>Brak uruchomień. Samo otwarcie strony nie pobiera danych z zewnętrznych źródeł.</p>}
         {jobs.map(j => <article key={j.id} className="border-t pt-3 flex flex-wrap gap-3 text-sm items-center"><span className="font-semibold">{j.status}</span><span>{j.request.kind}</span><time>{j.createdAt}</time>
+          {(j.request.kind==='paper_scan'||j.request.kind==='substance_refresh')&&<span>{purposeLabel(j.request)}</span>}
           {j.error && <span className="text-amber-800">{j.error}</span>}<button className="underline" onClick={() => act(async () => setDetail(await api(`/api/automation/jobs/${j.id}`)))}>Wyniki i pochodzenie</button>
           {['RUNNING', 'QUEUED'].includes(j.status) && <button className="underline" onClick={() => act(() => api(`/api/automation/jobs/${j.id}/cancel`, {}))}>Zatrzymaj</button>}</article>)}
         {detail && <details open><summary>Szczegóły zadania {detail.job.id}</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-96 overflow-auto p-3 bg-slate-50">{JSON.stringify(detail, null, 2)}</pre></details>}

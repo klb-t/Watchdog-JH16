@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { PublicReceipt } from './automation';
+import type { CollectionContext } from './collection';
 
 export class SourceHistoryError extends Error {
   readonly code = 'source_history_error';
@@ -7,7 +8,7 @@ export class SourceHistoryError extends Error {
 }
 export type JsonValue = null | boolean | number | string | JsonValue[] | { [key: string]: JsonValue };
 export interface SourceContext {
-  substanceId: string; provider: string; kind: string; url: string; adapterVersion: string; sourceProfileHash: string;
+  substanceId: string; provider: string; kind: string; url: string; adapterVersion: string; sourceProfileHash: string; collection?:CollectionContext;
 }
 export interface SourceHistoryGroup {
   context: SourceContext; contextHash: string; anchor: number; observations: number; versions: number;

@@ -11,7 +11,8 @@ first/last check and occurrence count of each content version.
 ## Meaning and boundaries
 
 - Comparison requires the same substance, provider, record kind, exact source URL, adapter
-  version and archived source-profile hash. Different contexts are separate choices. URL
+  version, archived source-profile hash and optional collection context (purpose and actual
+  acquisition hash). Different contexts are separate choices. URL
   parameters are preserved; no semantic URL equivalence or method substitution is inferred.
 - Source records and HTTP response bytes are different objects. Two raw responses can have
   different byte hashes but yield identical preserved record content. Both receipts remain.
@@ -43,6 +44,10 @@ receipts and journal entries are protected against updates/deletion; existing WO
 rules remain in force. First/last observation times and transitions are calculated over the
 whole selected context before pagination. Same-timestamp observations use journal sequence
 as a stable tie-breaker.
+
+Migration 017 adds optional frozen [collection context](COLLECTION_CONTEXT.md) to jobs and
+receipts. Historical unclassified contexts keep their original hashes. Tagged histories
+separate different purposes or request parameters without duplicating identical source content.
 
 ## Reusable mechanism and interface profile
 

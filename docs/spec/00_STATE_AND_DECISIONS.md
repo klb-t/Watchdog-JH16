@@ -603,3 +603,17 @@ Reuse restores explicit settings for the exact parser; it never supplies old obs
 citations, evidence classifications or approvals. Origin IDs/hashes and later mapping edits
 remain visible in provenance. The normal dataset/method review and numeric precision contract
 continue to apply. This is a saved workflow step, not autonomous arbitrary-paper execution.
+
+### E3.9 / E3.10 checkpoint — source versions and collection purpose (2026-09-13)
+
+Repeated source checks now retain immutable receipt/content associations, separate actual
+content changes from repeated checks, and support context-bound structural comparisons
+with portable verification. Published E3.9 head `609fa64` passed 344/344 tests in CI.
+
+Public substance and paper collection now accepts optional baseline/research/monitoring
+intent through the existing queue and scheduler. Migration 017 freezes purpose plus a hash
+of actual acquisition parameters in jobs and receipts. History and exports distinguish
+contexts while identical source content still deduplicates. Old data remain unclassified
+and retain their hashes. Labels are profile data; no evidence tier, approval, scientific
+method or geographic coverage follows from the purpose label. Named collections and
+resolution/retention/series/alert policies remain open. See COLLECTION_CONTEXT.md.

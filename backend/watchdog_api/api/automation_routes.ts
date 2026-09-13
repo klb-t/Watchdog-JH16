@@ -8,6 +8,7 @@ import { can } from '../../../shared/authorization';
 import { SourceHistoryError } from '../../../shared/source_history';
 import { loadSourceHistoryProfile } from '../config/source_history';
 import { tracer } from '../utils/tracer';
+import { loadCollectionProfile } from '../config/collection';
 const route = (fn: (req: Request, res: Response) => unknown) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve().then(() => fn(req, res)).catch(error => error instanceof AutomationError || error instanceof SourceHistoryError ? res.status(error.status).json({ error: error.code, message: error.message }) : next(error));
 };
@@ -24,6 +25,7 @@ export function buildAutomationRouter(repo: AutomationRepository, service: Autom
   const router = Router(); router.use(requireCapability('run.create')); router.use(sameOriginMutation);
   router.use((_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
   router.get('/profile', (_req, res) => res.json(service.profile));
+  router.get('/collection-profile', (_req,res) => res.json({profile:loadCollectionProfile()}));
   router.get('/status', (_req, res) => res.json(service.state));
   router.get('/jobs', (req, res) => res.json({ jobs: repo.jobs(req.principal!.id) }));
   router.post('/jobs', route((req, res) => {
@@ -62,7 +64,7 @@ export function buildMemoryRouter(repo: AutomationRepository) {
     res.setHeader('Cache-Control', 'no-store'); next();
   });
   router.get('/substances', (req, res) => res.json({ substances: repo.substanceList(String(req.query.q ?? '').slice(0, 160)) }));
-  router.get('/history/profile', (_req,res) => res.json({ profile: historyProfile }));
+  router.get('/history/profile', (_req,res) => res.json({ profile: historyProfile, collectionProfile:loadCollectionProfile() }));
   router.get('/substances/:id/history', route((req,res) => {
     const q = z.object({ offset: z.coerce.number().int().min(0).max(1000000).optional() }).strict().parse(req.query);
     res.json(repo.history.groups(req.params.id,historyProfile.limits.groups,q.offset));

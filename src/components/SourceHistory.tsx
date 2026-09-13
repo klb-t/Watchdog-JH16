@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { JsonPresence, SourceComparison, SourceHistoryEntry, SourceHistoryGroup, SourceHistoryPage, SourceHistoryProfile } from '../../shared/source_history';
 import defaults from '../../config/source-history-ui.json';
+import type { CollectionProfile } from '../../shared/collection';
 import { automationApi as api, buttonClass, formClass, sectionClass } from '../lib/automation_client';
 
 export function SourceHistory({ substanceId }: { substanceId: string }) {
   const [profile,setProfile] = useState<SourceHistoryProfile|null>(null);
+  const [collectionProfile,setCollectionProfile]=useState<CollectionProfile|null>(null);
   const [groups,setGroups] = useState<SourceHistoryGroup[]>([]), [nextGroup,setNextGroup] = useState<number|null>(null);
   const [selected,setSelected] = useState(''), [history,setHistory] = useState<SourceHistoryPage|null>(null);
   const [from,setFrom] = useState(''), [to,setTo] = useState(''), [comparison,setComparison] = useState<SourceComparison|null>(null);
@@ -20,8 +22,8 @@ export function SourceHistory({ substanceId }: { substanceId: string }) {
   const clearSelection = () => { setSelected(''); setHistory(null); setFrom(''); setTo(''); setComparison(null); };
   function refresh() {
     clearSelection(); setGroups([]); setNextGroup(null);
-    void request(() => Promise.all([api<{profile:SourceHistoryProfile}>('/api/memory/history/profile'),api<{groups:SourceHistoryGroup[];nextOffset:number|null}>(`${base}/history`)]), ([p,g]) => {
-      setProfile(p.profile); setGroups(g.groups); setNextGroup(g.nextOffset);
+    void request(() => Promise.all([api<{profile:SourceHistoryProfile;collectionProfile:CollectionProfile}>('/api/memory/history/profile'),api<{groups:SourceHistoryGroup[];nextOffset:number|null}>(`${base}/history`)]), ([p,g]) => {
+      setProfile(p.profile); setCollectionProfile(p.collectionProfile); setGroups(g.groups); setNextGroup(g.nextOffset);
     });
   }
   useEffect(() => { refresh(); return () => { generation.current++; }; }, [substanceId]);
@@ -54,12 +56,13 @@ export function SourceHistory({ substanceId }: { substanceId: string }) {
     {busy && <p role="status" className="text-sm">{labels.loading}</p>}
     {!groups.length && !busy && <p>{labels.empty}</p>}
     {!!groups.length && <label className="block text-sm">{labels.source}<select aria-label={labels.source} className={formClass} value={selected} disabled={busy} onChange={e => open(e.target.value)}>
-      <option value="">{labels.choose}</option>{groups.map(g => <option key={g.contextHash} value={g.anchor}>{g.context.provider} · {g.context.kind} · {g.contextHash.slice(0,8)}</option>)}
+      <option value="">{labels.choose}</option>{groups.map(g => <option key={g.contextHash} value={g.anchor}>{g.context.provider} · {g.context.kind} · {collectionProfile?.purposes[g.context.collection?.purpose??'unspecified'].label} · {g.contextHash.slice(0,8)}</option>)}
     </select></label>}
     {nextGroup !== null && <button className="text-sm underline" disabled={busy} onClick={() => void request(() => api<{groups:SourceHistoryGroup[];nextOffset:number|null}>(`${base}/history?offset=${nextGroup}`), g => {
       setGroups(old => [...new Map([...old,...g.groups].map(item => [item.contextHash,item])).values()]); setNextGroup(g.nextOffset);
     })}>{labels.loadGroups}</button>}
     {group && <div className="space-y-2 text-sm">
+      {collectionProfile&&<p>{collectionProfile.label}: <b>{collectionProfile.purposes[group.context.collection?.purpose??'unspecified'].label}</b></p>}
       <p>{group.observations} {labels.observations} · {group.versions} {labels.versions}</p>
       <p>{labels.firstSeen}: <time>{group.firstObservedAt}</time><br/>{labels.lastChecked}: <time>{group.lastObservedAt}</time></p>
       {group.legacyObservations > 0 && <p className="rounded bg-amber-50 p-2 text-amber-950">{labels.legacy}</p>}
