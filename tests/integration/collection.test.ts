@@ -89,7 +89,7 @@ test('migration 017 preserves old context hashes and leaves old jobs, receipts a
     const a=await sourceSnapshot(h.db,h.repo,{fictional:true,amount:'1.00'}),b=await sourceSnapshot(h.db,h.repo,{fictional:true,amount:'2.00'});
     const expected={substanceId:a.id,provider:'pubchem',kind:'properties',url:a.receipt.url,adapterVersion:a.receipt.adapterVersion,sourceProfileHash:h.profile.contentHash};
     const oldJob=h.repo.job(a.jobId,'local-user')!;assert.equal('collection' in oldJob,false);
-    assert.deepEqual(runMigrations(h.db).applied,['017_collection_context']);assert.deepEqual(runMigrations(h.db).applied,[]);
+    assert.deepEqual(runMigrations(h.db).applied,MIGRATIONS.filter(m=>m.id>='017').map(m=>m.id));assert.deepEqual(runMigrations(h.db).applied,[]);
     assert.deepEqual(h.repo.getReceipt(a.receipt.id),a.receipt);assert.deepEqual(h.repo.job(a.jobId,'local-user'),oldJob);
     const group=h.repo.history.groups(a.id,10).groups[0];assert.deepEqual(group.context,expected);assert.equal(group.contextHash,canonicalHash(expected));
     const comparison=h.repo.history.compare(a.id,a.sequence,b.sequence,group.contextHash,loadSourceHistoryProfile());

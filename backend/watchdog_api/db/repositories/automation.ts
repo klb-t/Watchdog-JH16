@@ -10,11 +10,15 @@ import type { AutomationProfile } from '../../config/automation';
 import type { ObjectStore } from '../../storage/object_store';
 import { ReferenceHistoryRepository } from './reference_history';
 import { collectionContext, decodeCollectionContext } from '../../utils/collection_context';
+import { SourceWatchRepository } from './source_watches';
 
 export class AutomationError extends Error { readonly code = 'automation_error'; constructor(message: string, readonly status = 409) { super(message); } }
 export class AutomationRepository {
   readonly history: ReferenceHistoryRepository;
-  constructor(private readonly db: Database, private readonly store: ObjectStore) { this.history = new ReferenceHistoryRepository(db); }
+  readonly watches: SourceWatchRepository;
+  constructor(private readonly db: Database, private readonly store: ObjectStore) {
+    this.history = new ReferenceHistoryRepository(db);this.watches=new SourceWatchRepository(db,this.history);
+  }
   audit(owner: string, action: string, id: string, detail: unknown = {}) {
     new AuditRepository(this.db).append(owner, action, 'automation', id, 'automation', detail);
   }

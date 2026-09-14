@@ -525,3 +525,43 @@ separation and offline tamper detection. The existing Chromium schedule/history 
 also test purpose selection, pause persistence and separate baseline/research contexts;
 their results will be checked on the published head. No paid or live public-source calls
 were made for this stage.
+
+Published E3.10 head `2e1d0fcc17b495ad007bf5000ffc190e3f223f38` passed Actions
+`34758720915`: **349/349 tests**, zero failures/skips, Chromium, build and JH16 demo.
+The CI browser export passed its CLI verification. Separate artifact retrieval returned
+HTTP 403, so independent ZIP verification and manual screenshot inspection were not claimed.
+
+## 2026-09-14 — E3.11 watched sources and unread changes
+
+The public scheduler and source history were implemented, but there was no saved per-user
+list of contexts to watch or reading state. This stage adds explicit subscriptions from
+history, an inbox with counts and exact change pairs, pause/resume and bounded read batches.
+One shared comparison component now renders both history and inbox exports with the pinned
+comparison profile. Source records, scientific evidence review and the existing acquisition
+pipeline keep their earlier behavior.
+
+Migration 018 stores immutable context/rule identity and private monotonic reading cursors.
+Subscriptions start at the latest linked observation and do not manufacture a retrospective
+backlog. Repeating the action preserves existing state. The queue follows immutable journal
+sequence so a late-linked older receipt cannot disappear behind the cursor; both retrieval
+timestamps remain explicit. The existing history timeline still follows retrieval dates.
+Only new hash transitions count as changes, including reversions. Identical checks remain
+counted; failed/unlinked receipts never become successful source observations.
+
+The batch's captured upper bound controls marking read. Concurrent arrivals remain unread;
+stale revisions and cross-context cursors are rejected. Existing ownership transfer retains
+watch identity and independent reading states. All watch writes use the existing audit chain,
+and the UI/TRACE expose context and batch bounds. New labels, rule identity, ordering and
+limits are validated profile data. No subscriptions are created automatically on upgrade.
+
+Final pre-push checks: TypeScript and production build passed; **339/339 local unit/contract/
+scientific/integration tests passed**, zero failures/skips. Seven new cases include restart,
+migration, ownership transfer, stale updates, paging, concurrent arrivals, pause/restart,
+context isolation, late-linked receipts, HTTP access/CSRF and actual adapter execution over
+fictional transport responses. A new Chromium case adds UI subscription, comparison/export,
+concurrent unread preservation, pause/reload/resume and mobile layout; its result will be
+checked on the published head. No live public collection or paid provider calls were made.
+
+See [SOURCE_WATCHES](SOURCE_WATCHES.md) for exact use and limits. Watches surface new saved
+reference records when the panel is opened/refreshed. External notifications, clinical/batch
+alerts, source-health alerting and watches over receptor assertions/paper revisions remain open.

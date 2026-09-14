@@ -32,9 +32,16 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   research and monitoring use the existing public queue/scheduler. Migration 017 snapshots
   purpose and actual request hash in jobs/receipts; histories and exports keep contexts
   distinct while identical content deduplicates. Old contexts/hashes stay unclassified.
-  Five integration cases and full local regression pass: 332/332, zero failures/skips.
-  Browser schedule/history cases are extended for CI. See COLLECTION_CONTEXT.md; named
+  Published head `2e1d0fc` passed Actions `34758720915`: 349/349, including Chromium.
+  See COLLECTION_CONTEXT.md; named
   collections, resolution/retention policies, geographic collection and alerts remain open.
+- [x] **E3.11 — Private watched-source reading queue.** Explicit subscriptions to exact
+  source contexts, deterministic change/reversion pairs, immutable context identity and
+  private monotonic reading cursors with stale-write protection. New arrivals survive
+  reading a displayed batch; pause/resume preserves backlog. History and inbox reuse the
+  same comparison/export component. Seven new integration cases pass; full local regression
+  is 339/339. Chromium flow added for the published CI run. See SOURCE_WATCHES.md;
+  clinical/batch alerts and external notifications remain open.
 - [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.

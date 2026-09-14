@@ -178,6 +178,59 @@ test('E3.9: source history compares preserved values, exports a verifiable snaps
   }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
 });
 
+test('E3.11: watched changes preserve unread arrivals, compare and export exact versions, and resume after reload',async()=>{
+  const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  const request=withCollectionPurpose(loadAutomationProfile().defaults.substanceJob,'monitoring');
+  const append=async(value:string)=>{
+    const db=new Database(DB_PATH);db.pragma('foreign_keys=ON');try{
+      return await sourceSnapshot(db,new AutomationRepository(db,new LocalFileSystemStore(STORE_PATH)),{fictional:true,amount:value},
+        {cid:999999993,name:'Fictional watched compound',request});
+    }finally{db.close();}
+  };
+  try{
+    const first=await append('1.00');
+    await page.goto(`${baseUrl}/memory`);await page.getByRole('button',{name:'Fictional watched compound',exact:false}).click();
+    const history=page.locator('[data-testid="source-history"]'),inbox=page.locator('[data-testid="source-watch-inbox"]');
+    await history.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(first.sequence));
+    const subscribed=page.waitForResponse(r=>r.url().endsWith('/api/memory/watches')&&r.request().method()==='POST'&&r.status()===201);
+    await history.getByRole('button',{name:'Obserwuj nowe zmiany',exact:true}).click();const watch=(await (await subscribed).json()).watch;
+    await inbox.getByText('Brak nowych zmian treści w tym kontekście.',{exact:true}).waitFor();
+    await append('1.00');const changed=await append('2.00');
+    await inbox.getByRole('button',{name:'Sprawdź zapisane zmiany',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 1 · Nowe powiązane sprawdzenia: 2',{exact:true}).waitFor();
+    await inbox.getByRole('button',{name:'Pokaż dokładne różnice',exact:true}).click();
+    const comparison=inbox.locator('[data-testid="source-comparison"]');await comparison.getByText('Zachowane rekordy różnią się treścią.',{exact:true}).waitFor();
+    assert.match((await comparison.textContent())!,/"1.00"/);assert.match((await comparison.textContent())!,/"2.00"/);
+    const downloading=page.waitForEvent('download');await comparison.getByRole('button',{name:'Pobierz porównanie JSON',exact:true}).click();
+    await (await downloading).saveAs('test-artifacts/source-watch-comparison.json');
+    const saved=JSON.parse(fs.readFileSync('test-artifacts/source-watch-comparison.json','utf8'));assert.equal(saved.body.to.sequence,changed.sequence);
+    fs.writeFileSync('test-artifacts/source-watch-verification.txt',execFileSync(process.execPath,['--import','tsx','scripts/verify_source_comparison.ts',
+      'test-artifacts/source-watch-comparison.json',saved.contentHash],{encoding:'utf8'}));
+    await page.setViewportSize({width:390,height:844});await comparison.scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/source-watch-mobile.png',fullPage:false});
+    const later=await append('3.00');
+    await inbox.getByRole('button',{name:'Oznacz tę partię jako przeczytaną',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 1 · Nowe powiązane sprawdzenia: 1',{exact:true}).waitFor();
+    const pending=await (await fetch(`${baseUrl}/api/memory/watches/${watch.id}`)).json();
+    assert.equal(pending.watch.reviewedThrough,changed.sequence);assert.equal(pending.entries[0].to.sequence,later.sequence);
+    assert.equal(await inbox.locator('[data-testid="source-comparison"]').count(),0);
+    await inbox.getByRole('button',{name:'Wstrzymaj obserwowanie',exact:true}).click();
+    await inbox.getByRole('button',{name:'Wznów obserwowanie',exact:true}).waitFor();
+    await page.reload();await inbox.getByLabel('Obserwowane źródło',{exact:true}).selectOption(watch.id);
+    await inbox.getByRole('button',{name:'Wznów obserwowanie',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 1 · Nowe powiązane sprawdzenia: 1',{exact:true}).waitFor();
+    await page.setViewportSize({width:1280,height:900});await inbox.scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/source-watch-desktop.png',fullPage:false});
+    await inbox.getByRole('button',{name:'Oznacz tę partię jako przeczytaną',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 0 · Nowe powiązane sprawdzenia: 0',{exact:true}).waitFor();
+    assert.deepEqual(errors,[]);
+  }catch(error){
+    fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-watch-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));
+    await page.screenshot({path:'test-artifacts/source-watch-failure.png',fullPage:false});throw error;
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
+
 test('E1.21: the Study page drives a full fixture run from the UI', async () => {
   await page.goto(`${baseUrl}/study`);
   await page.waitForSelector('[data-testid="study-page"]');

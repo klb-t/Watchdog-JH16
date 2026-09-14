@@ -9,6 +9,7 @@ import { SourceHistoryError } from '../../../shared/source_history';
 import { loadSourceHistoryProfile } from '../config/source_history';
 import { tracer } from '../utils/tracer';
 import { loadCollectionProfile } from '../config/collection';
+import { loadSourceWatchProfile } from '../config/source_watch';
 const route = (fn: (req: Request, res: Response) => unknown) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve().then(() => fn(req, res)).catch(error => error instanceof AutomationError || error instanceof SourceHistoryError ? res.status(error.status).json({ error: error.code, message: error.message }) : next(error));
 };
@@ -57,12 +58,34 @@ export function buildAutomationRouter(repo: AutomationRepository, service: Autom
 export function buildMemoryRouter(repo: AutomationRepository) {
   const router = Router();
   const historyProfile = loadSourceHistoryProfile();
+  const watchProfile = loadSourceWatchProfile();
   const sequence = z.coerce.number().int().positive().max(Number.MAX_SAFE_INTEGER);
   router.use((req, res, next) => {
     if (!req.principal) return res.status(401).json({ error: 'UNAUTHENTICATED' });
     if (!can(req.principal.roles, 'responder.lookup') && !can(req.principal.roles, 'evidence.review')) return res.status(403).json({ error: 'FORBIDDEN' });
     res.setHeader('Cache-Control', 'no-store'); next();
   });
+  router.use(sameOriginMutation);
+  router.get('/watches/profile',(_req,res)=>res.json({profile:watchProfile,collectionProfile:loadCollectionProfile()}));
+  router.get('/watches',route((req,res)=>res.json({watches:repo.watches.summaries(req.principal!.id)})));
+  router.post('/watches',route((req,res)=>{
+    const b=z.object({substanceId:z.string().min(1).max(160),anchor:sequence,contextHash:z.string().regex(/^[a-f0-9]{64}$/)}).strict().parse(req.body);
+    res.status(201).json({watch:repo.watches.subscribe(req.principal!.id,b.substanceId,b.anchor,b.contextHash,watchProfile.limits.watches)});
+  }));
+  router.get('/watches/:id',route((req,res)=>{
+    const batch=repo.watches.batch(req.principal!.id,req.params.id,watchProfile.limits.changes);
+    tracer.emit('SOURCE_WATCH_CHANGE_BATCH',{watchId:batch.watch.id,contextHash:batch.watch.contextHash,
+      through:batch.through,changes:batch.entries.length,hasMore:batch.hasMore});
+    res.json(batch);
+  }));
+  router.post('/watches/:id/read',route((req,res)=>{
+    const b=z.object({revision:sequence,through:sequence}).strict().parse(req.body);
+    res.json({watch:repo.watches.update(req.principal!.id,req.params.id,b)});
+  }));
+  router.post('/watches/:id/enabled',route((req,res)=>{
+    const b=z.object({revision:sequence,enabled:z.boolean()}).strict().parse(req.body);
+    res.json({watch:repo.watches.update(req.principal!.id,req.params.id,b)});
+  }));
   router.get('/substances', (req, res) => res.json({ substances: repo.substanceList(String(req.query.q ?? '').slice(0, 160)) }));
   router.get('/history/profile', (_req,res) => res.json({ profile: historyProfile, collectionProfile:loadCollectionProfile() }));
   router.get('/substances/:id/history', route((req,res) => {

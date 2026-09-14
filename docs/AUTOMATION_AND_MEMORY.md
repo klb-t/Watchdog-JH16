@@ -64,6 +64,10 @@ record and compares exact stored versions within one source context. It distingu
 changes from repeated checks, preserves reversions, exposes historical-coverage limits and
 exports both selected snapshots with a reproducible structural comparison.
 
+An optional [watched-source queue](SOURCE_WATCHES.md) lists newly saved content changes
+for selected source contexts and keeps private reading cursors. It consumes this same
+acquisition journal; enabling a watch does not enqueue a fetch or interpret a market alert.
+
 ## Discovery and autonomy
 
 One selector expands substance-focused searches to all disciplines covered by the selected

@@ -617,3 +617,14 @@ contexts while identical source content still deduplicates. Old data remain uncl
 and retain their hashes. Labels are profile data; no evidence tier, approval, scientific
 method or geographic coverage follows from the purpose label. Named collections and
 resolution/retention/series/alert policies remain open. See COLLECTION_CONTEXT.md.
+
+### E3.11 checkpoint — watched sources and private reading state (2026-09-14)
+
+Source history now offers explicit private watches. Migration 018 stores immutable context
+and rule identity with mutable, audited reading state. The existing acquisition journal
+supplies exact change pairs; equal content is a check, not a change. Reading batches use
+append sequence so late-linked receipts are not skipped, and display retrieval times
+separately. The history timeline retains its existing retrieval-date order. Read cursors
+never grant scientific approval, swallow later arrivals or cross context/owner boundaries.
+The UI reuses the source comparison/export surface. No extra collector, model, external
+message or clinical-alert interpretation is introduced. See SOURCE_WATCHES.md.

@@ -36,6 +36,28 @@ function checkedValue(row: any): JsonValue {
 
 export class ReferenceHistoryRepository {
   constructor(private readonly db: Database) {}
+  contextAt(id:string,anchor:number){
+    const ctx=context(this.row(id,anchor));return {context:ctx,contextHash:canonicalHash(ctx)};
+  }
+  /** A reading cursor follows append order, so late-linked older receipts cannot be skipped. */
+  changes(id:string,anchor:number,after:number,limit:number){
+    if(!Number.isSafeInteger(limit)||limit<1||limit>100)throw new SourceHistoryError('Invalid change page limit');
+    return this.db.transaction(()=>{
+      const ctx=context(this.row(id,anchor));
+      if(canonicalHash(context(this.row(id,after)))!==canonicalHash(ctx))throw new SourceHistoryError('Reading cursor belongs to a different source context');
+      const counts=this.db.prepare(`SELECT MAX(o.sequence) AS latest,COUNT(CASE WHEN o.sequence>? THEN 1 END) AS checks
+        ${joins} WHERE ${contextWhere}`).get(after,...contextValues(ctx)) as any;
+      const rows=this.db.prepare(`WITH history AS (SELECT o.sequence,r.content_hash,
+        LAG(o.sequence) OVER (ORDER BY o.sequence) AS previous_sequence,
+        LAG(r.content_hash) OVER (ORDER BY o.sequence) AS previous_hash
+        ${joins} WHERE ${contextWhere}) SELECT *,COUNT(*) OVER () AS changes FROM history
+        WHERE sequence>? AND previous_hash IS NOT NULL AND previous_hash<>content_hash ORDER BY sequence LIMIT ?`)
+        .all(...contextValues(ctx),after,limit+1) as any[];
+      const entries=rows.slice(0,limit).map(r=>({from:observation(this.row(id,r.previous_sequence)),to:observation(this.row(id,r.sequence))}));
+      return {entries,latestSequence:counts.latest,checksSinceReview:counts.checks,changesSinceReview:rows[0]?.changes??0,
+        through:rows.length>limit?entries.at(-1)!.to.sequence:counts.latest,hasMore:rows.length>limit};
+    })();
+  }
   /** Called inside the same transaction as the content record. Replaying one receipt is idempotent. */
   observe(recordId: string, supplied: PublicReceipt) {
     const f = this.db.prepare(`SELECT f.*,b.sha256,b.byte_size,j.profile_hash FROM public_fetch_receipts f
