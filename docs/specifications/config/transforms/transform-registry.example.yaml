@@ -1,0 +1,40 @@
+schema_version: 1
+registry_policy:
+  examples_are_non_exhaustive: true
+transforms:
+  - {id: select_columns, family: table, status: required}
+  - {id: filter_rows, family: table, status: required}
+  - {id: rename_columns, family: table, status: required}
+  - {id: sort, family: table, status: required}
+  - {id: deduplicate, family: table, status: required}
+  - {id: type_cast, family: schema, status: required}
+  - {id: unit_convert, family: schema, status: required}
+  - {id: entity_resolve, family: semantic, status: required}
+  - {id: join, family: combine, status: required}
+  - {id: union, family: combine, status: required}
+  - {id: group_aggregate, family: aggregate, status: required}
+  - {id: pivot, family: reshape, status: required}
+  - {id: unpivot, family: reshape, status: required}
+  - {id: resample, family: time_series, status: required}
+  - {id: rolling_window, family: time_series, status: required}
+  - {id: lag_lead, family: time_series, status: required}
+  - {id: difference, family: time_series, status: required}
+  - {id: percent_change, family: time_series, status: required}
+  - {id: detrend, family: time_series, status: planned}
+  - {id: seasonal_adjust, family: time_series, status: planned}
+  - {id: standardize, family: numeric, status: required}
+  - {id: normalize, family: numeric, status: required}
+  - {id: log_transform, family: numeric, status: required}
+  - {id: missing_policy, family: quality, status: required}
+  - {id: derive_formula, family: numeric, status: required}
+  - {id: geobucket, family: geospatial, status: planned}
+  - {id: temporal_align, family: time_series, status: required}
+  - {id: interpolate, family: time_series, status: planned}
+  - {id: winsorize, family: numeric, status: optional}
+  - {id: rank_transform, family: numeric, status: planned}
+  - {id: text_segment, family: text, status: planned}
+  - {id: language_detect, family: text, status: planned}
+  - {id: candidate_entity_extract, family: semantic, status: planned}
+  - {id: candidate_symptom_extract, family: semantic, status: planned}
+  - {id: candidate_dose_extract, family: semantic, status: planned}
+  - {id: symptom_ontology_map, family: semantic, status: planned}

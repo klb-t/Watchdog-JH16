@@ -2,14 +2,15 @@ import { test, beforeEach, afterEach } from 'node:test';
 import * as assert from 'node:assert';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
-import { sql } from 'drizzle-orm';
 import { LocalFileSystemStore } from '../../backend/watchdog_api/storage/object_store';
 import { AcquisitionRepository } from '../../backend/watchdog_api/db/repositories/acquisition';
 import { ArtifactRepository } from '../../backend/watchdog_api/db/repositories/artifacts';
+import { RunRepository } from '../../backend/watchdog_api/db/repositories/runs';
+import { runMigrations, listTables, MIGRATIONS } from '../../backend/watchdog_api/db/migrations';
+import { rawBlobs, fetchEvents, manifests } from '../../backend/watchdog_api/db/schema';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { runs, rawBlobs, fetchEvents, manifests } from '../../backend/watchdog_api/db/schema';
-import { randomUUID } from 'node:crypto';
+import { createHash } from 'node:crypto';
 
 let sqlite: Database.Database;
 let db: ReturnType<typeof drizzle>;
@@ -17,112 +18,300 @@ const TEST_STORE_PATH = path.join(process.cwd(), 'test_object_store');
 
 beforeEach(() => {
   sqlite = new Database(':memory:');
+  sqlite.pragma('foreign_keys = ON');
+  runMigrations(sqlite);            // the real migration, not hand-written DDL
   db = drizzle(sqlite);
-  
-  // Minimal manual migration for test (avoids full drizzle-kit setup in CI)
-  db.run(sql`
-    CREATE TABLE runs (
-      id TEXT PRIMARY KEY,
-      type TEXT NOT NULL,
-      status TEXT NOT NULL,
-      config TEXT NOT NULL,
-      error_code TEXT,
-      created_at TEXT NOT NULL,
-      completed_at TEXT
-    );
-  `);
-  db.run(sql`
-    CREATE TABLE raw_blobs (
-      id TEXT PRIMARY KEY,
-      sha256 TEXT NOT NULL UNIQUE,
-      object_uri TEXT NOT NULL,
-      byte_size INTEGER NOT NULL,
-      created_at TEXT NOT NULL
-    );
-  `);
-  db.run(sql`
-    CREATE TABLE fetch_events (
-      id TEXT PRIMARY KEY,
-      run_id TEXT NOT NULL REFERENCES runs(id),
-      source_id TEXT NOT NULL,
-      source_adapter_version TEXT,
-      provenance_metadata TEXT,
-      raw_blob_id TEXT REFERENCES raw_blobs(id),
-      status TEXT NOT NULL,
-      created_at TEXT NOT NULL
-    );
-  `);
-  db.run(sql`
-    CREATE TABLE manifests (
-      run_id TEXT PRIMARY KEY REFERENCES runs(id),
-      object_uri TEXT NOT NULL,
-      sha256 TEXT NOT NULL,
-      finalized_at TEXT NOT NULL
-    );
-  `);
-  
-  if (fs.existsSync(TEST_STORE_PATH)) {
-    fs.rmSync(TEST_STORE_PATH, { recursive: true, force: true });
-  }
+
+  if (fs.existsSync(TEST_STORE_PATH)) fs.rmSync(TEST_STORE_PATH, { recursive: true, force: true });
 });
 
 afterEach(() => {
   sqlite.close();
-  if (fs.existsSync(TEST_STORE_PATH)) {
-    fs.rmSync(TEST_STORE_PATH, { recursive: true, force: true });
+  if (fs.existsSync(TEST_STORE_PATH)) fs.rmSync(TEST_STORE_PATH, { recursive: true, force: true });
+});
+
+test('Migration runs clean on an empty file and is idempotent', () => {
+  const fresh = new Database(':memory:');
+  const first = runMigrations(fresh);
+  // Derived from the migration list rather than restated, so adding a
+  // migration does not require editing this assertion — an assertion people
+  // routinely edit stops being one.
+  const ids = MIGRATIONS.map(m => m.id);
+  assert.deepStrictEqual(first.applied, ids);
+  assert.deepStrictEqual([...ids].sort(), ids, 'migrations must be listed in applied order');
+
+  const second = runMigrations(fresh);
+  assert.deepStrictEqual(second.applied, [], 'a second run must apply nothing');
+  assert.deepStrictEqual(second.alreadyPresent, ids);
+  fresh.close();
+});
+
+test('Schema contains every table 02_DATA_MODEL.md specifies', () => {
+  const tables = new Set(listTables(sqlite));
+  const required = [
+    'principals', 'roles', 'principal_roles',
+    'substances', 'aliases', 'external_identifiers',
+    'capabilities', 'sources', 'providers', 'provider_credentials',
+    'runs', 'run_steps', 'artifacts', 'manifests',
+    'fetch_events', 'raw_blobs',
+    'series', 'observations',
+    'method_specs', 'analysis_runs', 'analysis_results',
+    'reference_score_sets', 'reference_scores',
+    'narratives',
+    'replication_targets', 'replication_claims', 'replication_attempts', 'replication_verdicts',
+    'datasets', 'dataset_columns', 'dataset_inputs', 'transform_specs', 'transform_runs',
+    'audit_events',
+  ];
+  for (const t of required) assert.ok(tables.has(t), `missing table: ${t}`);
+});
+
+test('Every E6 field-reference table exists and is empty (D12)', () => {
+  const e6 = [
+    'symptoms', 'symptom_aliases',
+    'pill_types', 'tested_samples', 'pill_type_composition',
+    'batch_alert_rules', 'batch_alerts',
+    // D14 replaced substance_symptom_associations with the assertion mechanism.
+    'assertions', 'targets', 'market_labels', 'geographic_regions',
+  ];
+  const tables = new Set(listTables(sqlite));
+
+  for (const t of e6) {
+    assert.ok(tables.has(t), `missing E6 table: ${t}`);
+    const { n } = sqlite.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get() as { n: number };
+    assert.strictEqual(n, 0, `${t} must be empty at E1 — schema now, features at E6`);
   }
 });
 
-test('Persistence: Deduplicate physical blobs but maintain fetch history', async () => {
+test('reference_scores carries an evidence_tier column (D12)', () => {
+  const cols = (sqlite.prepare(`PRAGMA table_info(reference_scores)`).all() as { name: string }[])
+    .map(c => c.name);
+  assert.ok(cols.includes('evidence_tier'));
+});
+
+test('Observations cannot store a missing value that also has a number', () => {
+  // The CHECK constraint enforces "missing is not zero" at the storage layer,
+  // not merely in application code.
+  const runRepo = new RunRepository(db);
+  const runId = runRepo.createRun({ runType: 'ACQUISITION', config: {} });
+
+  sqlite.prepare(`INSERT INTO series (id, metric_key, owner_principal_id, visibility, created_at)
+                  VALUES ('s1', 'x', 'local-user', 'private', '2026-01-01T00:00:00Z')`).run();
+
+  assert.throws(() => {
+    sqlite.prepare(`INSERT INTO observations
+      (id, series_id, run_id, retrieved_at, numeric_value, is_missing, missing_reason, created_at)
+      VALUES ('o1', 's1', ?, '2026-01-01T00:00:00Z', 42, 1, 'PARSE_FAILED', '2026-01-01T00:00:00Z')`)
+      .run(runId);
+  }, /CHECK constraint failed/, 'a row cannot be both missing and numeric');
+
+  assert.throws(() => {
+    sqlite.prepare(`INSERT INTO observations
+      (id, series_id, run_id, retrieved_at, numeric_value, is_missing, created_at)
+      VALUES ('o2', 's1', ?, '2026-01-01T00:00:00Z', NULL, 1, '2026-01-01T00:00:00Z')`)
+      .run(runId);
+  }, /CHECK constraint failed/, 'a missing row must carry a reason');
+});
+
+test('Replication verdict vocabulary is closed and contains no "failed"', () => {
+  const runRepo = new RunRepository(db);
+  const runId = runRepo.createRun({ runType: 'ANALYSIS', config: {} });
+  const now = '2026-01-01T00:00:00Z';
+
+  sqlite.prepare(`INSERT INTO replication_targets (id,title,status,owner_principal_id,created_at)
+                  VALUES ('t1','JH2016','active','local-user',?)`).run(now);
+  sqlite.prepare(`INSERT INTO replication_claims
+                  (id,target_id,claim_key,tolerance_kind,tolerance_value,created_at)
+                  VALUES ('c1','t1','k','interval',0.7,?)`).run(now);
+  sqlite.prepare(`INSERT INTO replication_attempts (id,target_id,run_id,status)
+                  VALUES ('a1','t1',?,'COMPLETED')`).run(runId);
+
+  for (const v of ['reproduced', 'deviates', 'not_computable', 'method_unclear']) {
+    sqlite.prepare(`INSERT INTO replication_verdicts (id,attempt_id,claim_id,verdict,created_at)
+                    VALUES (?, 'a1','c1',?,?)`).run(`v_${v}`, v, now);
+  }
+
+  assert.throws(() => {
+    sqlite.prepare(`INSERT INTO replication_verdicts (id,attempt_id,claim_id,verdict,created_at)
+                    VALUES ('v_bad','a1','c1','failed',?)`).run(now);
+  }, /CHECK constraint failed/, "'failed' is deliberately not in the vocabulary");
+});
+
+test('Persistence: deduplicate physical blobs but maintain fetch history', async () => {
   const store = new LocalFileSystemStore(TEST_STORE_PATH);
   const repo = new AcquisitionRepository(db, store);
-  
-  const runId = randomUUID();
-  db.insert(runs).values({ id: runId, type: 'ACQUISITION', status: 'QUEUED', config: '{}', created_at: new Date().toISOString() }).run();
+  const runRepo = new RunRepository(db);
+  const runId = runRepo.createRun({ runType: 'ACQUISITION', config: {} });
 
   const payload = Buffer.from('identical provider response');
 
-  // Fetch 1
-  await repo.recordFetch(runId, 'src1', payload, 'SUCCESS');
-  // Fetch 2 (e.g. later run or different source getting same response)
-  await repo.recordFetch(runId, 'src2', payload, 'SUCCESS');
+  await repo.recordFetch({ runId, sourceId: 'src1', payload, status: 'SUCCESS' });
+  await repo.recordFetch({ runId, sourceId: 'src2', payload, status: 'SUCCESS' });
 
   const blobs = db.select().from(rawBlobs).all();
   const fetches = db.select().from(fetchEvents).all();
 
-  assert.strictEqual(blobs.length, 1, 'Only one physical blob should exist due to content addressing');
-  assert.strictEqual(fetches.length, 2, 'Two logical fetch events must exist');
+  assert.strictEqual(blobs.length, 1, 'one physical blob, by content address');
+  assert.strictEqual(fetches.length, 2, 'two logical fetch events must survive');
   assert.strictEqual(fetches[0].raw_blob_id, blobs[0].id);
   assert.strictEqual(fetches[1].raw_blob_id, blobs[0].id);
 });
 
-test('Persistence: WORM Constraint on Manifests', async () => {
-  const repo = new ArtifactRepository(db);
-  const runId = randomUUID();
-  
-  db.insert(runs).values({ id: runId, type: 'ANALYSIS', status: 'QUEUED', config: '{}', created_at: new Date().toISOString() }).run();
+test('Persistence: a blob round-trips by hash', async () => {
+  const store = new LocalFileSystemStore(TEST_STORE_PATH);
+  const repo = new AcquisitionRepository(db, store);
+  const runRepo = new RunRepository(db);
+  const runId = runRepo.createRun({ runType: 'ACQUISITION', config: {} });
 
-  // First finalization
-  repo.finalizeManifest(runId, 'file://manifest/uri', 'abc');
-  
-  const allManifests = db.select().from(manifests).all();
-  assert.strictEqual(allManifests.length, 1);
+  const payload = Buffer.from('round trip me');
+  const expected = createHash('sha256').update(payload).digest('hex');
 
-  // Attempting to finalize/mutate again throws WORM violation
-  assert.throws(() => {
-    repo.finalizeManifest(runId, 'file://manifest/uri2', 'def');
-  }, /WORM Violation/);
+  const blobId = await repo.recordFetch({ runId, sourceId: 'src', payload, status: 'SUCCESS' });
+  assert.ok(blobId);
+
+  const row = repo.getRawBlob(blobId!)!;
+  assert.strictEqual(row.sha256, expected);
+
+  const bytes = await store.get(row.object_uri);
+  assert.deepStrictEqual(bytes, payload);
+  assert.strictEqual(createHash('sha256').update(bytes).digest('hex'), expected);
 });
 
-test('Persistence: WORM Constraint on Object Store', async () => {
+test('Persistence: WORM constraint on manifests', async () => {
+  const repo = new ArtifactRepository(db);
+  const runRepo = new RunRepository(db);
+  const runId = runRepo.createRun({ runType: 'ANALYSIS', config: {} });
+
+  repo.finalizeManifest(runId, 'file://manifest/uri', 'abc');
+  assert.strictEqual(db.select().from(manifests).all().length, 1);
+
+  assert.throws(() => repo.finalizeManifest(runId, 'file://manifest/uri2', 'def'), /WORM Violation/);
+});
+
+test('Persistence: the object store refuses to overwrite a key with different bytes', async () => {
   const store = new LocalFileSystemStore(TEST_STORE_PATH);
-  const payload = Buffer.from('data');
-  const key = 'raw/fixedhash123';
-  
-  await store.put(key, payload);
-  
-  // Attempt to overwrite the same key should fail (WORM compliance)
-  await assert.rejects(async () => {
-    await store.put(key, Buffer.from('mutated data'));
-  }, /WORM Violation/);
+  await store.put('raw/fixedhash123', Buffer.from('data'));
+
+  await assert.rejects(
+    async () => store.put('raw/fixedhash123', Buffer.from('mutated data')),
+    /WORM violation/i
+  );
+});
+
+test('Persistence: re-putting identical bytes succeeds, because it changes nothing', async () => {
+  const store = new LocalFileSystemStore(TEST_STORE_PATH);
+  const payload = Buffer.from('identical bytes');
+
+  const first = await store.put('raw/samehash456', payload);
+  const second = await store.put('raw/samehash456', payload);
+
+  assert.strictEqual(second, first, 'a content-addressed re-put is a no-op, not a violation');
+  assert.ok((await store.get(first)).equals(payload));
+
+  // The case this protects: dedup is decided against the database, so a
+  // database reset with a surviving store must not fail every acquisition.
+  assert.ok((await store.get(second)).equals(payload));
+});
+
+test('No SQL outside the repository layer (D13)', () => {
+  // D2's invariant: all persistence sits behind repository interfaces. D13
+  // fixes backend/watchdog_api/db as the repository layer; this asserts the
+  // boundary rather than the directory name.
+  const backend = path.join(process.cwd(), 'backend', 'watchdog_api');
+  const repoLayer = path.join(backend, 'db');
+
+  const offenders: string[] = [];
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!entry.name.endsWith('.ts')) continue;
+      if (full.startsWith(repoLayer)) continue;
+
+      const src = fs.readFileSync(full, 'utf-8');
+      if (/\bfrom\s+['"]better-sqlite3['"]/.test(src)) offenders.push(`${full}: imports better-sqlite3`);
+      if (/\b(CREATE TABLE|INSERT INTO|SELECT\s+\*\s+FROM|UPDATE\s+\w+\s+SET|DELETE FROM)\b/i.test(src)) {
+        offenders.push(`${full}: contains raw SQL`);
+      }
+    }
+  };
+  walk(backend);
+
+  assert.deepStrictEqual(offenders, [], `SQL/driver access leaked outside the repository layer:\n${offenders.join('\n')}`);
+});
+
+// -------------------------------------------------------------------------
+// D14 — the assertion mechanism (migration 002)
+// -------------------------------------------------------------------------
+
+test('D14: assertion tables exist and are empty; the superseded edge table is gone', () => {
+  const tables = new Set(listTables(sqlite));
+  for (const t of ['assertions', 'targets', 'market_labels', 'geographic_regions']) {
+    assert.ok(tables.has(t), `missing D14 table: ${t}`);
+    const { n } = sqlite.prepare(`SELECT COUNT(*) AS n FROM ${t}`).get() as { n: number };
+    assert.strictEqual(n, 0, `${t} must be empty at E1 — schema now, populated at E6`);
+  }
+
+  assert.ok(!tables.has('substance_symptom_associations'),
+    'D14 supersedes substance_symptom_associations; two places to record one edge is the drift it prevents');
+
+  const cols = (sqlite.prepare('PRAGMA table_info(tested_samples)').all() as { name: string }[]).map(c => c.name);
+  assert.ok(cols.includes('claimed_label_id'), 'tested_samples needs the misrepresentation join column');
+});
+
+test('D14: the predicate vocabulary is closed', () => {
+  const now = '2026-01-01T00:00:00Z';
+  sqlite.prepare(`INSERT INTO substances (id,canonical_name,normalized_name,created_at)
+                  VALUES ('sub1','Alcohol','alcohol',?)`).run(now);
+
+  // A predicate from the vocabulary is accepted.
+  sqlite.prepare(`INSERT INTO assertions (id,subject_type,subject_id,predicate,created_at)
+                  VALUES ('a1','substance','sub1','INTERACTS_WITH',?)`).run(now);
+
+  assert.throws(() => {
+    sqlite.prepare(`INSERT INTO assertions (id,subject_type,subject_id,predicate,created_at)
+                    VALUES ('a2','substance','sub1','MADE_UP_PREDICATE',?)`).run(now);
+  }, /CHECK constraint failed/);
+
+  assert.throws(() => {
+    sqlite.prepare(`INSERT INTO assertions (id,subject_type,subject_id,predicate,created_at)
+                    VALUES ('a3','spaceship','sub1','INTERACTS_WITH',?)`).run(now);
+  }, /CHECK constraint failed/, 'subject_type is a closed set of node classes');
+});
+
+test('D14: two contradicting assertions are both retained, neither silently wins', () => {
+  const now = '2026-01-01T00:00:00Z';
+  sqlite.prepare(`INSERT INTO substances (id,canonical_name,normalized_name,created_at)
+                  VALUES ('s1','X','x',?)`).run(now);
+  sqlite.prepare(`INSERT INTO symptoms (id,canonical_name,created_at) VALUES ('sym1','tachycardia',?)`).run(now);
+
+  const ins = sqlite.prepare(`INSERT INTO assertions
+    (id,subject_type,subject_id,predicate,object_type,object_id,evidence_tier,contradicts_json,created_at)
+    VALUES (?,'substance','s1','ASSOCIATED_WITH_SYMPTOM','symptom','sym1',?,?,?)`);
+  ins.run('a_yes', 'PRIMARY_EMPIRICAL', JSON.stringify(['a_no']), now);
+  ins.run('a_no', 'RAW_OBSERVATIONAL', JSON.stringify(['a_yes']), now);
+
+  const rows = sqlite.prepare(`SELECT id, evidence_tier FROM assertions
+                               WHERE predicate='ASSOCIATED_WITH_SYMPTOM' ORDER BY id`).all() as any[];
+  assert.strictEqual(rows.length, 2, 'both sides of a contradiction are stored');
+  assert.deepStrictEqual(
+    Object.fromEntries(rows.map(r => [r.id, r.evidence_tier])),
+    { a_no: 'RAW_OBSERVATIONAL', a_yes: 'PRIMARY_EMPIRICAL' },
+    'each keeps its own evidence tier; nothing averages or prefers one');
+});
+
+test('D14: geographic regions form a real hierarchy, not a flat string', () => {
+  const now = '2026-01-01T00:00:00Z';
+  const ins = sqlite.prepare(`INSERT INTO geographic_regions
+    (id,name,region_type,parent_region_id,iso_code,created_at) VALUES (?,?,?,?,?,?)`);
+  ins.run('nl', 'Netherlands', 'country', null, 'NL', now);
+  ins.run('nh', 'Noord-Holland', 'province', 'nl', null, now);
+  ins.run('adam', 'Amsterdam', 'municipality', 'nh', null, now);
+
+  const row = sqlite.prepare(`
+    SELECT m.name AS city, p.name AS province, c.name AS country
+    FROM geographic_regions m
+    JOIN geographic_regions p ON m.parent_region_id = p.id
+    JOIN geographic_regions c ON p.parent_region_id = c.id
+    WHERE m.id = 'adam'`).get() as any;
+  assert.deepStrictEqual(row, { city: 'Amsterdam', province: 'Noord-Holland', country: 'Netherlands' });
 });

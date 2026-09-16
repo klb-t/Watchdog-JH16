@@ -1,0 +1,5 @@
+{
+  "_frozen": "Provider response as reported in Jankowski & Hoffmann 2016 Tables 1 and 3, rendered in the shape a result-count provider returns. Frozen: never regenerate.",
+  "query": "\"methamphetamine\" \"harm\" OR \"harmful\"",
+  "result_stats": "About 513,000 results (0.41 seconds)"
+}

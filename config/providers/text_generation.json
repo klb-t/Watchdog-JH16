@@ -1,0 +1,45 @@
+{
+  "schema_version": "1.0.0",
+  "capability": "text.generate",
+  "_note": "Rule 3: models, parameters and endpoints are configuration, not code. secret_ref is a POINTER resolved by backend/watchdog_api/secrets — never a key. Adding a key here is a defect; the schema rejects anything that looks like one.",
+  "providers": [
+    {
+      "provider_key": "openrouter",
+      "display_name": "OpenRouter",
+      "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+      "secret_ref": "env:OPENROUTER_API_KEY",
+      "default_model": "anthropic/claude-sonnet-4.5",
+      "allowed_models": [
+        "anthropic/claude-sonnet-4.5",
+        "anthropic/claude-opus-4.1",
+        "openai/gpt-4.1",
+        "google/gemini-2.5-pro",
+        "meta-llama/llama-3.3-70b-instruct"
+      ],
+      "generation_params": {
+        "temperature": 0,
+        "max_tokens": 1200,
+        "top_p": 1
+      },
+      "_why_temperature_zero": "Not a determinism claim — a sampled model is not reproducible at any temperature, and the narrative records nondeterministic_content: true regardless. It is here to minimise gratuitous variation between two runs a reviewer is comparing by eye.",
+      "attribution_headers": {
+        "HTTP-Referer": "https://github.com/klb-t/watchdog-jh16",
+        "X-Title": "WatchDog"
+      }
+    },
+    {
+      "provider_key": "openai_compatible_manual",
+      "display_name": "Manual OpenAI-compatible endpoint",
+      "endpoint_ref": "env:LLM_ENDPOINT_URL",
+      "secret_ref": "env:LLM_API_KEY",
+      "default_model_ref": "env:LLM_MODEL",
+      "allowed_models": [],
+      "generation_params": {
+        "temperature": 0,
+        "max_tokens": 1200,
+        "top_p": 1
+      },
+      "_note": "For a local llama.cpp/vLLM/Ollama server or any vendor that speaks the OpenAI chat schema. allowed_models empty means the configured model is accepted as given, because the operator is naming their own endpoint."
+    }
+  ]
+}

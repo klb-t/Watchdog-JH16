@@ -1,0 +1,12 @@
+{
+  "version": "collection-ui-1",
+  "label": "Cel zbierania danych",
+  "explanation": "Cel zostaje zapisany w planie, harmonogramie i pobraniach. Każdy cel korzysta z tego samego mechanizmu zbierania.",
+  "scopeNote": "To oznaczenie celu. Zakres i częstotliwość wynikają z ustawionych źródeł, zapytań, limitów oraz harmonogramu. Sam wybór nie zwiększa rozdzielczości danych i nie uruchamia analizy ani alertów.",
+  "purposes": {
+    "unspecified": { "label": "Cel nieokreślony", "description": "Zachowaj pobrania bez przypisywania im celu. Tak samo traktowane są wcześniejsze plany." },
+    "baseline": { "label": "Baza odniesienia", "description": "Zbieraj materiał odniesienia według ustalonego planu. Zmiana parametrów pobierania utworzy osobny kontekst porównania." },
+    "research": { "label": "Badanie", "description": "Oznacz pobrania przygotowywane do konkretnego badania lub sprawdzenia hipotezy." },
+    "monitoring": { "label": "Monitoring", "description": "Oznacz obserwacje do śledzenia zmian. Cykliczne wykonanie wymaga zapisanego harmonogramu." }
+  }
+}

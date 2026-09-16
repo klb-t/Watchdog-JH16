@@ -1,0 +1,9 @@
+node_modules
+dist
+data
+runs
+diagnostics
+.git
+.github
+*.sqlite
+*.sqlite-journal

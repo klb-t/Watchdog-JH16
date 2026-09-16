@@ -1,0 +1,591 @@
+import { test, before, after } from 'node:test';
+import * as assert from 'node:assert';
+import { chromium, Browser, Page } from 'playwright';
+import { spawn, ChildProcess, execFileSync } from 'node:child_process';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { readZip } from '../../backend/watchdog_api/utils/zip';
+import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
+import Database from 'better-sqlite3';
+import { AutomationRepository } from '../../backend/watchdog_api/db/repositories/automation';
+import { LocalFileSystemStore } from '../../backend/watchdog_api/storage/object_store';
+import { sourceSnapshot } from '../fixtures/source_history';
+import { loadAutomationProfile } from '../../backend/watchdog_api/config/automation';
+import { withCollectionPurpose } from '../../shared/collection';
+
+/**
+ * E1.21-E1.23 — browser-driven end-to-end tests against fixtures.
+ *
+ * Drives the real UI against the real server with the real fixture source: no
+ * mocks. `09_TESTS.md`: "Do not mock what can run for real. A mocked adapter
+ * tests the mock."
+ */
+
+let browser: Browser;
+let page: Page;
+let server: ChildProcess;
+let baseUrl: string;
+const DB_PATH = path.join('/tmp', `watchdog_e2e_${Date.now()}.sqlite`);
+// Isolated alongside the database. The blob store and the database must be
+// reset together: dedup is decided against the database, so a surviving store
+// paired with a fresh database is a different scenario from a clean start.
+const STORE_PATH = path.join('/tmp', `watchdog_e2e_store_${Date.now()}`);
+
+function resolveChromium(): string | undefined {
+  const root = process.env.PLAYWRIGHT_BROWSERS_PATH ?? '/opt/pw-browsers';
+  if (!fs.existsSync(root)) return undefined;   // fall back to Playwright's own lookup
+  for (const dir of fs.readdirSync(root).sort()) {
+    for (const candidate of [
+      path.join(root, dir, 'chrome-linux', 'chrome'),
+      path.join(root, dir, 'chrome-linux', 'headless_shell'),
+    ]) {
+      if (fs.existsSync(candidate)) return candidate;
+    }
+  }
+  return undefined;
+}
+
+async function waitForServer(url: string, timeoutMs = 60_000) {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    try {
+      const res = await fetch(`${url}/api/sources`);
+      if (res.ok) return;
+    } catch { /* not up yet */ }
+    await new Promise(r => setTimeout(r, 300));
+  }
+  throw new Error(`server did not become ready at ${url}`);
+}
+
+before(async () => {
+  const port = 3100 + Math.floor(Math.random() * 400);
+  baseUrl = `http://127.0.0.1:${port}`;
+
+  // Use Node's loader directly: no CLI IPC socket is needed. Detach so any
+  // child Vite/esbuild processes are also reaped on teardown.
+  server = spawn(process.execPath, ['--import', 'tsx', 'server.ts'], {
+    cwd: process.cwd(),
+    // Exercise the built client. Dev-server dependency re-optimization can
+    // reload the page between a selection and its save, hiding real UI state.
+    env: { ...process.env, PORT: String(port), DB_PATH, STORE_PATH, WATCHDOG_DIAGNOSTICS_MODE: 'OFF',
+      NODE_ENV: 'production', WATCHDOG_ALLOW_OPEN_INSTANCE: 'true', WATCHDOG_ALLOW_EPHEMERAL_STORAGE: 'true' },
+    stdio: 'pipe',
+    detached: true,
+  });
+  await waitForServer(baseUrl);
+
+  // PLAYWRIGHT_BROWSERS_PATH points at a pre-installed Chromium whose exact
+  // build directory is versioned, so it is resolved rather than hard-coded.
+  browser = await chromium.launch({ executablePath: resolveChromium() });
+  page = await browser.newPage();
+});
+
+after(async () => {
+  await browser?.close();
+  if (server?.pid) {
+    try { process.kill(-server.pid, 'SIGKILL'); } catch { /* already gone */ }
+  }
+  fs.rmSync(STORE_PATH, { recursive: true, force: true });
+  for (const f of [DB_PATH, `${DB_PATH}-journal`]) {
+    if (fs.existsSync(f)) fs.rmSync(f, { force: true });
+  }
+});
+
+test('E3 automation: daily schedule, one-click all-discipline scope, pause and mobile layout', async () => {
+  const errors: string[] = []; const onError = (e: Error) => errors.push(e.message); page.on('pageerror', onError);
+  try {
+    await page.goto(`${baseUrl}/automation`); await page.waitForSelector('[data-testid="automation-page"]');
+    await page.locator('[data-testid="discovery-scope"]').selectOption('all_science');
+    await page.getByLabel('Cel zbierania danych',{exact:true}).selectOption('baseline');
+    await page.locator('[data-testid="schedule-create"]').click();
+    await page.getByRole('status').filter({ hasText: 'Harmonogram zapisany' }).waitFor();
+    const list = await (await fetch(`${baseUrl}/api/automation/schedules`)).json();
+    assert.strictEqual(list.schedules.length, 1); assert.strictEqual(list.schedules[0].request.scope, 'all_science');
+    assert.deepStrictEqual(list.schedules[0].request.collection,{version:'collection-purpose-1',purpose:'baseline'});
+    await page.getByRole('button', { name: 'Wstrzymaj', exact: true }).click();
+    await page.getByRole('button', { name: 'Wznów', exact: true }).waitFor();
+    const paused=await (await fetch(`${baseUrl}/api/automation/schedules`)).json();
+    assert.deepStrictEqual(paused.schedules[0].request.collection,list.schedules[0].request.collection);
+    assert.strictEqual((await (await fetch(`${baseUrl}/api/automation/jobs`)).json()).jobs.length, 0, 'no unsolicited collection on page load or future scheduling');
+    await page.setViewportSize({ width: 390, height: 844 });
+    const layout = await page.locator('main').evaluate(el => ({ clientWidth: el.clientWidth, scrollWidth: el.scrollWidth }));
+    assert.ok(layout.scrollWidth <= layout.clientWidth + 1, JSON.stringify(layout));
+    fs.mkdirSync('test-artifacts', { recursive: true }); await page.screenshot({ path: 'test-artifacts/automation-mobile.png', fullPage: true });
+    await page.goto(`${baseUrl}/memory`); await page.waitForSelector('[data-testid="substance-memory-page"]');
+    await page.getByText('Brak pasujących kartotek.', { exact: false }).waitFor();
+    assert.deepStrictEqual(errors, []);
+  } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); }
+});
+
+// -------------------------------------------------------------------------
+// E1.21 — Study page.
+// -------------------------------------------------------------------------
+
+test('E3.9: source history compares preserved values, exports a verifiable snapshot and survives mobile reload',async()=>{
+  const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  const db=new Database(DB_PATH);db.pragma('foreign_keys=ON');
+  let latest:Awaited<ReturnType<typeof sourceSnapshot>>;
+  let research:Awaited<ReturnType<typeof sourceSnapshot>>;
+  try{
+    const repo=new AutomationRepository(db,new LocalFileSystemStore(STORE_PATH));
+    const first={fixture:true,amount:'1.00',missing:null,zero:0},changed={fixture:true,amount:'2.00',added:null,zero:0};
+    const request=withCollectionPurpose(loadAutomationProfile().defaults.substanceJob,'baseline');
+    for(const [index,value] of [first,first,changed,changed].entries()){
+      latest=await sourceSnapshot(db,repo,value,{at:`2026-09-0${index+1}T12:00:00.000Z`,request});
+    }
+    research=await sourceSnapshot(db,repo,changed,{request:withCollectionPurpose(request,'research')});
+  }finally{db.close();}
+  try{
+    await page.goto(`${baseUrl}/memory`);await page.getByRole('button',{name:'Fictional source-history compound',exact:false}).click();
+    const panel=page.locator('[data-testid="source-history"]');await panel.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(latest!.sequence));
+    await panel.getByText('4 powiązanych sprawdzeń · 2 różnych wersji treści',{exact:true}).waitFor();
+    await panel.getByText('Cel zbierania danych: Baza odniesienia',{exact:true}).waitFor();
+    const completed=page.waitForResponse(r=>r.url().includes(`/api/memory/substances/${encodeURIComponent(latest!.id)}/compare?`) && r.status()===200);
+    await panel.getByRole('button',{name:'Porównaj zapisane dane',exact:true}).click();
+    const response=await completed,result=await response.json();assert.equal(response.headers()['x-content-sha256'],result.contentHash);
+    const comparison=panel.locator('[data-testid="source-comparison"]');await comparison.getByText('Zachowane rekordy różnią się treścią.',{exact:true}).waitFor();
+    assert.match((await comparison.textContent())!,/"1.00"/);assert.match((await comparison.textContent())!,/"2.00"/);
+    assert.match((await comparison.textContent())!,/Pole nieobecne/);assert.match((await comparison.textContent())!,/null/);
+    await page.setViewportSize({width:390,height:844});await comparison.scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
+    fs.mkdirSync('test-artifacts',{recursive:true});await page.screenshot({path:'test-artifacts/source-history-mobile.png',fullPage:false});
+    const downloading=page.waitForEvent('download');await panel.getByRole('button',{name:'Pobierz porównanie JSON',exact:true}).click();
+    await (await downloading).saveAs('test-artifacts/source-comparison.json');
+    const saved=JSON.parse(fs.readFileSync('test-artifacts/source-comparison.json','utf8'));
+    assert.equal(canonicalHash(saved.body),result.contentHash);
+    assert.equal(saved.body.context.collection.purpose,'baseline');
+    assert.deepStrictEqual(saved.body.to.receipt.collection,saved.body.context.collection);
+    fs.writeFileSync('test-artifacts/source-comparison-verification.txt',execFileSync(process.execPath,['--import','tsx','scripts/verify_source_comparison.ts',
+      'test-artifacts/source-comparison.json',result.contentHash],{encoding:'utf8'}));
+    const before=panel.getByLabel('Sprawdzenie A',{exact:true});await before.selectOption({index:2});
+    assert.equal(await panel.locator('[data-testid="source-comparison"]').count(),0,'changing an input clears the old comparison');
+    await panel.getByRole('button',{name:'Porównaj zapisane dane',exact:true}).click();
+    await panel.getByText('Zachowane rekordy mają identyczną treść.',{exact:true}).waitFor();
+    await page.reload();await page.getByRole('button',{name:'Fictional source-history compound',exact:false}).click();
+    await panel.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(latest!.sequence));
+    await panel.locator('summary').filter({hasText:'Zapisane sprawdzenia'}).click();
+    await panel.getByText('Treść bez zmiany względem poprzedniego sprawdzenia',{exact:false}).first().waitFor();
+    await page.setViewportSize({width:1280,height:900});await panel.scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/source-history-desktop.png',fullPage:false});
+    await panel.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(research!.sequence));
+    await panel.getByText('1 powiązanych sprawdzeń · 1 różnych wersji treści',{exact:true}).waitFor();
+    await panel.getByText('Cel zbierania danych: Badanie',{exact:true}).waitFor();
+    assert.equal(await panel.getByRole('button',{name:'Porównaj zapisane dane',exact:true}).isEnabled(),false);
+    assert.deepEqual(errors,[]);
+  }catch(error){
+    fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-history-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));
+    await page.screenshot({path:'test-artifacts/source-history-failure.png',fullPage:false});throw error;
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
+
+test('E1.21: the Study page drives a full fixture run from the UI', async () => {
+  await page.goto(`${baseUrl}/study`);
+  await page.waitForSelector('[data-testid="study-page"]');
+
+  // A planned source must be rendered as unavailable and be unselectable.
+  const planned = page.locator('[data-testid="source-chemical_reference"]');
+  await planned.waitFor();
+  assert.strictEqual(await planned.getAttribute('data-available'), 'false');
+  assert.strictEqual(await planned.locator('input[type=radio]').isDisabled(), true,
+    'a planned source must not be selectable for a run');
+
+  // The fixture source is available.
+  const fixture = page.locator('[data-testid="source-fixture_jh2016"]');
+  assert.strictEqual(await fixture.getAttribute('data-available'), 'true');
+  await fixture.locator('input[type=radio]').check();
+
+  await page.click('[data-testid="start-run"]');
+  await page.waitForURL(/\/runs\/[0-9a-f-]+$/, { timeout: 20_000 });
+
+  const runId = page.url().split('/runs/')[1];
+  assert.match(runId, /^[0-9a-f-]{36}$/, 'the UI navigates to the created run');
+});
+
+// -------------------------------------------------------------------------
+// E1.22 — Method review page.
+// -------------------------------------------------------------------------
+
+test('E1.22: a proposal renders red step by step and cannot execute until approved', async () => {
+  await page.goto(`${baseUrl}/method`);
+  await page.waitForSelector('[data-testid="method-review-page"]');
+
+  const state = page.locator('[data-testid="approval-state"]');
+  assert.strictEqual(await state.getAttribute('data-state'), 'PROPOSED');
+  assert.match(await state.innerText(), /PROPOSED/);
+
+  // Every step is rendered individually, in the proposed state, with the
+  // sentence of the paper it derives from.
+  const steps = page.locator('[data-testid="spec-steps"] > div');
+  const count = await steps.count();
+  assert.ok(count >= 5, `expected the spec's steps to be rendered, found ${count}`);
+  for (let i = 0; i < count; i++) {
+    assert.strictEqual(await steps.nth(i).getAttribute('data-state'), 'PROPOSED');
+  }
+  assert.match(await page.locator('[data-testid="step-Pi_ratio"]').innerText(), /Pi = \(Ni \/ max\(Ni\)\)/);
+
+  // The gate is enforced in the backend, not merely in the UI: an unapproved
+  // spec reaching the executor must throw regardless of what the page shows.
+  const before = await (await fetch(`${baseUrl}/api/method-specs/jh2016-faithful`)).json();
+  assert.strictEqual(before.approval_state, 'PROPOSED');
+
+  await page.click('[data-testid="approve-spec"]');
+  await page.waitForFunction(
+    () => document.querySelector('[data-testid="approval-state"]')?.getAttribute('data-state') === 'APPROVED',
+    undefined, { timeout: 10_000 });
+
+  // Approved renders green, and every step flips with it.
+  for (let i = 0; i < count; i++) {
+    assert.strictEqual(await steps.nth(i).getAttribute('data-state'), 'APPROVED');
+  }
+
+  const after = await (await fetch(`${baseUrl}/api/method-specs/jh2016-faithful`)).json();
+  assert.strictEqual(after.approval_state, 'APPROVED');
+});
+
+test('E1.22: approval refuses a client-supplied actor and a missing review hash', async () => {
+  const res = await fetch(`${baseUrl}/api/method-specs/jh2016-faithful/approve`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ approved_by: '' }),
+  });
+  assert.strictEqual(res.status, 400);
+  assert.strictEqual((await res.json()).error, 'validation_error');
+});
+
+// -------------------------------------------------------------------------
+// E1.23 — Results page.
+// -------------------------------------------------------------------------
+
+test('E1.23: results, charts, approval state and export are reachable and correct', async () => {
+  // Start a run whose fixture set contains a deliberate missing value, so the
+  // page's handling of missingness is exercised rather than assumed.
+  const submit = await fetch(`${baseUrl}/api/runs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'PIPELINE',
+      config: {
+        source_id: 'fixture_jh2016',
+        source_params: { fixture_set: 'edge_cases' },
+        method_id: 'jh16_faithful',
+        language: 'en',
+        query_expansion_mode: 'STRICT_CANONICAL',
+        entities: ['missing_count', 'grouped_digits'],
+        query_templates: { popularity: '"{entity}"' },
+        method_params: { reference_scores: { missing_count: 10, grouped_digits: 20 } },
+      },
+    }),
+  });
+  assert.strictEqual(submit.status, 202);
+  const { run_id } = await submit.json();
+
+  for (let i = 0; i < 40; i++) {
+    const r = await (await fetch(`${baseUrl}/api/runs/${run_id}`)).json();
+    if (['COMPLETED', 'FAILED'].includes(r.run.status)) break;
+    await new Promise(r2 => setTimeout(r2, 100));
+  }
+
+  await page.goto(`${baseUrl}/runs/${run_id}/results`);
+  await page.waitForSelector('[data-testid="results-page"]');
+  await page.waitForSelector('[data-testid="chart-pi-bar"]', { timeout: 15_000 });
+
+  // A missing point is drawn and labelled, not omitted and not shown as zero.
+  const missingPoint = page.locator('[data-testid="point-pi-bar-missing_count"]');
+  await missingPoint.waitFor();
+  assert.strictEqual(await missingPoint.getAttribute('data-missing'), 'true');
+  const marker = page.locator('[data-testid="missing-pi-bar-missing_count"]');
+  assert.strictEqual(await marker.count(), 1, 'a missing point must render a visible marker');
+  assert.match(await marker.innerText(), /no data/);
+
+  const text = await page.locator('[data-testid="results-page"]').innerText();
+  assert.ok(!/missing_count\s+0/.test(text), 'a missing value must never be displayed as 0');
+
+  // The results table distinguishes missing from zero in words.
+  const missingRow = page.locator('[data-testid="result-missing_count-Pi"]');
+  assert.strictEqual(await missingRow.getAttribute('data-missing'), 'true');
+  assert.match(await missingRow.innerText(), /missing — not zero/);
+
+  // The narrative shows its approval state and is labelled machine-generated.
+  const narrative = page.locator('[data-testid="narrative"]');
+  await narrative.waitFor();
+  assert.strictEqual(await narrative.getAttribute('data-approval-state'), 'PROPOSED');
+  assert.match(await narrative.innerText(), /machine-generated/);
+
+  // Manifest and export are reachable.
+  assert.strictEqual(await page.locator('[data-testid="manifest-link"]').count(), 1);
+  const csv = await fetch(`${baseUrl}/api/runs/${run_id}/export?format=csv`);
+  assert.strictEqual(csv.status, 200);
+  const body = await csv.text();
+  assert.match(body, /run_id,entity_id,metric_key,value_numeric,unit,is_missing/);
+  assert.match(body, /missing_count,Pi,,%,true/, 'missing exports as empty with is_missing=true');
+});
+
+test('personal wizard: saved modes, independent scope, explicit method review and real keyless JH16 run on mobile', async () => {
+  const errors: string[] = []; const onError = (e: Error) => errors.push(e.message); page.on('pageerror', onError);
+  try {
+    await page.goto(`${baseUrl}/setup`); await page.waitForSelector('[data-testid="configuration-wizard"]');
+    assert.equal(await page.locator('[data-testid="cost-slider"]').count(), 1);
+    await page.locator('[data-testid="interface-mode"]').selectOption('standard');
+    assert.equal(await page.locator('[data-testid="cost-slider"]').count(), 0, 'economy slider belongs only to simple mode');
+    await page.getByLabel('Gęstość interfejsu').selectOption('compact');
+    await page.locator('[data-testid="settings-save"]').click();
+    await page.getByRole('status').filter({ hasText: 'Ustawienia zapisane.' }).waitFor();
+    await page.reload(); await page.waitForSelector('[data-testid="configuration-wizard"]');
+    assert.equal(await page.locator('[data-testid="interface-mode"]').inputValue(), 'standard');
+    assert.equal(await page.getByLabel('Gęstość interfejsu').inputValue(), 'compact');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator('[data-testid="configuration-wizard"]').scrollIntoViewIfNeeded();
+    const layout = await page.locator('main').evaluate(el => ({ clientWidth: el.clientWidth, scrollWidth: el.scrollWidth }));
+    assert.ok(layout.scrollWidth <= layout.clientWidth + 1, JSON.stringify(layout));
+    fs.mkdirSync('test-artifacts', { recursive: true }); await page.screenshot({ path: 'test-artifacts/wizard-mobile.png', fullPage: true });
+    await page.getByRole('button', { name: 'Dalej: zakres badań' }).click();
+    await page.getByLabel('Nederland', { exact: true }).check();
+    await page.getByLabel('Zasil kartoteki:', { exact: false }).uncheck();
+    await page.getByLabel('Przejrzyj arXiv i Europe PMC', { exact: false }).uncheck();
+    await page.locator('[data-testid="prepare-research-plan"]').click();
+    await page.locator('[data-testid="approve-wizard-method"]').waitFor();
+    assert.equal(await page.locator('[data-testid="launch-research-plan"]').isDisabled(), true);
+    await page.locator('[data-testid="approve-wizard-method"]').check();
+    await page.locator('[data-testid="launch-research-plan"]').click();
+    const link = page.getByRole('link', { name: 'Wyniki JH16', exact: true }); await link.waitFor();
+    const plans = (await (await fetch(`${baseUrl}/api/settings/plans`)).json()).plans;
+    const plan = plans.find((p: any) => p.launch?.runId);
+    assert.deepEqual(plan.body.extensions.geographies, ['NL']); assert.deepEqual(plan.body.extensions.languages, ['en', 'pl']);
+    const runId = plan.launch.runId; let result: any;
+    for (let i = 0; i < 60; i++) { result = await (await fetch(`${baseUrl}/api/runs/${runId}`)).json();
+      if (['COMPLETED', 'FAILED'].includes(result.run.status)) break; await new Promise(r => setTimeout(r, 100)); }
+    assert.equal(result.run.status, 'COMPLETED', result.run.error_details);
+    const csv = await (await fetch(`${baseUrl}/api/runs/${runId}/export?format=csv`)).text();
+    for (const substance of plan.body.baseline.preset.substances) assert.ok(csv.includes(`,${substance.canonical},Pi,`), `missing locked-preset entity ${substance.canonical}`);
+    assert.equal(plan.launch.jobs.length, 0, 'this test opts out of network collection');
+    assert.deepEqual(errors, []);
+  } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); }
+});
+
+test('research workshop: goal navigation, source intake, keyless parser form, exact test, persistent execution and mobile export', async () => {
+  const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  try {
+    await page.goto(baseUrl);await page.getByLabel('Znajdź działanie').fill('replikacja');
+    await page.getByRole('link',{name:'Zaplanuj odtworzenie pracy',exact:false}).click();
+    await page.waitForSelector('[data-testid="research-page"]');
+    const text='Fictional browser fixture, not a real scientific publication. Preserve the source exactly.';
+    await page.getByLabel('Tytuł',{exact:true}).fill('Fictional browser protocol');
+    await page.getByLabel('Źródło / DOI / identyfikator',{exact:true}).fill('fixture:browser-protocol');
+    await page.getByLabel('Zakres dostarczonego tekstu').selectOption('excerpt');
+    await page.getByLabel('Tekst źródłowy',{exact:true}).fill(text);
+    await page.getByLabel('Język tekstu (opcjonalnie)').fill('en');
+    await page.getByLabel('Obszary badania (oddziel przecinkami)').fill('NL');
+    await page.locator('[data-testid="paper-intake-save"]').click();
+    await page.getByRole('status').filter({hasText:'Zapisano.'}).waitFor();
+    await page.getByRole('button',{name:'Pokaż zapisany tekst i jego wersję'}).click();
+    await page.getByRole('status').filter({hasText:'Otwarto zapisaną wersję źródła.'}).waitFor();
+    assert.ok((await page.locator('pre').first().textContent())?.includes(text));
+    const documents=(await (await fetch(`${baseUrl}/api/research`)).json()).documents;
+    assert.equal(documents[0].body.coverage,'excerpt');assert.equal(documents[0].body.language,'en');assert.deepEqual(documents[0].body.geography,['NL']);
+    await page.getByRole('button',{name:'Ekstraktory danych',exact:true}).click();
+    const raw='{"rows":[{"value":900719925474099312345,"note":"fictional fixture"},{"value":-0}]}';
+    const expected=[{value:'900719925474099312345',note:'fictional fixture'},{value:'-0',note:null}];
+    await page.getByLabel('Źródło do testu / wykonania').fill(raw);
+    await page.getByLabel('Nazwa parsera',{exact:true}).fill('Browser scalar copier');
+    await page.getByLabel('Ścieżka do listy rekordów').fill('/rows');
+    await page.getByLabel('Nazwa pola wyniku 1',{exact:true}).fill('value');
+    await page.getByLabel('Ścieżka w rekordzie 1',{exact:true}).fill('/value');
+    await page.getByRole('button',{name:'Dodaj pole',exact:true}).click();
+    await page.getByLabel('Nazwa pola wyniku 2',{exact:true}).fill('note');
+    await page.getByLabel('Ścieżka w rekordzie 2',{exact:true}).fill('/note');
+    await page.getByLabel('Wymagane pole 2',{exact:true}).uncheck();
+    await page.getByRole('button',{name:'Zapisz mapowanie pól',exact:true}).click();
+    await page.getByRole('status').filter({hasText:'Mapowanie zapisane.'}).waitFor();
+    const selected=await page.getByLabel('Wybierz parser',{exact:true}).inputValue();assert.ok(selected);
+    assert.equal(await page.getByRole('button',{name:'Aktywuj sprawdzoną wersję'}).isDisabled(),true);
+    await page.getByLabel('value · rekord 1',{exact:true}).fill(expected[0].value);
+    await page.getByLabel('note · rekord 1',{exact:true}).fill(expected[0].note!);
+    await page.getByRole('button',{name:'Dodaj rekord kontrolny',exact:true}).click();
+    await page.getByLabel('value · rekord 2',{exact:true}).fill(expected[1].value);
+    await page.getByLabel('null · note · rekord 2',{exact:true}).check();
+    await page.getByRole('button',{name:'Użyj tych wartości kontrolnych',exact:true}).click();
+    await page.getByRole('button',{name:'Testuj dokładne kopiowanie',exact:true}).click();
+    await page.getByText('TEST PASSED',{exact:true}).waitFor();
+    await page.getByRole('button',{name:'Aktywuj sprawdzoną wersję',exact:true}).click();
+    await page.getByRole('status').filter({hasText:'Ta wersja parsera została aktywowana.'}).waitFor();
+    await page.getByRole('button',{name:'Wykonaj parser bez LLM',exact:true}).click();
+    await page.getByRole('status').filter({hasText:'Wykonano bez wywołania LLM.'}).waitFor();
+    const downloadPromise=page.waitForEvent('download');
+    await page.getByRole('button',{name:'Pobierz wynik, surowe źródło i pochodzenie'}).click();
+    const download=await downloadPromise,downloadPath=await download.path();assert.ok(downloadPath);
+    const exported=JSON.parse(fs.readFileSync(downloadPath!,'utf8'));
+    assert.deepEqual(exported.body.result.records,expected);assert.equal(exported.body.raw,raw);assert.equal(exported.body.llmCalls,0);
+    assert.equal(exported.body.result.provenance[0].value.rawLiteral,'900719925474099312345');
+    await page.reload();await page.getByRole('button',{name:'Ekstraktory danych',exact:true}).click();
+    await page.getByLabel('Wybierz parser',{exact:true}).selectOption(selected);
+    await page.getByText('Historia testów i wykonań (2)',{exact:true}).click();
+    await page.getByRole('button',{name:/^Wykonanie ·/}).click();
+    await page.getByRole('status').filter({hasText:'Odtworzono zapisany wynik.'}).waitFor();
+    await page.getByRole('button',{name:'Pochodzenie: value, rekord 1',exact:true}).click();
+    assert.ok((await page.locator('[data-testid="copied-cell-origin"]').textContent())?.includes('/rows/0/value'));
+    assert.ok((await page.locator('[data-testid="copied-cell-origin"]').textContent())?.includes('900719925474099312345'));
+    fs.mkdirSync('test-artifacts',{recursive:true});await page.locator('[data-testid="extraction-result"]').scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/research-desktop.png',fullPage:true});
+    await page.setViewportSize({width:390,height:844});
+    await page.locator('[data-testid="extraction-result"]').scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));
+    assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/research-mobile.png',fullPage:true});
+    await page.locator('[data-testid="research-page"] > header').scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/research-mobile-start.png',fullPage:true});
+    assert.deepEqual(errors,[]);
+  } finally {page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
+
+test('source-copy browser: explicit column form to reviewed statistics and portable replay package', async () => {
+  const errors: string[] = [], onError = (e: Error) => errors.push(e.message); page.on('pageerror', onError);
+  const publication = fs.mkdtempSync('/tmp/watchdog-copy-browser-');
+  try {
+    const call = async (route: string, body: unknown) => {
+      const response = await fetch(`${baseUrl}/api/research${route}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      assert.ok(response.ok, await response.clone().text()); return response.json();
+    };
+    const plan = { version: 'copy-plan-1', name: 'Fictional bridge browser fixture', format: 'json', rowsPointer: '/rows', fields: [
+      { name: 'x', selector: '/x', required: true }, { name: 'y', selector: '/y', required: true }] };
+    const raw = '{"rows":[{"x":1.00,"y":2},{"x":2,"y":4},{"x":3,"y":6}]}';
+    const { extractor } = await call('/extractors', plan);
+    await call(`/extractors/${extractor.id}/test`, { raw, expected: [{ x: '1.00', y: '2' }, { x: '2', y: '4' }, { x: '3', y: '6' }] });
+    await call(`/extractors/${extractor.id}/approve`, { expectedHash: extractor.hash });
+    const { trial } = await call(`/extractors/${extractor.id}/run`, { raw });
+    await page.goto(baseUrl + '/research'); await page.getByRole('button', { name: 'Ekstraktory danych', exact: true }).click();
+    await page.getByLabel('Wybierz parser', { exact: true }).selectOption(extractor.id);
+    await page.getByText('Historia testów i wykonań (2)', { exact: true }).click();
+    await page.getByRole('button', { name: /^Wykonanie ·/ }).click();
+    await page.getByText('Przygotuj te dane do analizy', { exact: true }).click();
+    await page.getByLabel('Nazwa zbioru', { exact: true }).fill('Fictional copied scores for browser');
+    await page.getByLabel('Co mierzą dane?', { exact: true }).fill('Fictional scores');
+    await page.getByLabel('Zakres porównywalności', { exact: true }).fill('Three fictional paired observations');
+    for (const n of [1, 2]) {
+      await page.getByLabel(`Typ kolumny ${n}`, { exact: true }).selectOption('number');
+      await page.getByLabel(`Jednostka kolumny ${n}`, { exact: true }).fill('dimensionless');
+    }
+    assert.equal(await page.getByLabel('Klasyfikacja dowodu', { exact: true }).inputValue(), 'UNKNOWN');
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.locator('[data-testid="extraction-dataset-form"]').scrollIntoViewIfNeeded();
+    const layout = await page.locator('main').evaluate(el => ({ width: el.clientWidth, scroll: el.scrollWidth }));
+    assert.ok(layout.scroll <= layout.width + 1, JSON.stringify(layout));
+    await page.screenshot({ path: 'test-artifacts/extraction-dataset-mobile.png', fullPage: false });
+    await page.getByRole('button', { name: 'Utwórz zbiór do przeglądu', exact: true }).click();
+    await page.getByLabel('Nazwa szablonu mapowania',{exact:true}).fill('Fictional reusable browser mapping');
+    await page.getByRole('button',{name:'Zapisz mapowanie jako szablon',exact:true}).click();
+    await page.getByText('Zapisano niezmienną wersję szablonu.',{exact:true}).waitFor();
+    const templateId=await page.getByLabel('Szablon dla tego parsera',{exact:true}).inputValue();assert.ok(templateId);
+    await page.getByRole('link', { name: 'Otwórz ten zbiór w warsztacie statystycznym', exact: true }).click();
+    const datasetId = new URL(page.url()).searchParams.get('dataset'); assert.ok(datasetId);
+    await page.getByLabel(/I checked the source, column mapping/).waitFor();
+    assert.equal(await page.getByLabel('Dataset', { exact: true }).inputValue(), datasetId);
+    assert.ok((await page.locator('[data-testid="dataset-extraction-origin"]').textContent())?.includes(trial.hash));
+    assert.equal(await page.getByRole('button', { name: 'Run approved analysis', exact: true }).count(), 0);
+    await page.getByLabel(/I checked the source, column mapping/).check();
+    await page.getByRole('button', { name: 'Approve this dataset mapping', exact: true }).click();
+    await page.getByLabel('X channel', { exact: true }).selectOption('field_1');
+    await page.getByLabel('Y channel', { exact: true }).selectOption('field_2');
+    await page.getByRole('button', { name: 'Pearson correlation', exact: true }).click();
+    await page.getByLabel(/I reviewed these exact inputs/).check();
+    await page.getByRole('button', { name: 'Approve this analysis specification', exact: true }).click();
+    await page.getByRole('button', { name: 'Run approved analysis', exact: true }).click();
+    await page.getByRole('button', { name: 'Download analysis and provenance', exact: true }).waitFor();
+    const download = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Export research package (ZIP)', exact: true }).click();
+    const file = await download; await file.saveAs('test-artifacts/extraction-analysis-package.zip');
+    const entries = readZip(fs.readFileSync((await file.path())!));
+    const document = JSON.parse(entries.find(e => e.name === 'dataset.json')!.content.toString());
+    assert.equal(document.sourceCopy.raw, raw); assert.equal(document.sourceCopy.trialHash, trial.hash);
+    assert.equal(document.rows[0].values.field_1, 1); assert.equal(document.rows[0].evidenceTier, 'UNKNOWN');
+    const result = JSON.parse(entries.find(e => e.name === 'analysis/result.json')!.content.toString());
+    assert.equal(result.artifact.results[0].valueNumeric, 1); assert.equal(result.artifact.results[0].statisticMetadata.n, 3);
+    for (const entry of entries) { const f = path.join(publication, entry.name); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, entry.content); }
+    const manifest = JSON.parse(entries.find(e => e.name === 'package-manifest.json')!.content.toString());
+    fs.writeFileSync('test-artifacts/extraction-analysis-verification.txt', execFileSync(process.execPath, [path.join(publication, 'verify.mjs'), publication, canonicalHash(manifest)], { encoding: 'utf8' }));
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.locator('svg [data-row-id="source-row-1"]').scrollIntoViewIfNeeded();
+    await page.screenshot({ path: 'test-artifacts/extraction-analysis-desktop.png', fullPage: true });
+    await page.reload(); await page.getByLabel('X channel', { exact: true }).waitFor();
+    assert.equal(await page.getByLabel('Dataset', { exact: true }).inputValue(), datasetId);
+    const freshRaw='{"rows":[{"x":10,"y":20}]}';
+    const {trial:fresh}=await call(`/extractors/${extractor.id}/run`,{raw:freshRaw});
+    await page.goto(baseUrl+'/research');await page.getByRole('button',{name:'Ekstraktory danych',exact:true}).click();
+    await page.getByLabel('Wybierz parser',{exact:true}).selectOption(extractor.id);
+    await page.getByText('Historia testów i wykonań (3)',{exact:true}).click();
+    await page.getByRole('button',{name:/^Wykonanie ·/}).first().click();
+    await page.getByText('Przygotuj te dane do analizy',{exact:true}).click();
+    await page.getByLabel('Szablon dla tego parsera',{exact:true}).selectOption(templateId);
+    await page.getByRole('button',{name:'Użyj wybranego szablonu',exact:true}).click();
+    await page.getByText('Zastosowano szablon. Przejrzyj ustawienia dla nowego źródła.',{exact:true}).waitFor();
+    assert.equal(await page.getByLabel('Typ kolumny 1',{exact:true}).inputValue(),'number');
+    assert.equal(await page.getByLabel('Jednostka kolumny 1',{exact:true}).inputValue(),'dimensionless');
+    assert.equal(await page.getByLabel('Klasyfikacja dowodu',{exact:true}).inputValue(),'UNKNOWN');
+    assert.equal(await page.getByLabel('Identyfikator źródła',{exact:true}).inputValue(),fresh.id);
+    await page.setViewportSize({width:390,height:844});await page.locator('[data-testid="mapping-templates"]').scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/extraction-templates-mobile.png',fullPage:false});
+    const copiedResponse=page.waitForResponse(r=>r.url().endsWith(`/trials/${fresh.id}/dataset`)&&r.request().method()==='POST');
+    await page.getByRole('button',{name:'Utwórz zbiór do przeglądu',exact:true}).click();
+    const {record:next}=await (await copiedResponse).json();assert.equal(next.approvalState,'PROPOSED');
+    assert.equal(next.document.rows[0].values.field_1,10);assert.equal(next.document.sourceCopy.raw,freshRaw);
+    assert.equal(next.document.sourceCopy.mappingTemplate.id,templateId);assert.equal(next.document.sourceCopy.mappingTemplate.modified,false);
+    assert.deepEqual(errors, []);
+  } finally { page.off('pageerror', onError); await page.setViewportSize({ width: 1280, height: 900 }); fs.rmSync(publication, { recursive: true, force: true }); }
+});
+
+test('E5.8e: a paper quote binds real source columns to an approved operation, survives reload and exports a verifiable context',async()=>{
+  const errors:string[]=[],onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  const publication=fs.mkdtempSync('/tmp/watchdog-paper-ui-');
+  try {
+    const call=async(route:string,body:unknown)=>{const r=await fetch(baseUrl+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.ok(r.ok,await r.clone().text());return r.json();};
+    const {testDataset}=await import('../helpers/workbench');
+    const document=testDataset();document.key='paper-browser-fixture';document.name='Fictional paper browser inputs';
+    const {record}=await call('/api/workbench/datasets',document);
+    await call(`/api/workbench/datasets/${record.id}/approve`,{expectedHash:record.contentHash,shareAggregate:false});
+    const quote='Pearson correlation compared scores and counts.';
+    const {document:paper}=await call('/api/research/papers',{title:'Fictional paper browser methods',source:'https://example.org/paper-browser-fixture',text:`Software fixture. ${quote} This is not a real study.`,coverage:'excerpt',language:'en',geography:[]});
+    await page.goto(baseUrl+'/research');await page.getByRole('button',{name:'Analizy prac',exact:true}).click();
+    await page.getByLabel('Praca i sposób wskazania metody',{exact:true}).selectOption(`paper:${paper.id}`);
+    await page.getByText('Zapisany tekst pracy · excerpt',{exact:true}).waitFor();
+    await page.getByLabel('Dokładny cytat opisujący operację',{exact:true}).fill(quote);
+    await page.getByLabel('Operacja statystyczna',{exact:true}).selectOption('pearson');
+    await page.getByLabel('Zatwierdzony zbiór danych',{exact:true}).selectOption(record.id);
+    await page.getByLabel('Kolumna A',{exact:true}).selectOption('interest');await page.getByLabel('Kolumna B',{exact:true}).selectOption('mentions');
+    for(const key of ['A','B']) {
+      await page.getByLabel(`Pochodzenie danych ${key}`,{exact:true}).selectOption('synthetic_scenario');
+      await page.getByLabel(`Co reprezentuje kolumna ${key} i jakie ma ograniczenia?`,{exact:true}).fill('Synthetic software test values; not real observations.');
+    }
+    assert.equal(await page.getByLabel('Postępowanie z brakami',{exact:true}).inputValue(),'exclude');
+    await page.getByLabel('Zakres analizy i odstępstwa od pracy',{exact:true}).fill('Selected association only; expert panel and full study design are outside this test.');
+    await page.setViewportSize({width:390,height:844});await page.getByLabel('Dokładny cytat opisujący operację',{exact:true}).scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}));assert.ok(layout.scroll<=layout.width+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/paper-operation-mobile.png',fullPage:false});
+    await page.getByRole('button',{name:'Przygotuj plan analizy pracy',exact:true}).click();
+    await page.locator('[data-testid="paper-operation-review"]').waitFor();
+    const id=await page.getByLabel('Zapisany plan',{exact:true}).inputValue();assert.ok(id);
+    assert.ok(await page.getByRole('button',{name:'Zatwierdź metodę tej analizy',exact:true}).isDisabled());
+    assert.equal(await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).count(),0);
+    await page.getByLabel('Sprawdziłem cytat, interpretację, dane i tę specyfikację.',{exact:true}).check();
+    await page.getByRole('button',{name:'Zatwierdź metodę tej analizy',exact:true}).click();
+    await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).click();
+    await page.locator('[data-testid="paper-operation-result"]').waitFor();
+    assert.match((await page.locator('[data-testid="paper-operation-result"]').textContent())!,/SIMULATION_NOT_EMPIRICAL_EVIDENCE/);
+    await page.setViewportSize({width:1280,height:900});await page.locator('[data-testid="paper-operation-result"]').scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/paper-operation-result-desktop.png',fullPage:false});
+    await page.reload();await page.getByRole('button',{name:'Analizy prac',exact:true}).click();
+    await page.getByLabel('Zapisany plan',{exact:true}).selectOption(id);
+    await page.getByRole('button',{name:'Pokaż zapisany wynik',exact:true}).click();await page.locator('[data-testid="paper-operation-result"]').waitFor();
+    const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'Pobierz pakiet z publikacją',exact:true}).click();
+    const file=await downloading;await file.saveAs('test-artifacts/paper-operation-package.zip');
+    const entries=readZip(fs.readFileSync((await file.path())!));
+    const binding=JSON.parse(entries.find(e=>e.name==='research/paper-binding.json')!.content.toString());assert.equal(binding.body.document.hash,paper.hash);assert.equal(binding.body.anchor.quote,quote);
+    const result=JSON.parse(entries.find(e=>e.name==='analysis/result.json')!.content.toString());assert.equal(result.artifact.results[0].valueNumeric,1);assert.equal(result.artifact.results[0].statisticMetadata.n,4);
+    assert.equal(result.paperBinding.hash,binding.hash);assert.equal(binding.body.replicability,'NOT_YET_ESTABLISHED');
+    for(const e of entries){const f=path.join(publication,e.name);fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,e.content);}
+    const manifest=JSON.parse(entries.find(e=>e.name==='package-manifest.json')!.content.toString());
+    fs.writeFileSync('test-artifacts/paper-operation-verification.txt',execFileSync(process.execPath,[path.join(publication,'verify.mjs'),publication,canonicalHash(manifest)],{encoding:'utf8'}));
+    assert.deepEqual(errors,[]);
+  }catch(error){
+    fs.writeFileSync('test-artifacts/paper-operation-failure.json',JSON.stringify({message:String(error),pageErrors:errors,url:page.url(),body:await page.locator('body').innerText()},null,2));
+    await page.screenshot({path:'test-artifacts/paper-operation-failure.png',fullPage:false});throw error;
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
+});

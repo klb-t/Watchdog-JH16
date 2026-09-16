@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1.0",
+  "preset_id": "jh16-faithful",
+  "preset_version": "2016-faithful-v1",
+  "label": "Jankowski–Hoffmann 2016 — faithful methodology",
+  "locked": true,
+  "analysis_type": "jh16",
+  "substances": [
+    {
+      "canonical": "alcohol",
+      "query_label": "alcohol"
+    },
+    {
+      "canonical": "amphetamine",
+      "query_label": "amphetamine"
+    },
+    {
+      "canonical": "benzodiazepines",
+      "query_label": "benzodiazepines"
+    },
+    {
+      "canonical": "buprenorphine",
+      "query_label": "buprenorphine"
+    },
+    {
+      "canonical": "butane",
+      "query_label": "butane"
+    },
+    {
+      "canonical": "cannabis",
+      "query_label": "cannabis"
+    },
+    {
+      "canonical": "cocaine",
+      "query_label": "cocaine"
+    },
+    {
+      "canonical": "ecstasy",
+      "query_label": "ecstasy"
+    },
+    {
+      "canonical": "gamma-hydroxybutyric acid",
+      "query_label": "GHB"
+    },
+    {
+      "canonical": "heroin",
+      "query_label": "heroin"
+    },
+    {
+      "canonical": "ketamine",
+      "query_label": "ketamine"
+    },
+    {
+      "canonical": "khat",
+      "query_label": "khat"
+    },
+    {
+      "canonical": "lysergic acid diethylamide",
+      "query_label": "LSD"
+    },
+    {
+      "canonical": "mephedrone",
+      "query_label": "mephedrone"
+    },
+    {
+      "canonical": "methadone",
+      "query_label": "methadone"
+    },
+    {
+      "canonical": "methamphetamine",
+      "query_label": "methamphetamine"
+    }
+  ],
+  "queries": {
+    "popularity_template": "\"{query_label}\"",
+    "harm_template": "\"{query_label}\" \"harm\" OR \"harmful\"",
+    "alias_expansion": false
+  },
+  "search_method": {
+    "safe_search": "off",
+    "record_actual_provider_parameters": true,
+    "missing_count_policy": "missing_not_zero"
+  },
+  "metrics": {
+    "Pi": "(Ni / max(Ni)) * 100",
+    "Hi": "(Ni_harm / Ni) * 100"
+  },
+  "validation": {
+    "reference_harm_score_set": "nutt-2010-versioned",
+    "correlations": [
+      "pearson",
+      "spearman"
+    ]
+  }
+}

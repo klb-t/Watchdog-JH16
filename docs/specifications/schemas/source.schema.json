@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "watchdog.source.schema.json",
+  "title": "WatchDog Source Definition",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "source_id",
+    "adapter_id",
+    "capabilities"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string"
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapter_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "adapter_version": {
+      "type": "string"
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "retention_policy": {
+      "type": "string"
+    },
+    "license_notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parameter_schema": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

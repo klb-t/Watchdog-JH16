@@ -1,0 +1,19 @@
+schema_version: 1
+project:
+  title: "Example longitudinal multi-source study"
+  research_question: ""
+  hypotheses: []
+  scopes:
+    entities: []
+    geography: []
+    languages: []
+    time: null
+  source_specs: []
+  collection_schedules: []
+  literature: []
+  transform_specs: []
+  analysis_specs: []
+  figure_specs: []
+  paper:
+    pipeline_config: paper-pipeline.example.yaml
+    freeze_evidence_before_draft: true

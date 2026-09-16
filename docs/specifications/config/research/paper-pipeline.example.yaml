@@ -1,0 +1,19 @@
+schema_version: 1
+paper_pipeline:
+  evidence_first: true
+  deterministic_methods_skeleton: true
+  deterministic_results_skeleton: true
+  llm_may_draft_prose: true
+  llm_may_modify_numeric_results: false
+  llm_may_invent_citations: false
+  require_claim_evidence_links: true
+  version_every_refresh: true
+sections:
+  - abstract
+  - introduction
+  - methods
+  - results
+  - discussion
+  - limitations
+  - conclusion
+exports: [markdown, docx, latex, pdf]

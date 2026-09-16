@@ -26,7 +26,12 @@ export function normalizeMax(values: number[], percentage = true): number[] {
   });
 }
 
-export function pearson(x: number[], y: number[]): number {
+/**
+ * Pearson product-moment correlation coefficient.
+ * Returns null when the coefficient is undefined (zero variance in x or y),
+ * rather than the misleading value 0.
+ */
+export function pearson(x: number[], y: number[]): number | null {
   if (x.length !== y.length || x.length === 0) throw new Error("Arrays must have same length > 0");
   const n = x.length;
   const sumX = x.reduce((a, b) => a + b, 0);
@@ -37,11 +42,11 @@ export function pearson(x: number[], y: number[]): number {
 
   const num = (n * sumXY) - (sumX * sumY);
   const den = Math.sqrt(((n * sumSqX) - (sumX * sumX)) * ((n * sumSqY) - (sumY * sumY)));
-  if (den === 0) return 0;
+  if (den === 0) return null;
   return num / den;
 }
 
-export function spearman(x: number[], y: number[]): number {
+export function spearman(x: number[], y: number[]): number | null {
   if (x.length !== y.length || x.length === 0) throw new Error("Arrays must have same length > 0");
   const rank = (arr: number[]) => {
     const sorted = [...arr].map((val, i) => ({ val, i })).sort((a, b) => a.val - b.val);

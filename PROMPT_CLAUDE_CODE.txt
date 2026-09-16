@@ -1,0 +1,24 @@
+Read CLAUDE.md, then docs/spec/00_STATE_AND_DECISIONS.md, then docs/spec/07_EPICS_AND_TASKS.md.
+
+Do not write any feature code yet.
+
+Start with epic E0. The specification describes intent; this repository is fact, and they are
+known to differ — a previous agent worked on it and was interrupted mid-pass by a quota limit,
+and it is not known whether its last changes were committed.
+
+Your first output is a delta report, not code:
+
+1. What the ledger claims is done.
+2. What the repository actually shows — git log, git status, the source tree, which commands
+   run, which tests pass.
+3. Where those two disagree.
+4. Which E0 task you are starting and why.
+
+Then work E0.1 through E0.5 in order, committing each with its ledger tick.
+
+Do not ask me for permission to proceed between tasks. Ask only about the things
+CLAUDE.md §4 lists as mine to decide. If you hit a blocker, write it into the Blocked section
+of the ledger with enough detail that I can clear it in one action, and move to the next
+unblocked task.
+
+If E0.3 finds a committed secret, stop and tell me immediately.

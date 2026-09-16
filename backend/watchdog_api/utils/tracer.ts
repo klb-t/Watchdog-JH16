@@ -2,7 +2,7 @@ import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomUUID } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { redact } from './redaction';
+import { redact, redactText } from './redaction';
 import { buildErrorEnvelope, ErrorEnvelope } from './errors';
 
 export type DiagnosticsMode = 'OFF' | 'ERRORS' | 'NORMAL' | 'TRACE';
@@ -21,6 +21,22 @@ export interface TraceContext {
   stage?: string;
 }
 
+/**
+ * The ordered event vocabulary from `06_DIAGNOSTICS.md`:
+ *
+ *   STEP_ENTER -> STATE_BEFORE -> INPUT -> VALIDATION -> DECISION
+ *              -> TRANSFORM/CALL -> RESULT -> STATE_AFTER -> STEP_EXIT
+ *
+ * On failure: EXCEPTION -> stack -> cause chain -> STATE_AT_FAILURE.
+ */
+export const TRACE_EVENT_TYPES = [
+  'SPAN_START', 'STEP_ENTER', 'STATE_BEFORE', 'INPUT', 'VALIDATION', 'DECISION',
+  'TRANSFORM', 'CALL', 'RESULT', 'STATE_AFTER', 'STEP_EXIT', 'SPAN_END',
+  'EXCEPTION', 'STATE_AT_FAILURE', 'WARNING',
+] as const;
+
+export type TraceEventType = typeof TRACE_EVENT_TYPES[number] | string;
+
 export interface TraceEvent {
   event_type: string;
   context: TraceContext;
@@ -31,7 +47,12 @@ export interface TraceEvent {
 class Tracer {
   private mode: DiagnosticsMode = 'NORMAL';
   private als = new AsyncLocalStorage<TraceContext>();
-  private logDir = path.join(process.cwd(), 'diagnostics');
+  private sequences = new WeakMap<TraceContext, { value: number }>();
+  // Overridable so a run can keep its own trace inside its own run directory,
+  // rather than every run sharing one global folder.
+  private logDir = process.env.WATCHDOG_DIAGNOSTICS_DIR
+    ? path.resolve(process.env.WATCHDOG_DIAGNOSTICS_DIR)
+    : path.join(process.cwd(), 'diagnostics');
 
   constructor() {
     const envMode = process.env.WATCHDOG_DIAGNOSTICS_MODE?.toUpperCase() as DiagnosticsMode;
@@ -41,6 +62,21 @@ class Tracer {
     if (this.mode === 'TRACE' || this.mode === 'ERRORS') {
       fs.mkdirSync(this.logDir, { recursive: true });
     }
+  }
+
+  public getLogDir(): string {
+    return this.logDir;
+  }
+
+  public setLogDir(dir: string) {
+    this.logDir = path.resolve(dir);
+    if (this.mode === 'TRACE' || this.mode === 'ERRORS') {
+      fs.mkdirSync(this.logDir, { recursive: true });
+    }
+  }
+
+  public traceDir(traceId: string, when: Date = new Date()): string {
+    return path.join(this.logDir, when.toISOString().split('T')[0], traceId);
   }
 
   public getMode(): DiagnosticsMode {
@@ -85,23 +121,39 @@ class Tracer {
       this.writeLog(ctx.trace_id, 'events.jsonl', event);
     } else if (this.mode === 'NORMAL') {
       if (['SPAN_START', 'SPAN_END', 'WARNING', 'EXCEPTION'].includes(eventType)) {
-        console.log(`[${eventType}] ${ctx.component}:${ctx.operation} - ${JSON.stringify(payload || '')}`);
+        console.log(redactText(`[${eventType}] ${ctx.component}:${ctx.operation} - ${JSON.stringify(redact(payload) || '')}`));
       }
     }
   }
+
+  /**
+   * Records which branch was taken **and the value that determined it**.
+   * `06_DIAGNOSTICS.md` calls this the single highest-value event type for
+   * debugging and the one most often omitted, so it gets a first-class API
+   * rather than relying on callers to hand-roll a payload.
+   */
+  public decision(branch: string, becauseField: string, becauseValue: unknown, extra?: Record<string, unknown>) {
+    this.emit('DECISION', { branch, because: { field: becauseField, value: becauseValue }, ...extra });
+  }
+
+  public stateBefore(state: unknown) { this.emit('STATE_BEFORE', { state }); }
+  public stateAfter(state: unknown) { this.emit('STATE_AFTER', { state }); }
+  public input(value: unknown) { this.emit('INPUT', { value }); }
+  public validation(valid: boolean, detail?: unknown) { this.emit('VALIDATION', { valid, detail }); }
+  public result(value: unknown) { this.emit('RESULT', { value }); }
 
   public emitError(error: any, handled: boolean = false, retryable: boolean = false) {
     if (this.mode === 'OFF') return;
     const ctx = this.getContext();
     if (!ctx) return;
     
-    const envelope = buildErrorEnvelope(error, ctx, handled, retryable);
+    const envelope = redact(buildErrorEnvelope(error, ctx, handled, retryable)) as ErrorEnvelope;
     if (this.mode === 'TRACE' || this.mode === 'ERRORS') {
       this.writeLog(ctx.trace_id, 'errors.jsonl', envelope);
       this.emit('EXCEPTION', { error_id: envelope.error_id });
     }
     if (this.mode === 'NORMAL') {
-      console.error(`[ERROR] ${ctx.component}:${ctx.operation}`, envelope.message);
+      console.error(redactText(`[ERROR] ${ctx.component}:${ctx.operation} ${envelope.message}`));
     }
   }
 
@@ -114,14 +166,15 @@ class Tracer {
     const parentCtx = this.getContext();
     const trace_id = overrides?.trace_id || parentCtx?.trace_id || randomUUID();
     const span_id = randomUUID();
-    const parent_span_id = parentCtx?.span_id;
-    const sequence_no = parentCtx ? parentCtx.sequence_no : 0;
+    const sameTrace = parentCtx?.trace_id === trace_id;
+    const parent_span_id = sameTrace ? parentCtx?.span_id : undefined;
+    const sequence = sameTrace && parentCtx ? this.sequences.get(parentCtx)! : { value: 0 };
     
     const newCtx: TraceContext = {
       trace_id,
       span_id,
       parent_span_id,
-      sequence_no,
+      sequence_no: sequence.value,
       component,
       operation,
       request_id: overrides?.request_id || parentCtx?.request_id,
@@ -130,6 +183,10 @@ class Tracer {
       actor_id: overrides?.actor_id || parentCtx?.actor_id,
       stage: overrides?.stage || parentCtx?.stage,
     };
+    // Every span of a trace shares one counter, including concurrently awaited siblings.
+    // An enumerable accessor keeps the public context/event schema unchanged.
+    Object.defineProperty(newCtx, 'sequence_no', { enumerable: true, get: () => sequence.value, set: value => { sequence.value = value; } });
+    this.sequences.set(newCtx, sequence);
 
     return this.als.run(newCtx, async () => {
       this.emit('SPAN_START');
@@ -138,18 +195,12 @@ class Tracer {
         const result = await fn();
         this.emit('STEP_EXIT', { status: 'success' });
         this.emit('SPAN_END');
-        if (parentCtx) {
-           parentCtx.sequence_no = newCtx.sequence_no; // sync sequence back
-        }
         return result;
       } catch (err) {
         this.emit('STATE_AT_FAILURE');
         this.emitError(err);
         this.emit('STEP_EXIT', { status: 'failed' });
         this.emit('SPAN_END');
-        if (parentCtx) {
-           parentCtx.sequence_no = newCtx.sequence_no;
-        }
         throw err;
       }
     });

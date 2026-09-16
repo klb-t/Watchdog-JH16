@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "target_id": "jh2016",
+  "title": "Can Google Searches Predict the Popularity and Harm of Psychoactive Agents?",
+  "identifier_type": "doi",
+  "identifier": "10.2196/jmir.4033",
+  "citation": {
+    "authors": ["Jankowski, Wojciech", "Hoffmann, Marcin"],
+    "journal": "J Med Internet Res",
+    "year": 2016, "volume": "18", "issue": "2", "elocation": "e38"
+  },
+
+  "_pre_registration": {
+    "bands_proposed_in_commit": "2e417c66514b3ac24aef6cc067d435168089f852",
+    "proposed_at": "2026-08-18T06:26:22Z",
+    "authority": "Proposed by the agent and delegated by the maintainer, who gave explicit free rein rather than setting the numbers himself.",
+    "why_this_matters": "08_REPLICATION_ENGINE.md: a tolerance chosen after seeing the result is not a tolerance. These bands and their full rationale were committed to git BEFORE any verdict was computed anywhere in this repository; that commit is the pre-registration record and it is checkable. Widening a band after seeing a verdict requires a new version of this file and is visible in history."
+  },
+
+  "claims": [
+    {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "claim_type": "correlation",
+      "statistic": "pearson",
+      "claimed_value_numeric": 0.8162,
+      "unit": "coefficient",
+      "tolerance_kind": "interval",
+      "tolerance_value": 0.70,
+      "interval_upper": 1.0,
+      "notes": "The paper reports 'correlation coefficient between the harm score ranking and the harm index was 81.6%', p=0.000143, alpha=0.01, n=16. The word 'ranking' reads as a rank correlation but is loose: recomputing from the paper's own Tables 1 and 3 gives Pearson r=0.8162 (matching) and Spearman rho=0.5668 (not matching). Registered as Pearson with a floor of 0.70 expressed as the interval [0.70, 1.0]. 0.70 is the conventional strong-correlation threshold, below the published 0.816 to allow drift, and above the ~0.62 needed for significance at n=16 under the authors' own alpha."
+    },
+    {
+      "claim_key": "popularity_ranking_stability",
+      "claim_type": "rank_correlation",
+      "statistic": "spearman",
+      "claimed_value_numeric": 1.0,
+      "unit": "coefficient",
+      "tolerance_kind": "rank_correlation_floor",
+      "tolerance_value": 0.60,
+      "notes": "Spearman of the observed Pi ranking against the paper's published Table 1 ranking. Floor anchored in the paper's own data rather than convention: Table 2 gives Pi at six dates over 25 months, and the ranking's Spearman between first and last is 0.785 — how much the authors' own ranking moved against itself in two years. A 2014-to-2026 gap is roughly six times longer, so the floor sits meaningfully below 0.785."
+    }
+  ],
+
+  "_band_3_deliberately_absent": {
+    "decision": "not registered as a pass/fail claim",
+    "reason": "Table 2 shows the drift in individual Pi values across just 25 months of the authors' own study: GHB +567%, mephedrone +400%, cannabis +141%, khat +108%. A +-50% band would record 'deviates' for most substances within the paper's own study window, and a band wide enough for +567% would pass almost anything. By 08_REPLICATION_ENGINE.md's own standard there is no defensible tolerance here, and registering an indefensible one is worse than registering none.",
+    "instead": "The 32 published point values are retained as reference data in fixtures/jh2016/paper_reported.json and the observed deviation for each is reported as descriptive output, with no verdict attached."
+  }
+}

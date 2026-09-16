@@ -1,0 +1,315 @@
+[
+  {
+    "kind": "sample",
+    "key": "dior-20260702",
+    "name": "Dior / CD",
+    "origin": "published_alert",
+    "region": {
+      "id": "NL",
+      "name": "Netherlands",
+      "parentId": null
+    },
+    "observedOn": "2026-07-02",
+    "timeBasis": "published",
+    "testMethod": null,
+    "appearance": {
+      "colors": [
+        "green"
+      ],
+      "shape": "oval",
+      "logo": "Dior / CD",
+      "scoreLine": "score line"
+    },
+    "market": {
+      "label": "Dior / CD",
+      "group": "Dior / CD",
+      "language": "nl"
+    },
+    "components": [
+      {
+        "substance": {
+          "id": "mdma",
+          "name": "MDMA",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": "Bulletin describes a few milligrams, without an exact measurement."
+      }
+    ],
+    "unknownComponents": [
+      "Unidentified substances reported by the bulletin"
+    ],
+    "evidenceTier": "CURATED_SECONDARY",
+    "qualityFlags": [
+      "NATIONAL_BULLETIN_ONLY",
+      "SPECIMEN_TEST_DETAILS_UNAVAILABLE"
+    ],
+    "citation": {
+      "url": "https://drugsredalert.nl/zwartelijst/",
+      "title": "Drugs Red Alert — blacklist",
+      "publisher": "Trimbos / Drugs Red Alert",
+      "retrievedAt": "2026-09-08T00:00:00Z",
+      "locator": "Dior / CD, bulletin 2026-07-02",
+      "sourceRecordId": "dior-20260702"
+    }
+  },
+  {
+    "kind": "sample",
+    "key": "mitsubishi-20260827",
+    "name": "Mitsubishi",
+    "origin": "published_alert",
+    "region": {
+      "id": "NL",
+      "name": "Netherlands",
+      "parentId": null
+    },
+    "observedOn": "2026-08-27",
+    "timeBasis": "published",
+    "testMethod": null,
+    "appearance": {
+      "colors": [
+        "beige"
+      ],
+      "shape": "triangle",
+      "logo": "Mitsubishi",
+      "scoreLine": null
+    },
+    "market": {
+      "label": "Mitsubishi",
+      "group": "Mitsubishi",
+      "language": "nl"
+    },
+    "components": [
+      {
+        "substance": {
+          "id": "pmma",
+          "name": "PMMA",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      },
+      {
+        "substance": {
+          "id": "mdma",
+          "name": "MDMA",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      },
+      {
+        "substance": {
+          "id": "ketamine",
+          "name": "ketamine",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      }
+    ],
+    "unknownComponents": [],
+    "evidenceTier": "CURATED_SECONDARY",
+    "qualityFlags": [
+      "NATIONAL_BULLETIN_ONLY",
+      "SPECIMEN_TEST_DETAILS_UNAVAILABLE"
+    ],
+    "citation": {
+      "url": "https://drugsredalert.nl/zwartelijst/",
+      "title": "Drugs Red Alert — blacklist",
+      "publisher": "Trimbos / Drugs Red Alert",
+      "retrievedAt": "2026-09-08T00:00:00Z",
+      "locator": "Mitsubishi, bulletin 2026-08-27",
+      "sourceRecordId": "mitsubishi-20260827"
+    }
+  },
+  {
+    "kind": "sample",
+    "key": "trump-20260828",
+    "name": "Trump",
+    "origin": "published_alert",
+    "region": {
+      "id": "NL",
+      "name": "Netherlands",
+      "parentId": null
+    },
+    "observedOn": "2026-08-28",
+    "timeBasis": "published",
+    "testMethod": null,
+    "appearance": {
+      "colors": [
+        "green",
+        "pink",
+        "gold",
+        "blue"
+      ],
+      "shape": null,
+      "logo": "Trump portrait",
+      "scoreLine": "NL / Trump"
+    },
+    "market": {
+      "label": "Trump",
+      "group": "Trump",
+      "language": "nl"
+    },
+    "components": [
+      {
+        "substance": {
+          "id": "pmma",
+          "name": "PMMA",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      }
+    ],
+    "unknownComponents": [],
+    "evidenceTier": "CURATED_SECONDARY",
+    "qualityFlags": [
+      "NATIONAL_BULLETIN_ONLY",
+      "SPECIMEN_TEST_DETAILS_UNAVAILABLE",
+      "COLOR_VARIANTS_IN_ONE_BULLETIN"
+    ],
+    "citation": {
+      "url": "https://drugsredalert.nl/zwartelijst/",
+      "title": "Drugs Red Alert — blacklist",
+      "publisher": "Trimbos / Drugs Red Alert",
+      "retrievedAt": "2026-09-08T00:00:00Z",
+      "locator": "Trump, bulletin 2026-08-28",
+      "sourceRecordId": "trump-20260828"
+    }
+  },
+  {
+    "kind": "sample",
+    "key": "trump-20260518",
+    "name": "Trump",
+    "origin": "published_alert",
+    "region": {
+      "id": "NL",
+      "name": "Netherlands",
+      "parentId": null
+    },
+    "observedOn": "2026-05-18",
+    "timeBasis": "published",
+    "testMethod": null,
+    "appearance": {
+      "colors": [
+        "pink",
+        "blue",
+        "red",
+        "green"
+      ],
+      "shape": null,
+      "logo": "Trump portrait",
+      "scoreLine": "NL / Trump"
+    },
+    "market": {
+      "label": "Trump",
+      "group": "Trump",
+      "language": "nl"
+    },
+    "components": [
+      {
+        "substance": {
+          "id": "mdma",
+          "name": "MDMA",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      },
+      {
+        "substance": {
+          "id": "pmma",
+          "name": "PMMA",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      },
+      {
+        "substance": {
+          "id": "ketamine",
+          "name": "ketamine",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      },
+      {
+        "substance": {
+          "id": "amphetamine",
+          "name": "amphetamine",
+          "type": "substance"
+        },
+        "amount": null,
+        "unit": null,
+        "note": null
+      }
+    ],
+    "unknownComponents": [],
+    "evidenceTier": "CURATED_SECONDARY",
+    "qualityFlags": [
+      "NATIONAL_BULLETIN_ONLY",
+      "SPECIMEN_TEST_DETAILS_UNAVAILABLE",
+      "COLOR_VARIANTS_IN_ONE_BULLETIN"
+    ],
+    "citation": {
+      "url": "https://drugsredalert.nl/zwartelijst/",
+      "title": "Drugs Red Alert — blacklist",
+      "publisher": "Trimbos / Drugs Red Alert",
+      "retrievedAt": "2026-09-08T00:00:00Z",
+      "locator": "Trump, bulletin 2026-05-18",
+      "sourceRecordId": "trump-20260518"
+    }
+  },
+  {
+    "kind": "assertion",
+    "key": "jellinek-mdma-amphetamine",
+    "subject": {
+      "id": "mdma",
+      "name": "MDMA",
+      "type": "substance"
+    },
+    "predicate": "INTERACTS_WITH",
+    "object": {
+      "id": "amphetamine",
+      "name": "amphetamine",
+      "type": "substance"
+    },
+    "category": "interactions",
+    "statement": {
+      "text": "XTC + speed of coke verhogen de bloeddruk en hartslag.",
+      "language": "nl",
+      "kind": "source_excerpt",
+      "mechanism": null,
+      "severity": null,
+      "population": null
+    },
+    "region": null,
+    "validFrom": null,
+    "validTo": null,
+    "contradicts": [],
+    "supersedes": null,
+    "evidenceTier": "CURATED_SECONDARY",
+    "qualityFlags": [
+      "SLANG_TO_SUBSTANCE_MAPPING_REQUIRES_REVIEW"
+    ],
+    "citation": {
+      "url": "https://www.jellinek.nl/vraag-antwoord/risicos-xtc-mdma-verminderen/",
+      "title": "Risico’s XTC (MDMA) verminderen",
+      "publisher": "Jellinek",
+      "retrievedAt": "2026-09-08T00:00:00Z",
+      "locator": "Combination-use warning: XTC + speed or coke",
+      "sourceRecordId": "mdma-speed-coke-warning"
+    }
+  }
+]

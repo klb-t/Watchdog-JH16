@@ -1,0 +1,100 @@
+schema_version: 1
+catalog_policy:
+  examples_are_non_exhaustive: true
+  require_status: true
+  allowed_statuses: [implemented, fixture, planned, blocked]
+  never_claim_planned_as_implemented: true
+sources:
+  - id: serp_result_counts
+    family: web_search
+    status: planned
+    priority: first_target
+    capabilities: [result_count]
+    normalized_outputs: [result_count_observation]
+    notes: "Provider-neutral normalized result counts; FAITHFUL JH16 uses locked query semantics."
+  - id: google_trends
+    family: search_interest
+    status: planned
+    capabilities: [interest_over_time, interest_by_region]
+    normalized_outputs: [time_series, regional_series]
+  - id: jh16_reference
+    family: scientific_reference
+    status: fixture
+    capabilities: [methodology_reference, numeric_reference_table]
+  - id: nutt_reference
+    family: scientific_reference
+    status: fixture
+    capabilities: [numeric_reference_table]
+  - id: pubchem
+    family: chemical_reference
+    status: planned
+    capabilities: [entity_reference, chemical_properties]
+  - id: drugbank
+    family: chemical_reference
+    status: blocked
+    capabilities: [entity_reference, pharmacology]
+    notes: "Implement only with suitable license/access."
+  - id: wikipedia
+    family: encyclopedic
+    status: planned
+    capabilities: [entity_reference, free_text_reference]
+  - id: erowid
+    family: community_reports
+    status: planned
+    capabilities: [free_text_reports, trip_reports]
+    notes: "Collection/retention only when lawful and source terms permit."
+  - id: community_forums
+    family: community_reports
+    status: planned
+    capabilities: [free_text_reports, forum_threads, trip_reports]
+    notes: "Abstract adapter family. Concrete forum connectors require terms/API/privacy review."
+  - id: reddit_like_community
+    family: community_reports
+    status: planned
+    capabilities: [free_text_reports, forum_threads]
+    notes: "Use only through lawful current API/import path; do not assume scraping rights."
+  - id: crossref
+    family: literature_index
+    status: planned
+    capabilities: [scientific_literature, bibliographic_metadata]
+  - id: openalex
+    family: literature_index
+    status: planned
+    capabilities: [scientific_literature, bibliographic_metadata]
+  - id: pubmed_ncbi
+    family: literature_index
+    status: planned
+    capabilities: [scientific_literature, bibliographic_metadata]
+  - id: semantic_scholar
+    family: literature_index
+    status: planned
+    capabilities: [scientific_literature, bibliographic_metadata]
+  - id: literature_doi_pdf
+    family: literature
+    status: planned
+    capabilities: [scientific_literature, manual_import]
+  - id: drug_checking_lab_import
+    family: laboratory
+    status: planned
+    capabilities: [lab_sample, composition, contaminants]
+  - id: who_reports
+    family: institutional
+    status: planned
+    capabilities: [institutional_reports]
+  - id: euda_monitoring
+    family: institutional
+    status: planned
+    capabilities: [alert_feed, institutional_reports, geospatial]
+  - id: unodc_reports
+    family: institutional
+    status: planned
+    capabilities: [institutional_reports]
+  - id: institutional_alert_feed
+    family: institutional
+    status: planned
+    capabilities: [alert_feed, geospatial]
+  - id: manual_dataset
+    family: user_data
+    status: planned
+    capabilities: [manual_dataset]
+    formats: [csv, tsv, json, jsonl, parquet, xlsx]

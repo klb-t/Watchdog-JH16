@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0.0",
+  "capability": "search.result_count",
+  "_note": "Rule 3: endpoints, engines, pacing and the zero-result policy are configuration. secret_ref is a POINTER resolved by backend/watchdog_api/secrets — never a key.",
+  "providers": [
+    {
+      "provider_key": "serpapi",
+      "display_name": "SerpApi",
+      "endpoint": "https://serpapi.com/search.json",
+      "secret_ref": "env:SERPAPI_API_KEY",
+      "engine": "google",
+      "api_key_param": "api_key",
+      "count_path": "search_information.total_results",
+      "zero_result_policy": "treat_as_missing",
+      "_why_zero_is_missing": "Ni is a denominator in Hi = Ni_harm/Ni and the maximum in Pi = Ni/max(Ni). A provider-reported 0 for a quoted substance query is far more often suppression, a locale quirk or an anomaly than a true absence of documents, and admitting it as a measurement either divides by zero or plants a fabricated floor. Recorded as PROVIDER_ZERO_RESULTS_UNRELIABLE so the run stays honest about it. Set to treat_as_measurement only with a stated scientific reason.",
+      "request_params": {
+        "num": 10,
+        "safe": "off",
+        "no_cache": true
+      },
+      "pacing": {
+        "min_interval_ms": 1200,
+        "max_attempts": 3,
+        "backoff_ms": [2000, 8000]
+      },
+      "_why_pacing_is_here": "Rate limiting is an operating condition of a metered provider, not an exception. Pacing lives in configuration so a 32-query run can be slowed without a code change, and max_attempts is finite so a study can never spin indefinitely against a dead quota."
+    }
+  ]
+}

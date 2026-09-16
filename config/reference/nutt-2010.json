@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "set_key": "nutt-2010",
+  "version": "2010-mcda-overall-harm",
+  "evidence_tier": "CURATED_SECONDARY",
+  "citation": {
+    "title": "Drug harms in the UK: a multicriteria decision analysis",
+    "authors": [
+      "Nutt, David J",
+      "King, Leslie A",
+      "Phillips, Lawrence D"
+    ],
+    "journal": "The Lancet",
+    "year": 2010,
+    "volume": "376",
+    "issue": "9752",
+    "pages": "1558-1565",
+    "doi": "10.1016/S0140-6736(10)61462-6"
+  },
+  "_provenance": "Scores transcribed from Table 3 of Jankowski & Hoffmann 2016 (doi:10.2196/jmir.4033), which reproduces the Nutt et al overall-harm scores for the sixteen substances it studied. Transcribed from the replication's table rather than from Nutt et al directly; verify against the Lancet paper before using outside a JH2016 replication.",
+  "scale": {
+    "name": "overall harm",
+    "min": 0,
+    "max": 100
+  },
+  "scores": {
+    "alcohol": 72,
+    "amphetamine": 23,
+    "benzodiazepines": 15,
+    "buprenorphine": 7,
+    "butane": 11,
+    "cannabis": 20,
+    "cocaine": 27,
+    "ecstasy": 9,
+    "gamma-hydroxybutyric acid": 19,
+    "heroin": 55,
+    "ketamine": 15,
+    "khat": 9,
+    "lysergic acid diethylamide": 7,
+    "mephedrone": 13,
+    "methadone": 14,
+    "methamphetamine": 33
+  },
+  "substance_labels": {
+    "alcohol": "alcohol",
+    "amphetamine": "amphetamine",
+    "benzodiazepines": "benzodiazepines",
+    "buprenorphine": "buprenorphine",
+    "butane": "butane",
+    "cannabis": "cannabis",
+    "cocaine": "cocaine",
+    "ecstasy": "ecstasy",
+    "gamma-hydroxybutyric acid": "GHB",
+    "heroin": "heroin",
+    "ketamine": "ketamine",
+    "khat": "khat",
+    "lysergic acid diethylamide": "LSD",
+    "mephedrone": "mephedrone",
+    "methadone": "methadone",
+    "methamphetamine": "methamphetamine"
+  }
+}

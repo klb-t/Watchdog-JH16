@@ -1,0 +1,5 @@
+{
+  "_case": "GROUPING SEPARATORS — 'About 1,234,567 results'. Must parse to exactly 1234567.",
+  "query": "\"groupeddigits\"",
+  "result_stats": "About 1,234,567 results (0.22 seconds)"
+}

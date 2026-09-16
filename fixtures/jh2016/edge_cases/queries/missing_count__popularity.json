@@ -1,0 +1,5 @@
+{
+  "_case": "MISSING COUNT — the provider returned a response with no count field at all. Must normalize to is_missing=1 with a reason, never to 0.",
+  "query": "\"missingcount\"",
+  "result_stats": null
+}
