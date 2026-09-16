@@ -1,3 +1,9 @@
+# WatchDog — legacy agent handoff (2026-08-16)
+
+This file is preserved for development provenance. It described the Claude Code handoff before the later Astra continuation was merged into `main`; operational branch references and instructions below are historical, not current project status.
+
+---
+
 # WatchDog — pakiet dla Claude Code
 
 **Data:** 2026-08-16 · **Wersja:** v6 · Jedyny plik po polsku, reszta jest dla agenta.
