@@ -25,7 +25,7 @@ test('E3.5: the image carries the data the running system reads', () => {
 
 test('E3.5: the build fails before an image exists if the checks fail', () => {
   const df = read('Dockerfile');
-  assert.match(df, /RUN npm run lint && npm run test && npm run build/,
+  assert.match(df, /RUN npm run lint && npm run build\s*\\\s*&& npx playwright install --with-deps chromium\s*\\\s*&& npm run test/,
     'a deployable artifact must not be producible from a red tree');
   assert.match(df, /npm prune --omit=dev/);
   assert.match(df, /^USER node$/m, 'the runtime must not be root');
@@ -38,7 +38,7 @@ test('E3.5: the container never bakes in a credential', () => {
   }
   // .dockerignore keeps local state and git history out of the build context.
   const di = read('.dockerignore');
-  for (const entry of ['data', 'runs', '.git', 'node_modules']) {
+  for (const entry of ['data', 'runs', '.git', 'node_modules', '.env', 'secrets']) {
     assert.match(di, new RegExp(`^${entry.replace('.', '\\.')}$`, 'm'));
   }
 });

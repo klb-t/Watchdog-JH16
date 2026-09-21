@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { z } from 'zod';
 import profile from '../../config/goal-navigation.json';
-import { CAPABILITIES, type Capability } from '../../shared/authorization';
+import { type Capability } from '../../shared/authorization';
+import {GoalNavigationSchema} from '../../shared/goal_navigation';
 import { useAccess } from '../lib/access';
-const goals = z.object({ version: z.literal('goal-navigation-1'), goals: z.array(z.object({ id:z.string(), label:z.string(), description:z.string(),
-  href:z.string().regex(/^\/(?!\/)[a-z]+$/), capability:z.string().refine(s=>s.split('|').every(c=>CAPABILITIES.includes(c as Capability))), contexts:z.array(z.string()) }).strict()) }).strict().parse(profile);
+const goals = GoalNavigationSchema.parse(profile);
 const normalize = (s:string)=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l').toLocaleLowerCase('pl');
 export function GoalNavigator() {
   const access=useAccess(),[search,setSearch]=useState('');

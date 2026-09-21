@@ -2,9 +2,9 @@
 
 # Two stages so the shipped image carries no compiler and no build cache.
 # better-sqlite3 is a native module, so the builder needs a toolchain; pinning
-# the same Node minor in both stages matters, because a native module built
+# the same Node major/base in both stages matters, because a native module built
 # against one ABI will not load on another.
-FROM node:20-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 
 WORKDIR /app
 
@@ -20,13 +20,15 @@ COPY . .
 
 # The build is also the last honest checkpoint before an image exists: if the
 # type check or the tests fail, no deployable artifact is produced.
-RUN npm run lint && npm run test && npm run build
+RUN npm run lint && npm run build \
+ && npx playwright install --with-deps chromium \
+ && npm run test
 
 # Strip development dependencies from the tree that gets copied forward.
 RUN npm prune --omit=dev
 
 
-FROM node:20-bookworm-slim AS runtime
+FROM node:24-bookworm-slim AS runtime
 
 WORKDIR /app
 ENV NODE_ENV=production

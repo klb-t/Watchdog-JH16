@@ -7,6 +7,13 @@ decision changes or an epic completes.
 
 ## 1. Where the project actually is
 
+**2026-09-21 deployment checkpoint:** the owner is preparing a Compute Engine VM and
+requested a ready installer. `docs/DEPLOY_GCP_VM.md` documents the implemented private
+IAP/SSH installation and durable single-writer runtime. The closed sign-in/admission UI
+is still E4.5; this installer deliberately uses local-owner mode behind the private tunnel.
+No GCP resources have been provisioned by the agent. See the latest progress entry for
+exact validation. The owner now asks to close this stage and hand off to a new conversation.
+
 **2026-09-13 source-history checkpoint:** E3.9 implements linked successful source checks,
 version histories and structural comparisons over existing substance reference records.
 Migration 016 preserves repeated checks and marks the limited legacy backfill. Comparison

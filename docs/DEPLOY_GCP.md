@@ -1,11 +1,14 @@
 # Deploying WatchDog to Google Cloud Run
 
+For the current owner-only Compute Engine VM installation, use
+[DEPLOY_GCP_VM.md](DEPLOY_GCP_VM.md). The older Cloud Run path below is separate; it does
+not implement the pending closed admission/invitation UI.
+
 Written for someone who has not used GCP before. Every command is copy-pasteable;
 where a step needs a decision, the decision is stated rather than assumed.
 
-Budget expectation: with `min-instances=0` the service costs effectively nothing while
-nobody is using it. The two metered things are your own API providers (OpenRouter, SerpApi),
-not Google.
+Costs depend on the Google Cloud resources retained and used, as well as external API
+providers. Scaling the service to zero does not make storage and other resources free.
 
 ---
 

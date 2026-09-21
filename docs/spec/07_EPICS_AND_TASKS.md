@@ -47,6 +47,11 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   terms/documentation evidence, immutable assessments and unsent request drafts. Explicit
   holds/expiry/stale profiles stop public collection before transport, including schedules.
   Eight integration cases pass; Chromium coverage added. See SOURCE_ACCESS.md.
+- [ ] **E3.13 — Existing GCP VM installation.** Cloud Shell orchestrator, pinned source
+  archive, IAP-scoped firewall, Docker, durable private runtime, systemd, backup/update
+  commands and Polish runbook implemented. Local installer/profile regression passes;
+  the new real-container CI build/start/persistence gate must pass before closing this task.
+  No live GCP provisioning is claimed. See DEPLOY_GCP_VM.md.
 - [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.

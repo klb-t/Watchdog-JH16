@@ -606,3 +606,33 @@ and scope.
 Final E3.12 pre-push validation: **347/347 local unit/contract/scientific/integration
 tests passed**, zero failures/skips; TypeScript and production build passed. The current
 19-browser-test suite will run on the published head in GitHub Actions.
+
+## 2026-09-21 — E3.13 VM installer and E3.12 browser correction
+
+E3.12 run `35614465513` failed browser startup: the goal-navigation schema rejected the
+new internal `/source-access` route because it only allowed letters. The actual production
+bundle reproduced the Zod error. The shared schema now accepts internal hyphenated slugs,
+retains rejection of external targets, and has a regression test against the shipped profile.
+The initial failed run is not a passed 366-test checkpoint. Its artifact download returned
+HTTP 403, so no separate manual artifact inspection is claimed.
+
+The owner's VM request adds a Cloud Shell installer for an existing dedicated GCP VM,
+scoped IAP firewall rules with connectivity checked before restrictions, signed Docker
+packages, pinned source archives, a non-root read-only image and durable owner-only runtime.
+Systemd starts after reboot; updates preserve keys and stop the writer for a complete local
+backup before switching versions. `watchdogctl` exposes status, logs, restart and backup.
+No cloud resources, IAM grants or actual messages were created by the agent.
+
+The Dockerfile now builds the client and installs Chromium before running browser tests,
+uses Node 24 in both stages and excludes local secret files from its build context. A new
+Actions job builds the real image, starts it with the production restrictions, writes a
+fictional source candidate through the API and checks persistence after container replacement.
+That CI gate is pending publication; Docker is unavailable in the local agent environment.
+
+Pre-publication validation: **354/354 local unit/contract/scientific/integration tests**,
+zero failures/skips, TypeScript and production build passed. Six new installer cases exercise
+CLI boundaries, scoped firewall updates, IAP failure ordering, collision refusal, private
+durable runtime and Bash syntax. See [DEPLOY_GCP_VM](DEPLOY_GCP_VM.md).
+
+The owner requested closure and a handoff to a fresh conversation. Admission/invitation
+implementation has not started; it remains the next product stage after deployment validation.

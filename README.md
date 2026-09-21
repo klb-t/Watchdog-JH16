@@ -16,6 +16,9 @@ fixture source → observations → method (proposed → approved) → determini
 
 ## Quick start
 
+**Existing GCP virtual machine:** use the [Cloud Shell installer](docs/DEPLOY_GCP_VM.md).
+It configures a private IAP tunnel, dependencies, persistent storage and restart/update handling.
+
 ```bash
 npm install
 npm run demo:jh16     # the whole slice, offline, no credentials
