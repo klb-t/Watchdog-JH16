@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
+import sourceAccessProfile from '../../config/source-access.json';
 import { Activity, Database, PlayCircle, Settings, LayoutDashboard, FlaskConical, ClipboardCheck } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useAccess } from '../lib/access';
@@ -26,6 +27,7 @@ export function Layout() {
     { name: 'Study', href: '/study', icon: FlaskConical, capability: 'run.create' },
     { name: 'Method', href: '/method', icon: ClipboardCheck, capability: 'method.propose' },
     { name: 'Sources', href: '/sources', icon: Database, capability: 'run.view' },
+    { name: sourceAccessProfile.labels.nav, href: '/source-access', icon: Database, capability: 'provider.view' },
     { name: 'Runs', href: '/runs', icon: PlayCircle, capability: 'run.view' },
     { name: 'Analyzers', href: '/analyzers', icon: Activity, capability: 'run.view' },
     { name: 'Setup', href: '/setup', icon: Settings },

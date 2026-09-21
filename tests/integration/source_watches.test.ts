@@ -121,7 +121,7 @@ test('migration 018 creates no subscriptions or retroactive notifications for ex
   const h=harness(true);try{
     const a=await sourceSnapshot(h.db,h.repo,{fixture:1}),b=await sourceSnapshot(h.db,h.repo,{fixture:2});
     const before=h.repo.history.page(a.id,b.sequence,10);
-    assert.deepEqual(runMigrations(h.db).applied,['018_source_watches']);assert.deepEqual(runMigrations(h.db).applied,[]);
+    assert.deepEqual(runMigrations(h.db).applied,MIGRATIONS.filter(m=>m.id>='018').map(m=>m.id));assert.deepEqual(runMigrations(h.db).applied,[]);
     assert.deepEqual(h.repo.watches.list('local-user'),[]);assert.deepEqual(h.repo.history.page(a.id,b.sequence,10),before);
     assert.equal(watch(h,a).reviewedThrough,b.sequence);
     assert.throws(()=>h.repo.watches.subscribe('local-user',a.id,a.sequence,'0'.repeat(64),100),/context changed/);

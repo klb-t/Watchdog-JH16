@@ -1,0 +1,688 @@
+{
+  "version": "source-access-1",
+  "labels": {
+    "title": "Katalog danych i dostępu",
+    "nav": "Dostęp do danych",
+    "intro": "Źródła referencyjne, literatura, fora i kandydaci do integracji. Rozszerzalny katalog nie jest kompletnym spisem internetu.",
+    "scopeNote": "Statystyki pobrań dotyczą Twoich zadań publicznego kolektora. Nie obejmują SERP, ręcznych importów ani zadań innych osób. Udany HTTP nie potwierdza kompletności ani naukowego zatwierdzenia danych.",
+    "defaultNote": "Profil istniejący: dotychczasowy publiczny adapter działa na swoich zasadach. Brak prywatnej oceny dostępu nie oznacza potwierdzonej zgody dostawcy. Nowy wpis w katalogu nie uruchamia zbierania.",
+    "llmNote": "API, plik, RSS i HTML to kanały. LLM może pomagać rozpoznać strukturę i zaproponować parser; wartości kopiuje deterministyczny kod. Warsztat obsługuje testowane profile JSON/CSV. Uniwersalny parser HTML oraz konektory forów są do dodania.",
+    "total": "Źródła w katalogu",
+    "implemented": "Działające adaptery publiczne",
+    "candidates": "Bez adaptera publicznego",
+    "documentedApi": "API z odnotowaną dokumentacją techniczną",
+    "unreviewedTerms": "Bez odnotowanej weryfikacji warunków",
+    "withData": "Źródła z udanym pobraniem",
+    "drafts": "Zapisane szkice próśb",
+    "accessStats": "Twoje oceny dostępu",
+    "search": "Szukaj źródła",
+    "family": "Rodzina źródeł",
+    "channel": "Kanał do integracji",
+    "accessFilter": "Stan oceny",
+    "all": "Wszystkie",
+    "refresh": "Odśwież",
+    "export": "Pobierz przegląd JSON",
+    "empty": "Brak pasujących źródeł.",
+    "source": "Źródło",
+    "integration": "Integracja",
+    "access": "Ocena dostępu",
+    "activity": "Twoje pobrania",
+    "details": "Szczegóły",
+    "close": "Zamknij",
+    "requests": "Próby HTTP",
+    "successful": "Udane HTTP z zapisanymi bajtami",
+    "failed": "Błędy HTTP / transportu",
+    "lastAttempt": "Ostatnia próba",
+    "lastSuccess": "Ostatni sukces",
+    "noDate": "Brak odnotowanego pobrania",
+    "noError": "Brak odnotowanego błędu",
+    "evidence": "Dokumentacja i warunki",
+    "unchecked": "Aktualność niezweryfikowana",
+    "checked": "Sprawdzono",
+    "noEvidence": "Brak odnotowanej weryfikacji. Kanały są kandydatami, nie obietnicą dostępności.",
+    "technical": "Dokumentacja techniczna",
+    "terms": "Warunki użycia",
+    "decision": "Zapisz ocenę dostępu",
+    "status": "Nowy status",
+    "basis": "Uzasadnienie i zakres ograniczeń",
+    "reference": "Odsyłacz lub numer dokumentu / korespondencji",
+    "validUntil": "Ważna do (UTC, opcjonalnie)",
+    "decisionScope": "Zakres tej oceny",
+    "catalog_only": "Tylko ewidencja dostępu",
+    "public_adapter": "Cały zakres istniejącego adaptera publicznego",
+    "decisionNote": "Zapisujesz własną udokumentowaną ocenę, nie zgodę nadaną przez system. Dla działającego adaptera zapis wstrzymuje Twoje kolejne wywołania, chyba że status to Dozwolone i ocena obejmuje cały zakres adaptera. Węższe umowy wymagają osobnego profilu adaptera. Wygasła lub nieaktualna ocena wstrzymuje pobieranie. Już rozpoczęte wywołanie może się zakończyć.",
+    "save": "Zapisz ocenę",
+    "saved": "Ocena zapisana.",
+    "history": "Historia ocen i szkiców",
+    "draft": "Przygotuj prośbę o dostęp",
+    "draftNote": "Szkic w języku angielskim zawiera podane informacje i pytania o dozwolone wykorzystanie. Nie jest wysyłany; jego zapis nie zmienia statusu na Wysłano prośbę.",
+    "purpose": "Cel projektu",
+    "data": "Jakie dane i jaki zakres",
+    "operations": "Planowane przetwarzanie (w tym LLM, jeśli dotyczy)",
+    "retention": "Przechowywanie i usuwanie danych",
+    "applicant": "Nadawca / afiliacja podana przez Ciebie",
+    "commercial": "Charakter zastosowania",
+    "makeDraft": "Zapisz szkic",
+    "downloadDraft": "Pobierz tekst prośby",
+    "unsent": "Szkic niewysłany",
+    "addCandidate": "Dodaj własne źródło",
+    "label": "Nazwa źródła",
+    "homepage": "Oficjalna strona HTTPS",
+    "description": "Zakres i uwagi",
+    "add": "Dodaj kandydata",
+    "added": "Kandydat zapisany; integracja pozostaje nieaktywna.",
+    "customNote": "Wpis jest prywatny. Adres służy jako odsyłacz; system nie pobiera strony ani nie wykonuje kodu.",
+    "debug": "Tożsamość profili i diagnostyka",
+    "loading": "Wczytywanie katalogu…",
+    "automation": "Otwórz harmonogram",
+    "workshop": "Otwórz warsztat parserów",
+    "olderHistory": "Wyświetlono najnowsze wpisy; starsza historia pozostaje zapisana."
+  },
+  "families": {
+    "chemical": "Chemia",
+    "pharmacology": "Farmakologia",
+    "literature": "Literatura",
+    "community": "Fora i społeczności",
+    "drug_checking": "Badania próbek",
+    "institutional": "Instytucje",
+    "signals": "Sygnały zainteresowania",
+    "encyclopedia": "Encyklopedie"
+  },
+  "channels": {
+    "api": "API",
+    "rss": "RSS / Atom",
+    "download": "Pliki / eksport",
+    "html": "HTML + parser do dodania",
+    "manual": "Import za zgodą / ręczny"
+  },
+  "states": {
+    "unreviewed": "Do oceny",
+    "permission_needed": "Potrzebna zgoda / umowa",
+    "requested": "Wysłano prośbę — oczekiwanie",
+    "permitted": "Dozwolone — udokumentowana ocena",
+    "denied": "Odmowa / nie używać",
+    "expired": "Ocena wygasła",
+    "stale": "Profil zmienił się — ponowna ocena"
+  },
+  "acquisition": {
+    "profile_default": "Istniejący profil integracji",
+    "permitted": "Dozwolone w ocenionym zakresie",
+    "held": "Twoje pobieranie wstrzymane",
+    "not_implemented": "Adapter do dodania"
+  },
+  "commercial": {
+    "undecided": "Undecided / to be clarified",
+    "noncommercial": "Non-commercial",
+    "commercial": "Commercial"
+  },
+  "limits": {
+    "customSources": 200,
+    "history": 100
+  },
+  "sources": [
+    {
+      "id": "pubchem",
+      "label": "PubChem",
+      "family": "chemical",
+      "homepage": "https://pubchem.ncbi.nlm.nih.gov",
+      "channels": [
+        "api"
+      ],
+      "description": "Exact compound identity and reported structural properties. No automatic class-to-molecule equivalence.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "chembl",
+      "label": "ChEMBL",
+      "family": "pharmacology",
+      "homepage": "https://www.ebi.ac.uk",
+      "channels": [
+        "api"
+      ],
+      "description": "Ki, Kd, IC50 and EC50, with relations, units, assay descriptions and organism. Assay activity does not establish a clinical interaction.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://chembl.gitbook.io/chembl-interface-documentation/web-services/chembl-data-web-services",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wikidata",
+      "label": "Wikidata",
+      "family": "encyclopedia",
+      "homepage": "https://www.wikidata.org",
+      "channels": [
+        "api"
+      ],
+      "description": "Identity verified against the complete InChIKey. Language labels are not geographic observations.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://www.wikidata.org/wiki/Wikidata:Data_access",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "europe_pmc",
+      "label": "Europe PMC",
+      "family": "literature",
+      "homepage": "https://www.ebi.ac.uk",
+      "channels": [
+        "api"
+      ],
+      "description": "Bibliographic discovery and source-reported hit counts. These counts are not SERP Ni or harm measurements.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://europepmc.org/RestfulWebService",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "arxiv",
+      "label": "arXiv",
+      "family": "literature",
+      "homepage": "https://export.arxiv.org",
+      "channels": [
+        "api"
+      ],
+      "description": "Daily metadata discovery. A preprint or keyword match is not evidence that its claims are reproducible.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://info.arxiv.org/help/api/user-manual.html",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bindingdb",
+      "label": "BindingDB",
+      "family": "pharmacology",
+      "homepage": "https://www.bindingdb.org",
+      "channels": [
+        "api"
+      ],
+      "description": "Additional affinity measurements; adapter pending.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://www.bindingdb.org",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "iuphar",
+      "label": "IUPHAR / Guide to Pharmacology",
+      "family": "pharmacology",
+      "homepage": "https://www.guidetopharmacology.org/webServices.jsp",
+      "channels": [
+        "api"
+      ],
+      "description": "Curated receptor pharmacology; adapter pending.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://www.guidetopharmacology.org/webServices.jsp",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "drugbank",
+      "label": "DrugBank",
+      "family": "chemical",
+      "homepage": "https://go.drugbank.com",
+      "channels": [
+        "api"
+      ],
+      "description": "No automatic collection until an applicable access profile is configured.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://go.drugbank.com",
+          "checkedOn": null,
+          "note": "Dokumentacja z istniejącego profilu integracji; aktualność warunków wymaga osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "reddit",
+      "label": "Reddit",
+      "family": "community",
+      "homepage": "https://www.reddit.com",
+      "channels": [
+        "api"
+      ],
+      "description": "Posty i dyskusje; potrzebne określenie zakresu, retencji i zasad przetwarzania treści użytkowników.",
+      "evidence": [
+        {
+          "kind": "terms",
+          "url": "https://redditinc.com/policies/data-api-terms",
+          "checkedOn": "2026-09-20",
+          "note": "Warunki przewidują osobną umowę m.in. dla zastosowań komercyjnych, badań ponad limity i użyć niewymienionych jako dozwolone. Treści użytkowników mają odrębne prawa; zakres i retencję trzeba ocenić dla projektu.",
+          "channels": []
+        }
+      ]
+    },
+    {
+      "id": "erowid",
+      "label": "Erowid",
+      "family": "community",
+      "homepage": "https://www.erowid.org",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Relacje i materiały referencyjne. Kanały są kandydatami do oceny; brak działającego konektora.",
+      "evidence": []
+    },
+    {
+      "id": "bluelight",
+      "label": "Bluelight",
+      "family": "community",
+      "homepage": "https://bluelight.org",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Dyskusje i relacje. Brak zweryfikowanego publicznego API oraz ustalonego dostępu projektu.",
+      "evidence": []
+    },
+    {
+      "id": "drugs_forum",
+      "label": "Drugs-Forum",
+      "family": "community",
+      "homepage": "https://drugs-forum.com",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: dyskusje o substancjach. Zweryfikuj warunki zbierania i ponownego wykorzystania.",
+      "evidence": []
+    },
+    {
+      "id": "dmt_nexus",
+      "label": "DMT-Nexus",
+      "family": "community",
+      "homepage": "https://www.dmt-nexus.me",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: relacje i dyskusje. Wygląd strony nie przesądza o zgodzie na zbieranie.",
+      "evidence": []
+    },
+    {
+      "id": "shroomery",
+      "label": "Shroomery",
+      "family": "community",
+      "homepage": "https://www.shroomery.org",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: relacje i dyskusje. Przed integracją wymagane sprawdzenie warunków i zakresu.",
+      "evidence": []
+    },
+    {
+      "id": "hyperreal",
+      "label": "Hyperreal",
+      "family": "community",
+      "homepage": "https://hyperreal.info",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: polskojęzyczne dyskusje i relacje; język tekstu nie określa geografii obserwacji.",
+      "evidence": []
+    },
+    {
+      "id": "mastodon",
+      "label": "Mastodon · wybrana instancja",
+      "family": "community",
+      "homepage": "https://joinmastodon.org",
+      "channels": [
+        "api"
+      ],
+      "description": "Profil rodziny instancji. Konkretna instancja i jej zasady muszą mieć osobny profil przed integracją.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://docs.joinmastodon.org/methods/timelines/",
+          "checkedOn": "2026-09-20",
+          "note": "Dokumentacja opisuje API osi czasu; dostęp bez autoryzacji może być wyłączony przez instancję. To nie ocena licencji wpisów.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "bluesky",
+      "label": "Bluesky",
+      "family": "community",
+      "homepage": "https://bsky.app",
+      "channels": [
+        "api"
+      ],
+      "description": "Kandydat: publiczne dyskusje. API, warunki i zgodność zakresu wymagają osobnej weryfikacji.",
+      "evidence": []
+    },
+    {
+      "id": "stackexchange",
+      "label": "Stack Exchange",
+      "family": "community",
+      "homepage": "https://stackexchange.com",
+      "channels": [
+        "api"
+      ],
+      "description": "Kandydat: pytania i odpowiedzi. Wybór społeczności i zakresu treści wymaga jawnego profilu.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://api.stackexchange.com/docs",
+          "checkedOn": "2026-09-20",
+          "note": "Istnieje API z limitami i buforowaniem; dokumentacja odradza częste odpytywanie tych samych danych. Prawa treści wymagają osobnej oceny.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "psychonautwiki",
+      "label": "PsychonautWiki",
+      "family": "encyclopedia",
+      "homepage": "https://psychonautwiki.org",
+      "channels": [
+        "api",
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: encyklopedia. Cytowania i jakość poszczególnych twierdzeń ocenia się osobno.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://api.psychonautwiki.org/",
+          "checkedOn": null,
+          "note": "Strona otwiera GraphQL Playground, ale jej treść nie pozwoliła zweryfikować kontraktu API ani praw do danych. Do dalszej weryfikacji.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tripsit",
+      "label": "TripSit",
+      "family": "encyclopedia",
+      "homepage": "https://tripsit.me",
+      "channels": [
+        "download",
+        "api",
+        "manual"
+      ],
+      "description": "Kandydat: dane referencyjne. Nie stanowi automatycznie zatwierdzonej bazy klinicznej.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://github.com/TripSit/drugs",
+          "checkedOn": "2026-09-20",
+          "note": "Oficjalne repozytorium zawiera drugs.json i combos.json. Nie zweryfikowano tutaj pełnego zakresu praw ponownego użycia. Import wymaga przetestowanego profilu i osobnej oceny twierdzeń.",
+          "channels": [
+            "download"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "wikipedia",
+      "label": "Wikipedia",
+      "family": "encyclopedia",
+      "homepage": "https://www.wikipedia.org",
+      "channels": [
+        "api",
+        "download"
+      ],
+      "description": "Kandydat: treść artykułów; istniejąca integracja Wikidata zapisuje nazwy i odsyłacze, nie pełne artykuły.",
+      "evidence": []
+    },
+    {
+      "id": "crossref",
+      "label": "Crossref",
+      "family": "literature",
+      "homepage": "https://www.crossref.org",
+      "channels": [
+        "api"
+      ],
+      "description": "Metadane DOI i publikacji. Dostęp do metadanych nie obejmuje automatycznie pełnego tekstu.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://www.crossref.org/documentation/retrieve-metadata/rest-api/",
+          "checkedOn": "2026-09-20",
+          "note": "REST API udostępnia bibliograficzne metadane w JSON. Nie oznacza to dostępu do pełnych tekstów.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "openalex",
+      "label": "OpenAlex",
+      "family": "literature",
+      "homepage": "https://openalex.org",
+      "channels": [
+        "api",
+        "download"
+      ],
+      "description": "Indeks literatury. Aktualne zasady dostępu, limity i ewentualne ceny trzeba sprawdzić przed integracją.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://help.openalex.org/",
+          "checkedOn": "2026-09-20",
+          "note": "Oficjalna dokumentacja odsyła do REST API oraz osobnych zasad dostępu i cen. Tutaj nie zweryfikowano limitów ani kosztów.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pubmed",
+      "label": "PubMed / NCBI Entrez",
+      "family": "literature",
+      "homepage": "https://pubmed.ncbi.nlm.nih.gov",
+      "channels": [
+        "api"
+      ],
+      "description": "Kandydat: indeks literatury przez E-utilities. Pełny tekst ma odrębne prawa.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://www.ncbi.nlm.nih.gov/books/NBK25501/",
+          "checkedOn": "2026-09-20",
+          "note": "Oficjalna dokumentacja E-utilities; szczegółowy profil wywołań i limity pozostają do wdrożenia.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "semantic_scholar",
+      "label": "Semantic Scholar",
+      "family": "literature",
+      "homepage": "https://www.semanticscholar.org",
+      "channels": [
+        "api"
+      ],
+      "description": "Kandydat: metadane i powiązania publikacji. Brak wdrożonego adaptera.",
+      "evidence": []
+    },
+    {
+      "id": "clinicaltrials",
+      "label": "ClinicalTrials.gov",
+      "family": "literature",
+      "homepage": "https://clinicaltrials.gov",
+      "channels": [
+        "api",
+        "download"
+      ],
+      "description": "Kandydat: rejestr badań. Rejestracja badania nie potwierdza skuteczności ani replikowalności.",
+      "evidence": []
+    },
+    {
+      "id": "zenodo",
+      "label": "Zenodo",
+      "family": "literature",
+      "homepage": "https://zenodo.org",
+      "channels": [
+        "api",
+        "download"
+      ],
+      "description": "Kandydat: zbiory danych i materiały; należy zachować licencję konkretnego rekordu.",
+      "evidence": []
+    },
+    {
+      "id": "drugsdata",
+      "label": "DrugsData",
+      "family": "drug_checking",
+      "homepage": "https://www.drugsdata.org",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: wyniki badania próbek. Bez automatycznego utożsamiania wyglądu i składu.",
+      "evidence": []
+    },
+    {
+      "id": "wedinos",
+      "label": "WEDINOS",
+      "family": "drug_checking",
+      "homepage": "https://www.wedinos.org",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: wyniki próbek. Warunki dostępu oraz reprezentatywność regionalna wymagają oceny.",
+      "evidence": []
+    },
+    {
+      "id": "energy_control",
+      "label": "Energy Control",
+      "family": "drug_checking",
+      "homepage": "https://energycontrol.org",
+      "channels": [
+        "html",
+        "manual"
+      ],
+      "description": "Kandydat: analizy i komunikaty o próbkach. Potrzebny profil udostępnianych danych.",
+      "evidence": []
+    },
+    {
+      "id": "euda",
+      "label": "EUDA",
+      "family": "institutional",
+      "homepage": "https://www.euda.europa.eu",
+      "channels": [
+        "download",
+        "manual"
+      ],
+      "description": "Kandydat: raporty, dane regionalne i monitoring. Utrzymuj rozdział miar i ich metodologii.",
+      "evidence": []
+    },
+    {
+      "id": "unodc",
+      "label": "UNODC",
+      "family": "institutional",
+      "homepage": "https://www.unodc.org",
+      "channels": [
+        "download",
+        "manual"
+      ],
+      "description": "Kandydat: statystyki i raporty. Zmienna, obszar i okres muszą wynikać z danych źródłowych.",
+      "evidence": []
+    },
+    {
+      "id": "who",
+      "label": "WHO",
+      "family": "institutional",
+      "homepage": "https://www.who.int",
+      "channels": [
+        "download",
+        "manual"
+      ],
+      "description": "Kandydat: publikacje i statystyki. Sprawdź prawa i zakres dla konkretnego zbioru.",
+      "evidence": []
+    },
+    {
+      "id": "google_trends",
+      "label": "Google Trends",
+      "family": "signals",
+      "homepage": "https://trends.google.com",
+      "channels": [
+        "api",
+        "download"
+      ],
+      "description": "Zainteresowanie wyszukiwaniem w czasie i geografii. Nie jest liczbą wyników, sprzedażą ani dowodem szlaku dystrybucji.",
+      "evidence": [
+        {
+          "kind": "technical",
+          "url": "https://developers.google.com/search/apis/trends",
+          "checkedOn": "2026-09-20",
+          "note": "Dokumentacja opisuje API alpha z naborem na ograniczony dostęp. Integracja i dostęp projektu nie są jeszcze dostępne.",
+          "channels": [
+            "api"
+          ]
+        }
+      ]
+    }
+  ],
+  "requestTemplate": "Subject: Request to clarify data access for {source}\n\nHello,\n\nI am contacting you regarding {homepage}.\nApplicant / affiliation as supplied: {applicant}\n\nProject purpose:\n{purpose}\n\nRequested data and scope:\n{data}\n\nProposed processing, including any model use:\n{operations}\n\nRetention and deletion plan:\n{retention}\n\nIntended use: {commercial}\n\nCould you confirm which API, export or other access route is permitted for this scope; applicable limits, costs and attribution; rights to retain or publish source material and derived results; and whether a separate agreement is required? Please specify any exclusions, expiry date, deletion duties and restrictions on model processing.\n\nNo permission is assumed by this request.\n\nThank you,\n{applicant}\n"
+}

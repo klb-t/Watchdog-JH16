@@ -7,6 +7,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { Sources } from './pages/Sources';
+import {SourceAccess} from './pages/SourceAccess';
 import { Runs } from './pages/Runs';
 import { RunDetails } from './pages/RunDetails';
 import { Analyzers } from './pages/Analyzers';
@@ -29,6 +30,7 @@ export default function App() {
       <Route path="/" element={<Layout />}>
         <Route index element={<Dashboard />} />
         <Route path="sources" element={<AccessBoundary capability="run.view"><Sources /></AccessBoundary>} />
+        <Route path="source-access" element={<AccessBoundary capability="provider.view"><SourceAccess /></AccessBoundary>} />
         <Route path="runs" element={<AccessBoundary capability="run.view"><Runs /></AccessBoundary>} />
         <Route path="runs/:id" element={<AccessBoundary capability="run.view"><RunDetails /></AccessBoundary>} />
         <Route path="analyzers" element={<AccessBoundary capability="run.view"><Analyzers /></AccessBoundary>} />

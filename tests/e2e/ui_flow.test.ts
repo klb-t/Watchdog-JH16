@@ -231,6 +231,46 @@ test('E3.11: watched changes preserve unread arrivals, compare and export exact 
   }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
 });
 
+test('E3.12: source catalog filters forums, persists access history and exports unsent requests without enabling adapters',async()=>{
+  const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  try{
+    await page.goto(`${baseUrl}/source-access`);await page.locator('[data-testid="source-access-page"]').waitFor();
+    assert.equal(await page.locator('[data-testid="source-stat-total"]').textContent(),'34');
+    assert.equal(await page.locator('[data-testid="source-stat-implemented"]').textContent(),'5');
+    await page.getByLabel('Rodzina źródeł',{exact:true}).first().selectOption('community');
+    assert.equal(await page.locator('[data-testid^="source-card-"]').count(),10);
+    await page.getByRole('button',{name:'Reddit',exact:true}).click();
+    await page.getByLabel('Nowy status',{exact:true}).selectOption('permission_needed');
+    await page.getByLabel('Uzasadnienie i zakres ograniczeń',{exact:true}).fill('FICTIONAL test: obtain a scoped agreement before use.');
+    await page.getByLabel('Odsyłacz lub numer dokumentu / korespondencji',{exact:true}).fill('fictional-review-only');
+    await page.getByRole('button',{name:'Zapisz ocenę',exact:true}).click();await page.getByRole('status').filter({hasText:'Ocena zapisana.'}).waitFor();
+    await page.getByLabel('Cel projektu',{exact:true}).fill('FICTIONAL research request for testing.');
+    await page.getByLabel('Jakie dane i jaki zakres',{exact:true}).fill('Only an agreed fictional export');
+    await page.getByLabel('Planowane przetwarzanie (w tym LLM, jeśli dotyczy)',{exact:true}).fill('Deterministic copying; no model processing requested');
+    await page.getByLabel('Przechowywanie i usuwanie danych',{exact:true}).fill('Thirty days subject to agreement');
+    await page.getByLabel('Nadawca / afiliacja podana przez Ciebie',{exact:true}).fill('FICTIONAL APPLICANT');
+    await page.getByRole('button',{name:'Zapisz szkic',exact:true}).click();
+    const button=page.getByRole('button',{name:'Pobierz tekst prośby',exact:true}).first();await button.waitFor();
+    fs.mkdirSync('test-artifacts',{recursive:true});const downloading=page.waitForEvent('download');await button.click();await (await downloading).saveAs('test-artifacts/source-access-request.txt');
+    const text=fs.readFileSync('test-artifacts/source-access-request.txt','utf8');assert.match(text,/FICTIONAL APPLICANT/);assert.match(text,/Undecided/);
+    await page.setViewportSize({width:390,height:844});const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/source-access-mobile.png',fullPage:false});
+    await page.reload();await page.getByRole('button',{name:'Reddit',exact:true}).click();await page.locator('[data-testid="source-detail"]').waitFor();
+    assert.equal(await page.getByLabel('Nowy status',{exact:true}).inputValue(),'permission_needed');
+    const overview=await (await fetch(`${baseUrl}/api/source-access`)).json(),reddit=overview.rows.find((r:any)=>r.source.entry.id==='reddit');
+    assert.equal(reddit.acquisition,'not_implemented');assert.equal(reddit.draftCount,1);assert.equal(overview.stats.access.requested,0);
+    await page.getByRole('button',{name:'Zamknij',exact:true}).click();
+    await page.locator('summary').filter({hasText:'Dodaj własne źródło'}).click();
+    await page.getByLabel('Nazwa źródła',{exact:true}).fill('FICTIONAL new forum');await page.getByLabel('Oficjalna strona HTTPS',{exact:true}).fill('https://fictional.example/forum');await page.getByLabel('Zakres i uwagi',{exact:true}).fill('FICTIONAL source with no live collection.');
+    await page.getByRole('button',{name:'Dodaj kandydata',exact:true}).click();await page.getByRole('status').filter({hasText:'Kandydat zapisany'}).waitFor();
+    assert.equal(await page.locator('[data-testid="source-stat-total"]').textContent(),'35');assert.equal(await page.locator('[data-testid="source-stat-implemented"]').textContent(),'5');
+    const exporting=page.waitForEvent('download');await page.getByRole('button',{name:'Pobierz przegląd JSON',exact:true}).click();await (await exporting).saveAs('test-artifacts/source-access-overview.json');
+    const saved=JSON.parse(fs.readFileSync('test-artifacts/source-access-overview.json','utf8'));assert.equal(saved.stats.total,35);assert.equal(saved.stats.implemented,5);assert.equal(saved.stats.drafts,1);
+    await page.setViewportSize({width:1280,height:900});await page.screenshot({path:'test-artifacts/source-access-desktop.png',fullPage:false});assert.deepEqual(errors,[]);
+  }catch(error){fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-access-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));await page.screenshot({path:'test-artifacts/source-access-failure.png',fullPage:false});throw error;
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
+
 test('E1.21: the Study page drives a full fixture run from the UI', async () => {
   await page.goto(`${baseUrl}/study`);
   await page.waitForSelector('[data-testid="study-page"]');

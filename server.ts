@@ -24,6 +24,9 @@ import { FieldService } from './backend/watchdog_api/field/service';
 import { loadFieldProfile } from './backend/watchdog_api/config/field';
 import { buildFieldRouter } from './backend/watchdog_api/api/field_routes';
 import { AutomationRepository } from './backend/watchdog_api/db/repositories/automation';
+import {loadSourceAccessProfile} from './backend/watchdog_api/config/source_access';
+import {SourceAccessService} from './backend/watchdog_api/services/source_access';
+import {buildSourceAccessRouter} from './backend/watchdog_api/api/source_access_routes';
 import { AutomationService } from './backend/watchdog_api/services/automation';
 import { loadAutomationProfile } from './backend/watchdog_api/config/automation';
 import { buildAutomationRouter, buildMemoryRouter } from './backend/watchdog_api/api/automation_routes';
@@ -104,6 +107,7 @@ export async function configureApp() {
   app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans));
   app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
   app.use('/api/memory', buildMemoryRouter(automationRepository));
+  app.use('/api/source-access',buildSourceAccessRouter(new SourceAccessService(automationRepository.access,loadSourceAccessProfile(),automation.profile)));
   app.use('/api/diagnostics', buildDiagnosticRouter(new AuditRepository(sqlite)));
   app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite), assistant));
   app.use(errorHandler);

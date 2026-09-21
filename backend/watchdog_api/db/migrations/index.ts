@@ -17,6 +17,7 @@ import { MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES } from './014_extraction_map
 import { MIGRATION_016_REFERENCE_OBSERVATIONS } from './016_reference_observations';
 import { MIGRATION_017_COLLECTION_CONTEXT } from './017_collection_context';
 import { MIGRATION_018_SOURCE_WATCHES } from './018_source_watches';
+import { MIGRATION_019_SOURCE_ACCESS } from './019_source_access';
 
 export interface Migration {
   readonly id: string;
@@ -46,7 +47,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '015_paper_operations', sql: MIGRATION_015_PAPER_OPERATIONS },
   { id: '016_reference_observations', sql: MIGRATION_016_REFERENCE_OBSERVATIONS },
   { id: '017_collection_context', sql: MIGRATION_017_COLLECTION_CONTEXT },
-  { id: '018_source_watches', sql: MIGRATION_018_SOURCE_WATCHES }
+  { id: '018_source_watches', sql: MIGRATION_018_SOURCE_WATCHES },
+  { id: '019_source_access', sql: MIGRATION_019_SOURCE_ACCESS }
 ];
 
 const MIGRATIONS_TABLE = `

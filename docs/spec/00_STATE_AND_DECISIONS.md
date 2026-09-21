@@ -1,6 +1,6 @@
 # State and binding decisions
 
-Last updated: 2026-09-13, Astra continuation. Update this file whenever a
+Last updated: 2026-09-21, Astra continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
@@ -628,3 +628,18 @@ separately. The history timeline retains its existing retrieval-date order. Read
 never grant scientific approval, swallow later arrivals or cross context/owner boundaries.
 The UI reuses the source comparison/export surface. No extra collector, model, external
 message or clinical-alert interpretation is introduced. See SOURCE_WATCHES.md.
+
+### E3.12 checkpoint — operational source access (2026-09-21)
+
+A separate catalog preserves D5's scientific source registry. Named source candidates,
+technical channels, terms evidence, own access assessments and actual HTTP activity stay
+independent. No catalog entry or request draft grants access or supplies missing code.
+Public acquisition honors current owner assessments before requests, including after pacing;
+upgrade preserves the existing public defaults without relabeling them as documented grants.
+See SOURCE_ACCESS.md and ASTRA_PROGRESS.md. E3.11 head `c9afd37` passed 357/357 CI tests.
+
+The two new conversations and installation-admission clarification are reconciled in
+CONVERSATION_DELTA_2026-09-20.md. One engine and data-driven institution profiles remain
+binding. Global appearance context, longitudinal case constraints and investigation
+suggestions are planned; clinical model examples are not approved evidence. The owner
+still requires discussion before changing prior decisions or implementation direction.

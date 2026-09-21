@@ -38,3 +38,11 @@ comparator still apply. A mode switch must not grant permissions. Language is no
 
 These are implementation requirements, not a claim that arbitrary scientific work or
 every possible external API is already supported. Completion is recorded in ASTRA_PROGRESS.
+
+## 2026-09-20/21 intake
+
+[CONVERSATION_DELTA_2026-09-20](CONVERSATION_DELTA_2026-09-20.md) records the two newly
+supplied conversations, separates owner requirements from unverified model examples,
+and maps every Watchdog addition to current code and an acceptance boundary. E3.12
+implements source/access inventory now. E4.5 admission/invitations and E6.3–E6.5
+global-context and case-reasoning work remain explicitly open in the task ledger.

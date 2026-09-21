@@ -565,3 +565,44 @@ checked on the published head. No live public collection or paid provider calls 
 See [SOURCE_WATCHES](SOURCE_WATCHES.md) for exact use and limits. Watches surface new saved
 reference records when the panel is opened/refreshed. External notifications, clinical/batch
 alerts, source-health alerting and watches over receptor assertions/paper revisions remain open.
+
+Published E3.11 head `c9afd37367898e1580150aadce975613d8fe88f2` passed Actions
+`35502214575`: **357/357 tests**, zero failures/skips, Chromium, build and JH16 demo.
+The job produced artifact `10602761987`; no independent artifact download or manual image
+inspection is claimed.
+
+## 2026-09-21 — E3.12 source catalog and access assessments
+
+The existing source registry measures scientific constructs; it was not an operational
+inventory of named services and permissions. A separate `/source-access` surface now seeds
+34 entries (ten community services), derives five implemented public adapters from runtime
+configuration, records independently verified documentation/terms notes, and displays owner
+HTTP activity, private access assessments and unsent request drafts. Custom candidate
+metadata never creates an adapter or network call.
+
+Migration 019 adds immutable source/adapter snapshots, assessment history and drafts.
+Source hashes, optimistic revision checks, expiry and same-origin/capability gates are
+enforced on the backend. Existing public defaults survive upgrade with an explicit label;
+a recorded restrictive, expired or stale assessment blocks the owner's public requests,
+including scheduled jobs, before transport and again after pacing. Narrow agreements do
+not grant use of an unrestricted adapter. The UI includes filters, counts, history, JSON
+export and profile diagnostics. No model transcribes source values and no message is sent.
+
+Eight new integration cases pass, including actual public acquisition over fictional
+transport, schedule holds, owner isolation, source changes, expiry, stale tabs, request
+drafts, migration/restart/ownership transfer and HTTP gates. A Chromium acceptance flow
+covers filters, access history, drafts/downloads, mobile layout and private candidate
+creation; the exact published-head CI is the remaining browser gate.
+
+The two new MHT conversations were read and reconciled in
+[CONVERSATION_DELTA_2026-09-20](CONVERSATION_DELTA_2026-09-20.md). Compatible source details
+are included now; global appearance matching, case modeling, reviewed PK/PD constraints,
+comorbidity and measurement suggestions remain explicit future work. The actual regional
+lookup difference and unverified model claims are identified rather than silently changing
+scientific or clinical behavior. The subsequent admission/invitation requirement is also
+recorded with verified current gaps. See [SOURCE_ACCESS](SOURCE_ACCESS.md) for operation
+and scope.
+
+Final E3.12 pre-push validation: **347/347 local unit/contract/scientific/integration
+tests passed**, zero failures/skips; TypeScript and production build passed. The current
+19-browser-test suite will run on the published head in GitHub Actions.

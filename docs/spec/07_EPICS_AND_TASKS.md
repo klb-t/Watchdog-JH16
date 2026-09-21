@@ -40,8 +40,13 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   private monotonic reading cursors with stale-write protection. New arrivals survive
   reading a displayed batch; pause/resume preserves backlog. History and inbox reuse the
   same comparison/export component. Seven new integration cases pass; full local regression
-  is 339/339. Chromium flow added for the published CI run. See SOURCE_WATCHES.md;
+  is 339/339. Published head `c9afd37` passed 357/357 CI tests. See SOURCE_WATCHES.md;
   clinical/batch alerts and external notifications remain open.
+- [x] **E3.12 — Source access catalog and private assessments.** Separate operational
+  inventory, 34 source entries, derived integration status, owner HTTP activity, scoped
+  terms/documentation evidence, immutable assessments and unsent request drafts. Explicit
+  holds/expiry/stale profiles stop public collection before transport, including schedules.
+  Eight integration cases pass; Chromium coverage added. See SOURCE_ACCESS.md.
 - [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.
@@ -405,6 +410,12 @@ condition; PostgreSQL and S3 migration; a real worker process.
 
 ## E4 — Identity
 
+- [ ] **E4.5 — Closed installation admission and invitations.** Sign-in-only anonymous
+  UI; verified unknown email can submit a reason and inspect application status only.
+  Administrator-assigned email-bound role invitations, expiry/revocation and audit, with
+  live server-side enforcement. Preserve local development and operator bootstrap grants.
+  Requested 2026-09-21; see CONVERSATION_DELTA_2026-09-20.md for current gaps.
+
 - [x] **E4.2 — Peer capability profiles.** One shared resolver, `/auth/me` union, UI navigation
   and route gates, additive role migration, full principal role sets. Matrix + real HTTP tests
   verify researcher/responder separation, combined profiles, restricted institutional access,
@@ -475,6 +486,19 @@ dataset, not only the drug vertical, and nothing in this list may be implemented
 a drug-specific concept into the generic method registry.
 
 ## E6 — Field and clinical interfaces
+
+- [ ] **E6.3 — Global appearance context without geographic identity inference.**
+  Preserve local sample denominators; distinguish global appearance matches with source
+  geography/time. Current region/ancestor filtering differs; discuss default behavior
+  before changing the established responder/offline semantics.
+- [ ] **E6.4 — Case hypotheses and reviewed constraints.** Fictional non-identifying
+  case schema; temporal observations, known/possible exposures, PK/PD, mixtures,
+  comorbidity and non-toxicological alternatives; required-input checks and exact traces.
+  No invented probability or missing-edge exclusion.
+- [ ] **E6.5 — Profile-bound measurement suggestions.** Reviewed dependencies and an
+  institution's available-test dictionary; explicit gaps, information assumptions and
+  reasons. Device adapters and validated quantitative PK are later sub-slices.
+  Acceptance detail: CONVERSATION_DELTA_2026-09-20.md.
 
 - [x] **E6.1 — Reviewed responder references.** Versioned sample/alert/assertion import into
   the existing graph, individual approval/revocation, regional pill/market/symptom lookup,
