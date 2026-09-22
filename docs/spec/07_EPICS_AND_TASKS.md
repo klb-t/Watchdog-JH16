@@ -574,6 +574,20 @@ just because the schema for all three already exists.
 
 ## Blocked
 
+### E3.13 publication and CI — checked again 2026-09-22
+
+The owner requested publication from `HANDOFF_2026-09-22.md`. The recovery checksums,
+bundle ancestry and clean local `c473993` checkout were verified. GitHub PR #1 and its
+branch still point at `1e583c1`; Actions `35614465513` failed, and the new container job
+has not run. The GitHub connector returns HTTP 400 `Invalid MCP request metadata`.
+Direct Git lacks credentials. Local typecheck/build and 356 tests pass; 17 browser
+tests cannot launch without Chromium, whose download failed. No Docker is installed.
+
+**Unblock:** restore an authenticated publication channel for the existing repository
+and branch, then push without force and verify both `verify` and `container` on the
+published head. A browser fallback requires user approval under `control-browser`.
+Do not merge PR #1 or change its base. E4.5 has not started.
+
 ### Continuation checkpoint (2026-09-08)
 
 - [x] **E0.6 — Portable clean install and test entrypoints.** Repair missing optional-platform

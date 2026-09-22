@@ -636,3 +636,47 @@ durable runtime and Bash syntax. See [DEPLOY_GCP_VM](DEPLOY_GCP_VM.md).
 
 The owner requested closure and a handoff to a fresh conversation. Admission/invitation
 implementation has not started; it remains the next product stage after deployment validation.
+
+## 2026-09-22 — publication blocked; continuation checkpoint
+
+The local E3.13 code commit is `983ee65fd7c435b59e7a250d95c6cf84ca650095`, with tree
+`01efdd90892e704d7b9972047f324d3dc3f6f1c3`. The GitHub API created the equivalent commit
+`3868f1f1f7727bf4249a1fb812dbfddca0dd33b2`, but subsequent connector requests failed with
+HTTP 400 `Invalid MCP request metadata` before the branch ref was updated. Direct `git push`
+also failed because no CLI credentials are installed. `git ls-remote` still reports `1e583c1`.
+The installer is therefore **not yet on the branch and its CI has not run**. No container
+or GCP deployment success is claimed. This is an infrastructure blocker, not an approval denial.
+
+[HANDOFF_2026-09-22](HANDOFF_2026-09-22.md) preserves decisions, exact implementation limits,
+deployment instructions, the two archive deltas and the next E4.5 slice. An incremental Git
+bundle preserves the unpublished commits for recovery on top of the published E3.12 head.
+The next session should restore publication, verify the real-container and browser CI,
+then close E3.13 before beginning E4.5. No unrelated product stage was started.
+
+## 2026-09-22 — resumed publication checks; authentication still blocked
+
+The supplied ZIP checksums and incremental bundle verified against the existing clean
+checkout at `c47399378817bca7685978b0ee4d74e66b91d23c`. Public GitHub API reads confirm
+that PR #1 is still draft, its base is unchanged, and its head remains `1e583c1`.
+Actions `35614465513` is failed at `npm run test:all`; no E3.13/container run exists.
+
+The GitHub connector still rejects requests with HTTP 400 `Invalid MCP request metadata`.
+The initial direct push was rejected by automatic approval review over destination and
+disclosure authorization. The attached `RECOVER.md` explicitly names the repository,
+branch and push. After verifying that destination through GitHub, inspecting all 20
+changed source/test/documentation files and checking added lines for credential patterns,
+the exact-commit push was permitted but failed for lack of GitHub authentication.
+No force push, PR merge, base change or remote write succeeded.
+
+On the unchanged application tree, `npm run test:all` passes TypeScript and the production
+build, then reports **356 passing / 17 failing / 0 skipped** out of 373 tests. All 17
+failures report the missing Chromium executable; this is not a green full-suite result.
+The 356 include two non-browser E2E cases in addition to the 354 unit/contract/scientific/
+integration cases reported previously. A normal Playwright Chromium install failed after
+download timeouts and an invalid downloaded archive. Docker remains unavailable.
+`npm run demo:jh16` passes its fixture self-check with 32 observations and the two
+pre-registered verdicts; it makes no claim of independent replication.
+
+The remaining route is restored connector/CLI authentication, or a user-approved browser
+fallback as required by `control-browser`. E3.13 remains open, and E4.5 has not started.
+Only this validation/blocker documentation changed in the resumption.

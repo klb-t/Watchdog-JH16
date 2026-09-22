@@ -5,6 +5,7 @@ scientific benchmark is a replication of Jankowski & Hoffmann 2016
 ([JMIR 18(2):e38](https://doi.org/10.2196/jmir.4033)).
 
 **Status: active continuation on `astra/watchdog-continuation-20260908`, draft PR #1.**
+Continuation context and pending publication checks: [September 22 handoff](docs/HANDOFF_2026-09-22.md).
 Implemented workflows include the JH16 fixture benchmark, responder reference lookup,
 scientific figures and maps, durable public acquisition, substance memory, personal provider
 profiles and the paper/extraction workshop. The benchmark runs end to end offline:

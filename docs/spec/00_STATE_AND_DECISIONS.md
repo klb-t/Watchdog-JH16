@@ -1,11 +1,20 @@
 # State and binding decisions
 
-Last updated: 2026-09-21, Astra continuation. Update this file whenever a
+Last updated: 2026-09-22, Astra continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**2026-09-22 publication retry:** the supplied recovery archive and local unpublished
+commits were verified. GitHub still reports branch/PR head `1e583c1`; PR #1 remains a
+draft against `claude/ai-studio-last-commit-gjqxy4`. The connector still fails with
+`Invalid MCP request metadata`, and direct Git has no authentication. The local
+`c473993` baseline passes typecheck/build and 356 tests, with 17 browser cases failing
+to launch because Chromium is absent; its download also failed. The JH16 fixture demo
+passes. Docker is absent, so E3.13 remains open pending publication and both CI jobs.
+See the latest progress and blocked-ledger entries before retrying.
 
 **2026-09-21 deployment checkpoint:** the owner is preparing a Compute Engine VM and
 requested a ready installer. `docs/DEPLOY_GCP_VM.md` documents the implemented private
