@@ -1,6 +1,0 @@
-{
-  "name": "WatchDog",
-  "description": "Scientific computing pipeline and public health surveillance system.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
