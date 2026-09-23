@@ -64,8 +64,10 @@ docker_major=$(docker version --format '{{.Server.Version}}' | cut -d. -f1)
 
 # IAP SSH first, then deny other SSH clients; keep existing rules rather than reset
 # another firewall. Docker bypasses UFW, so the container MUST also bind loopback.
-ufw insert 1 allow from 35.235.240.0/20 to any port 22 proto tcp comment 'Watchdog IAP SSH'
-ufw insert 2 deny 22/tcp comment 'Watchdog SSH only through IAP'
+# Append the allow first, then the deny. Unlike "ufw insert 1", this also works
+# on a pristine UFW ruleset; UFW de-duplicates identical rules on reruns.
+ufw allow from 35.235.240.0/20 to any port 22 proto tcp comment 'Watchdog IAP SSH'
+ufw deny 22/tcp comment 'Watchdog SSH only through IAP'
 ufw default deny incoming
 ufw default allow outgoing
 ufw --force enable
