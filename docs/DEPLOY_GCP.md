@@ -143,7 +143,9 @@ npm run demo:jh16     # locally, no credentials, no network
 |---|:--:|:--:|:--:|:--:|
 | View runs, download exports | ● | ● | ● | ● |
 | Start runs, approve methods and narratives | | ● | ● | ● |
-| Approve providers, manage principals | | | ● | ● |
+| Invite, approve requests, change roles (only up to their own) | | | ● | ● |
+| Approve providers | | | ● | ● |
+| Grant developer, claim local-user data | | | | ● |
 | Diagnostics surface | | | | ● |
 
 Approving a *provider* is not a researcher's power: it changes which instrument the whole
@@ -154,7 +156,7 @@ installation measures with.
 ## Claiming the runs from before sign-in existed
 
 Every row written before authentication is owned by the constant principal `local-user`.
-After signing in once as an admin:
+After signing in once as a developer (the operator grant), use **People & access → Claim local-user data**, or:
 
 ```bash
 curl -X POST https://<your-url>/api/auth/principals/migrate-local-user \

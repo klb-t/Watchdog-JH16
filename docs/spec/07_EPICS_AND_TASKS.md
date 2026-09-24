@@ -415,11 +415,17 @@ condition; PostgreSQL and S3 migration; a real worker process.
 
 ## E4 — Identity
 
-- [ ] **E4.5 — Closed installation admission and invitations.** Sign-in-only anonymous
-  UI; verified unknown email can submit a reason and inspect application status only.
-  Administrator-assigned email-bound role invitations, expiry/revocation and audit, with
-  live server-side enforcement. Preserve local development and operator bootstrap grants.
-  Requested 2026-09-21; see CONVERSATION_DELTA_2026-09-20.md for current gaps.
+- [x] **E4.5 — Closed installation admission and invitations.** Identity separated from
+  admission (migration 020, D20). Anonymous → sign-in only; verified unknown → application
+  form and status only; members → capability-gated app. Grants bound to the exact verified
+  address, evaluated live per request (revocation/blocking immediate; sessions carry only
+  principal + generation). Email-bound invitations (non-transferable, single use) and open
+  links (transferable by owner request 2026-09-23; bounded uses/expiry; never admin/developer).
+  `access.admit` for admin bounded by `grantableRoles`. Sign-in by Google or emailed one-time
+  code (SMTP); operator break-glass via `watchdog-admin`/`watchdogctl`. Global /api gate
+  closed a settings router that only checked for a principal. Audit on every decision.
+  *Tests:* tests/integration/admission.test.ts (17, real HTTP + real SMTP socket),
+  tests/unit/admission.test.ts (18), tests/e2e/access_flow.test.ts (6, Chromium, phone, pl).
 
 - [x] **E4.2 — Peer capability profiles.** One shared resolver, `/auth/me` union, UI navigation
   and route gates, additive role migration, full principal role sets. Matrix + real HTTP tests
@@ -574,19 +580,13 @@ just because the schema for all three already exists.
 
 ## Blocked
 
-### E3.13 publication and CI — checked again 2026-09-22
+### E3.13 publication and CI — re-checked 2026-09-23
 
-The owner requested publication from `HANDOFF_2026-09-22.md`. The recovery checksums,
-bundle ancestry and clean local `c473993` checkout were verified. GitHub PR #1 and its
-branch still point at `1e583c1`; Actions `35614465513` failed, and the new container job
-has not run. The GitHub connector returns HTTP 400 `Invalid MCP request metadata`.
-Direct Git lacks credentials. Local typecheck/build and 356 tests pass; 17 browser
-tests cannot launch without Chromium, whose download failed. No Docker is installed.
-
-**Unblock:** restore an authenticated publication channel for the existing repository
-and branch, then push without force and verify both `verify` and `container` on the
-published head. A browser fallback requires user approval under `control-browser`.
-Do not merge PR #1 or change its base. E4.5 has not started.
+Publication is no longer blocked: the branch was published and GitHub Actions
+`Watchdog validation` runs #51 (push) and #52 (PR) on `fb5b29d` concluded **success**.
+What remains before ticking E3.13 is the first real installation on the owner's VM, which
+no agent has performed. `claude/ai-studio-last-commit-gjqxy4` now carries the continuation
+plus main's hygiene merge and E4.5 on top.
 
 ### Continuation checkpoint (2026-09-08)
 

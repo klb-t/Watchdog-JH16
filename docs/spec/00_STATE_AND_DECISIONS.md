@@ -1,11 +1,19 @@
 # State and binding decisions
 
-Last updated: 2026-09-22, Astra continuation. Update this file whenever a
+Last updated: 2026-09-24, E4.5 (Claude). Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**2026-09-24 — E4.5 done.** Branch `claude/ai-studio-last-commit-gjqxy4` = Astra's
+continuation (`fb5b29d`) + merge of `main` (licence, canonical README) + E4.5. Sign-in,
+invitations, applications and People & access are implemented and tested (414 tests incl.
+all browser suites, locally). The VM installer still starts in local mode; the owner turns
+sign-in on with `sudo watchdogctl enable-accounts EMAIL`. Not done: a public HTTPS entry
+point (external testers cannot reach an IAP-only VM), SMTP not configured anywhere yet.
+See D20.
 
 **2026-09-22 publication retry:** the supplied recovery archive and local unpublished
 commits were verified. GitHub still reports branch/PR head `1e583c1`; PR #1 remains a
@@ -517,6 +525,27 @@ verified distribution-route engine is claimed. Imported annotations preserve the
 
 Developer diagnostics expose redacted request metadata, persisted trace events/errors and ZIP
 bundles. Concurrent spans now share one trace sequence. Changes to recorder mode are audited.
+
+### D20 — Identity is not admission; open links allowed but bounded (2026-09-24)
+
+Sign-in proves an address (Google `email_verified`, or a one-time code sent to it; the
+operator's shell link is stronger). Admission is separate: grants bound to the exact
+verified address, re-read on every request. One session cookie suffices for both states
+because it carries no rights — an applicant's session resolves to zero capabilities and
+the global `/api` gate admits it only to the sign-in/application endpoints. This meets the
+handoff's intent (separate candidate state) without a second cookie type.
+
+Owner request 2026-09-23 adds links *not* bound to an address. They are transferable by
+design, so they are bounded: 1–50 uses, ≤30 days, revocable, per-use audit of who joined,
+and can never confer `access.admit`, `principal.*` or diagnostics. Email-bound invitations
+keep the original rule: a forwarded link neither works nor is consumed.
+
+Delegation: admin gains `access.admit`, limited to roles whose capabilities they hold;
+nobody changes their own access; only someone holding all of a person's capabilities can
+change that person. Operator grants (`WATCHDOG_GRANTS`) are not editable from the UI.
+Nothing is reported as "sent" unless an SMTP server accepted it; server-sent links come only
+from `WATCHDOG_PUBLIC_URL`. People & access shows full addresses to `principal.view`
+holders (admission needs them); the older ownership listing stays fingerprinted.
 
 ## 4. Open questions for the maintainer
 

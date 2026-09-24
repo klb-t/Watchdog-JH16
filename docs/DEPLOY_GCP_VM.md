@@ -85,6 +85,22 @@ Kolejne wejście wymaga ponownego uruchomienia tunelu. Z komputera z `gcloud` ta
 komenda udostępnia interfejs pod `http://127.0.0.1:8080`. Tunel nasłuchuje tylko na localhost.
 Możesz zmienić lewy port 8080 na inny, jeśli jest już zajęty.
 
+## Logowanie i zapraszanie ludzi
+
+Instalator startuje w trybie jednego lokalnego użytkownika. Aby włączyć logowanie (przez SSH na VM):
+
+```bash
+sudo watchdogctl enable-accounts twoj@email.pl   # Ty = operator (deweloper), wypisze link logowania
+sudo watchdogctl set-mail                        # opcjonalnie: logowanie kodem z maila i wysyłka zaproszeń
+```
+
+Potem w aplikacji **People & access**: zaproszenie na konkretny adres albo link bez adresu
+(kopiuj / udostępnij / otwórz w poczcie). Bez skonfigurowanej poczty: `sudo watchdogctl signin-link ADRES`,
+`invite ADRES ROLE`, `open-link ROLE --uses N`, `people`.
+
+Uwaga: VM dostępna tylko przez tunel IAP — osoby z zewnątrz jej nie otworzą. Dla nich potrzebny
+jest publiczny adres HTTPS (`sudo watchdogctl set-public-url https://...`) z reverse proxy; to kolejny etap.
+
 ## Utrzymanie i dane
 
 Polecenia wykonywane **przez SSH na VM**:
