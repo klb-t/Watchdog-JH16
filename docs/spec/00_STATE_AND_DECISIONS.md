@@ -547,6 +547,19 @@ Nothing is reported as "sent" unless an SMTP server accepted it; server-sent lin
 from `WATCHDOG_PUBLIC_URL`. People & access shows full addresses to `principal.view`
 holders (admission needs them); the older ownership listing stays fingerprinted.
 
+### D21 — Seven areas over unchanged routes (2026-09-24)
+
+The flat sidebar (16 entries mixing goals, workflow stages, tools and diagnostics) is
+replaced by seven areas plus Settings, per `docs/spec/14_INFORMATION_ARCHITECTURE.md`.
+This is a navigation and composition change only: every page, path, API and capability is
+kept; the navigation is data (`config/ui/navigation.json`, schema in
+`shared/navigation.ts`) and hides nothing that its route does not already guard. Area
+addresses (`/data`, `/analysis`, `/projects`, `/knowledge`) open the first view the viewer
+may see. Run history and Diagnostics sit in Analysis marked "advanced". A unit test fails if
+a routed page has no place in the navigation or a navigation entry points at no page.
+Larger moves the note proposes (project container, reviewer projection, Knowledge Base
+explorer) are ledger items E7.2–E7.6, not done here.
+
 ## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.

@@ -15,7 +15,7 @@ function Catalog({editable}:{editable:boolean}){
   const [error,setError]=useState(''),[message,setMessage]=useState(''),[busy,setBusy]=useState(false),epoch=useRef(0),alive=useRef(true);
   const refresh=async()=>{const token=++epoch.current,data=await api<SourceAccessOverview>('/api/source-access');if(alive.current&&token===epoch.current)setOverview(data);};
   useEffect(()=>{alive.current=true;refresh().catch(e=>alive.current&&setError(e.message));return()=>{alive.current=false;epoch.current++;};},[]);
-  const act:Actions['act']=async(fn,success='')=>{setBusy(true);setError('');setMessage('');try{await fn();if(alive.current){setMessage(success);await refresh();}}catch(e){if(alive.current)setError((e as Error).message);}finally{if(alive.current)setBusy(false);}};
+  const act:Actions['act']=async(fn,success='')=>{setBusy(true);setError('');setMessage('');try{await fn();if(alive.current){await refresh();if(alive.current)setMessage(success);}}catch(e){if(alive.current)setError((e as Error).message);}finally{if(alive.current)setBusy(false);}};
   if(!overview)return <div className="p-6">{error?<p role="alert">{error}</p>:<p role="status">…</p>}</div>;
   const {profile,stats,rows}=overview,L=profile.labels,row=rows.find(r=>r.source.entry.id===selected);
   const filtered=rows.filter(r=>{const e=r.source.entry;return (!family||e.family===family)&&(!channel||e.channels.includes(channel as any))&&(!state||r.accessState===state)&&`${e.id} ${e.label} ${e.description}`.toLocaleLowerCase().includes(search.toLocaleLowerCase());});

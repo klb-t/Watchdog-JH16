@@ -27,6 +27,8 @@ import { Login } from './pages/Login';
 import { Join } from './pages/Join';
 import { Apply } from './pages/Apply';
 import { PeopleAccess } from './pages/PeopleAccess';
+import { AreaLanding, NAVIGATION } from './lib/navigation';
+import { landingPaths } from '../shared/navigation';
 
 export default function App() {
   return (
@@ -56,6 +58,9 @@ export default function App() {
         <Route path="automation" element={<AccessBoundary capability="run.create"><Automation /></AccessBoundary>} />
         <Route path="memory" element={<SubstanceMemory />} />
         <Route path="research" element={<AccessBoundary capability="method.propose"><Research /></AccessBoundary>} />
+        {/* Spec 14: area addresses (/data, /analysis…) open the area's first visible view. */}
+        {landingPaths(NAVIGATION).map(({ area, path }) =>
+          <Route key={area.id} path={path.slice(1)} element={<AreaLanding areaId={area.id} />} />)}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes></AccessProvider>

@@ -116,6 +116,23 @@ test('E4.5 browser: the owner signs in by emailed code and lands where they were
   await owner.locator('a[href="/access"]').waitFor();
 });
 
+test('spec 14 browser: areas, tabs, breadcrumb and the command palette', async () => {
+  await owner.goto(`${base}/analysis`);
+  await owner.waitForURL(`${base}/workbench`);
+  await owner.locator('[data-testid="breadcrumb"]').getByText('Analiza', { exact: true }).waitFor();
+  await owner.locator('[data-testid="area-tab-runs"]').click();
+  await owner.waitForURL(`${base}/runs`);
+  await owner.locator('[data-testid="breadcrumb"] [aria-current="page"]').getByText('Historia runów', { exact: true }).waitFor();
+  await noHorizontalScroll(owner);
+  await owner.screenshot({ path: 'test-artifacts/ia-1-analysis-tabs.png', fullPage: true });
+  await owner.locator('[data-testid="open-command-palette"]').click();
+  await owner.locator('[data-testid="command-input"]').fill('ludzie');
+  await owner.screenshot({ path: 'test-artifacts/ia-2-command-palette.png', fullPage: true });
+  await owner.locator('[data-testid="command-input"]').press('Enter');
+  await owner.waitForURL(`${base}/access`);
+  assert.strictEqual(await owner.locator('[data-testid="command-palette"]').count(), 0);
+});
+
 test('E4.5 browser: the owner invites someone by address and gets a link to hand over', async () => {
   await owner.goto(`${base}/access`);
   await owner.locator('[data-testid="invite-form"]').waitFor();

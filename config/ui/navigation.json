@@ -1,0 +1,298 @@
+{
+  "schema_version": "1.0.0",
+  "_note": "Information architecture (spec 14, D21). Seven areas plus settings. Every routed page belongs to exactly one view here; tests/unit/navigation.test.ts enforces it. A view is shown when the viewer holds its capability; an area is shown when any of its views is. Paths are the existing routes, unchanged. 'match' lists extra path prefixes that belong to a view (detail pages).",
+  "areas": [
+    {
+      "id": "dashboard",
+      "icon": "LayoutDashboard",
+      "path": "/",
+      "label": {
+        "pl": "Pulpit",
+        "en": "Dashboard"
+      },
+      "hint": {
+        "pl": "Co się dzieje i gdzie wejść",
+        "en": "What is happening and where to go"
+      },
+      "views": [
+        {
+          "id": "overview",
+          "path": "/",
+          "exact": true,
+          "label": {
+            "pl": "Przegląd",
+            "en": "Overview"
+          }
+        }
+      ]
+    },
+    {
+      "id": "data",
+      "icon": "Database",
+      "path": "/data",
+      "label": {
+        "pl": "Dane i źródła",
+        "en": "Data & Sources"
+      },
+      "hint": {
+        "pl": "Znaleźć albo dodać dane",
+        "en": "Find or add data"
+      },
+      "views": [
+        {
+          "id": "sources",
+          "path": "/sources",
+          "capability": "run.view",
+          "label": {
+            "pl": "Źródła",
+            "en": "Sources"
+          }
+        },
+        {
+          "id": "source-access",
+          "path": "/source-access",
+          "capability": "provider.view",
+          "label": {
+            "pl": "Dostęp do danych",
+            "en": "Source access"
+          }
+        }
+      ]
+    },
+    {
+      "id": "analysis",
+      "icon": "FlaskConical",
+      "path": "/analysis",
+      "label": {
+        "pl": "Analiza",
+        "en": "Analysis"
+      },
+      "hint": {
+        "pl": "Policzyć, narysować, porównać",
+        "en": "Compute, chart, compare"
+      },
+      "views": [
+        {
+          "id": "workbench",
+          "path": "/workbench",
+          "capability": "workbench.view",
+          "label": {
+            "pl": "Warsztat",
+            "en": "Workbench"
+          }
+        },
+        {
+          "id": "methods",
+          "path": "/analyzers",
+          "capability": "run.view",
+          "label": {
+            "pl": "Metody",
+            "en": "Methods"
+          }
+        },
+        {
+          "id": "method-review",
+          "path": "/method",
+          "capability": "method.propose",
+          "label": {
+            "pl": "Przegląd metody",
+            "en": "Method review"
+          }
+        },
+        {
+          "id": "runs",
+          "path": "/runs",
+          "match": [
+            "/runs/"
+          ],
+          "capability": "run.view",
+          "advanced": true,
+          "label": {
+            "pl": "Historia runów",
+            "en": "Run history"
+          }
+        },
+        {
+          "id": "diagnostics",
+          "path": "/diagnostics",
+          "capability": "diagnostics.view",
+          "advanced": true,
+          "label": {
+            "pl": "Diagnostyka",
+            "en": "Diagnostics"
+          }
+        }
+      ]
+    },
+    {
+      "id": "automation",
+      "icon": "PlayCircle",
+      "path": "/automation",
+      "label": {
+        "pl": "Automatyzacja",
+        "en": "Automation"
+      },
+      "hint": {
+        "pl": "Żeby działo się regularnie",
+        "en": "Make it happen regularly"
+      },
+      "views": [
+        {
+          "id": "schedules",
+          "path": "/automation",
+          "capability": "run.create",
+          "label": {
+            "pl": "Zadania cykliczne",
+            "en": "Scheduled operations"
+          }
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "icon": "FolderKanban",
+      "path": "/projects",
+      "label": {
+        "pl": "Projekty badawcze",
+        "en": "Research projects"
+      },
+      "hint": {
+        "pl": "Konkretne badanie albo publikacja",
+        "en": "A specific study or paper"
+      },
+      "views": [
+        {
+          "id": "jh16",
+          "path": "/study",
+          "capability": "run.create",
+          "label": {
+            "pl": "JH16 — replikacja",
+            "en": "JH16 — replication"
+          }
+        },
+        {
+          "id": "evidence",
+          "path": "/evidence",
+          "capability": "evidence.review",
+          "label": {
+            "pl": "Przegląd dowodów",
+            "en": "Evidence review"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ai-research",
+      "icon": "Sparkles",
+      "path": "/research",
+      "label": {
+        "pl": "Analiza publikacji (AI)",
+        "en": "AI research"
+      },
+      "hint": {
+        "pl": "Wrzuć publikację: metodologia, replikacja",
+        "en": "Bring a paper: methodology, replication"
+      },
+      "views": [
+        {
+          "id": "papers",
+          "path": "/research",
+          "capability": "method.propose",
+          "label": {
+            "pl": "Publikacje i ekstrakcja",
+            "en": "Papers & extraction"
+          }
+        }
+      ]
+    },
+    {
+      "id": "knowledge",
+      "icon": "BookOpen",
+      "path": "/knowledge",
+      "label": {
+        "pl": "Baza wiedzy",
+        "en": "Knowledge base"
+      },
+      "hint": {
+        "pl": "Wszystko, co wiemy o X",
+        "en": "Everything we know about X"
+      },
+      "views": [
+        {
+          "id": "substances",
+          "path": "/memory",
+          "capability_any": [
+            "responder.lookup",
+            "evidence.review"
+          ],
+          "label": {
+            "pl": "Substancje",
+            "en": "Substances"
+          }
+        },
+        {
+          "id": "responder",
+          "path": "/responder",
+          "capability": "responder.lookup",
+          "label": {
+            "pl": "Tryb ratownika",
+            "en": "Responder view"
+          }
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "id": "settings",
+    "icon": "Settings",
+    "path": "/setup",
+    "label": {
+      "pl": "Ustawienia",
+      "en": "Settings"
+    },
+    "views": [
+      {
+        "id": "setup",
+        "path": "/setup",
+        "match": [
+          "/settings"
+        ],
+        "label": {
+          "pl": "Konfiguracja",
+          "en": "Setup"
+        }
+      },
+      {
+        "id": "people",
+        "path": "/access",
+        "capability": "principal.view",
+        "label": {
+          "pl": "Ludzie i dostęp",
+          "en": "People & access"
+        }
+      }
+    ]
+  },
+  "strings": {
+    "pl": {
+      "search": "Szukaj widoku",
+      "search_placeholder": "Dokąd chcesz przejść?",
+      "no_results": "Nic nie pasuje.",
+      "advanced": "Zaawansowane",
+      "sign_out": "Wyloguj",
+      "close": "Zamknij",
+      "shortcut_hint": "Ctrl K",
+      "area_unavailable": "Nie masz dostępu do żadnego widoku w tym obszarze."
+    },
+    "en": {
+      "search": "Find a view",
+      "search_placeholder": "Where do you want to go?",
+      "no_results": "Nothing matches.",
+      "advanced": "Advanced",
+      "sign_out": "Sign out",
+      "close": "Close",
+      "shortcut_hint": "Ctrl K",
+      "area_unavailable": "You have no access to any view in this area."
+    }
+  }
+}

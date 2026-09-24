@@ -569,6 +569,24 @@ just because the schema for all three already exists.
 
 ---
 
+## E7 — Information architecture (spec 14, D21)
+
+- [x] **E7.1 — Seven areas, tabs, breadcrumb, command palette.** Navigation from
+  `config/ui/navigation.json`, filtered by capability; area landings; in-area tabs with
+  advanced views after a divider; Ctrl/Cmd+K over every visible view. Paths unchanged.
+  Test: `tests/unit/navigation.test.ts` (every route placed exactly once, every view routed,
+  role filtering) and the spec-14 step in `tests/e2e/access_flow.test.ts` (phone, Polish).
+- [ ] **E7.2 — Research Project container.** A project aggregates existing objects (sources,
+  datasets, methods, runs, figures, exports); JH16 becomes the first project tree.
+- [ ] **E7.3 — Reviewer / publication projection.** Article · Methods · Results · Sensitivity
+  · Atlas · Provenance as a read-only view of one project, for reviewers.
+- [ ] **E7.4 — Knowledge Base explorer.** General explorer over the shared domain model;
+  Responder becomes a preset of it rather than a separate page.
+- [ ] **E7.5 — Contextual runs and diagnostics.** Run history and diagnostics shown inside the
+  project/analysis/automation that produced them.
+- [ ] **E7.6 — Dashboard that answers "what is happening"** and presets for landing pages and
+  layouts per role.
+
 ## Continued research vertical slices
 
 - [x] **E5.8e — Source-linked selected paper operations.** Manual quote or saved assessment
