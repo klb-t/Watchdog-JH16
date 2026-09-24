@@ -1,8 +1,8 @@
 import { Link, Outlet, useLocation } from 'react-router-dom';
 import sourceAccessProfile from '../../config/source-access.json';
-import { Activity, Database, PlayCircle, Settings, LayoutDashboard, FlaskConical, ClipboardCheck } from 'lucide-react';
+import { Activity, Database, PlayCircle, Settings, LayoutDashboard, FlaskConical, ClipboardCheck, Users, LogOut } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { useAccess } from '../lib/access';
+import { announceSessionChange, postJson, useAccess } from '../lib/access';
 import type { Capability } from '../../shared/authorization';
 import { useEffect, useState } from 'react';
 
@@ -30,8 +30,11 @@ export function Layout() {
     { name: sourceAccessProfile.labels.nav, href: '/source-access', icon: Database, capability: 'provider.view' },
     { name: 'Runs', href: '/runs', icon: PlayCircle, capability: 'run.view' },
     { name: 'Analyzers', href: '/analyzers', icon: Activity, capability: 'run.view' },
+    { name: 'People & access', href: '/access', icon: Users, capability: 'principal.view' },
     { name: 'Setup', href: '/setup', icon: Settings },
   ];
+
+  const signOut = async () => { await postJson('/api/auth/signout'); announceSessionChange(); };
 
   return (
     <div className="flex flex-col md:flex-row h-dvh bg-slate-50 text-slate-900" data-density={density}>
@@ -62,6 +65,13 @@ export function Layout() {
             );
           })}
         </nav>
+        {access.mode === 'accounts' && access.email && <div className="hidden md:block border-t border-slate-200 px-4 py-3 text-xs"
+          data-testid="account-box">
+          <p className="truncate font-medium text-slate-700" title={access.email}>{access.email}</p>
+          <p className="truncate text-slate-500">{access.roles.filter(r => r !== 'dev').join(', ')}</p>
+          <button className="mt-2 inline-flex items-center gap-1 text-slate-600 hover:text-slate-900" onClick={() => void signOut()}
+            data-testid="layout-sign-out"><LogOut className="w-3.5 h-3.5" /> Sign out</button>
+        </div>}
       </div>
 
       <main className="flex-1 overflow-auto bg-slate-50">

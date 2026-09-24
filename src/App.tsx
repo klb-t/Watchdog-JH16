@@ -22,12 +22,20 @@ import { Setup } from './pages/Setup';
 import { Automation } from './pages/Automation';
 import { SubstanceMemory } from './pages/SubstanceMemory';
 import { Research } from './pages/Research';
-import { AccessBoundary, AccessProvider } from './lib/access';
+import { AccessBoundary, AccessProvider, AdmissionGate } from './lib/access';
+import { Login } from './pages/Login';
+import { Join } from './pages/Join';
+import { Apply } from './pages/Apply';
+import { PeopleAccess } from './pages/PeopleAccess';
 
 export default function App() {
   return (
     <AccessProvider><Routes>
-      <Route path="/" element={<Layout />}>
+      {/* E4.5: the only screens reachable before admission. */}
+      <Route path="login" element={<Login />} />
+      <Route path="join" element={<Join />} />
+      <Route path="apply" element={<Apply />} />
+      <Route path="/" element={<AdmissionGate><Layout /></AdmissionGate>}>
         <Route index element={<Dashboard />} />
         <Route path="sources" element={<AccessBoundary capability="run.view"><Sources /></AccessBoundary>} />
         <Route path="source-access" element={<AccessBoundary capability="provider.view"><SourceAccess /></AccessBoundary>} />
@@ -42,6 +50,7 @@ export default function App() {
         <Route path="workbench" element={<AccessBoundary capability="workbench.view"><Workbench /></AccessBoundary>} />
         <Route path="responder" element={<Responder />} />
         <Route path="evidence" element={<AccessBoundary capability="evidence.review"><EvidenceReview /></AccessBoundary>} />
+        <Route path="access" element={<AccessBoundary capability="principal.view"><PeopleAccess /></AccessBoundary>} />
         <Route path="setup" element={<Setup />} />
         <Route path="settings" element={<Setup />} />
         <Route path="automation" element={<AccessBoundary capability="run.create"><Automation /></AccessBoundary>} />

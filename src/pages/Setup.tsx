@@ -31,7 +31,7 @@ interface Readiness {
 }
 
 interface AuthConfig {
-  mode: 'local' | 'oidc';
+  mode: 'local' | 'accounts';
   reason: string;
   google_client_id: string | null;
   grant_count: number;
@@ -136,7 +136,7 @@ export function Setup() {
               <div className="flex items-center gap-2">
                 <KeyRound className="w-4 h-4 text-slate-500" />
                 <span className="text-sm font-medium" data-testid="auth-mode">
-                  {auth.mode === 'oidc' ? 'Google sign-in' : 'No authentication (local mode)'}
+                  {auth.mode === 'accounts' ? 'Sign-in and admission (accounts mode)' : 'No authentication (local mode)'}
                 </span>
               </div>
               <p className="mt-2 text-xs text-slate-600">{auth.reason}</p>
@@ -145,20 +145,24 @@ export function Setup() {
                 <p className="mt-2 text-xs text-amber-700">
                   Every request is the local user with full rights. Fine on your own machine;
                   the server refuses to start this way in production unless you say so explicitly.
+                  To let other people in, turn on sign-in (on the VM: <code>sudo watchdogctl enable-accounts YOUR_EMAIL</code>).
                 </p>
+              )}
+              {auth.mode === 'accounts' && me && (me.capabilities ?? []).includes('principal.view') && (
+                <p className="mt-2 text-xs"><a className="underline" href="/access">People &amp; access</a> — invitations, requests and roles.</p>
               )}
 
               {me ? (
                 <div className="mt-3 flex items-center gap-3 text-xs">
                   <span className="font-mono text-slate-700" data-testid="me-id">{me.principal.email ?? me.principal.id}</span>
                   <span className="rounded bg-slate-100 px-2 py-0.5">{me.principal.roles.join(', ')}</span>
-                  {auth.mode === 'oidc' && (
+                  {auth.mode === 'accounts' && (
                     <button onClick={signOut} className="ml-auto inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">
                       <LogOut className="w-3.5 h-3.5" /> Sign out
                     </button>
                   )}
                 </div>
-              ) : auth.mode === 'oidc' && (
+              ) : auth.mode === 'accounts' && (
                 <p className="mt-3 inline-flex items-center gap-1 text-xs text-slate-600">
                   <LogIn className="w-3.5 h-3.5" /> Not signed in.
                 </p>
