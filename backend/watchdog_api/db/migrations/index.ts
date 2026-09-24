@@ -18,6 +18,7 @@ import { MIGRATION_016_REFERENCE_OBSERVATIONS } from './016_reference_observatio
 import { MIGRATION_017_COLLECTION_CONTEXT } from './017_collection_context';
 import { MIGRATION_018_SOURCE_WATCHES } from './018_source_watches';
 import { MIGRATION_019_SOURCE_ACCESS } from './019_source_access';
+import { MIGRATION_020_ADMISSION } from './020_admission';
 
 export interface Migration {
   readonly id: string;
@@ -48,7 +49,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '016_reference_observations', sql: MIGRATION_016_REFERENCE_OBSERVATIONS },
   { id: '017_collection_context', sql: MIGRATION_017_COLLECTION_CONTEXT },
   { id: '018_source_watches', sql: MIGRATION_018_SOURCE_WATCHES },
-  { id: '019_source_access', sql: MIGRATION_019_SOURCE_ACCESS }
+  { id: '019_source_access', sql: MIGRATION_019_SOURCE_ACCESS },
+  { id: '020_admission', sql: MIGRATION_020_ADMISSION }
 ];
 
 const MIGRATIONS_TABLE = `

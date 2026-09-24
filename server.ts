@@ -14,6 +14,15 @@ import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middle
 import { ExtractionDatasetService } from './backend/watchdog_api/services/extraction_dataset';
 import { buildIdentity, assertAuthSafeForEnvironment, readAuthConfig } from './backend/watchdog_api/identity';
 import { buildAuthRouter, principalMiddleware } from './backend/watchdog_api/api/auth_routes';
+import { buildAccessRouter } from './backend/watchdog_api/api/access_routes';
+import { admissionGate, crossSiteGuard } from './backend/watchdog_api/api/admission_gate';
+import { AdmissionRepository } from './backend/watchdog_api/db/repositories/admission';
+import { AdmissionService } from './backend/watchdog_api/identity/admission';
+import { SignInService } from './backend/watchdog_api/identity/sign_in';
+import { MailService, loadAccessMessages } from './backend/watchdog_api/mail';
+import { appendAudit } from './backend/watchdog_api/db/repositories/audit';
+import { secretStore } from './backend/watchdog_api/secrets';
+import { createHmac } from 'node:crypto';
 import { PrincipalRepository } from './backend/watchdog_api/db/repositories/principals';
 import { db, sqlite, dbPath } from './backend/watchdog_api/db/client';
 import { assertStorageSafeForEnvironment } from './backend/watchdog_api/storage/durability';
@@ -78,15 +87,41 @@ export async function configureApp() {
   assertAuthSafeForEnvironment(readAuthConfig());
   assertStorageSafeForEnvironment({ env: process.env, dbPath, storeBackend, storePath });
 
-  const identity = await buildIdentity();
+  // Behind a reverse proxy (Caddy, a load balancer) the client address is in
+  // X-Forwarded-For; trusting it is an explicit operator setting, because
+  // trusting it without a proxy lets any client choose its own rate-limit key.
+  if (process.env.WATCHDOG_TRUST_PROXY) app.set('trust proxy', process.env.WATCHDOG_TRUST_PROXY);
+
+  // E4.5: admission is its own service; identity consults it on every request.
+  const authConfig = readAuthConfig();
+  const admissionRepository = new AdmissionRepository(sqlite);
+  const admission = new AdmissionService(admissionRepository, authConfig.grants,
+    (...event) => appendAudit(sqlite, ...event));
+  const mail = new MailService(loadAccessMessages().messages);
+  const identity = await buildIdentity(process.env, undefined, undefined,
+    { service: admission, repository: admissionRepository });
+
+  let signIn: SignInService | undefined;
+  if (identity.mode === 'accounts') {
+    // A separate key per purpose, derived from the one session secret, so the
+    // sign-in code digests and the session MAC never share a key.
+    const pepper = (await secretStore.resolve('env:SESSION_SIGNING_KEY'))
+      .use(k => createHmac('sha256', k).update('watchdog/sign-in-codes/v1').digest('hex'));
+    signIn = new SignInService(admissionRepository, mail, pepper);
+  }
+
   const authDeps = {
     identity,
     principals: new PrincipalRepository(sqlite),
     secureCookies: IS_PRODUCTION,
+    admission, admissionRepository, signIn, mail,
   };
 
   app.use(principalMiddleware(authDeps));
+  if (identity.mode === 'accounts') app.use('/api', crossSiteGuard(mail.publicUrl()));
+  app.use('/api', admissionGate(identity.mode));
   app.use('/api/auth', buildAuthRouter(authDeps));
+  app.use('/api/access', buildAccessRouter(admission, mail));
   const fieldRepository = new FieldReferenceRepository(sqlite, store);
   const fieldService = new FieldService(fieldRepository, loadFieldProfile());
   app.use('/api/field', buildFieldRouter(fieldRepository, fieldService));

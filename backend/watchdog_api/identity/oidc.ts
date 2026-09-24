@@ -101,12 +101,16 @@ export interface OidcConfig {
   readonly clockSkewSeconds?: number;
 }
 
-export interface VerifiedIdentity {
+/** Who Google says this is. Carries no admission: E4.5 decides that separately. */
+export interface GoogleIdentity {
   readonly subject: string;
   readonly email: string;
   readonly name: string | null;
-  readonly role: Role;
   readonly expiresAt: number;
+}
+
+export interface VerifiedIdentity extends GoogleIdentity {
+  readonly role: Role;
 }
 
 export class GoogleOidcVerifier {
@@ -128,7 +132,20 @@ export class GoogleOidcVerifier {
     return isRole(domain) ? domain : null;
   }
 
+  /**
+   * Legacy E4.1 path: identity plus an environment grant, rejecting anyone
+   * without one. Kept for operators who rely on it; the E4.5 sign-in route
+   * uses `verifyIdentity`, because an unknown-but-verified person must be able
+   * to sign in and apply rather than being turned away at the door.
+   */
   async verify(idToken: string): Promise<VerifiedIdentity> {
+    const identity = await this.verifyIdentity(idToken);
+    const role = this.roleFor(identity.email);
+    if (!role) throw new TokenRejectedError(`no grant exists for ${identity.email}`);
+    return { ...identity, role };
+  }
+
+  async verifyIdentity(idToken: string): Promise<GoogleIdentity> {
     const parts = idToken.split('.');
     if (parts.length !== 3) throw new TokenRejectedError('not a three-part JWS');
 
@@ -162,14 +179,10 @@ export class GoogleOidcVerifier {
     // list meaningless.
     if (claims.email_verified !== true) throw new TokenRejectedError('email address is not verified');
 
-    const role = this.roleFor(claims.email);
-    if (!role) throw new TokenRejectedError(`no grant exists for ${claims.email}`);
-
     return {
       subject: claims.sub,
       email: claims.email.toLowerCase(),
       name: typeof claims.name === 'string' ? claims.name : null,
-      role,
       expiresAt: claims.exp * 1000,
     };
   }
@@ -179,10 +192,16 @@ export class GoogleOidcVerifier {
 // Sessions
 // ---------------------------------------------------------------------------
 
+/**
+ * What a session cookie asserts: *which principal* and *which session
+ * generation*. Deliberately no roles and no email (E4.5). Both are looked up on
+ * every request, so revoking access or blocking a person takes effect on their
+ * very next request instead of when a twelve-hour cookie runs out.
+ */
 export interface SessionPayload {
-  readonly sub: string;
-  readonly email: string;
-  readonly role: Role;
+  readonly pid: string;
+  readonly sv: number;
+  readonly iat: number;
   readonly exp: number;
 }
 
@@ -222,9 +241,10 @@ export class SessionCodec {
     } catch {
       return null;
     }
-    if (!isRole(payload.role)) return null;
+    if (typeof payload?.pid !== 'string' || payload.pid.length === 0 || payload.pid.length > 200) return null;
+    if (!Number.isInteger(payload.sv) || payload.sv < 1) return null;
     if (typeof payload.exp !== 'number' || payload.exp < nowMs) return null;
-    return payload;
+    return { pid: payload.pid, sv: payload.sv, iat: payload.iat, exp: payload.exp };
   }
 }
 
@@ -235,21 +255,27 @@ export class SessionCodec {
  * principal. A guest principal is how an authorisation check accidentally
  * passes: the caller sees an object and stops asking.
  */
-export class OidcIdentityProvider implements IdentityProvider {
+/** Reads one cookie from a raw request. Shared by every cookie-backed check. */
+export function readCookie(request: unknown, name: string): string | null {
+  const header = (request as any)?.headers?.cookie;
+  if (typeof header !== 'string') return null;
+  for (const part of header.split(';')) {
+    const [k, ...v] = part.trim().split('=');
+    if (k === name) return v.join('=');
+  }
+  return null;
+}
+
+/** Turns a verified session into the principal as it stands *now*, or null. */
+export type SessionLookup = (principalId: string, sessionVersion: number) => Principal | null;
+
+export class SessionIdentityProvider implements IdentityProvider {
   constructor(
     private readonly codec: SessionCodec,
+    private readonly lookup: SessionLookup,
     private readonly cookieName: string = 'watchdog_session',
+    private readonly now: () => number = () => Date.now(),
   ) {}
-
-  private cookieFrom(request: unknown): string | null {
-    const header = (request as any)?.headers?.cookie;
-    if (typeof header !== 'string') return null;
-    for (const part of header.split(';')) {
-      const [k, ...v] = part.trim().split('=');
-      if (k === this.cookieName) return v.join('=');
-    }
-    return null;
-  }
 
   async resolve(request: unknown): Promise<Principal> {
     const p = await this.resolveOrNull(request);
@@ -257,17 +283,16 @@ export class OidcIdentityProvider implements IdentityProvider {
     return p;
   }
 
+  /**
+   * Null — never a guest principal — for anything short of a valid cookie
+   * naming an active principal at its current session version. A guest
+   * principal is how an authorisation check accidentally passes: the caller
+   * sees an object and stops asking.
+   */
   async resolveOrNull(request: unknown): Promise<Principal | null> {
-    const payload = this.codec.verify(this.cookieFrom(request));
+    const payload = this.codec.verify(readCookie(request, this.cookieName), this.now());
     if (!payload) return null;
-    return {
-      // Stable across email changes, unlike the address. Prefixed so a Google
-      // subject can never collide with the `local-user` constant.
-      id: `google:${payload.sub}`,
-      email: payload.email,
-      roles: [payload.role],
-      identityProvenance: 'google-oidc',
-    };
+    return this.lookup(payload.pid, payload.sv);
   }
 }
 

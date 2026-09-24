@@ -8,7 +8,7 @@ import {
 } from '../../backend/watchdog_api/identity/roles';
 import {
   GoogleOidcVerifier, JwksCache, SessionCodec, TokenRejectedError, JwksTransport,
-  OidcIdentityProvider, sessionCookieHeader,
+  SessionIdentityProvider, sessionCookieHeader,
 } from '../../backend/watchdog_api/identity/oidc';
 import {
   parseGrants, readAuthConfig, assertAuthSafeForEnvironment, AuthConfigError, buildIdentity, authorize,
@@ -160,9 +160,10 @@ test('E4.1: an unknown kid refreshes the key set once, then rejects', async () =
 
 const KEY = randomBytes(32).toString('hex');
 
-test('E4.1: a session cookie round-trips and rejects every tampering', () => {
+test('E4.1/E4.5: a session cookie round-trips and rejects every tampering', () => {
   const codec = new SessionCodec(KEY);
-  const payload = { sub: 's1', email: 'a@b.example', role: 'researcher' as const, exp: Date.now() + 60_000 };
+  // E4.5: the cookie names a principal and a session generation — no roles.
+  const payload = { pid: 'u_1', sv: 1, iat: Date.now(), exp: Date.now() + 60_000 };
   const cookie = codec.sign(payload);
 
   assert.deepStrictEqual(codec.verify(cookie), payload);
@@ -172,14 +173,18 @@ test('E4.1: a session cookie round-trips and rejects every tampering', () => {
 
   // Re-signed with a different key: the classic "I made my own cookie" attempt.
   assert.strictEqual(codec.verify(new SessionCodec(randomBytes(32).toString('hex')).sign(
-    { ...payload, role: 'dev' })), null);
+    { ...payload, pid: 'u_owner' })), null);
 
-  // Payload edited to escalate, signature left alone.
-  const body = Buffer.from(JSON.stringify({ ...payload, role: 'dev' }), 'utf-8').toString('base64url');
+  // Payload edited to impersonate someone else, signature left alone.
+  const body = Buffer.from(JSON.stringify({ ...payload, pid: 'u_owner' }), 'utf-8').toString('base64url');
   assert.strictEqual(codec.verify(`${body}.${cookie.split('.')[1]}`), null);
 
   // Expiry is enforced on read, not merely set on the cookie.
   assert.strictEqual(codec.verify(codec.sign({ ...payload, exp: Date.now() - 1 })), null);
+
+  // A pre-E4.5 cookie shape (with a role inside) is no longer a session at all.
+  assert.strictEqual(codec.verify(codec.sign({ sub: 's1', email: 'a@b.example', role: 'dev',
+    exp: Date.now() + 60_000 } as any)), null);
 });
 
 test('E4.1: a short signing key is refused outright', () => {
@@ -194,16 +199,25 @@ test('E4.1: the cookie is HttpOnly and SameSite, and Secure in production', () =
   assert.ok(!sessionCookieHeader('v', 3600, false).includes('Secure'), 'local http development must still work');
 });
 
-test('E4.1: an unauthenticated request resolves to null, never to a guest principal', async () => {
-  const provider = new OidcIdentityProvider(new SessionCodec(KEY));
+test('E4.1/E4.5: an unauthenticated request resolves to null, never to a guest principal', async () => {
+  // Roles come from the lookup — i.e. from the database at request time — not
+  // from anything the client holds.
+  const lookups: [string, number][] = [];
+  const provider = new SessionIdentityProvider(new SessionCodec(KEY), (pid, sv) => {
+    lookups.push([pid, sv]);
+    return pid === 'u_1' && sv === 3 ? { id: 'u_1', email: 'a@b.example', roles: ['admin'], identityProvenance: 'session' } : null;
+  });
   assert.strictEqual(await provider.resolveOrNull({ headers: {} }), null);
   assert.strictEqual(await provider.resolveOrNull({ headers: { cookie: 'watchdog_session=forged' } }), null);
+  assert.deepStrictEqual(lookups, [], 'an unverifiable cookie never reaches the database');
 
-  const cookie = new SessionCodec(KEY).sign(
-    { sub: 's1', email: 'a@b.example', role: 'admin', exp: Date.now() + 60_000 });
-  const p = await provider.resolveOrNull({ headers: { cookie: `other=1; watchdog_session=${cookie}` } });
-  assert.strictEqual(p!.id, 'google:s1');
+  const cookie = (sv: number) => new SessionCodec(KEY).sign({ pid: 'u_1', sv, iat: Date.now(), exp: Date.now() + 60_000 });
+  const p = await provider.resolveOrNull({ headers: { cookie: `other=1; watchdog_session=${cookie(3)}` } });
+  assert.strictEqual(p!.id, 'u_1');
   assert.deepStrictEqual(p!.roles, ['admin']);
+
+  // An older session generation (after sign-out-everywhere or a block) is nobody.
+  assert.strictEqual(await provider.resolveOrNull({ headers: { cookie: `watchdog_session=${cookie(2)}` } }), null);
 });
 
 // -------------------------------------------------------------------------
@@ -220,12 +234,20 @@ test('E4.1: grants are validated, and there is no wildcard', () => {
   assert.throws(() => parseGrants('{"admin":"admin"}'), /neither an email address nor an @domain/);
 });
 
-test('E4.1: an OAuth client with no grants is refused rather than defaulted', () => {
-  assert.throws(() => readAuthConfig({ GOOGLE_OAUTH_CLIENT_ID: AUD } as any), /nobody could sign in/);
+test('E4.5: with no operator grant, accounts mode starts closed and says how to open it', () => {
+  // E4.1 refused this configuration because it meant nobody could ever get in.
+  // Since E4.5 a stranger can only apply and the first administrator is made
+  // from the server shell, so the configuration is closed rather than broken —
+  // and the reason string says what to do.
+  const closed = readAuthConfig({ GOOGLE_OAUTH_CLIENT_ID: AUD } as any);
+  assert.strictEqual(closed.mode, 'accounts');
+  assert.match(closed.reason, /watchdog-admin grant/);
+
   assert.strictEqual(readAuthConfig({} as any).mode, 'local');
-  assert.strictEqual(readAuthConfig({
-    GOOGLE_OAUTH_CLIENT_ID: AUD, WATCHDOG_GRANTS: '{"a@b.example":"admin"}',
-  } as any).mode, 'oidc');
+  assert.strictEqual(readAuthConfig({ WATCHDOG_AUTH: 'accounts' } as any).mode, 'accounts',
+    'accounts mode without Google, for sign-in by emailed code');
+  assert.strictEqual(readAuthConfig({ GOOGLE_OAUTH_CLIENT_ID: AUD, WATCHDOG_AUTH: 'local' } as any).mode, 'local');
+  assert.throws(() => readAuthConfig({ WATCHDOG_AUTH: 'open' } as any), /must be 'accounts' or 'local'/);
 });
 
 test('E4.1: production refuses to start without authentication unless it is stated on purpose', () => {
@@ -242,11 +264,11 @@ test('E4.1: production refuses to start without authentication unless it is stat
     NODE_ENV: 'production', WATCHDOG_ALLOW_OPEN_INSTANCE: 'true',
   } as any), 'a deliberately public demo stays possible, but has to be typed out');
 
-  const oidc = readAuthConfig({ GOOGLE_OAUTH_CLIENT_ID: AUD, WATCHDOG_GRANTS: '{"a@b.example":"admin"}' } as any);
-  assert.doesNotThrow(() => assertAuthSafeForEnvironment(oidc, { NODE_ENV: 'production' } as any));
+  const accounts = readAuthConfig({ GOOGLE_OAUTH_CLIENT_ID: AUD, WATCHDOG_GRANTS: '{"a@b.example":"admin"}' } as any);
+  assert.doesNotThrow(() => assertAuthSafeForEnvironment(accounts, { NODE_ENV: 'production' } as any));
 });
 
-test('E4.1: oidc mode without a signing key fails with the command that fixes it', async () => {
+test('E4.1: accounts mode without a signing key fails with the command that fixes it', async () => {
   await assert.rejects(() => buildIdentity(
     { GOOGLE_OAUTH_CLIENT_ID: AUD, WATCHDOG_GRANTS: '{"a@b.example":"admin"}' } as any,
     new SecretStore([new EnvSecretProvider({})]), jwksTransport()),

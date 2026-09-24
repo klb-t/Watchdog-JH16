@@ -128,7 +128,9 @@ test('scheduled public work fails explicitly on a source hold rather than collec
 
 test('migration 019 preserves previous jobs and creates no assessments, candidates or drafts automatically',()=>{
   const h=harness(true);try{
-    const j=h.job();assert.deepEqual(runMigrations(h.db).applied,['019_source_access']);assert.deepEqual(runMigrations(h.db).applied,[]);
+    const j=h.job();// 019 and every later migration, derived rather than listed so the next
+    // migration does not require editing this assertion.
+    assert.deepEqual(runMigrations(h.db).applied,MIGRATIONS.filter(m=>m.id>='019').map(m=>m.id));assert.deepEqual(runMigrations(h.db).applied,[]);
     assert.deepEqual(h.repo.job(j.id,'local-user'),j);assert.equal(h.service.overview('local-user').stats.access.permitted,0);assert.equal(h.service.overview('local-user').stats.drafts,0);
     assert.equal(h.service.overview('local-user').stats.acquisition.profile_default,5);
   }finally{h.close();}

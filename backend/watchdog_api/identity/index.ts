@@ -1,7 +1,9 @@
 import {
-  GoogleOidcVerifier, JwksCache, JwksTransport, OidcIdentityProvider, SessionCodec,
+  GoogleOidcVerifier, JwksCache, JwksTransport, SessionIdentityProvider, SessionCodec,
   OidcConfig, TokenRejectedError,
 } from './oidc';
+import type { AdmissionService } from './admission';
+import type { AdmissionRepository } from '../db/repositories/admission';
 import { Role, isRole, Capability, can, ForbiddenError, UnauthenticatedError, ROLES } from './roles';
 import { Principal, LOCAL_USER, LocalUserIdentityProvider } from '../domain/principal';
 import { SecretStore, secretStore as defaultSecretStore } from '../secrets';
@@ -18,7 +20,10 @@ export * from './oidc';
  *    `dev` role. This is E1's behaviour and it stays the default for local
  *    work, because requiring an OAuth client to run the test suite is the
  *    infrastructure-before-flow trap `CLAUDE.md` §2 names.
- *  - **oidc** — Google sign-in, grants, RBAC.
+ *  - **accounts** (E4.5) — people sign in (Google, or a one-time code sent to
+ *    their address), and what they may do comes from admission grants that are
+ *    re-read on every request. Called `oidc` before E4.5, when Google was the
+ *    only method and the environment grant list the only admission.
  *
  * The dangerous state is local mode on a public URL. That is prevented by
  * `assertAuthSafeForEnvironment`, which refuses to start rather than warning:
@@ -26,7 +31,7 @@ export * from './oidc';
  * describes is an open instance.
  */
 
-export type AuthMode = 'local' | 'oidc';
+export type AuthMode = 'local' | 'accounts';
 
 export interface AuthConfig {
   readonly mode: AuthMode;
@@ -87,24 +92,34 @@ export function parseGrants(raw: string | undefined): Record<string, Role> {
   return out;
 }
 
+/**
+ * Accounts mode is on when Google sign-in is configured or when it is asked for
+ * explicitly (`WATCHDOG_AUTH=accounts`, for installations that sign people in by
+ * emailed code only).
+ *
+ * An empty `WATCHDOG_GRANTS` is no longer an error, as it was in E4.1. Then it
+ * meant "nobody can ever get in". Now the default is closed rather than open —
+ * a stranger can only apply — and the first administrator can be created from
+ * the server shell (`watchdog-admin grant`). The reason string says so, so the
+ * state is inspectable rather than silent.
+ */
 export function readAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig {
   const audience = env.GOOGLE_OAUTH_CLIENT_ID?.trim() || null;
   const grants = parseGrants(env.WATCHDOG_GRANTS);
+  const requested = env.WATCHDOG_AUTH?.trim().toLowerCase();
+  if (requested && requested !== 'accounts' && requested !== 'local') {
+    throw new AuthConfigError(`WATCHDOG_AUTH must be 'accounts' or 'local', not '${env.WATCHDOG_AUTH}'.`);
+  }
 
-  if (!audience) {
+  if (requested === 'local' || (!audience && requested !== 'accounts')) {
     return { mode: 'local', grants: {}, audience: null,
-      reason: 'GOOGLE_OAUTH_CLIENT_ID is not set, so no sign-in is possible and every request is the local user.' };
+      reason: 'No sign-in is configured (GOOGLE_OAUTH_CLIENT_ID unset, WATCHDOG_AUTH not "accounts"), so every request is the local user.' };
   }
-  if (Object.keys(grants).length === 0) {
-    // Refused rather than defaulted: an OAuth client with an empty grant list
-    // is either a half-finished configuration or an accidental open door,
-    // and guessing which one is not this code's decision to make.
-    throw new AuthConfigError(
-      'GOOGLE_OAUTH_CLIENT_ID is set but WATCHDOG_GRANTS is empty, so nobody could sign in. ' +
-      'Set WATCHDOG_GRANTS, e.g. {"you@example.com":"admin"}.');
-  }
-  return { mode: 'oidc', audience, grants,
-    reason: `Google sign-in is enabled for ${Object.keys(grants).length} grant(s).` };
+  const methods = [audience ? 'Google' : null, 'emailed code (when mail is configured)'].filter(Boolean).join(' and ');
+  const bootstrap = Object.keys(grants).length;
+  return { mode: 'accounts', audience, grants,
+    reason: `Sign-in by ${methods}. ${bootstrap > 0 ? `${bootstrap} operator grant(s) from the environment.`
+      : 'No operator grant in the environment: create the first administrator with `watchdog-admin grant`.'}` };
 }
 
 /**
@@ -119,13 +134,13 @@ export function assertAuthSafeForEnvironment(
   env: NodeJS.ProcessEnv = process.env,
 ): void {
   const isProduction = env.NODE_ENV === 'production';
-  if (!isProduction || config.mode === 'oidc') return;
+  if (!isProduction || config.mode === 'accounts') return;
   if (env.WATCHDOG_ALLOW_OPEN_INSTANCE === 'true') return;
 
   throw new AuthConfigError(
     'Refusing to start: NODE_ENV=production with no authentication configured, which would publish an ' +
     'instance where anyone can start runs and approve methods.\n' +
-    '  Fix by setting GOOGLE_OAUTH_CLIENT_ID, WATCHDOG_GRANTS and SESSION_SIGNING_KEY.\n' +
+    '  Fix by setting WATCHDOG_AUTH=accounts (and optionally GOOGLE_OAUTH_CLIENT_ID) with SESSION_SIGNING_KEY.\n' +
     '  Or, if an open instance is genuinely intended, set WATCHDOG_ALLOW_OPEN_INSTANCE=true.');
 }
 
@@ -134,8 +149,9 @@ const defaultJwksTransport: JwksTransport = (url) => fetch(url) as any;
 export interface Identity {
   readonly mode: AuthMode;
   readonly config: AuthConfig;
-  /** Present only in oidc mode. */
+  /** Present only in accounts mode with Google configured. */
   readonly verifier: GoogleOidcVerifier | null;
+  /** Present only in accounts mode. */
   readonly codec: SessionCodec | null;
   resolve(request: unknown): Promise<Principal | null>;
 }
@@ -143,10 +159,35 @@ export interface Identity {
 /** In local mode the single principal holds `dev`, matching E1's behaviour. */
 export const LOCAL_PRINCIPAL: Principal = { ...LOCAL_USER, roles: ['dev'] };
 
+export interface AdmissionWiring {
+  readonly service: AdmissionService;
+  readonly repository: AdmissionRepository;
+}
+
+/**
+ * The per-request lookup that makes revocation immediate: an inactive
+ * principal, or a cookie from an older session generation, resolves to nobody;
+ * roles come from `AdmissionService.effective`, never from the cookie.
+ */
+export function sessionLookup(admission: AdmissionWiring) {
+  return (principalId: string, sessionVersion: number): Principal | null => {
+    const row = admission.repository.principal(principalId);
+    if (!row || !row.active || row.session_version !== sessionVersion || !row.email) return null;
+    const email = row.email.toLowerCase();
+    return {
+      id: row.id,
+      email,
+      roles: admission.service.effective(email).roles,
+      identityProvenance: 'session',
+    };
+  };
+}
+
 export async function buildIdentity(
   env: NodeJS.ProcessEnv = process.env,
   secrets: SecretStore = defaultSecretStore,
   jwksTransport: JwksTransport = defaultJwksTransport,
+  admission?: AdmissionWiring,
 ): Promise<Identity> {
   const config = readAuthConfig(env);
 
@@ -158,19 +199,24 @@ export async function buildIdentity(
     };
   }
 
+  // The operator-fixable problem is reported before the wiring one.
   const handle = await secrets.resolve('env:SESSION_SIGNING_KEY');
   if (!handle.isPresent) {
     throw new AuthConfigError(
-      'Google sign-in is configured but SESSION_SIGNING_KEY is missing, so sessions cannot be signed. ' +
+      'Sign-in is configured but SESSION_SIGNING_KEY is missing, so sessions cannot be signed. ' +
       "Generate one with: node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"");
   }
+  if (!admission) {
+    throw new AuthConfigError('Accounts mode needs the admission service; this is a wiring error, not a configuration one.');
+  }
   const codec = handle.use(k => new SessionCodec(k));
-  const oidcConfig: OidcConfig = { audience: config.audience!, grants: config.grants };
-  const verifier = new GoogleOidcVerifier(oidcConfig, new JwksCache(jwksTransport));
-  const provider = new OidcIdentityProvider(codec);
+  const verifier = config.audience
+    ? new GoogleOidcVerifier({ audience: config.audience, grants: config.grants } as OidcConfig, new JwksCache(jwksTransport))
+    : null;
+  const provider = new SessionIdentityProvider(codec, sessionLookup(admission));
 
   return {
-    mode: 'oidc', config, verifier, codec,
+    mode: 'accounts', config, verifier, codec,
     resolve: (request) => provider.resolveOrNull(request),
   };
 }
