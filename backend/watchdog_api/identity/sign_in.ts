@@ -27,6 +27,16 @@ export const SIGN_IN_LIMITS = Object.freeze({
   operatorLinkMinutes: 15,
 });
 
+/**
+ * The sign-in digest key, derived from the session signing key under its own
+ * label so the two uses never share a key. One function, used by the server and
+ * the operator CLI alike: two derivations that drifted apart would make every
+ * operator link silently invalid.
+ */
+export function signInPepper(sessionSigningKey: string): string {
+  return createHmac('sha256', sessionSigningKey).update('watchdog/sign-in-codes/v1').digest('hex');
+}
+
 export function newCode(): string {
   let code = '';
   for (let i = 0; i < SIGN_IN_LIMITS.codeLength; i++) code += CODE_ALPHABET[randomInt(CODE_ALPHABET.length)];

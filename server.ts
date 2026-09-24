@@ -18,11 +18,10 @@ import { buildAccessRouter } from './backend/watchdog_api/api/access_routes';
 import { admissionGate, crossSiteGuard } from './backend/watchdog_api/api/admission_gate';
 import { AdmissionRepository } from './backend/watchdog_api/db/repositories/admission';
 import { AdmissionService } from './backend/watchdog_api/identity/admission';
-import { SignInService } from './backend/watchdog_api/identity/sign_in';
+import { SignInService, signInPepper } from './backend/watchdog_api/identity/sign_in';
 import { MailService, loadAccessMessages } from './backend/watchdog_api/mail';
 import { appendAudit } from './backend/watchdog_api/db/repositories/audit';
 import { secretStore } from './backend/watchdog_api/secrets';
-import { createHmac } from 'node:crypto';
 import { PrincipalRepository } from './backend/watchdog_api/db/repositories/principals';
 import { db, sqlite, dbPath } from './backend/watchdog_api/db/client';
 import { assertStorageSafeForEnvironment } from './backend/watchdog_api/storage/durability';
@@ -105,8 +104,7 @@ export async function configureApp() {
   if (identity.mode === 'accounts') {
     // A separate key per purpose, derived from the one session secret, so the
     // sign-in code digests and the session MAC never share a key.
-    const pepper = (await secretStore.resolve('env:SESSION_SIGNING_KEY'))
-      .use(k => createHmac('sha256', k).update('watchdog/sign-in-codes/v1').digest('hex'));
+    const pepper = (await secretStore.resolve('env:SESSION_SIGNING_KEY')).use(signInPepper);
     signIn = new SignInService(admissionRepository, mail, pepper);
   }
 
