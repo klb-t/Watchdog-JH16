@@ -81,6 +81,7 @@ export function PeopleAccess() {
     <div className="field-page max-w-4xl" data-testid="people-access">
       <h1>{t('people_title')}</h1>
       <p className="text-sm text-slate-600 mt-1">{t('people_intro')}</p>
+      {canAdmit && <ProfileName />}
 
       <div className="flex flex-wrap gap-2 mt-4" role="tablist">
         {tabs.map(([id, label]) => <button key={id} role="tab" aria-selected={tab === id} aria-pressed={tab === id}
@@ -339,6 +340,28 @@ function FreshInvitation({ fresh, data, lang, onChange }: { fresh: Fresh; data: 
     {message && <p className="text-sm text-emerald-700" role="status">{message}</p>}
     {error && <p className="field-error" role="alert">{error}</p>}
   </article>;
+}
+
+/** How invitations are signed: the administrator's own name rather than their address. */
+function ProfileName() {
+  const { t } = useAccessText();
+  const [name, setName] = useState('');
+  const [saved, setSaved] = useState(false);
+  useEffect(() => {
+    void fetch('/api/auth/me', { cache: 'no-store' }).then(r => r.ok ? r.json() : null)
+      .then(d => setName(d?.principal?.display_name ?? '')).catch(() => {});
+  }, []);
+  return <form className="flex flex-wrap items-end gap-2 mt-3" onSubmit={e => {
+    e.preventDefault();
+    void postJson('/api/auth/profile', { display_name: name }).then(() => setSaved(true));
+  }}>
+    <label className="field-control flex-1 min-w-56">{t('profile_name')}
+      <input value={name} maxLength={200} autoComplete="name" onChange={e => { setName(e.target.value); setSaved(false); }}
+        data-testid="profile-name" />
+    </label>
+    <button className="field-button" data-testid="profile-save">{t('profile_save')}</button>
+    {saved && <span className="text-sm text-emerald-700" role="status">{t('profile_saved')}</span>}
+  </form>;
 }
 
 function ClaimLocalUser() {

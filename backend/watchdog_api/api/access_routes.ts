@@ -50,7 +50,8 @@ export function buildAccessRouter(admission: AdmissionService, mail: MailService
   router.use(requireViewer);
   router.use((_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 
-  const inviterName = (req: Request) => req.principal?.email ?? 'WatchDog';
+  const inviterName = (req: Request) =>
+    (req.principal && admission.displayNameOf(req.principal.id)) ?? req.principal?.email ?? 'WatchDog';
 
   const draftFor = (req: Request, invitation: InvitationView, token: string, language: unknown, base: string | null) => {
     const link = base ? linkFor(base, token) : null;

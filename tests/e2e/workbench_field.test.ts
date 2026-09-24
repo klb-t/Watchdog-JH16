@@ -10,6 +10,7 @@ import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
 import { testDataset } from '../helpers/workbench';
 import { testGeometry, regionDataset } from '../helpers/geography';
 import { testSample, testAssertion } from '../helpers/field';
+import { resolveChromium } from '../helpers/browser';
 
 // Runs in CI's Chromium against the real production bundle and isolated storage.
 // No clinical record or live source is approved by these tests.
@@ -32,7 +33,7 @@ before(async () => {
     await new Promise(resolve => setTimeout(resolve, 200));
   }
   assert.ok(ready, serverLog);
-  browser = await chromium.launch(); context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, acceptDownloads: true });
+  browser = await chromium.launch({ executablePath: resolveChromium() }); context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, acceptDownloads: true });
   page = await context.newPage(); page.setDefaultTimeout(15_000); page.on('pageerror', error => browserErrors.push(error.message));
 });
 afterEach(async t => {

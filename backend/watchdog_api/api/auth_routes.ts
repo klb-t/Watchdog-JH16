@@ -176,6 +176,7 @@ export function buildAuthRouter(deps: AuthDeps): Router {
       principal: {
         id: req.principal.id,
         email: req.principal.email,
+        display_name: deps.admission?.displayNameOf(req.principal.id) ?? null,
         roles,
         identity_provenance: req.principal.identityProvenance,
       },
@@ -242,6 +243,12 @@ export function buildAuthRouter(deps: AuthDeps): Router {
     res.setHeader('Set-Cookie', clearSessionCookieHeader(deps.secureCookies));
     res.json({ signed_out: true, everywhere: !!req.principal });
   });
+
+  /** Your own name, as invitations and administrators show it. */
+  router.post('/profile', admissionRoute((req, res) => {
+    if (!accounts || !deps.admission) return needAccounts(res);
+    res.json({ display_name: deps.admission.setDisplayName(actorOf(req), req.body?.display_name) });
+  }));
 
   // ------------------------------------------------------------ invitations (invitee side)
 

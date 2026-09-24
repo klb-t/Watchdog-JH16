@@ -12,6 +12,7 @@ import { LocalFileSystemStore } from '../../backend/watchdog_api/storage/object_
 import { sourceSnapshot } from '../fixtures/source_history';
 import { loadAutomationProfile } from '../../backend/watchdog_api/config/automation';
 import { withCollectionPurpose } from '../../shared/collection';
+import { resolveChromium } from '../helpers/browser';
 
 /**
  * E1.21-E1.23 — browser-driven end-to-end tests against fixtures.
@@ -30,20 +31,6 @@ const DB_PATH = path.join('/tmp', `watchdog_e2e_${Date.now()}.sqlite`);
 // reset together: dedup is decided against the database, so a surviving store
 // paired with a fresh database is a different scenario from a clean start.
 const STORE_PATH = path.join('/tmp', `watchdog_e2e_store_${Date.now()}`);
-
-function resolveChromium(): string | undefined {
-  const root = process.env.PLAYWRIGHT_BROWSERS_PATH ?? '/opt/pw-browsers';
-  if (!fs.existsSync(root)) return undefined;   // fall back to Playwright's own lookup
-  for (const dir of fs.readdirSync(root).sort()) {
-    for (const candidate of [
-      path.join(root, dir, 'chrome-linux', 'chrome'),
-      path.join(root, dir, 'chrome-linux', 'headless_shell'),
-    ]) {
-      if (fs.existsSync(candidate)) return candidate;
-    }
-  }
-  return undefined;
-}
 
 async function waitForServer(url: string, timeoutMs = 60_000) {
   const deadline = Date.now() + timeoutMs;

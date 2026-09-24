@@ -124,7 +124,10 @@
       "role_law_enforcement": "organy ścigania",
       "role_admin": "administrator",
       "role_developer": "deweloper",
-      "role_dev": "deweloper"
+      "role_dev": "deweloper",
+      "profile_name": "Twoje imię i nazwisko (tak podpiszesz zaproszenia)",
+      "profile_save": "Zapisz",
+      "profile_saved": "Zapisano."
     },
     "en": {
       "language_name": "English",
@@ -247,7 +250,10 @@
       "role_law_enforcement": "law enforcement",
       "role_admin": "administrator",
       "role_developer": "developer",
-      "role_dev": "developer"
+      "role_dev": "developer",
+      "profile_name": "Your name (how your invitations are signed)",
+      "profile_save": "Save",
+      "profile_saved": "Saved."
     }
   }
 }

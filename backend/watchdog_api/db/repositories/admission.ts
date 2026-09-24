@@ -121,9 +121,14 @@ export class AdmissionRepository {
       VALUES (?, ?, ?, ?, 1, ?, ?, 1)`).run(p.id, p.email, p.displayName, p.provenance, p.at, p.at);
   }
 
+  /** A provider-supplied name fills an empty one; it never overwrites a name the person chose. */
   touchPrincipal(id: string, displayName: string | null, at: string): void {
-    this.db.prepare(`UPDATE principals SET last_seen_at = ?, display_name = COALESCE(?, display_name) WHERE id = ?`)
+    this.db.prepare(`UPDATE principals SET last_seen_at = ?, display_name = COALESCE(display_name, ?) WHERE id = ?`)
       .run(at, displayName, id);
+  }
+
+  setDisplayName(id: string, displayName: string | null): void {
+    this.db.prepare('UPDATE principals SET display_name = ? WHERE id = ?').run(displayName, id);
   }
 
   setPrincipalActive(id: string, active: boolean): void {

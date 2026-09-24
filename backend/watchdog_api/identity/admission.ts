@@ -290,6 +290,19 @@ export class AdmissionService {
     });
   }
 
+  // ------------------------------------------------------------------ profile
+
+  /** The name shown on invitations and to administrators; the person's own choice. */
+  setDisplayName(actor: AdmissionActor, raw: unknown): string | null {
+    const name = boundedText(raw, APPLICATION_LIMITS.fieldMax, 'The name');
+    this.repo.setDisplayName(actor.principalId, name);
+    return name;
+  }
+
+  displayNameOf(principalId: string): string | null {
+    return this.repo.principal(principalId)?.display_name ?? null;
+  }
+
   // ------------------------------------------------------------------ invitations
 
   createInvitation(actor: AdmissionActor, input: {
@@ -525,6 +538,7 @@ export class AdmissionService {
       submitted_at: this.now().toISOString(),
     };
     this.repo.insertApplication(row);
+    if (row.display_name && !this.displayNameOf(actor.principalId)) this.repo.setDisplayName(actor.principalId, row.display_name);
     this.audit(actor.principalId, 'access.application.submitted', 'access_application', row.id, actor.requestId,
       { requestedRoles: requested });
     return this.repo.application(row.id)!;
@@ -556,12 +570,15 @@ export class AdmissionService {
     const grantId = randomUUID();
     const note = boundedText(input.note, INVITATION_LIMITS.noteMax, 'The note');
     this.repo.transaction(() => {
-      if (!this.repo.decideApplication(id, { status: 'approved', by: actor.principalId, note, grantId, at })) {
-        throw new AdmissionError('conflict', 409, 'This application has already been decided.');
-      }
+      // The grant first, because the application row references it. If the
+      // application was already decided, the throw below rolls the grant back
+      // with it — the "only a pending application" guard still holds.
       this.repo.insertGrant({ id: grantId, email: application.email, roles_json: JSON.stringify(roles),
         source: 'application', source_id: id, granted_by: actor.principalId, granted_at: at,
         expires_at: futureIso(input.accessExpiresAt, this.now(), 'Access expiry'), note });
+      if (!this.repo.decideApplication(id, { status: 'approved', by: actor.principalId, note, grantId, at })) {
+        throw new AdmissionError('conflict', 409, 'This application has already been decided.');
+      }
       this.repo.mirrorRoles(application.principal_id, this.effective(application.email).roles);
     });
     this.audit(actor.principalId, 'access.application.approved', 'access_application', id, actor.requestId,
