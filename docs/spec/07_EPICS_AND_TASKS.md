@@ -52,6 +52,15 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   commands and Polish runbook implemented. Local installer/profile regression passes;
   the new real-container CI build/start/persistence gate must pass before closing this task.
   No live GCP provisioning is claimed. See DEPLOY_GCP_VM.md.
+- [ ] **E3.14 — Public HTTPS entry for invited testers.** `deploy_gcp_vm.sh --public
+  --owner EMAIL` (or `--domain HOST`): static external IP, VM-scoped 80/443 rule, Caddy
+  (`deploy/watchdog-proxy.service`) with automatic certificates, `<ip>.sslip.io` when there
+  is no domain, sign-in enabled before the address opens (`watchdogctl enable-public` refuses
+  otherwise), default ref = the checked-out branch instead of a stale one. Tested: CLI-mock
+  ordering/refusal tests in `tests/integration/gcp_vm.test.ts`; locally the real server in
+  production mode behind the same hardened Caddy container (401 anonymous, 403 cross-site,
+  forwarded headers rewritten). Not ticked until the first real certificate is issued on
+  the owner's VM — no agent has done that.
 - [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.
@@ -604,7 +613,9 @@ Publication is no longer blocked: the branch was published and GitHub Actions
 `Watchdog validation` runs #51 (push) and #52 (PR) on `fb5b29d` concluded **success**.
 What remains before ticking E3.13 is the first real installation on the owner's VM, which
 no agent has performed. `claude/ai-studio-last-commit-gjqxy4` now carries the continuation
-plus main's hygiene merge and E4.5 on top.
+plus main's hygiene merge and E4.5 on top. The runbook previously told the owner to clone
+`astra/watchdog-continuation-20260908` (no sign-in, no E4.5); it now names this branch and the
+installer deploys whatever branch is checked out. E3.14 (public HTTPS) shares this blocker.
 
 ### Continuation checkpoint (2026-09-08)
 

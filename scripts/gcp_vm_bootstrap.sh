@@ -3,18 +3,25 @@
 set -Eeuo pipefail
 umask 077
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
-archive=''; commit=''
+archive=''; commit=''; public_host=''; owner=''
 while (($#)); do
   case "$1" in
-    --help|-h) printf '%s\n' 'Internal VM bootstrap: sudo bash gcp_vm_bootstrap.sh --archive SOURCE.tar.gz --commit FULL_SHA'; exit 0 ;;
-    --archive|--commit)
+    --help|-h) printf '%s\n' 'Internal VM bootstrap: sudo bash gcp_vm_bootstrap.sh --archive SOURCE.tar.gz --commit FULL_SHA [--public-host HOST] [--owner EMAIL]'; exit 0 ;;
+    --archive|--commit|--public-host|--owner)
       (($# >= 2)) || die "Missing value for $1"
-      case "$1" in --archive) archive=$2;; --commit) commit=$2;; esac; shift 2 ;;
+      case "$1" in --archive) archive=$2;; --commit) commit=$2;; --public-host) public_host=${2,,};; --owner) owner=${2,,};; esac; shift 2 ;;
     *) die "Unknown option: $1" ;;
   esac
 done
 [[ $commit =~ ^[a-f0-9]{40}$ && -f $archive ]] || die 'A source archive and full commit SHA are required.'
+[[ -z $public_host || $public_host =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$ ]] || die 'Invalid public host name.'
+[[ -z $owner || $owner =~ ^[^[:space:]@\"]+@[^[:space:]@\"]+\.[^[:space:]@\"]+$ ]] || die 'Invalid owner email.'
 ((EUID == 0)) || die 'Run through sudo.'
+# A public address in front of the shared local user would give the instance to
+# anyone. Checked before anything is built or changed.
+if [[ -n $public_host && -z $owner ]] && ! grep -qsx 'WATCHDOG_AUTH=accounts' /etc/watchdog/app.env; then
+  die 'Public access needs sign-in: pass --owner YOUR_EMAIL (you become the operator).'
+fi
 # shellcheck source=/dev/null
 . /etc/os-release
 case "$ID:$VERSION_ID" in ubuntu:22.04|ubuntu:24.04|ubuntu:26.04|debian:12|debian:13) ;; *) die 'Supported: Ubuntu 22.04/24.04/26.04 or Debian 12/13.';; esac
@@ -112,6 +119,7 @@ fi
 chmod 0600 /etc/watchdog/app.env
 printf 'WATCHDOG_IMAGE=%s\nWATCHDOG_COMMIT=%s\n' "$image" "$commit" > /etc/watchdog/release.env
 install -m 0644 "$release/deploy/watchdog.service" /etc/systemd/system/watchdog.service
+install -m 0644 "$release/deploy/watchdog-proxy.service" /etc/systemd/system/watchdog-proxy.service
 install -m 0755 "$release/scripts/watchdogctl.sh" /usr/local/sbin/watchdogctl
 systemctl daemon-reload
 systemctl enable --now watchdog.service
@@ -126,4 +134,12 @@ if ! $ready; then
 fi
 ln -sfn "$release" /opt/watchdog/current
 printf '\nWatchdog ready at VM loopback port 8080, commit %s.\n' "$commit"
-printf '%s\n' 'Commands: sudo watchdogctl status | logs | backup. Re-run the Cloud Shell installer to update.'
+# Sign-in before the public address, always: enable-public refuses otherwise.
+if [[ -n $owner ]]; then /usr/local/sbin/watchdogctl enable-accounts "$owner" --no-link; fi
+if [[ -n $public_host ]]; then /usr/local/sbin/watchdogctl enable-public "$public_host"; fi
+if systemctl is-enabled --quiet watchdog-proxy.service 2>/dev/null; then systemctl restart watchdog-proxy.service; fi
+if [[ -n $owner ]]; then
+  printf '\nYour one-time sign-in link (15 minutes):\n'
+  /usr/local/sbin/watchdogctl signin-link "$owner"
+fi
+printf '%s\n' 'Commands: sudo watchdogctl status | logs | backup | people. Re-run the Cloud Shell installer to update.'

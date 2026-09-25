@@ -31,7 +31,7 @@ case "${1:-help}" in
     # Switches the private installation from one shared local user to sign-in,
     # with EMAIL as the operator-granted developer who can then admit others.
     need_root
-    email=${2:-}
+    email=${2:-}; quiet=false; [[ ${3:-} == --no-link ]] && quiet=true
     [[ $email =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]] || { echo 'Usage: sudo watchdogctl enable-accounts YOUR_EMAIL' >&2; exit 1; }
     email=${email,,}
     set_env WATCHDOG_AUTH accounts
@@ -41,7 +41,50 @@ case "${1:-help}" in
     for _ in {1..60}; do curl --fail --silent --max-time 2 http://127.0.0.1:8080/api/auth/config >/dev/null && break; sleep 2; done
     printf 'Sign-in is on. %s is the operator (developer), which the UI cannot remove.\n' "$email"
     printf 'Existing runs belong to "local-user"; claim them from People & access after signing in.\n\n'
-    admin signin-link "$email" ;;
+    $quiet || admin signin-link "$email" ;;
+  enable-public)
+    # Opens the installation to the internet over HTTPS. Refuses unless sign-in
+    # is on: a public address in front of the single shared local user would
+    # hand the whole instance to anyone who finds it. The app itself stays on
+    # 127.0.0.1:8080; only Caddy listens publicly, and only on 80 and 443.
+    # The cloud firewall (GCP: deploy_gcp_vm.sh --public) must allow 80/443 too.
+    need_root
+    host=${2:-}; host=${host,,}
+    [[ $host =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$ ]] || { echo 'Usage: sudo watchdogctl enable-public HOST (e.g. 34-118-12-7.sslip.io, no https://)' >&2; exit 1; }
+    grep -qsx 'WATCHDOG_AUTH=accounts' "$ENV_FILE" || { echo 'Refusing: sign-in is off. First: sudo watchdogctl enable-accounts YOUR_EMAIL' >&2; exit 1; }
+    [[ -f /etc/systemd/system/watchdog-proxy.service ]] || { echo 'The proxy unit is missing; update the installation first (rerun deploy_gcp_vm.sh).' >&2; exit 1; }
+    install -d -m 0700 /var/lib/watchdog-proxy /var/lib/watchdog-proxy/data /var/lib/watchdog-proxy/config
+    printf '%s {\n\tencode zstd gzip\n\theader Strict-Transport-Security "max-age=31536000"\n\treverse_proxy 127.0.0.1:8080\n}\n' "$host" > /etc/watchdog/Caddyfile.tmp
+    chmod 0644 /etc/watchdog/Caddyfile.tmp; mv /etc/watchdog/Caddyfile.tmp /etc/watchdog/Caddyfile
+    printf '%s\n' "$host" > /etc/watchdog/public-host
+    set_env WATCHDOG_PUBLIC_URL "https://$host"
+    # Requests reach the app from Caddy through Docker's loopback port mapping;
+    # nothing else can connect to 127.0.0.1:8080, and Caddy rewrites
+    # X-Forwarded-For with the real client address.
+    set_env WATCHDOG_TRUST_PROXY 'loopback,uniquelocal'
+    if command -v ufw >/dev/null; then
+      ufw allow 80/tcp comment 'Watchdog HTTPS (certificate + redirect)' >/dev/null
+      ufw allow 443/tcp comment 'Watchdog HTTPS' >/dev/null
+    fi
+    systemctl restart watchdog.service
+    for _ in {1..60}; do curl --fail --silent --max-time 2 http://127.0.0.1:8080/api/auth/config >/dev/null && break; sleep 2; done
+    systemctl enable watchdog-proxy.service >/dev/null 2>&1
+    systemctl restart watchdog-proxy.service
+    printf 'Public address: https://%s\n' "$host"
+    printf 'The first certificate can take a minute. If it never arrives: sudo watchdogctl proxy-logs\n' ;;
+  disable-public)
+    need_root
+    systemctl disable --now watchdog-proxy.service 2>/dev/null || true
+    if command -v ufw >/dev/null; then
+      ufw delete allow 80/tcp >/dev/null 2>&1 || true
+      ufw delete allow 443/tcp >/dev/null 2>&1 || true
+    fi
+    rm -f /etc/watchdog/public-host
+    set_env WATCHDOG_PUBLIC_URL ''
+    set_env WATCHDOG_TRUST_PROXY ''
+    systemctl restart watchdog.service
+    echo 'Public HTTPS is off; the app is reachable only through the IAP tunnel again.' ;;
+  proxy-logs) journalctl -u watchdog-proxy.service -n 150 --no-pager ;;
   set-public-url)
     need_root
     url=${2:-}
@@ -87,6 +130,9 @@ case "${1:-help}" in
 Usage: sudo watchdogctl COMMAND
   status | logs | restart | backup
   enable-accounts YOUR_EMAIL     turn on sign-in; you become the operator
+  enable-public HOST             open https://HOST to the internet (sign-in must be on)
+  disable-public                 back to IAP-only access
+  proxy-logs                     HTTPS proxy / certificate log
   set-public-url https://HOST    address people open (needed to email links)
   set-mail                       configure outgoing mail (prompts, nothing in history)
   people                         who has access, who is waiting

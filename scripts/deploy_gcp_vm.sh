@@ -4,23 +4,30 @@
 set -Eeuo pipefail
 usage() {
   cat <<'EOF'
-Usage: bash scripts/deploy_gcp_vm.sh --project PROJECT --zone ZONE --instance VM [--ref REF] [--plan]
-Default ref: astra/watchdog-continuation-20260908. Run from a GitHub checkout.
+Usage: bash scripts/deploy_gcp_vm.sh --project PROJECT --zone ZONE --instance VM
+         [--ref REF] [--owner EMAIL] [--public | --domain HOST] [--plan]
+Default ref: the branch checked out here. Run from a GitHub checkout.
 Without flags, project defaults to gcloud's current project; zone/VM are prompted.
 Configures only the selected VM, scoped firewall rules and boot-disk retention.
 App access: SSH through IAP + Cloud Shell Web Preview, port 8080.
+--owner EMAIL  turn on sign-in with EMAIL as the operator; prints a sign-in link.
+--public       also open https://<VM-IP>.sslip.io to the internet (no domain needed;
+               sign-in required). Keeps the VM's external IP by making it static.
+--domain HOST  like --public, with your own name (its DNS A record -> the VM's IP).
 --plan validates/prints intent without fetching code or changing cloud resources.
 EOF
 }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
-project=''; zone=''; instance=''; ref='astra/watchdog-continuation-20260908'; plan=false
+project=''; zone=''; instance=''; ref=''; plan=false; public=false; domain=''; owner=''
 while (($#)); do
   case "$1" in
     --help|-h) usage; exit 0 ;;
     --plan) plan=true; shift ;;
-    --project|--zone|--instance|--ref)
+    --public) public=true; shift ;;
+    --project|--zone|--instance|--ref|--domain|--owner)
       (($# >= 2)) || die "Missing value for $1"
-      case "$1" in --project) project=$2;; --zone) zone=$2;; --instance) instance=$2;; --ref) ref=$2;; esac
+      case "$1" in --project) project=$2;; --zone) zone=$2;; --instance) instance=$2;; --ref) ref=$2;;
+        --domain) domain=${2,,}; public=true;; --owner) owner=${2,,};; esac
       shift 2 ;;
     *) die "Unknown option: $1" ;;
   esac
@@ -32,13 +39,24 @@ if [[ -z $zone && -t 0 ]]; then read -r -p 'VM zone (e.g. europe-central2-a): ' 
 [[ $project =~ ^[a-z][a-z0-9-]{4,61}[a-z0-9]$ ]] || die 'Supply --project PROJECT_ID.'
 [[ $zone =~ ^[a-z]+-[a-z0-9]+[0-9]-[a-z]$ ]] || die 'Supply --zone, for example europe-central2-a.'
 [[ $instance =~ ^[a-z]([a-z0-9-]{0,61}[a-z0-9])?$ ]] || die 'Supply a valid --instance name.'
-[[ $ref =~ ^[a-zA-Z0-9][a-zA-Z0-9._/-]*$ && $ref != *..* ]] || die 'Invalid Git ref.'
-printf 'Target: %s / %s / %s; Git ref: %s\n' "$project" "$zone" "$instance" "$ref"
+[[ -z $ref || ( $ref =~ ^[a-zA-Z0-9][a-zA-Z0-9._/-]*$ && $ref != *..* ) ]] || die 'Invalid Git ref.'
+[[ -z $domain || $domain =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$ ]] || die 'Invalid --domain (a host name, no https://).'
+[[ -z $owner || $owner =~ ^[^[:space:]@\"]+@[^[:space:]@\"]+\.[^[:space:]@\"]+$ ]] || die 'Invalid --owner email.'
+printf 'Target: %s / %s / %s; Git ref: %s\n' "$project" "$zone" "$instance" "${ref:-the branch checked out here}"
 printf '%s\n' 'Dedicated VM: deny external ingress; allow SSH from IAP; bind app to 127.0.0.1:8080.'
+if $public; then
+  printf 'Public: HTTPS on %s (ports 80/443 open; Caddy in front; sign-in enforced).\n' "${domain:-<external IP>.sslip.io}"
+  printf '%s\n' "The VM's current external IPv4 is promoted to a static address so the name keeps working."
+fi
 printf '%s\n' 'Data: /var/lib/watchdog; backups: /var/backups/watchdog; keep boot disk after VM deletion.'
 if $plan; then exit 0; fi
 
 repo=$(git -C "$(dirname "${BASH_SOURCE[0]}")/.." rev-parse --show-toplevel)
+if [[ -z $ref ]]; then
+  ref=$(git -C "$repo" symbolic-ref --quiet --short HEAD) || die 'Detached checkout: pass --ref BRANCH_OR_SHA.'
+  [[ $ref =~ ^[a-zA-Z0-9][a-zA-Z0-9._/-]*$ && $ref != *..* ]] || die 'Invalid Git ref.'
+  printf 'Git ref: %s (checked out here)\n' "$ref"
+fi
 # Authentication, when needed for a private repository, happens here, not on the VM.
 git -C "$repo" fetch origin "$ref"
 commit=$(git -C "$repo" rev-parse 'FETCH_HEAD^{commit}')
@@ -66,11 +84,16 @@ network = nics[0]['network']
 parts = network.split('/')
 project = parts[parts.index('projects') + 1]
 disk = next(d for d in vm['disks'] if d.get('boot'))
-print(network); print(project); print('wd-' + str(vm['id'])); print(disk['source'].split('/')[-1])
+nat = next((c.get('natIP', '') for c in nics[0].get('accessConfigs', []) if c.get('natIP')), '')
+print(network); print(project); print('wd-' + str(vm['id'])); print(disk['source'].split('/')[-1]); print(nat)
 PY
 mapfile -t target < "$stage/target"
-network=${target[0]}; network_project=${target[1]}; tag=${target[2]}; boot_disk=${target[3]}
+network=${target[0]}; network_project=${target[1]}; tag=${target[2]}; boot_disk=${target[3]}; external_ip=${target[4]:-}
 [[ $tag =~ ^wd-[0-9]+$ ]] || die 'Unexpected VM identity.'
+if $public; then
+  [[ $external_ip =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]] || die 'The VM has no external IPv4. Console: VM → Edit → Network interface → External IPv4 address → Ephemeral, then rerun.'
+  public_host=${domain:-${external_ip//./-}.sslip.io}
+fi
 gcloud services enable compute.googleapis.com iap.googleapis.com --project "$project" --quiet
 
 # Upsert only names derived from the VM's immutable numeric ID. Never delete or
@@ -102,13 +125,32 @@ firewall "$tag-private-v4" deny 1 '0.0.0.0/0' all
 firewall "$tag-private-v6" deny 1 '::/0' all
 ssh_vm 'true' || die 'IAP check after firewall update failed. Inspect the two VM-scoped private rules in the GCP console.'
 gcloud compute instances set-disk-auto-delete "$instance" --project "$project" --zone "$zone" --disk "$boot_disk" --no-auto-delete --quiet
+if $public; then
+  # An ephemeral IP changes when the VM is stopped, which would break the
+  # address people were given. Promoting it keeps the same IP (and its price
+  # while attached); nothing else about the network changes.
+  region=${zone%-*}
+  existing=$(gcloud compute addresses list --project "$project" --filter="address=$external_ip" --format='value(name)')
+  if [[ -z $existing ]]; then
+    gcloud compute addresses create "$tag-ip" --project "$project" --region "$region" --addresses "$external_ip" --quiet
+  fi
+  firewall "$tag-web" allow 0 '0.0.0.0/0' 'tcp:80,tcp:443'
+fi
 remote_dir=$(ssh_vm 'umask 077; mktemp -d /tmp/watchdog-deploy.XXXXXXXX')
 [[ $remote_dir =~ ^/tmp/watchdog-deploy\.[a-zA-Z0-9]{8}$ ]] || die 'Unexpected remote staging path.'
 gcloud compute scp "$stage/source.tar.gz" "$instance:$remote_dir/source.tar.gz" --project "$project" --zone "$zone" --tunnel-through-iap --quiet
+extra=()
+[[ -n $owner ]] && extra+=(--owner "$owner")
+$public && extra+=(--public-host "$public_host")
 printf -v remote_command 'set -eu; cd %q; printf "%%s  source.tar.gz\\n" %q | sha256sum -c -; tar -xzf source.tar.gz scripts/gcp_vm_bootstrap.sh; sudo bash scripts/gcp_vm_bootstrap.sh --archive %q --commit %q' "$remote_dir" "$checksum" "$remote_dir/source.tar.gz" "$commit"
+for arg in "${extra[@]}"; do printf -v remote_command '%s %q' "$remote_command" "$arg"; done
 ssh_vm "$remote_command"
 ssh_vm "rm -rf -- $remote_dir"
 printf '\nInstalled commit: %s\n' "$commit"
+if $public; then
+  printf '\nOpen: https://%s  (the certificate can take a minute on first start)\n' "$public_host"
+  printf '%s\n' 'Sign in with the one-time link printed above. The IAP tunnel below still works too.'
+fi
 printf 'Open a tunnel (leave this terminal running):\n'
 printf 'gcloud compute ssh %q --project %q --zone %q --tunnel-through-iap -- -N -o ExitOnForwardFailure=yes -L 127.0.0.1:8080:127.0.0.1:8080\n' "$instance" "$project" "$zone"
 printf '%s\n' 'Cloud Shell: Web Preview → Preview on port 8080. Local terminal: http://127.0.0.1:8080/setup'

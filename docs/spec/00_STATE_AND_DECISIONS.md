@@ -560,6 +560,19 @@ a routed page has no place in the navigation or a navigation entry points at no 
 Larger moves the note proposes (project container, reviewer projection, Knowledge Base
 explorer) are ledger items E7.2–E7.6, not done here.
 
+### D22 — Public entry: Caddy in front, sslip.io when there is no domain (2026-09-25)
+
+Invited testers cannot use the IAP tunnel, and a bare `http://IP` is not acceptable: session
+cookies are `Secure` in production and sign-in codes must not travel in clear text. The
+owner has no domain. Default: the host name `<ip-with-dashes>.sslip.io`, which resolves to
+the IP written in it, with a Let's Encrypt certificate obtained by Caddy; `--domain` takes an
+owned name instead. Caddy is the only public listener (80/443); the app stays on
+127.0.0.1:8080 and trusts forwarded headers only from loopback/private addresses, which
+only Caddy can reach. Opening the address is refused unless sign-in is on, so a public
+instance can never be the shared local user. The external IP is made static so links sent
+to people keep working. Owner-facing trade-off: the address contains the VM's IP and looks
+technical; a custom domain later changes only the host name (`enable-public NEWHOST`).
+
 ## 4. Open questions for the maintainer
 
 Do not block on these. Proceed with the stated default and flag the assumption.

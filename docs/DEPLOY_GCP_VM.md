@@ -1,11 +1,13 @@
 # Watchdog na istniejącej maszynie GCP
 
-Ten instalator uruchamia obecną gałąź rozwojową na jednej, przeznaczonej dla Watchdoga
-maszynie Compute Engine. Wykonujesz go w **Cloud Shell**, nie w terminalu SSH samej VM.
-Instalacja nie wymaga klucza LLM. To prywatna instalacja właściciela: dostęp przez IAP/SSH,
-w aplikacji wspólna tożsamość `local-user` z pełnymi możliwościami deweloperskimi.
-Ekran zamkniętego logowania, formularz prośby o dostęp i zaproszenia e-mail są kolejnym
-etapem E4.5. Nie udostępniaj tego tunelu innym użytkownikom jako gotowego systemu kont.
+Ten instalator uruchamia gałąź, którą masz wybraną w Cloud Shell, na jednej, przeznaczonej
+dla Watchdoga maszynie Compute Engine. Wykonujesz go w **Cloud Shell**, nie w terminalu SSH
+samej VM. Instalacja nie wymaga klucza LLM.
+
+Dwa warianty:
+- **prywatny** (domyślny) — tylko Ty, przez tunel IAP;
+- **publiczny** (`--public --owner TWÓJ_EMAIL`) — adres `https://…` dla innych ludzi,
+  z ekranem logowania. Bez własnej domeny: nazwę daje darmowe sslip.io z IP maszyny.
 
 ## Przygotuj VM
 
@@ -16,7 +18,9 @@ etapem E4.5. Nie udostępniaj tego tunelu innym użytkownikom jako gotowego syst
   VM, zostawiając SSH z IAP; użyj maszyny przeznaczonej dla Watchdoga.
 - Wyjście do internetu do pobrania pakietów, obrazu Node, npm i Chromium. VM może mieć
   zewnętrzny IP z zamkniętym ruchem przychodzącym; bez zewnętrznego IP potrzebuje np. Cloud NAT.
-- Nie trzeba otwierać HTTP/HTTPS ani portu 8080 w konsoli GCP.
+- Nie trzeba ręcznie otwierać portów w konsoli GCP. Wariant publiczny sam dodaje regułę
+  80/443 wyłącznie dla tej VM; wymaga zewnętrznego IPv4 (Edit → Network interface →
+  External IPv4 address: Ephemeral), który skrypt zamienia na statyczny.
 
 Konto uruchamiające skrypt musi móc opisać VM, dodać tag, zmienić reguły firewalla i retencję
 dysku, włączyć Compute/IAP oraz połączyć się przez IAP i SSH z `sudo`. W zależności od
@@ -30,12 +34,15 @@ Szczegóły połączenia: [oficjalny opis IAP](https://docs.cloud.google.com/iap
 Otwórz Cloud Shell przyciskiem terminala w konsoli Google Cloud. Wklej:
 
 ```bash
-git clone --branch astra/watchdog-continuation-20260908 https://github.com/klb-t/Watchdog-JH16.git
+git clone --branch claude/ai-studio-last-commit-gjqxy4 https://github.com/klb-t/Watchdog-JH16.git
 cd Watchdog-JH16
-bash scripts/deploy_gcp_vm.sh --project TWOJ_PROJEKT --zone TWOJA_STREFA --instance TWOJA_VM
+bash scripts/deploy_gcp_vm.sh --project TWOJ_PROJEKT --zone TWOJA_STREFA --instance TWOJA_VM \
+  --owner twoj@email.pl --public
 ```
 
-Podmień trzy wartości, np. strefę na `europe-central2-a`. Nazwy wypisze też:
+Podmień wartości, np. strefę na `europe-central2-a`. Bez `--public` instalacja zostaje
+prywatna (tunel); bez `--owner` — bez logowania (jeden lokalny użytkownik, tylko tunel).
+Nazwy wypisze też:
 
 ```bash
 gcloud compute instances list --project TWOJ_PROJEKT
@@ -46,8 +53,8 @@ Jeśli masz już checkout, zamiast klonować drugi raz przejdź do niego i wykon
 potem `gh auth setup-git`. Klucze i historia `.git` nie są kopiowane na VM.
 
 `--plan` pokazuje zakres bez pobierania kodu i zmian w chmurze. `--ref PEŁNY_SHA` pozwala
-wybrać konkretny commit; domyślnie skrypt pobiera wymienioną wyżej gałąź i zapisuje jej dokładny
-SHA. Instalator oraz bootstrap muszą istnieć w wybranym commicie.
+wybrać konkretny commit; domyślnie skrypt pobiera gałąź wybraną w tym checkoucie i zapisuje jej
+dokładny SHA. Instalator oraz bootstrap muszą istnieć w wybranym commicie.
 
 Skrypt:
 
@@ -78,16 +85,52 @@ oddzielnej oceny; te skrypty nie rekonfigurują całej organizacji GCP.
 Na końcu skrypt wypisuje komendę tunelu z właściwymi nazwami. Uruchom ją w Cloud Shell
 i pozostaw terminal działający. Następnie **Web Preview → Preview on port 8080**.
 Wejdź na `/setup`, uruchom kreator i w razie potrzeby podaj własne klucze.
-Nie używaj publicznego IP VM jako adresu aplikacji.
+Nie używaj gołego `http://IP` jako adresu aplikacji — w wariancie publicznym używaj `https://…sslip.io`.
 
 Po zamknięciu Cloud Shell tunel znika, ale system i harmonogramy dalej działają na VM.
 Kolejne wejście wymaga ponownego uruchomienia tunelu. Z komputera z `gcloud` ta sama
 komenda udostępnia interfejs pod `http://127.0.0.1:8080`. Tunel nasłuchuje tylko na localhost.
 Możesz zmienić lewy port 8080 na inny, jeśli jest już zajęty.
 
+## Dostęp z internetu (HTTPS)
+
+Z `--public` skrypt dodatkowo:
+
+1. Czyta zewnętrzny IP VM (np. `34.118.12.7`) i zamienia go na statyczny, żeby adres nie
+   zmienił się po restarcie VM. Adres: `https://34-118-12-7.sslip.io` — sslip.io to darmowy
+   DNS, który zwraca IP zapisany w nazwie; nic nie trzeba rejestrować.
+   Własna domena: `--domain watchdog.twoja-domena.pl` (rekord A → IP VM) zamiast `--public`.
+2. Dodaje regułę firewalla `wd-ID-web`: TCP 80 i 443 z internetu, tylko do tej VM. SSH dalej
+   tylko przez IAP; port 8080 dalej wyłącznie na localhost.
+3. Na VM uruchamia Caddy (`watchdog-proxy.service`, kontener bez uprawnień poza portami),
+   który sam pobiera i odnawia certyfikat Let's Encrypt i przekazuje ruch do aplikacji.
+4. **Najpierw włącza logowanie** (`--owner`), dopiero potem adres publiczny;
+   `watchdogctl enable-public` odmawia, jeśli logowanie jest wyłączone.
+5. Na końcu wypisuje jednorazowy link logowania dla Ciebie (15 minut).
+
+Ręcznie na VM: `sudo watchdogctl enable-public HOST`, `disable-public`, `proxy-logs`.
+Na innej chmurze niż GCP otwórz 80/443 w jej firewallu samodzielnie.
+
+Kolejne aktualizacje: ta sama komenda (flagi `--public`/`--owner` można pominąć — ustawienia
+zostają). Pierwszy certyfikat bywa gotowy po minucie; jeśli nie, `sudo watchdogctl proxy-logs`.
+
+### Poczta — potrzebna, żeby inni mogli się logować
+
+Zaproszeni logują się kodem z maila (albo Google, jeśli skonfigurujesz OAuth). Darmowo przez
+Gmail: włącz weryfikację dwuetapową, utwórz **hasło aplikacji** na
+<https://myaccount.google.com/apppasswords>, potem na VM:
+
+```bash
+gcloud compute ssh TWOJA_VM --zone TWOJA_STREFA --tunnel-through-iap -- sudo watchdogctl set-mail
+# From:     WatchDog <twoj@gmail.com>
+# SMTP URL: smtps://twoj%40gmail.com:HASLO_APLIKACJI_BEZ_SPACJI@smtp.gmail.com:465
+```
+
+Hasło wpisujesz w pytaniu, nie trafia do historii poleceń. `@` w adresie zapisz jako `%40`.
+
 ## Logowanie i zapraszanie ludzi
 
-Instalator startuje w trybie jednego lokalnego użytkownika. Aby włączyć logowanie (przez SSH na VM):
+Bez `--owner` instalator startuje w trybie jednego lokalnego użytkownika. Aby włączyć logowanie (przez SSH na VM):
 
 ```bash
 sudo watchdogctl enable-accounts twoj@email.pl   # Ty = operator (deweloper), wypisze link logowania
@@ -98,8 +141,8 @@ Potem w aplikacji **People & access**: zaproszenie na konkretny adres albo link 
 (kopiuj / udostępnij / otwórz w poczcie). Bez skonfigurowanej poczty: `sudo watchdogctl signin-link ADRES`,
 `invite ADRES ROLE`, `open-link ROLE --uses N`, `people`.
 
-Uwaga: VM dostępna tylko przez tunel IAP — osoby z zewnątrz jej nie otworzą. Dla nich potrzebny
-jest publiczny adres HTTPS (`sudo watchdogctl set-public-url https://...`) z reverse proxy; to kolejny etap.
+Osoby z zewnątrz otworzą instalację tylko w wariancie publicznym (sekcja wyżej); przez sam
+tunel IAP wchodzisz wyłącznie Ty.
 
 ## Utrzymanie i dane
 
