@@ -250,6 +250,7 @@ test('E3.12: source catalog filters forums, persists access history and exports 
     await page.locator('summary').filter({hasText:'Dodaj własne źródło'}).click();
     await page.getByLabel('Nazwa źródła',{exact:true}).fill('FICTIONAL new forum');await page.getByLabel('Oficjalna strona HTTPS',{exact:true}).fill('https://fictional.example/forum');await page.getByLabel('Zakres i uwagi',{exact:true}).fill('FICTIONAL source with no live collection.');
     await page.getByRole('button',{name:'Dodaj kandydata',exact:true}).click();await page.getByRole('status').filter({hasText:'Kandydat zapisany'}).waitFor();
+    await page.locator('[data-testid="source-stat-total"]').filter({hasText:'35'}).waitFor();
     assert.equal(await page.locator('[data-testid="source-stat-total"]').textContent(),'35');assert.equal(await page.locator('[data-testid="source-stat-implemented"]').textContent(),'5');
     const exporting=page.waitForEvent('download');await page.getByRole('button',{name:'Pobierz przegląd JSON',exact:true}).click();await (await exporting).saveAs('test-artifacts/source-access-overview.json');
     const saved=JSON.parse(fs.readFileSync('test-artifacts/source-access-overview.json','utf8'));assert.equal(saved.stats.total,35);assert.equal(saved.stats.implemented,5);assert.equal(saved.stats.drafts,1);
