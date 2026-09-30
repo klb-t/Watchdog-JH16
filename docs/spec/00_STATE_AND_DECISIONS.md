@@ -7,6 +7,17 @@ decision changes or an epic completes.
 
 ## 1. Where the project actually is
 
+**Latest completed checkpoint — 2026-09-30, PR #5 merged:** `main` includes merge
+`860c844913ad3b51a653ba30ac78583a3f4e6b0b`. Actions `36766360252` passed both
+`verify` and `container`: **434/434 tests each**, zero failures/skips/cancellations,
+JH16 demo and real-container start/persistence. Code was verified at `827fa11`;
+later changes and the final checkpoint update only documentation. E2.1, E4.6,
+E3.14 and E5.7c are complete in their recorded scopes. E3.5 remains reopened for
+unsupported Cloud Run storage; E5.7b/E5.8b and E6.4/E6.5 remain open. The following
+paragraphs preserve this wave's checkpoints, including its resolved pending statuses.
+See [current handoff](../HANDOFF_2026-09-30_WAVE1.md) and
+[independent-thread packages](../work_packages/README.md).
+
 **2026-09-30 resumed parallel wave:** work continues from `832947e` on
 `codex/watchdog-wave1-20260930`; see [wave handoff](../HANDOFF_2026-09-30_WAVE1.md)
 and [coordination](../WORK_COORDINATION.md). E4.6 fixes revoked shared-data access

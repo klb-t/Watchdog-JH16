@@ -7,7 +7,9 @@ To organizacja pracy, nie zmiana zatwierdzonych metod naukowych.
 ## Punkt startowy
 
 - Repo: `klb-t/Watchdog-JH16`; zweryfikowana baza `main` = `832947e`.
-- Gałąź integracyjna tej fali: `codex/watchdog-wave1-20260930`.
+- Gałąź integracyjna tej fali: `codex/watchdog-wave1-20260930`; scalona do `main`
+  przez PR #5 jako `860c844` po zielonych verify/container (434/434 każda bramka).
+  Kolejne pakiety zaczynają od aktualnego `main` zawierającego to scalenie.
 - Bieżący zapis: [handoff fali](HANDOFF_2026-09-30_WAVE1.md).
 - Poprzedni etap: [integracja PR #4](HANDOFF_2026-09-30.md),
   [uzgodnienia](SPEC_RECONCILIATION_2026-09-30.md), [reguły](DESIGN_RULES.md).

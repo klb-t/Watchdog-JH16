@@ -10,6 +10,10 @@ historycznego punktu wyjścia, nie polecenie cofania aktualnego kodu. Przed
 uruchomieniem pakietu odczytaj opublikowany checkpoint fali i wybierz z
 integratorem dokładny bazowy SHA zawierający potrzebne poprawki.
 
+Fala jest zakończona: PR #5 scalony jako `860c844`; oba joby CI
+`36766360252` przeszły 434/434 testy. Wybierz aktualny `main` zawierający to
+scalenie i końcowy handoff. Pakiety nadal są przygotowane, nieprzydzielone.
+
 | Pakiet | Pierwszy działający rezultat | Warunek rozpoczęcia |
 | --- | --- | --- |
 | [RESEARCH](RESEARCH.md) | Jeden jawny claim, przegląd i zamrożona tolerancja przed nowym wykonaniem istniejącej operacji | Zintegrowana fala z wyborem kohorty; przydział plików badawczych |

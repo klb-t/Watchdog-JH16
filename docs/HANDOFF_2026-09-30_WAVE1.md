@@ -177,3 +177,27 @@ nie mylić jego statusu z zakończoną pełną bramką obrazu.
 
 Dodano `AGENTS.md` jako krótki punkt wejścia dla nowych sesji. Końcowa aktualizacja
 stanu/handoffu/instrukcji jest wyłącznie dokumentacyjna; nie zmienia przetestowanego kodu.
+
+## Checkpoint 7 — zamknięcie fali i scalenie
+
+**Oba joby zakończyły się sukcesem.** Odczytano także log `verify`
+(`110061407490`): **434/434 pass, 0 fail/cancelled/skipped**, rzeczywisty E5.7c
+w przeglądarce oraz demo JH16 (32 obserwacje, `pipeline_self_check`). Instalacja
+przeglądarki na hoście była wolna, ale ukończyła się; nie pozostał blocker CI.
+
+[PR #5](https://github.com/klb-t/Watchdog-JH16/pull/5) scalono z kontrolą oczekiwanego
+headu `a1449bd5acb8a1a3fb211d849a6f3d179634435f` jako
+`860c844913ad3b51a653ba30ac78583a3f4e6b0b`. Zweryfikowano identyczność drzewa
+merge'a z headem PR; zmiany po testowanym kodzie `827fa11` dotyczą wyłącznie
+`AGENTS.md` i dokumentacji stanu/ledger/handoffu. Końcowy commit uzupełnia
+README, koordynację i ten zapis bez zmian kodu.
+
+**Następna sesja:** odczytaj `AGENTS.md` i aktualny `main` zawierający PR #5.
+Nie przywracaj bazy `832947e` ani starego lokalnego szeregu commitów. Wybierz
+nieprzydzielony większy pakiet, zapisz claim i pracuj małymi wycinkami. Fala 1
+jest zakończona; nie ma agentów, których pracę trzeba jeszcze odzyskać.
+
+Nadal otwarte: ogólna replikacja/hipotezy E5.7b, bezpieczne rozszerzenia E5.8b,
+fikcyjny model przypadku E6.4/E6.5 oraz nowe poprawne wdrożenie Cloud Run.
+Nie wykonywano nowego pełnego skanu Takeout ani instalacji na rzeczywistej VM.
+Wiedza o historii pochodzi z dostępnych rozmów i jawnie opisanej rekonstrukcji repo.

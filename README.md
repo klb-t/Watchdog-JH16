@@ -4,13 +4,20 @@ Reproducible-research platform for monitoring psychoactive-substance signals, wi
 
 The first benchmark is a replication pipeline for Jankowski & Hoffmann (2016), JMIR 18(2):e38.
 
-**Status:** the September 30 integration is merged into `main` through
-[PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4), combining the September continuation
-with the repository and ecosystem updates. Its final verify/container CI passed.
+**Status:** the resumed September 30 wave is merged into `main` through
+[PR #5](https://github.com/klb-t/Watchdog-JH16/pull/5). Both verify and real-container CI
+passed **434/434 tests**, including browser flows and production persistence. This wave
+repairs entity pairing, approval/input validation, revoked shared-data access and deployment
+defaults, and adds source-linked exploratory paper cohorts with verifiable exports.
+The earlier [PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4) established the integrated
+private workspace.
 Implemented workflows include the offline JH16 fixture benchmark, responder reference lookup,
 scientific figures and maps, durable public acquisition, substance memory, personal provider
 profiles and the paper/extraction workshop. Planned capabilities remain explicitly separate.
-Current checkpoint: [September 30 handoff](docs/HANDOFF_2026-09-30.md).
+Current checkpoint: [resumed September 30 handoff](docs/HANDOFF_2026-09-30_WAVE1.md).
+Start after a reset with [AGENTS.md](AGENTS.md); independent-thread instructions are in
+[work packages](docs/work_packages/README.md). The
+[earlier September 30 handoff](docs/HANDOFF_2026-09-30.md) remains historical evidence.
 The [September 22 handoff](docs/HANDOFF_2026-09-22.md) remains as historical evidence.
 
 ## Quick start
