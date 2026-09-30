@@ -61,6 +61,14 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 - [ ] **E5.7b — General executable replication and hypothesis studies.** Connect reviewed
   assessments to frozen MethodSpecs and actual acquired inputs; confirmation partitions,
   comparison families, hypothesis prioritization and project/draft evidence graphs remain open.
+- [x] **E5.7c — Source-linked exploratory cohorts.** Implemented explicit nonempty row
+  selection with a unique paper quotation and rationale, canonical IDs and a pinned dataset.
+  Context changes require fresh method approval. v2 packages verify selected rows and retain
+  complete inputs; old all-row v1 packages remain supported. Integration 13/13, lint/build
+  and independent archived-v1/null-only cohort probes pass. The real browser flow passes
+  in the full 434/434 container gate on `827fa11`, Actions `36766360252`, followed by
+  production start and persistence validation. Local Chromium remains environment-blocked.
+  This does not complete E5.7b or establish a confirmatory partition/independent replication.
 - [x] **E5.8a — Deterministic JSON/CSV extraction and goal navigation.** Form-based or LLM-
   proposed copy profiles, exact-output tests, hash-bound activation, lexical provenance,
   persistent test/execution history and exports; ten capability-filtered goal paths.
@@ -397,13 +405,30 @@ start any of them breadth-first. Tasks keep their home epic's number.
   uncredentialled live run fails and its failure names the variable; an unconfigured narrative
   provider returns 409 and never template prose.
 
-- [x] **E3.5 — Container and Cloud Run**
-  Dockerfile, deploy script, and a runbook written for someone who has not used GCP. Startup
-  refuses to boot in production when storage is ephemeral and Postgres/GCS are unconfigured.
-  *Test:* the startup check fails fast with a precise message under a production environment
-  with no durable storage configured, and passes when it is configured.
+- [ ] **E3.5 — Container and Cloud Run**
+  Container build/start and local-volume persistence have passed. The Cloud Run half is
+  reopened on 2026-09-30: the old recipe places SQLite on GCS FUSE, whose filesystem
+  semantics do not satisfy the database contract. A configured path or single instance
+  does not establish safe persistence. The legacy installer now stops before cloud calls.
+  *Remaining test:* a supported database arrangement must pass actual transaction,
+  replacement and recovery tests before Cloud Run can be called operational.
+
+- [x] **E3.14 — Current VM source and unsupported Cloud Run guard.** New VM installs
+  default to merged `main`, while explicit branch/SHA overrides are resolved and archived.
+  Legacy Cloud Run exits before every gcloud side effect; help works without credentials.
+  Updated instructions withdraw unsafe persistence claims. VM/guard tests 9/9 and existing
+  deployment tests 10/10 pass; no cloud resources were inspected or modified.
 
 ## E2 — Compiler and validation
+
+- [x] **E2.1 — Entity-aligned execution and runtime contract integrity.** Ratios join
+  matching distinct entity IDs rather than positions, rejecting undeclared/ambiguous joins.
+  Method validation rejects self-edges, symbol collisions and incompatible shapes; runtime
+  inputs enforce units, semantics, identities and finite numbers. Supplied approval must bind
+  the executed MethodSpec. Executor/ratio version 1.0.1; shipped JH16 specs/formulas unchanged.
+  Six new regression tests plus previous scientific tests pass (22/22); workbench/project
+  integration 9/9, TypeScript and JH16 demo pass. Direct fixture execution without supplied
+  approval remains an explicit existing low-level API behavior.
 
 Decompose when E1 exits. Contents: the LLM method compiler with its known-answer test on
 JH2016 prose; the reference score set loader; Pearson and Spearman against the reference;
@@ -416,6 +441,14 @@ Contents: a real `search.result_count` provider; provider stamping and
 condition; PostgreSQL and S3 migration; a real worker process.
 
 ## E4 — Identity
+
+- [x] **E4.6 — Revocation-safe shared datasets and search.** Review capability bypasses
+  approval only for the dataset owner. Revoked shared data cannot be read by another
+  researcher/admin/developer, including through an owned method or an in-flight blob read.
+  Unified search resolves provider I/O before permission-filtered enumeration so concurrent
+  revocation removes both metadata and counts. Three new HTTP regressions and the existing
+  workbench/search suites pass: 17/17 focused tests on 2026-09-30. Full integration pending
+  the current parallel wave; see HANDOFF_2026-09-30_WAVE1.md.
 
 - [x] **E4.5 — Closed installation admission and invitations.** Sign-in-only anonymous
   UI; verified unknown email can submit a reason and inspect application status only.
@@ -634,8 +667,9 @@ seeing a verdict requires a new version of that file and is visible in git histo
 
 ### PostgreSQL backend for `storage.relational`
 
-**What is missing.** Everything except the database runs cloud-durably: GCS is implemented and
-tested, and the durability gate enforces it. The database is still SQLite.
+**What is missing.** The database is still SQLite. GCS object storage is separately
+implemented; the startup durability gate checks configured paths rather than filesystem
+locking/transaction semantics. It does not establish that bucket-mounted SQLite is safe.
 
 **Why it was not written.** A Postgres backend needs (a) a driver dependency — `pg` plus
 `drizzle-orm/node-postgres` — and (b) a dialect port of the four migrations, which use SQLite
@@ -645,14 +679,17 @@ environment**: there is no Postgres server to run the repository suite against. 
 adapter that has never executed a statement, registered as `implemented`, is the fabricated
 implementation rule 1 forbids. It is registered `planned` and throws instead.
 
-**Consequence for deploying now.** Cloud Run with `--max-instances=1` and the SQLite file on a
-mounted volume is durable and correct for a single writer, which is what a solo researcher
-testing the system actually has. It does not scale horizontally, and the gate will not let a
-production instance run without the mount.
+**Correction, 2026-09-30.** The former claim that a single Cloud Run instance with SQLite
+on a mounted GCS bucket is durable and correct is withdrawn. Google documents missing
+locking/patching and advises against database storage on Cloud Storage FUSE; see
+[the corrected runbook](../DEPLOY_GCP.md). The old deploy recipe now fails before cloud
+mutations. The private VM uses a disk bind mount and remains a separate path. No live
+Cloud Run deployment or data-loss finding is claimed by this audit.
 
-**Unblock in one line:** *"Provision Cloud SQL Postgres and add `pg` as a dependency"* — with a
-`DATABASE_URL` reachable from a test run, this is roughly a day: port the migrations, add the
-drizzle pg dialect behind the existing `db` export, and run the repository suite against both.
+**Unblock:** implement and validate a supported database arrangement locally first, including
+migrations, ownership/approval invariants, transactions and backup/restore. Production
+provisioning and any paid resources remain a separate decision. The former one-day estimate
+was not established by execution evidence.
 
 *Add entries here with enough detail that the maintainer can unblock in one action, then
 continue with the next unblocked task rather than waiting.*

@@ -7,6 +7,29 @@ decision changes or an epic completes.
 
 ## 1. Where the project actually is
 
+**2026-09-30 resumed parallel wave:** work continues from `832947e` on
+`codex/watchdog-wave1-20260930`; see [wave handoff](../HANDOFF_2026-09-30_WAVE1.md)
+and [coordination](../WORK_COORDINATION.md). E4.6 fixes revoked shared-data access
+and metadata/count leaks during asynchronous search; 17/17 focused tests pass.
+The previous 419/419 gate below belongs to the merged integration, not the new wave.
+Full wave validation, further changes and publication hashes are recorded in its handoff.
+E2.1 additionally corrects entity alignment and enforces graph/input/approval integrity;
+22/22 focused scientific and 9/9 related integration tests, typecheck and JH16 demo pass.
+Executor/ratio are 1.0.1; frozen method files are unchanged. This is a contract repair,
+not scientific approval or a new methodology.
+E3.14 updates the VM default to merged `main` and blocks the unsupported legacy Cloud Run
+recipe before cloud mutations. E3.5 is reopened for Cloud Run: bucket-mounted SQLite is
+not established as safe by the path-based durability gate or local-container tests. The
+private disk-backed VM and GCS object adapter remain separate implemented paths.
+E5.7c implements source-linked exploratory cohort selection and v1/v2 portable verification.
+Its real browser acceptance and the complete **434/434** test gate pass inside the CI
+container on `827fa11`, followed by production start and persistence checks (Actions
+`36766360252`, container job `110061407148`). Local Chromium is blocked by socket
+permissions; the local gate is 409 pass / 25 browser-launch failures, not green.
+The separate host `verify` job's final status belongs in the wave handoff. E5.7b remains
+open. Future independent-thread packages are in `docs/work_packages/`; `AGENTS.md`
+now points fresh agents to the current state and ownership protocol.
+
 **2026-09-30 current authority and integration:** the owner delegated autonomous
 development after reviewing the repository/history audit. Routine reversible product
 changes no longer require discussion under the September 12 sequencing restriction.

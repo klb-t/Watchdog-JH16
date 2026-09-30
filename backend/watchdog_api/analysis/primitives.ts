@@ -32,7 +32,7 @@ export interface PrimitiveContract {
   readonly name: string;
   readonly version: string;
   /** Named inputs and the shape each accepts. */
-  readonly inputs: { name: string; shape: InputShape }[];
+  readonly inputs: { name: string; shape: InputShape | readonly InputShape[] }[];
   readonly params: ParamSpec[];
   /** Semantic types this primitive will accept on its series inputs. */
   readonly acceptsSemanticTypes: SemanticType[] | 'any';
@@ -129,24 +129,36 @@ const maxPrimitive: Primitive = {
 // --------------------------------------------------------------------------
 const ratioPrimitive: Primitive = {
   contract: {
-    name: 'ratio', version: '1.0.0',
-    inputs: [{ name: 'numerator', shape: 'series' }, { name: 'denominator', shape: 'scalar' }],
+    name: 'ratio', version: '1.0.1',
+    inputs: [{ name: 'numerator', shape: 'series' }, { name: 'denominator', shape: ['scalar', 'series'] }],
     params: [],
     acceptsSemanticTypes: 'any',
     outputKind: 'series', outputUnit: 'dimensionless', outputSemanticType: 'proportion',
     missingPolicies: ['propagate', 'exclude', 'fail'],
-    canFail: false,
-    failureModes: [],
-    describe: 'Elementwise numerator / denominator. A denominator <= 0 yields undefined (null), never zero and never an epsilon.',
+    canFail: true,
+    failureModes: ['series operands have ambiguous or different entity sets', 'missing operand under fail policy'],
+    describe: 'Numerator / scalar or entity-aligned series denominator. Series must identify the same distinct entities; missing measurements use explicit nulls. A denominator <= 0 yields undefined (null), never zero and never an epsilon.',
   },
   run(inputs, ctx) {
     const num = asSeries(inputs.numerator, 'ratio', 'numerator');
     const denRaw = inputs.denominator;
 
-    // The denominator may be a scalar or an aligned series.
-    const denValues: PrimitiveValue[] = denRaw && 'values' in denRaw
-      ? [...denRaw.values]
-      : new Array(num.values.length).fill(asScalarNumber(denRaw, 'ratio', 'denominator'));
+    // Array position is not entity identity. A missing entity is a join-policy
+    // question, not an implicit missing measurement, so require an exact set.
+    let denValues: PrimitiveValue[];
+    if (denRaw && 'values' in denRaw) {
+      const numeratorIds = new Set(num.entityIds);
+      const denominatorIds = new Set(denRaw.entityIds);
+      if (num.entityIds.length !== num.values.length || denRaw.entityIds.length !== denRaw.values.length
+        || numeratorIds.size !== num.entityIds.length || denominatorIds.size !== denRaw.entityIds.length
+        || numeratorIds.size !== denominatorIds.size || num.entityIds.some(id => !denominatorIds.has(id))) {
+        throw new PrimitiveError('ratio', 'series operands require aligned values and the same distinct entity identifiers');
+      }
+      const byEntity = new Map(denRaw.entityIds.map((id, index) => [id, denRaw.values[index]]));
+      denValues = num.entityIds.map(id => byEntity.get(id)!);
+    } else {
+      denValues = new Array(num.values.length).fill(asScalarNumber(denRaw, 'ratio', 'denominator'));
+    }
 
     const out: PrimitiveValue[] = num.values.map((n, i) => {
       const d = denValues[i];
@@ -348,7 +360,7 @@ export const PRIMITIVES: Record<string, Primitive> = {
 };
 
 export function getPrimitive(name: string): Primitive | undefined {
-  return PRIMITIVES[name];
+  return Object.hasOwn(PRIMITIVES, name) ? PRIMITIVES[name] : undefined;
 }
 
 export function listPrimitives(): PrimitiveContract[] {

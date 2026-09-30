@@ -1,8 +1,8 @@
 import {
   MethodSpec, TypedSeries, MethodExecutor, AnalysisArtifact, AnalysisResultValue, JsonValue
 } from '../domain/method_spec';
-import { Approvable, requireApproved } from '../domain/approval';
-import { getPrimitive, PrimitiveResult, ScalarResult } from './primitives';
+import { Approvable, requireApproved, ApprovalRequiredError } from '../domain/approval';
+import { getPrimitive, PrimitiveResult, ScalarResult, PrimitiveError } from './primitives';
 import { assertValidMethodSpec, hashMethodSpec, hasBlockingAmbiguity, MethodSpecInvalidError } from './method_spec_validation';
 
 /**
@@ -24,7 +24,7 @@ export class ApprovalRequiredForExecutionError extends Error {
 
 export class TypeScriptMethodExecutor implements MethodExecutor {
   readonly executorId = 'typescript-inprocess';
-  readonly executorVersion = '1.0.0';
+  readonly executorVersion = '1.0.1';
 
   supports(spec: MethodSpec): boolean {
     return spec.steps.every(s => getPrimitive(s.primitive) !== undefined);
@@ -43,7 +43,12 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
     inputs: readonly TypedSeries[],
     options: { approvable?: Approvable } = {}
   ): Promise<AnalysisArtifact> {
-    if (options.approvable) requireApproved(options.approvable);
+    if (options.approvable) {
+      requireApproved(options.approvable);
+      if (options.approvable.kind !== 'method_spec' || options.approvable.approvedHash !== hashMethodSpec(spec)) {
+        throw new ApprovalRequiredError('method_spec', options.approvable.id, 'approval does not bind the MethodSpec being executed');
+      }
+    }
 
     assertValidMethodSpec(spec);
     if (hasBlockingAmbiguity(spec)) {
@@ -53,17 +58,9 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
       }]);
     }
 
+    validateInputs(spec, inputs);
     const symbols = new Map<string, TypedSeries | ScalarResult | PrimitiveResult>();
     for (const series of inputs) symbols.set(series.name, series);
-
-    for (const binding of spec.inputs) {
-      if (!symbols.has(binding.name)) {
-        throw new MethodSpecInvalidError([{
-          path: `inputs.${binding.name}`, rule: 'missing_input',
-          message: `declared input '${binding.name}' was not supplied to the executor`,
-        }]);
-      }
-    }
 
     const qualityFlags = new Set<string>();
     for (const series of inputs) {
@@ -89,7 +86,12 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
         missingPolicy: step.missingPolicy,
         params: step.params ?? {},
       });
-
+      // JSON would turn NaN/Infinity into null while leaving isMissing false.
+      // Fail at the producing step instead of storing a fabricated result.
+      const values = out.kind === 'series' ? out.series.values : out.kind === 'scalar' ? [out.value] : Object.values(out.record);
+      if (values.some(value => value !== null && (typeof value !== 'number' || !Number.isFinite(value)))) {
+        throw new PrimitiveError(step.primitive, `step '${step.id}' produced a nonfinite or invalid numeric value`);
+      }
       symbols.set(step.id, out);
     }
 
@@ -108,6 +110,45 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
       results,
       qualityFlags: [...qualityFlags].sort(),
     };
+  }
+}
+
+/** Runtime series must carry the same identity, units and semantics as the reviewed inputs. */
+function validateInputs(spec: MethodSpec, inputs: readonly TypedSeries[]): void {
+  const invalid = (path: string, rule: string, message: string): never => {
+    throw new MethodSpecInvalidError([{ path, rule, message }]);
+  };
+  if (!Array.isArray(inputs)) invalid('inputs', 'input_shape', 'executor inputs must be an array of typed series');
+  const supplied = new Set<string>();
+  for (const [index, series] of inputs.entries()) {
+    const path = `inputs[${index}]`;
+    if (!series || typeof series !== 'object') invalid(path, 'input_shape', 'each input must be a typed series');
+    if (supplied.has(series.name)) invalid(`${path}.name`, 'unique', `duplicate supplied input '${series.name}'`);
+    supplied.add(series.name);
+    const binding = spec.inputs.find(input => input.name === series.name);
+    if (!binding) invalid(`${path}.name`, 'undeclared_input', `input '${series.name}' is not declared by the method`);
+    if (series.unit !== binding.unit) invalid(`${path}.unit`, 'unit_mismatch', `input '${series.name}' requires unit '${binding.unit}', received '${series.unit}'`);
+    if (series.semanticType !== binding.semanticType) invalid(`${path}.semanticType`, 'semantic_type_mismatch', `input '${series.name}' requires semantic type '${binding.semanticType}'`);
+    if (!Array.isArray(series.values) || !Array.isArray(series.entityIds) || series.values.length !== series.entityIds.length) {
+      invalid(path, 'input_shape', 'values and entityIds must be arrays of the same length');
+    }
+    const entities = new Set<string>();
+    for (let i = 0; i < series.entityIds.length; i++) {
+      const entity = series.entityIds[i];
+      if (typeof entity !== 'string' || !entity.trim()) invalid(`${path}.entityIds[${i}]`, 'entity_identity', 'each value requires a nonempty entity identifier');
+      if (entities.has(entity)) invalid(`${path}.entityIds[${i}]`, 'unique', `duplicate entity identifier '${entity}'`);
+      entities.add(entity);
+      const value = series.values[i];
+      if (value !== null && (typeof value !== 'number' || !Number.isFinite(value))) {
+        invalid(`${path}.values[${i}]`, 'nonfinite_input', 'values must be finite numbers or explicit nulls');
+      }
+    }
+    if (series.qualityFlags !== undefined && (!Array.isArray(series.qualityFlags) || series.qualityFlags.some(flag => typeof flag !== 'string' || !flag.trim()))) {
+      invalid(`${path}.qualityFlags`, 'input_shape', 'quality flags must be nonempty strings');
+    }
+  }
+  for (const binding of spec.inputs) {
+    if (!supplied.has(binding.name)) invalid(`inputs.${binding.name}`, 'missing_input', `declared input '${binding.name}' was not supplied to the executor`);
   }
 }
 

@@ -697,3 +697,64 @@ test('E5.8e: a paper quote binds real source columns to an approved operation, s
     await page.screenshot({path:'test-artifacts/paper-operation-failure.png',fullPage:false});throw error;
   }finally{releaseCatalog();if(catalogRoute)await page.unroute(catalogUrl,catalogRoute);page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
 });
+
+test('E5.7c: a quoted paper cohort freezes selected rows, requires review and survives result reload and portable export',async()=>{
+  const errors:string[]=[],onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  const publication=fs.mkdtempSync('/tmp/watchdog-paper-cohort-ui-');
+  try {
+    const call=async(route:string,body:unknown)=>{const r=await fetch(baseUrl+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.ok(r.ok,await r.clone().text());return r.json();};
+    const {testDataset}=await import('../helpers/workbench');
+    const document=testDataset();document.key='paper-cohort-browser-fixture';document.name='Fictional cohort browser inputs';
+    const {record}=await call('/api/workbench/datasets',document);
+    await call(`/api/workbench/datasets/${record.id}/approve`,{expectedHash:record.contentHash,shareAggregate:false});
+    const quote='Pearson correlation compared scores and counts.',cohortQuote='Rows one, three and five formed the cohort.';
+    const {document:paper}=await call('/api/research/papers',{title:'Fictional paper cohort methods',source:'https://example.org/cohort-browser-fixture',text:`Software fixture. ${quote} ${cohortQuote}`,coverage:'excerpt',language:'en',geography:[]});
+    await page.goto(baseUrl+'/research');await page.getByRole('button',{name:'Analizy prac',exact:true}).click();
+    await page.getByLabel('Praca i sposób wskazania metody',{exact:true}).selectOption(`paper:${paper.id}`);
+    await page.getByText('Zapisany tekst pracy · excerpt',{exact:true}).waitFor();
+    await page.getByLabel('Dokładny cytat opisujący operację',{exact:true}).fill(quote);
+    await page.getByLabel('Operacja statystyczna',{exact:true}).selectOption('pearson');
+    await page.getByLabel('Zatwierdzony zbiór danych',{exact:true}).selectOption(record.id);
+    await page.getByLabel('Kolumna A',{exact:true}).selectOption('interest');await page.getByLabel('Kolumna B',{exact:true}).selectOption('mentions');
+    for(const key of ['A','B']) {
+      await page.getByLabel(`Pochodzenie danych ${key}`,{exact:true}).selectOption('synthetic_scenario');
+      await page.getByLabel(`Co reprezentuje kolumna ${key} i jakie ma ograniczenia?`,{exact:true}).fill('Synthetic software fixture only.');
+    }
+    await page.getByLabel('Zakres analizy i odstępstwa od pracy',{exact:true}).fill('Exploratory explicit cohort, without independent confirmation.');
+    await page.getByLabel('Wiersze objęte analizą',{exact:true}).selectOption('cohort');
+    await page.getByLabel('Dokładny cytat dotyczący doboru kohorty',{exact:true}).fill(cohortQuote);
+    await page.getByLabel('Uzasadnienie doboru wierszy i odstępstwa',{exact:true}).fill('Apply the fictional row criterion; retain missing observations before the existing pairwise exclusion.');
+    assert.equal(await page.getByRole('button',{name:'Przygotuj plan analizy pracy',exact:true}).isDisabled(),true,'an empty cohort must never silently become the full dataset');
+    await page.getByLabel('Wiersz row-1',{exact:true}).check();
+    await page.getByLabel('Szukaj wierszy kohorty',{exact:true}).fill('row-3');await page.getByLabel('Wiersz row-3',{exact:true}).check();
+    await page.getByLabel('Szukaj wierszy kohorty',{exact:true}).fill('row-5');await page.getByLabel('Wiersz row-5',{exact:true}).check();
+    await page.getByLabel('Szukaj wierszy kohorty',{exact:true}).fill('');
+    assert.match((await page.locator('[data-testid="paper-cohort-count"]').textContent())!,/Wybrano 3 z 5/);
+    await page.setViewportSize({width:390,height:844});await page.locator('[data-testid="paper-cohort-editor"]').scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}));assert.ok(layout.scroll<=layout.width+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/paper-cohort-mobile.png',fullPage:false});
+    await page.getByRole('button',{name:'Przygotuj plan analizy pracy',exact:true}).click();
+    await page.waitForFunction(()=>{const select=globalThis.document.querySelector<HTMLSelectElement>('select[aria-label="Zapisany plan"]');return !!select&&!select.disabled&&select.value!=='';},undefined,{timeout:30_000});
+    const id=await page.getByLabel('Zapisany plan',{exact:true}).inputValue();
+    await page.locator('[data-testid="paper-cohort-review"]').waitFor();
+    assert.equal(await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).count(),0);
+    await page.getByLabel('Sprawdziłem cytat, interpretację, dane i tę specyfikację.',{exact:true}).check();
+    await page.getByRole('button',{name:'Zatwierdź metodę tej analizy',exact:true}).click();
+    await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).click();
+    await page.locator('[data-testid="paper-operation-result"]').waitFor();
+    await page.reload();await page.getByRole('button',{name:'Analizy prac',exact:true}).click();
+    await page.getByLabel('Zapisany plan',{exact:true}).selectOption(id);await page.locator('[data-testid="paper-cohort-review"]').waitFor();
+    assert.match((await page.locator('[data-testid="paper-cohort-review"]').textContent())!,/3 z 5 wierszy/);
+    await page.getByRole('button',{name:'Pokaż zapisany wynik',exact:true}).click();await page.locator('[data-testid="paper-operation-result"]').waitFor();
+    const downloading=page.waitForEvent('download');await page.getByRole('button',{name:'Pobierz pakiet z publikacją',exact:true}).click();
+    const file=await downloading,entries=readZip(fs.readFileSync((await file.path())!));
+    const result=JSON.parse(entries.find(e=>e.name==='analysis/result.json')!.content.toString());
+    assert.equal(result.paperBinding.body.version,'paper-operation-2');assert.deepEqual(result.inputs[0].entityIds,['row-1','row-3','row-5']);
+    assert.deepEqual(result.inputs[0].values,[10,30,null]);assert.equal(result.artifact.results[0].statisticMetadata.n,2);
+    assert.equal(JSON.parse(entries.find(e=>e.name==='dataset.json')!.content.toString()).rows.length,5);
+    for(const e of entries){const f=path.join(publication,e.name);fs.mkdirSync(path.dirname(f),{recursive:true});fs.writeFileSync(f,e.content);}
+    const manifest=JSON.parse(entries.find(e=>e.name==='package-manifest.json')!.content.toString());
+    fs.writeFileSync('test-artifacts/paper-cohort-verification.txt',execFileSync(process.execPath,[path.join(publication,'verify.mjs'),publication,canonicalHash(manifest)],{encoding:'utf8'}));
+    assert.deepEqual(errors,[]);
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
+});

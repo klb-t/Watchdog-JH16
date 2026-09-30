@@ -1,6 +1,6 @@
 import { MethodSpec, MethodStep, MissingPolicy } from '../domain/method_spec';
 import { canonicalHash } from '../domain/canonical';
-import { getPrimitive } from './primitives';
+import { getPrimitive, type PrimitiveResult } from './primitives';
 
 /**
  * MethodSpec validation and hashing (E1.12).
@@ -45,19 +45,28 @@ export function validateMethodSpec(spec: MethodSpec): SpecIssue[] {
     return issues;
   }
 
-  const inputNames = new Set((spec.inputs ?? []).map(i => i.name));
+  const inputNames = new Set<string>();
+  for (const [index, input] of (spec.inputs ?? []).entries()) {
+    if (!input.name) push(`inputs[${index}].name`, 'required', 'every input needs a name');
+    else if (inputNames.has(input.name)) push(`inputs[${index}].name`, 'unique', `duplicate input name '${input.name}'`);
+    inputNames.add(input.name);
+  }
   const stepIds = new Set<string>();
 
-  // Unit/semantic type produced by each named symbol, for edge checking.
+  // Shape and unit produced by each named symbol, for graph/output checks.
   const producedUnit = new Map<string, string>();
-  for (const input of spec.inputs ?? []) producedUnit.set(input.name, input.unit);
+  const producedShape = new Map<string, PrimitiveResult['kind']>();
+  for (const input of spec.inputs ?? []) {
+    producedUnit.set(input.name, input.unit);
+    producedShape.set(input.name, 'series');
+  }
 
   spec.steps.forEach((step: MethodStep, index: number) => {
     const base = `steps[${index}]`;
 
     if (!step.id) push(`${base}.id`, 'required', 'every step needs an id');
     else if (stepIds.has(step.id)) push(`${base}.id`, 'unique', `duplicate step id '${step.id}'`);
-    else stepIds.add(step.id);
+    else if (inputNames.has(step.id)) push(`${base}.id`, 'unique', `step id '${step.id}' collides with an input name`);
 
     const primitive = getPrimitive(step.primitive);
     if (!primitive) {
@@ -90,6 +99,8 @@ export function validateMethodSpec(spec: MethodSpec): SpecIssue[] {
       } else if (value !== undefined && value !== null && typeof value !== p.type) {
         push(`${base}.params.${p.name}`, 'param_type',
           `expected ${p.type}, got ${typeof value}`);
+      } else if (typeof value === 'number' && !Number.isFinite(value)) {
+        push(`${base}.params.${p.name}`, 'nonfinite_param', 'numeric parameters must be finite');
       }
     }
     for (const given of Object.keys(step.params ?? {})) {
@@ -100,7 +111,7 @@ export function validateMethodSpec(spec: MethodSpec): SpecIssue[] {
     }
 
     // Every input reference must resolve, to an input or an EARLIER step.
-    for (const inputName of primitive.contract.inputs.map(i => i.name)) {
+    for (const { name: inputName, shape } of primitive.contract.inputs) {
       const ref = step.inputs?.[inputName];
       if (!ref) {
         push(`${base}.inputs.${inputName}`, 'required_input',
@@ -108,8 +119,8 @@ export function validateMethodSpec(spec: MethodSpec): SpecIssue[] {
         continue;
       }
       if (!inputNames.has(ref) && !stepIds.has(ref)) {
-        // A reference to a later step is a forward reference; since ids are
-        // added in order, an unresolved one here is either unknown or a cycle.
+        // Register the current step only AFTER its dependencies are checked,
+        // otherwise a self-edge is mistaken for an already-computed symbol.
         const declaredLater = spec.steps.slice(index).some(s => s.id === ref);
         push(`${base}.inputs.${inputName}`,
           declaredLater ? 'cycle' : 'unresolved_reference',
@@ -119,13 +130,16 @@ export function validateMethodSpec(spec: MethodSpec): SpecIssue[] {
         continue;
       }
 
-      // Unit compatibility along the edge: a count may not flow where a
-      // proportion is expected.
-      const upstreamUnit = producedUnit.get(ref);
-      const expected = primitive.contract.outputUnit === 'inherit' ? 'any' : 'any';
-      if (upstreamUnit !== undefined && !unitsCompatible(upstreamUnit, expected)) {
-        push(`${base}.inputs.${inputName}`, 'unit_mismatch',
-          `'${ref}' produces ${upstreamUnit}, incompatible here`);
+      const acceptedShapes: readonly string[] = typeof shape === 'string' ? [shape] : shape;
+      const upstreamShape = producedShape.get(ref);
+      if (upstreamShape && !acceptedShapes.includes(upstreamShape)) {
+        push(`${base}.inputs.${inputName}`, 'shape_mismatch',
+          `'${ref}' produces ${upstreamShape}; '${inputName}' accepts ${acceptedShapes.join(' or ')}`);
+      }
+    }
+    for (const given of Object.keys(step.inputs ?? {})) {
+      if (!primitive.contract.inputs.some(input => input.name === given)) {
+        push(`${base}.inputs.${given}`, 'unknown_input', `primitive '${step.primitive}' has no input '${given}'`);
       }
     }
 
@@ -145,6 +159,8 @@ export function validateMethodSpec(spec: MethodSpec): SpecIssue[] {
         ? (producedUnit.get(step.inputs?.[primitive.contract.inputs[0]?.name] ?? '') ?? 'any')
         : primitive.contract.outputUnit);
     producedUnit.set(step.id, unit);
+    producedShape.set(step.id, primitive.contract.outputKind);
+    stepIds.add(step.id);
   });
 
   // Every declared output must be produced by some step.

@@ -68,7 +68,9 @@ export class WorkbenchRepository {
     const contentHash = canonicalHash(document);
     if (contentHash !== row.sha256) throw new WorkbenchError('Dataset content does not match its stored hash.', 409);
     const approvalState = row.approved_hash === contentHash ? 'APPROVED' : 'PROPOSED';
-    if (!review && approvalState !== 'APPROVED') return null;
+    // Review capability only bypasses approval for the owner's own data. Revoking
+    // a shared dataset must also remove access from other researchers/reviewers.
+    if (approvalState !== 'APPROVED' && !(review && row.owner_principal_id === actor)) return null;
     return { id, document, contentHash, approvalState, approvedHash: row.approved_hash, approvedBy: row.approved_by,
       approvedAt: row.approved_at, ownerId: row.owner_principal_id, visibility: row.visibility };
   }

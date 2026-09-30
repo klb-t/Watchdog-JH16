@@ -50,13 +50,39 @@ potwierdza tożsamość pliku, nie jego prawdziwość ani przydatność konstruk
 Klasy dowodów w danych i zatwierdzenie metody są odrębnymi informacjami.
 
 Każdy plan obejmuje obecnie jedną operację: statystyki opisowe, Pearsona lub
-Spearmana, na wszystkich wierszach jednego zbioru. Niepowiązane wymagania,
+Spearmana, na wszystkich wierszach albo jawnie wybranej kohorcie jednego zbioru. Niepowiązane wymagania,
 pozostałe operacje i niejasności pozostają w pakiecie. Zatwierdzenie wybranej
 operacji nie zatwierdza całej pracy ani automatycznej interpretacji metodologii.
 
 Przy cofnięciu zatwierdzenia danych lub metody nowe obliczenia i odczyt/eksport
 historycznego wyniku zostaną zablokowane. Przebiegi już pobrane opisują stan
 z chwili eksportu. Historię można ponownie otworzyć po odświeżeniu strony.
+
+## Jawny dobór kohorty
+
+Domyślnie plan obejmuje wszystkie wiersze. W polu **Wiersze objęte analizą** wybierz
+**Jawnie wybrana kohorta**, podaj dokładny cytat dotyczący doboru oraz uzasadnienie
+jego zastosowania do danych, a następnie zaznacz wiersze. Wyszukiwanie pomaga je
+odnaleźć i nie zmienia wcześniejszego wyboru; lista pokazuje najwyżej 100 pasujących
+wierszy. Pusta kohorta nie może zostać zapisana. Przy operacji z oceny LLM cytat musi
+występować w faktycznie ocenionym fragmencie, a nie dopiero poza nim.
+
+Przegląd pokazuje cytat, uzasadnienie, dokładne identyfikatory oraz liczebność przed
+zastosowaniem zasad braków. Plan zamraża ten wybór; inny dobór tworzy nową propozycję
+metody wymagającą własnego zatwierdzenia. Wartości i braki pozostają niezmienione,
+a wykonawca zachowuje kolejność wierszy w oryginalnym zbiorze. Liczba pełnych par
+w korelacji może być mniejsza od liczby wierszy kohorty.
+
+Jest to deklarowana przez użytkownika kohorta eksploracyjna. Cytat potwierdza
+pochodzenie tekstu, nie poprawność jego interpretacji ani reprezentatywność wyboru.
+Zapis przed wykonaniem nie jest prerejestracją, a wybrane wiersze nie stają się
+nietkniętą próbą potwierdzającą. Replikacja całości nadal pozostaje nieustalona.
+
+Eksport nadal zawiera **cały zbiór, również pominięte wiersze**, i pełny dostarczony
+tekst. `selected.csv` oraz wejścia statystyczne zawierają kohortę; wykres zachowuje
+kontekst pozostałych punktów zgodnie z istniejącą semantyką zaznaczenia. Samodzielny
+weryfikator sprawdza dokładny cytat, identyfikatory, powiązanie z metodą i wartości
+wybranych kolumn. Obsługuje również wcześniejsze pakiety ze wszystkimi wierszami.
 
 ## Profile i rozszerzanie
 

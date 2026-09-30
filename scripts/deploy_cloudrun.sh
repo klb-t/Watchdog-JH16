@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 #
-# One-shot deploy to Cloud Run. Reads its settings from the environment so that
-# nothing here has to be edited, and prints every command before running it so
-# the script can be read as documentation for doing it by hand.
-#
-# See docs/DEPLOY_GCP.md for what each variable is and how to get one.
+# Disabled legacy Cloud Run recipe, retained for inspection only.
+# Its SQLite-on-GCS-FUSE configuration is unsupported. See docs/DEPLOY_GCP.md.
 
 set -euo pipefail
 
+blocked_reason='Cloud Run deployment is disabled: the legacy recipe puts SQLite on a Cloud Storage FUSE mount, whose filesystem semantics are unsuitable for this database. No cloud commands were run. Use docs/DEPLOY_GCP_VM.md for the private VM path; see docs/DEPLOY_GCP.md for the Cloud Run blocker.'
+if [[ $# == 1 && ( $1 == --help || $1 == -h ) ]]; then
+  printf '%s\n' "$blocked_reason"
+  exit 0
+fi
+printf 'ERROR: %s\n' "$blocked_reason" >&2
+exit 2
+
+# Historical source only. Do not remove the guard to deploy this configuration.
+# A replacement requires a tested compatible database and a new deployment flow.
 : "${PROJECT_ID:?Set PROJECT_ID to your Google Cloud project id}"
 REGION="${REGION:-europe-west4}"
 SERVICE="${SERVICE:-watchdog}"

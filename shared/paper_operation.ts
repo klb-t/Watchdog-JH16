@@ -3,6 +3,10 @@ const hash = z.string().regex(/^[a-f0-9]{64}$/);
 const text = z.string().trim().min(1).max(4000);
 export const PaperMethodSchema = z.enum(['describe', 'pearson', 'spearman']);
 export const DataOriginSchema = z.enum(['unspecified', 'new_observations', 'original_data_reuse', 'prior_dataset', 'proxy_measure', 'new_expert_panel', 'synthetic_scenario']);
+export const PaperCohortSchema = z.object({
+  rowIds: z.array(z.string().regex(/^[a-zA-Z][a-zA-Z0-9_.:-]{0,99}$/)).min(1).max(10000),
+  quote: z.string().min(1).max(4000), rationale: text,
+}).strict().refine(v => new Set(v.rowIds).size === v.rowIds.length, 'Cohort row identifiers must be distinct.');
 export const PaperOperationInputSchema = z.object({
   source: z.discriminatedUnion('kind', [
     z.object({ kind: z.literal('manual_quote'), documentId: z.string().min(1), documentHash: hash, quote: z.string().min(1).max(4000) }).strict(),
@@ -14,6 +18,7 @@ export const PaperOperationInputSchema = z.object({
     substitution: z.object({ id: z.string().min(1), hash }).strict().nullable(),
   }).strict()).min(1).max(2),
   missingPolicy: z.enum(['propagate', 'exclude', 'fail']), scopeNote: text,
+  cohort: PaperCohortSchema.optional(),
 }).strict().superRefine((v, ctx) => {
   const roles = v.method === 'describe' ? ['a'] : ['a', 'b'];
   if (v.bindings.length !== roles.length || roles.some(r => v.bindings.filter(b => b.role === r).length !== 1))
@@ -23,7 +28,9 @@ export const PaperOperationInputSchema = z.object({
 });
 export type PaperOperationInput = z.infer<typeof PaperOperationInputSchema>;
 export const PaperOperationProfileSchema = z.object({
-  version: z.literal('paper-operation-ui-1'), title: text, introduction: text, scopeLabel: text,
+  version: z.literal('paper-operation-ui-2'), title: text, introduction: text, scopeLabel: text,
+  cohort: z.object({ title: text, allRows: text, selectedRows: text, quoteLabel: text, rationaleLabel: text,
+    searchLabel: text, notice: text, reviewLabel: text }).strict(),
   methods: z.array(z.object({ id: PaperMethodSchema, label: text, renderer: z.enum(['bar','scatter']), missingPolicies: z.array(z.enum(['propagate','exclude','fail'])).min(1).max(3) }).strict()).length(3),
   origins: z.array(z.object({ id: DataOriginSchema, label: text }).strict()).length(7),
   missingPolicies: z.array(z.object({ id: z.enum(['propagate', 'exclude', 'fail']), label: text }).strict()).length(3),
