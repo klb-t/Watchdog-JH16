@@ -4,6 +4,19 @@ Stan: 2026-09-30. Dyspozycja właściciela: samodzielny rozwój, intensywne uży
 subagentów, większe pakiety dla osobnych wątków, małe trwałe checkpointy.
 To organizacja pracy, nie zmiana zatwierdzonych metod naukowych.
 
+## Bieżący wynik — 2026-10-01, pakiety zintegrowane
+
+PR #9 scalony do main jako `80a97253f394f28a030c9bead2040e7443fcf7fa`.
+Łączy historie PR #6 CLINICAL, #7 RESEARCH i #8 OPERATIONS oraz dwie poprawki
+integracyjne. Zweryfikowany kod `ca5645c` przeszedł **552/552 testy w obu jobach**
+Actions `36791873648`, w tym Chromium, JH16 i trwałość rzeczywistego kontenera.
+Aktualny punkt wznowienia: [handoff integracji](HANDOFF_2026-10-01_INTEGRATION.md).
+
+Przydziały poniżej są historycznym zapisem wykonanej fali. Nie czekają już na claim,
+implementację ani odbiór. Nowe zadania zaczynają od main zawierającego PR #9;
+nie uruchamiaj ponownie gotowych pakietów. E5.7b i pełne E6.4/E6.5 pozostają otwarte,
+a wdrożenie na rzeczywistą VM nie zostało wykonane.
+
 
 ## Aktualny przydział integratora — 2026-09-30 22:25 UTC / 1 października CEST
 

@@ -1,13 +1,27 @@
 # State and binding decisions
 
-Last updated: 2026-09-30, integration continuation. Update this file whenever a
+Last updated: 2026-10-01, three-package integration. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
 
-**Latest completed checkpoint — 2026-09-30, PR #5 merged:** `main` includes merge
+**Latest completed checkpoint — 2026-10-01, PR #9 merged:** main includes
+`80a97253f394f28a030c9bead2040e7443fcf7fa`, integrating worker PRs #6/#7/#8 with
+their histories. Corrected code head `ca5645cfa385aa1b9ec5c1eb8512fb863f784153`
+passed Actions `36791873648`: **552/552 tests in each of verify and container**,
+zero failures/skips/cancellations, production Chromium, JH16 and actual container
+start/persistence. E5.7d delivers reviewed frozen scalar comparisons, fresh attempts,
+UI and portable verification. E3.15 delivers verified private backup/isolated restore
+and update recovery. E6.4a/b and E6.5a deliver the synthetic clinical core and CLI;
+no clinical product API, persistence or UI is claimed. Integration review fixed false
+preregistration wording and untrusted supersession evidence hiding a contradiction.
+Full E5.7b and E6.4/E6.5 remain open, as does actual VM deployment/restore activation.
+See [current integration handoff](../HANDOFF_2026-10-01_INTEGRATION.md).
+The following entries retain historical evidence, not outstanding merge requests.
+
+**Previous completed checkpoint — 2026-09-30, PR #5 merged:** `main` includes merge
 `860c844913ad3b51a653ba30ac78583a3f4e6b0b`. Actions `36766360252` passed both
 `verify` and `container`: **434/434 tests each**, zero failures/skips/cancellations,
 JH16 demo and real-container start/persistence. Code was verified at `827fa11`;

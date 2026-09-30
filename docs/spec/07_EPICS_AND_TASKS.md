@@ -69,6 +69,13 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   in the full 434/434 container gate on `827fa11`, Actions `36766360252`, followed by
   production start and persistence validation. Local Chromium remains environment-blocked.
   This does not complete E5.7b or establish a confirmatory partition/independent replication.
+- [x] **E5.7d — Reviewed frozen scalar comparisons.** Immutable source-anchored claims,
+  separate exact-hash review, atomic freeze/attempt/new-run association, complete history,
+  explicit units/missingness, deterministic calculation core, contextual UI and verifiable
+  v2 research exports retaining old readers. Revoke/reapprove during I/O invalidates stale
+  receipts. A scalar match is not replication of a whole publication or preregistration.
+  Integrated through PR #9; corrected combined head `ca5645c` passed 552/552 in both
+  verify and container, Actions `36791873648`. E5.7b remains open.
 - [x] **E5.8a — Deterministic JSON/CSV extraction and goal navigation.** Form-based or LLM-
   proposed copy profiles, exact-output tests, hash-bound activation, lexical provenance,
   persistent test/execution history and exports; ten capability-filtered goal paths.
@@ -419,6 +426,14 @@ start any of them breadth-first. Tasks keep their home epic's number.
   Updated instructions withdraw unsafe persistence claims. VM/guard tests 9/9 and existing
   deployment tests 10/10 pass; no cloud resources were inspected or modified.
 
+- [x] **E3.15 — Verified private backup and isolated restore.** Versioned archive with
+  content/schema/image identity, safe no-overwrite extraction, SQLite/blob/vault fixture
+  round-trip and explicit update failure recovery without automatic database downgrade.
+  27/27 focused tests pass with migration 022; combined CI 552/552 in both jobs.
+  Restore produces an inert private directory, not a running VM; image bytes are not
+  archived. No real cloud deployment or universal credential-decryption audit is claimed.
+  See DEPLOY_GCP_VM.md and HANDOFF_2026-10-01_INTEGRATION.md.
+
 ## E2 — Compiler and validation
 
 - [x] **E2.1 — Entity-aligned execution and runtime contract integrity.** Ratios join
@@ -546,6 +561,18 @@ a drug-specific concept into the generic method registry.
   institution's available-test dictionary; explicit gaps, information assumptions and
   reasons. Device adapters and validated quantitative PK are later sub-slices.
   Acceptance detail: CONVERSATION_DELTA_2026-09-20.md.
+
+- [x] **E6.4a — Synthetic case model.** Strict non-identifying fixtures, explicit
+  missingness/units/times, exposures, mixtures, alternatives and source pins.
+- [x] **E6.4b — Synthetic reviewed rule interpreter.** Bounded deterministic predicates,
+  applicability, source/review gates, trace/archive/replay and historical access checks.
+  Integration regression gates provenance of all relevant supersession-chain links,
+  so a revoked source cannot hide a contradiction. Not a production authorization API.
+- [x] **E6.5a — Synthetic profile-bound suggestions.** Versioned available-test profile,
+  explicit unsatisfied dependencies and retained gaps, deterministic CLI demonstration.
+  No probability, medical advice or live device execution. Clinical suite 67/67; combined
+  verify/container 552/552 each on `ca5645c`, Actions `36791873648`. Full E6.4/E6.5 remain
+  open: product API, persistence, UI and further declared domain scope are not delivered.
 
 - [x] **E6.1 — Reviewed responder references.** Versioned sample/alert/assertion import into
   the existing graph, individual approval/revocation, regional pill/market/symptom lookup,

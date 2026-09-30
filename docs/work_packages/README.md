@@ -1,5 +1,12 @@
 # Pakiety dla osobnych wątków WatchDoga
 
+**Stan 2026-10-01:** wszystkie trzy opisane pakiety wykonane w przydzielonych
+zakresach i zintegrowane przez PR #9 (`80a9725`). Wspólne CI: 552/552 testy
+w verify i container, Actions `36791873648`. Bieżący punkt wznowienia:
+[HANDOFF_2026-10-01_INTEGRATION](../HANDOFF_2026-10-01_INTEGRATION.md).
+Poniższe instrukcje startowe i warunki przydziału zachowują historię tej fali;
+nie są poleceniem ponownej implementacji. Dalsza praca zaczyna od aktualnego main.
+
 Te instrukcje przygotowują trzy większe strumienie pracy. Nie uruchamiają nowych
 czatów. Subagenci działający w bieżącej sesji nie są osobnymi głównymi wątkami;
 w tej sesji nie ma narzędzia automatycznie tworzącego takie wątki.
@@ -12,7 +19,7 @@ integratorem dokładny bazowy SHA zawierający potrzebne poprawki.
 
 Fala jest zakończona: PR #5 scalony jako `860c844`; oba joby CI
 `36766360252` przeszły 434/434 testy. Wybierz aktualny `main` zawierający to
-scalenie i końcowy handoff. Pakiety nadal są przygotowane, nieprzydzielone.
+scalenie i końcowy handoff. Ten historyczny etap przygotowania zastępuje wynik PR #9 powyżej.
 
 | Pakiet | Pierwszy działający rezultat | Warunek rozpoczęcia |
 | --- | --- | --- |

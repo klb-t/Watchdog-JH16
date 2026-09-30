@@ -3,8 +3,8 @@
 Read `CLAUDE.md` (shared agent contract), then:
 
 1. `docs/spec/00_STATE_AND_DECISIONS.md` and `docs/spec/07_EPICS_AND_TASKS.md`;
-2. the current handoff linked there (the resumed 2026-09-30 wave is
-   `docs/HANDOFF_2026-09-30_WAVE1.md`);
+2. the current handoff linked there (`docs/HANDOFF_2026-10-01_INTEGRATION.md`
+   records the merged RESEARCH/CLINICAL/OPERATIONS packages and 552/552 CI gates);
 3. `docs/WORK_COORDINATION.md` and any assigned `docs/work_packages/` file;
 4. `docs/DESIGN_RULES.md` and `docs/SPEC_RECONCILIATION_2026-09-30.md` when
    selecting or changing a contract. `ECOSYSTEM.md` is a brainstorm map.
