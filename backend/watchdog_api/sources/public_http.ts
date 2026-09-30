@@ -1,6 +1,10 @@
 import type { AutomationProfile } from '../config/automation';
 import type { AutomationRepository } from '../db/repositories/automation';
 import { AutomationError } from '../db/repositories/automation';
+import {SourceAccessService} from '../services/source_access';
+import {loadSourceAccessProfile} from '../config/source_access';
+import {SourceAccessError} from '../../../shared/source_access';
+import {tracer} from '../utils/tracer';
 export type PublicTransport = (url: string, init: RequestInit) => Promise<Response>;
 export class AcquisitionStopped extends Error { constructor(readonly reason: string) { super(reason); } }
 const defaultTransport: PublicTransport = (url, init) => fetch(url, init);
@@ -8,20 +12,29 @@ const defaultTransport: PublicTransport = (url, init) => fetch(url, init);
 /** All requests go to versioned operator profiles, never to links from a paper or LLM. */
 export class PublicHttp {
   requests = 0;
+  private access:SourceAccessService|undefined;
   constructor(readonly repo: AutomationRepository, readonly jobId: string, readonly profile: AutomationProfile,
     readonly maxRequests: number, readonly checkpoint: () => void, readonly transport = defaultTransport,
     readonly delay: (ms: number) => Promise<void> = ms => new Promise(r => setTimeout(r, ms))) {}
+  private checkAccess(provider:string){
+    this.access??=new SourceAccessService(this.repo.access,loadSourceAccessProfile(),this.profile);
+    try{this.access.assertAcquisition(this.repo.access.jobOwner(this.jobId),provider);}
+    catch(error){if(!(error instanceof SourceAccessError))throw error;
+      tracer.emit('SOURCE_ACCESS_HELD',{jobId:this.jobId,provider});throw new AutomationError(error.message);
+    }
+  }
   async get(provider: string, resource: string, params: Record<string, string | number> = {}) {
     this.checkpoint();
     if (this.requests >= this.maxRequests) throw new AcquisitionStopped('REQUEST_BUDGET_EXHAUSTED');
     const config = this.profile.sources.find(s => s.id === provider && s.implemented);
     if (!config?.origin || !config.pathPrefix) throw new AutomationError(`No implemented public adapter for ${provider}`);
+    this.checkAccess(provider);
     const url = new URL(resource, config.origin);
     if (url.origin !== config.origin || url.protocol !== 'https:' || url.username || url.password || !url.pathname.startsWith(config.pathPrefix)) throw new AutomationError('Source URL is outside the configured API');
     for (const [key, value] of Object.entries(params)) url.searchParams.set(key, String(value));
     const lease = this.repo.sourceLease(provider, config.minIntervalMs ?? 1000);
     try {
-    if (lease.waitMs) await this.delay(lease.waitMs); this.checkpoint(); this.requests++;
+    if (lease.waitMs) await this.delay(lease.waitMs); this.checkpoint(); this.checkAccess(provider); this.requests++;
     let response: Response;
     try { response = await this.transport(url.href, { redirect: 'error', signal: AbortSignal.timeout(this.profile.worker.requestTimeoutMs),
       headers: { Accept: 'application/json, application/atom+xml;q=0.9', 'User-Agent': 'Watchdog-JH16/1.0 (https://github.com/klb-t/Watchdog-JH16)' } }); }

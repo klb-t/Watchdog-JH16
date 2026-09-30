@@ -2,12 +2,18 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { Link, useLocation } from 'react-router-dom';
 import { clearFieldCache, readFieldCache } from './field_client';
 import type { Capability } from '../../shared/authorization';
+import type { AdmissionStatus } from '../../shared/admission';
 
 interface Access {
   loading: boolean;
   roles: string[];
   capabilities: Capability[];
   principalId: string | null;
+  email?: string | null;
+  authMode?: 'local' | 'oidc';
+  googleClientId?: string | null;
+  admission?: AdmissionStatus;
+  error?: string;
 }
 const empty: Access = { loading: true, roles: [], capabilities: [], principalId: null };
 const AccessContext = createContext<Access>(empty);
@@ -24,8 +30,13 @@ export function AccessProvider({ children }: { children: ReactNode }) {
         const response = await fetch('/api/auth/me', { cache: 'no-store' });
         if ([401, 403].includes(response.status)) clearFieldCache();
         const data = response.ok ? await response.json() : null;
+        const config = await fetch('/api/auth/config',{ cache:'no-store' }).then(r => r.ok ? r.json() : null);
+        const admission = !data && config?.mode === 'oidc'
+          ? await fetch('/api/auth/admission/status',{ cache:'no-store' }).then(r => r.ok ? r.json() : undefined) : undefined;
         if (active) setAccess({ loading: false, roles: data?.principal.roles ?? [],
-          capabilities: data?.capabilities ?? [], principalId: data?.principal.id ?? null });
+          capabilities: data?.capabilities ?? [], principalId: data?.principal.id ?? null,
+          email:data?.principal.email ?? admission?.email ?? null,authMode:config?.mode,
+          googleClientId:config?.google_client_id ?? null,admission });
       } catch {
         try {
           const cached = await readFieldCache();

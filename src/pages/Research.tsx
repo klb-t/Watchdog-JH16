@@ -14,6 +14,7 @@ export function Research() {
 
 function ResearchContent() {
   const access = useAccess(), [params] = useSearchParams();
+  const requestedDocument = params.get('document');
   const [data,setData] = useState<any>(null), [tab,setTab] = useState('papers'), [error,setError] = useState(''), [notice,setNotice] = useState(''), [busy,setBusy] = useState(false);
   const [paper,setPaper] = useState<PaperInput>({ title:'', source:'', text:'', coverage:'excerpt', language:null, geography:[] });
   const [raw,setRaw] = useState(''), [format,setFormat] = useState<'json'|'csv'>('json'), [goal,setGoal] = useState(''), [plan,setPlan] = useState(''), [expected,setExpected] = useState('');
@@ -25,6 +26,12 @@ function ResearchContent() {
   useEffect(() => { let active=true; setData(null); setSelected(null); setTrial(null);
     api('/api/research').then(r => active && setData(r)).catch(e => active && setError(e.message)); return () => { active=false; };
   },[access.principalId]);
+  useEffect(() => { let active=true; setOpenedSource(null);
+    if (requestedDocument) api(`/api/research/papers/${encodeURIComponent(requestedDocument)}`).then(result => {
+      if (active) { setOpenedSource(result.document); setTab('papers'); }
+    }).catch(e => { if (active) setError(e.message); });
+    return () => { active=false; };
+  }, [requestedDocument, access.principalId]);
   useEffect(()=>{let active=true;setTrials([]);if(!selected)return;
     api(`/api/research/extractors/${selected.id}/trials`).then(r=>{if(active)setTrials(r.trials);}).catch(e=>{if(active)setError(e.message);});
     return ()=>{active=false;};
@@ -39,6 +46,11 @@ function ResearchContent() {
   const saveResult = () => { const blob=new Blob([JSON.stringify(trial,null,2)],{type:'application/json'}), url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='watchdog-extraction.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),0); };
   return <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-5" data-testid="research-page">
     <header><h1 className="text-2xl font-semibold">Warsztat replikacji</h1><p className="text-slate-600 mt-2">Publikacja → metodologia i potrzebne dane → jawne warianty → sprawdzony ekstraktor.</p></header>
+    {requestedDocument && openedSource && <section className={sectionClass} data-testid="research-linked-paper"><h2 className="font-semibold">{openedSource.body.title}</h2>
+      <p className="text-sm break-words">{openedSource.body.source} · {openedSource.body.coverage}</p><p className="text-xs break-all">SHA-256 wersji: {openedSource.hash}</p>
+      <pre className="text-sm whitespace-pre-wrap break-words max-h-80 overflow-auto">{openedSource.body.text || 'Zapisano tylko identyfikator; brak tekstu źródłowego.'}</pre>
+      {openedSource.origins?.map((origin:any) => <p key={origin.hash} className="text-xs break-all"><a className="underline" href={`/api/memory/receipts/${origin.receiptId}/raw`}>Pobierz oryginalną odpowiedź źródła literatury</a> · wersja odkrycia: {origin.discoveryHash}</p>)}
+    </section>}
     <div className="flex flex-wrap gap-3"><button className={buttonClass} onClick={()=>setTab('papers')}>Prace i warianty</button><button className={buttonClass} onClick={()=>setTab('extractors')}>Ekstraktory danych</button><button className={buttonClass} onClick={()=>setTab('operations')}>Analizy prac</button><button className="underline" onClick={()=>act(async()=>{},'Odświeżono.')}>Odśwież kolejkę</button></div>
     {error && <p role="alert" className="bg-red-50 text-red-800 p-3 break-words">{error}</p>}{notice && <p role="status">{notice}</p>}
     {activeJobs && <p className="text-sm" role="status">Ocena oczekuje lub trwa. Stan odświeża się automatycznie. <Link to="/automation" className="underline">Otwórz kolejkę, aby wstrzymać zadanie</Link>.</p>}
@@ -58,7 +70,7 @@ function ResearchContent() {
         {!data?.documents.length && <p>Dodaj tekst lub przenieś pracę z przeglądu literatury.</p>}
         {data?.documents.map((d:any)=><article key={d.id} className="border-t pt-3 space-y-2"><b>{d.body.title}</b><p className="text-xs break-words">{d.body.coverage} · {d.body.source}</p>
           <button className="underline text-sm block" onClick={()=>act(async()=>setOpenedSource((await api(`/api/research/papers/${d.id}`)).document),'Otwarto zapisaną wersję źródła.')}>Pokaż zapisany tekst i jego wersję</button>
-          {openedSource?.id===d.id && <details open><summary>Tekst źródłowy · {d.characterCount} znaków</summary><p className="text-xs break-all">SHA-256 wersji: {openedSource.hash}</p><pre className="text-sm whitespace-pre-wrap break-words max-h-80 overflow-auto">{openedSource.body.text}</pre>
+          {!requestedDocument && openedSource?.id===d.id && <details open><summary>Tekst źródłowy · {d.characterCount} znaków</summary><p className="text-xs break-all">SHA-256 wersji: {openedSource.hash}</p><pre className="text-sm whitespace-pre-wrap break-words max-h-80 overflow-auto">{openedSource.body.text}</pre>
             {openedSource.origins?.map((o:any)=><p key={o.hash} className="text-xs break-all"><a className="underline" href={`/api/memory/receipts/${o.receiptId}/raw`}>Pobierz oryginalną odpowiedź źródła literatury</a> · wersja odkrycia: {o.discoveryHash}</p>)}
           </details>}
           {d.body.coverage!=='identifier_only' && <button className={buttonClass} onClick={()=>{setOperationDocument(d.id);setTab('operations');}}>Powiąż operację z danymi bez LLM</button>}

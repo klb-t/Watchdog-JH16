@@ -8,6 +8,10 @@ as a repeated check; a return to an earlier content version is a change from the
 check. The collapsible timeline retains receipt identifiers, raw-response links and the
 first/last check and occurrence count of each content version.
 
+**Obserwuj nowe zmiany** adds this exact context to your private
+[watched-source reading queue](SOURCE_WATCHES.md). Its new-record comparisons use the same
+export and verifier. Reading state does not alter source evidence or the history timeline.
+
 ## Meaning and boundaries
 
 - Comparison requires the same substance, provider, record kind, exact source URL, adapter

@@ -164,6 +164,10 @@ export class WorkbenchRepository {
     return { id, spec, hash, datasetId: row.dataset_id, selection, approvedHash: row.approved_hash,
       approvalState: row.approved_hash === hash ? 'APPROVED' : 'PROPOSED', approvedBy: row.approved_by, approvedAt: row.approved_at };
   }
+  ownedMethod(id: string, actor: string) {
+    if (!this.db.prepare('SELECT 1 FROM method_specs WHERE id=? AND owner_principal_id=?').get(id, actor)) return null;
+    return this.method(id);
+  }
   methods(datasetId: string) { return (this.db.prepare('SELECT method_id FROM workbench_method_inputs WHERE dataset_id=? ORDER BY method_id').all(datasetId) as any[]).map(r => this.method(r.method_id)); }
   paperBinding(actor: string, methodId: string) {
     const method = this.method(methodId), binding = new PaperOperationsRepository(this.db).forMethod(actor, methodId);

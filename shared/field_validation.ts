@@ -103,6 +103,8 @@ export const FieldProfileSchema = z.object({ version: profileText, staleAfterHou
     categories: z.array(z.object({ id: z.enum(CONTENT_CATEGORIES), label: profileText }).strict()),
     tiers: z.record(z.enum(EVIDENCE_TIERS), z.object({ label: profileText, bucket: profileText, icon: profileText,
       color: z.string().regex(/^#[0-9a-f]{6}$/i) }).strict()),
+    evidenceDisplay: z.object({ defaultMode: z.enum(['full', 'compact']), explanation: profileText,
+      compactColors: z.record(profileText, z.string().regex(/^#[0-9a-f]{6}$/i)) }).strict().optional(),
     colors: z.array(z.object({ id: profileText, label: profileText, aliases: z.array(profileText) }).strict()), disclaimer: profileText,
     contacts: z.array(z.object({ regionId: profileText, name: profileText, phone: z.string().regex(/^\+?[0-9]+$/).nullable(),
       url, audience: profileText, verifiedOn: z.iso.date(), citationUrl: url }).strict()),
@@ -118,6 +120,9 @@ export function validateFieldProfile(profile: unknown): FieldProfile {
   for (const region of validated.regions) {
     if (region.parentId && !seen.has(region.parentId)) throw new Error('Regions must follow their parent, without cycles.');
     seen.add(region.id);
+  }
+  if (validated.evidenceDisplay) for (const tier of Object.values(validated.tiers)) {
+    if (!validated.evidenceDisplay.compactColors[tier.bucket]) throw new Error('Every compact evidence bucket requires a configured color.');
   }
   for (const contact of validated.contacts) if (!ids.has(contact.regionId)) throw new Error('Contact references an unknown region.');
   return validated;

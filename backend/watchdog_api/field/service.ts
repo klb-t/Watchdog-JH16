@@ -24,9 +24,10 @@ export class FieldService {
       const result = lookupField(snapshot, query);
       // Query descriptors belong in the authenticated audit record, never raw HTTP logs.
       this.repository.audit(principalId, 'responder.lookup', canonicalHash(query), requestId,
-        { query, snapshotHash: canonicalHash(snapshot), resultIds: result.candidates.map(c => c.record.id),
+        { query, snapshotHash: canonicalHash(snapshot), resultIds: [...result.candidates, ...result.globalCandidates].map(c => c.record.id),
+          globalContextIds: result.globalCandidates.map(c => c.record.id),
           symptomIds: result.symptomCandidates.map(c => c.card.substance.id) });
-      tracer.result({ candidateCount: result.candidates.length, symptomCandidateCount: result.symptomCandidates.length,
+      tracer.result({ candidateCount: result.candidates.length, globalCandidateCount: result.globalCandidates.length, symptomCandidateCount: result.symptomCandidates.length,
         flags: result.flags, queryHash: canonicalHash(query) });
       return { result, snapshotGeneratedAt: snapshot.generatedAt, traceId: tracer.getContext()?.trace_id };
     }, { request_id: requestId, actor_id: principalId });

@@ -1,11 +1,14 @@
 # Deploying WatchDog to Google Cloud Run
 
+For the current owner-only Compute Engine VM installation, use
+[DEPLOY_GCP_VM.md](DEPLOY_GCP_VM.md). The older Cloud Run path below is separate; it does
+not implement the pending closed admission/invitation UI.
+
 Written for someone who has not used GCP before. Every command is copy-pasteable;
 where a step needs a decision, the decision is stated rather than assumed.
 
-Budget expectation: with `min-instances=0` the service costs effectively nothing while
-nobody is using it. The two metered things are your own API providers (OpenRouter, SerpApi),
-not Google.
+Costs depend on the Google Cloud resources retained and used, as well as external API
+providers. Scaling the service to zero does not make storage and other resources free.
 
 ---
 
@@ -99,13 +102,21 @@ printf %s '...'          | gcloud secrets versions add SERPAPI_API_KEY   --data-
 
    ```bash
    gcloud run services update watchdog --region "$REGION" \
-     --update-env-vars "GOOGLE_OAUTH_CLIENT_ID=<client-id>,WATCHDOG_GRANTS={\"you@gmail.com\":\"admin\"}"
+     --update-env-vars "GOOGLE_OAUTH_CLIENT_ID=<client-id>,WATCHDOG_GRANTS={\"you@gmail.com\":\"developer\"}"
    ```
 
    `WATCHDOG_GRANTS` maps an email address, or an `@domain` suffix, to one of
-   `viewer | researcher | admin | dev`. There is no wildcard: an instance that grants a role
+   `viewer | researcher | responder | institutional | law_enforcement | admin | developer | dev`. There is no wildcard: an instance that grants a role
    to every Google account is one Google account away from being open, and that is not a
    state this can reach by accident.
+
+   Keep an owner bootstrap grant with `developer` (or compatibility alias `dev`).
+   That profile can approve admission requests, combine roles and revoke access at
+   **Settings → Installation access**. An `admin` can prepare and revoke invitation
+   links, but cannot assign profiles. Existing admin-only installations remain valid;
+   their operator must add a developer bootstrap grant before approving new users.
+   Invitation links bind to the verified email and only submit an admission request.
+   Their acceptance never supplies application access automatically.
 
 6. Now open the front door — Google sign-in becomes the gate:
 
@@ -117,7 +128,10 @@ printf %s '...'          | gcloud secrets versions add SERPAPI_API_KEY   --data-
 
 ## 4. Check it
 
-Open the service URL and go to **Setup**. Every provider shows one of:
+Open the service URL, sign in, and go to **Settings**. An account without a grant sees
+only the admission form, where it can explain its intended use. The owner approves its
+profiles in **Installation access**, after which the account can activate its session.
+Every provider shows one of:
 
 - **ready** — credentialled and usable;
 - **blocked** — built, waiting on exactly one named environment variable;
@@ -192,9 +206,12 @@ Working as intended. Set `GOOGLE_OAUTH_CLIENT_ID`, `WATCHDOG_GRANTS` and
 `STORE_BACKEND=gcs` with `GCS_BUCKET`, and `DB_PATH` under `/mnt/watchdog`. The deploy
 script sets both; this appears if they were edited apart.
 
-**Sign-in fails with "no grant exists for …"**
-The address is not in `WATCHDOG_GRANTS`. Check for a typo, and note that a `@domain` grant
-matches the domain exactly.
+**Sign-in succeeds but shows an access request instead of the workspace**
+The verified address has no current installation grant. Submit the explanation, then have
+an owner with `developer`/`dev` approve its profiles. Bootstrap `WATCHDOG_GRANTS` still
+supports exact addresses and exact `@domain` suffixes. Persisted revocation overrides a
+bootstrap grant and invalidates existing sessions on their next request. A revoked account
+cannot regain access merely by signing in again.
 
 **Sign-in fails with "audience does not match this deployment"**
 `GOOGLE_OAUTH_CLIENT_ID` is not the client id the browser used. Usually a second OAuth

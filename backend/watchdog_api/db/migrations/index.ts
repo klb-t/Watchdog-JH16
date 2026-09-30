@@ -16,6 +16,10 @@ import { MIGRATION_015_PAPER_OPERATIONS } from './015_paper_operations';
 import { MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES } from './014_extraction_mapping_templates';
 import { MIGRATION_016_REFERENCE_OBSERVATIONS } from './016_reference_observations';
 import { MIGRATION_017_COLLECTION_CONTEXT } from './017_collection_context';
+import { MIGRATION_018_SOURCE_WATCHES } from './018_source_watches';
+import { MIGRATION_019_SOURCE_ACCESS } from './019_source_access';
+import { MIGRATION_020_ADMISSION } from './020_admission';
+import { MIGRATION_021_RESEARCH_PROJECTS } from './021_research_projects';
 
 export interface Migration {
   readonly id: string;
@@ -44,7 +48,11 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '014_extraction_mapping_templates', sql: MIGRATION_014_EXTRACTION_MAPPING_TEMPLATES },
   { id: '015_paper_operations', sql: MIGRATION_015_PAPER_OPERATIONS },
   { id: '016_reference_observations', sql: MIGRATION_016_REFERENCE_OBSERVATIONS },
-  { id: '017_collection_context', sql: MIGRATION_017_COLLECTION_CONTEXT }
+  { id: '017_collection_context', sql: MIGRATION_017_COLLECTION_CONTEXT },
+  { id: '018_source_watches', sql: MIGRATION_018_SOURCE_WATCHES },
+  { id: '019_source_access', sql: MIGRATION_019_SOURCE_ACCESS },
+  { id: '020_admission', sql: MIGRATION_020_ADMISSION },
+  { id: '021_research_projects', sql: MIGRATION_021_RESEARCH_PROJECTS }
 ];
 
 const MIGRATIONS_TABLE = `

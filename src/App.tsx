@@ -7,6 +7,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Dashboard } from './pages/Dashboard';
 import { Sources } from './pages/Sources';
+import {SourceAccess} from './pages/SourceAccess';
 import { Runs } from './pages/Runs';
 import { RunDetails } from './pages/RunDetails';
 import { Analyzers } from './pages/Analyzers';
@@ -21,14 +22,19 @@ import { Setup } from './pages/Setup';
 import { Automation } from './pages/Automation';
 import { SubstanceMemory } from './pages/SubstanceMemory';
 import { Research } from './pages/Research';
-import { AccessBoundary, AccessProvider } from './lib/access';
+import { Search } from './pages/Search';
+import { ResearchProjects } from './pages/ResearchProjects';
+import AccessAdmin from './pages/AccessAdmin';
+import { AdmissionGate } from './components/AdmissionGate';
+import { AccessBoundary, AccessProvider, useAccess } from './lib/access';
 
 export default function App() {
   return (
-    <AccessProvider><Routes>
+    <AccessProvider><AdmissionGate><Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Dashboard />} />
         <Route path="sources" element={<AccessBoundary capability="run.view"><Sources /></AccessBoundary>} />
+        <Route path="source-access" element={<AccessBoundary capability="provider.view"><SourceAccess /></AccessBoundary>} />
         <Route path="runs" element={<AccessBoundary capability="run.view"><Runs /></AccessBoundary>} />
         <Route path="runs/:id" element={<AccessBoundary capability="run.view"><RunDetails /></AccessBoundary>} />
         <Route path="analyzers" element={<AccessBoundary capability="run.view"><Analyzers /></AccessBoundary>} />
@@ -42,11 +48,21 @@ export default function App() {
         <Route path="evidence" element={<AccessBoundary capability="evidence.review"><EvidenceReview /></AccessBoundary>} />
         <Route path="setup" element={<Setup />} />
         <Route path="settings" element={<Setup />} />
+        <Route path="settings/access" element={<AccessBoundary capability="principal.invite"><AccessAdmin /></AccessBoundary>} />
         <Route path="automation" element={<AccessBoundary capability="run.create"><Automation /></AccessBoundary>} />
-        <Route path="memory" element={<SubstanceMemory />} />
+        <Route path="memory" element={<MemoryView />} />
         <Route path="research" element={<AccessBoundary capability="method.propose"><Research /></AccessBoundary>} />
+        <Route path="projects" element={<AccessBoundary capability="method.propose"><ResearchProjects /></AccessBoundary>} />
+        <Route path="search" element={<Search />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
-    </Routes></AccessProvider>
+    </Routes></AdmissionGate></AccessProvider>
   );
+}
+
+function MemoryView() {
+  const access = useAccess();
+  return <AccessBoundary capability={access.capabilities.includes('responder.lookup') ? 'responder.lookup' : 'evidence.review'}>
+    <SubstanceMemory />
+  </AccessBoundary>;
 }

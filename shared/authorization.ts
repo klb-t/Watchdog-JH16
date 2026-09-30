@@ -1,9 +1,9 @@
 /** MVP role bundles, not an ordinal hierarchy. See decision D18. */
-export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-3';
+export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-4';
 export const CAPABILITIES = [
   'run.view', 'run.create', 'method.propose', 'method.approve',
   'narrative.approve', 'export.download', 'provider.view', 'provider.approve',
-  'diagnostics.view', 'diagnostics.bundle', 'principal.view', 'principal.manage',
+  'diagnostics.view', 'diagnostics.bundle', 'principal.view', 'principal.manage', 'principal.invite',
   'workbench.view', 'workbench.analyze', 'dataset.import', 'dataset.review', 'dataset.approve', 'figure.manage',
   'responder.lookup', 'evidence.review', 'evidence.import', 'evidence.approve',
 ] as const;
@@ -17,7 +17,7 @@ const researcher: readonly Capability[] = [
 ];
 const responder: readonly Capability[] = ['responder.lookup'];
 const admin: readonly Capability[] = [
-  ...researcher, ...responder, 'provider.approve', 'principal.view',
+  ...researcher, ...responder, 'provider.approve', 'principal.view', 'principal.invite',
 ];
 
 export const RBAC = Object.freeze({

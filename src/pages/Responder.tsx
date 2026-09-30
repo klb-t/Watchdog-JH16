@@ -1,27 +1,42 @@
 import { useEffect, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useAccess, AccessBoundary } from '../lib/access';
-import { defaultFieldProfile, FieldSafety, EvidenceBadge, RecordEvidence, SubstanceReference } from '../components/FieldEvidence';
-import { fieldApi, HttpFailure, offlineFieldLookup, pendingFieldAudit, readFieldCache, syncField } from '../lib/field_client';
-import type { FieldQuery, FieldResult, FieldSnapshot } from '../../shared/field';
+import { defaultFieldProfile, FieldSafety, EvidenceBadge } from '../components/FieldEvidence';
+import { fieldApi, HttpFailure, offlineFieldLookup, offlineFieldReference, pendingFieldAudit, readFieldCache, syncField } from '../lib/field_client';
+import { FieldLookupResults } from '../components/FieldResults';
+import { FieldLinkedReference } from '../components/FieldLinkedReference';
+import { fieldSnapshotWindowIsCurrent } from '../../shared/field_snapshot';
+import type { FieldQuery, FieldResult, FieldSnapshot, EvidenceDisplayMode, ReferenceRecord } from '../../shared/field';
 
 const initial: FieldQuery = { mode: 'pill', term: '', color: '', shape: '', scoreLine: '', symptomIds: [], regionId: 'NL',
   from: null, to: null, includeBroaderContext: false, language: 'nl', expansionMode: 'STRICT_CANONICAL' };
+export function responderQueryFromSearch(search: URLSearchParams): FieldQuery {
+  const mode = search.get('mode');
+  return { ...initial, mode: mode === 'market' || mode === 'symptoms' ? mode : 'pill', term: (search.get('term') ?? '').slice(0, 100) };
+}
 export function Responder() {
-  const [query, setQuery] = useState<FieldQuery>(initial);
+  const [searchParams] = useSearchParams();
+  const linkedReferenceId = searchParams.get('reference') ?? undefined;
+  const [query, setQuery] = useState<FieldQuery>(() => responderQueryFromSearch(searchParams));
+  const linkedMode = searchParams.get('mode'), linkedTerm = searchParams.get('term');
+  useEffect(() => { setQuery(responderQueryFromSearch(searchParams)); }, [linkedMode, linkedTerm]);
   const [profile, setProfile] = useState(defaultFieldProfile);
   return <><FieldSafety profile={profile} regionId={query.regionId} /><AccessBoundary capability="responder.lookup">
-    <ResponderContent query={query} setQuery={setQuery} profile={profile} setProfile={setProfile} />
+    <ResponderContent query={query} setQuery={setQuery} profile={profile} setProfile={setProfile} linkedReferenceId={linkedReferenceId} />
   </AccessBoundary></>;
 }
-function ResponderContent({ query, setQuery, profile, setProfile }: {
-  query: FieldQuery; setQuery: (q: FieldQuery) => void; profile: typeof defaultFieldProfile; setProfile: (p: typeof defaultFieldProfile) => void;
+function ResponderContent({ query, setQuery, profile, setProfile, linkedReferenceId }: {
+  query: FieldQuery; setQuery: (q: FieldQuery) => void; profile: typeof defaultFieldProfile; setProfile: (p: typeof defaultFieldProfile) => void; linkedReferenceId?: string;
 }) {
   const access = useAccess();
+  const [display, setDisplay] = useState<EvidenceDisplayMode>(profile.evidenceDisplay?.defaultMode ?? 'full');
   const [snapshot, setSnapshot] = useState<FieldSnapshot | null>(null);
   const [result, setResult] = useState<FieldResult | null>(null);
   const [busy, setBusy] = useState(false), [status, setStatus] = useState('Loading reference profile…'), [error, setError] = useState('');
   const [offline, setOffline] = useState(false), [pending, setPending] = useState(0);
+  const [offlineInspection, setOfflineInspection] = useState<{ record: ReferenceRecord; snapshot: FieldSnapshot } | null>(null);
+  const [inspectionError, setInspectionError] = useState('');
+  const [, tickSnapshotClock] = useState(0);
   const change = <K extends keyof FieldQuery>(key: K, value: FieldQuery[K]) => { setQuery({ ...query, [key]: value }); setResult(null); };
   async function synchronize() {
     setBusy(true); setError('');
@@ -30,7 +45,7 @@ function ResponderContent({ query, setQuery, profile, setProfile }: {
       setOffline(false); setPending(pendingFieldAudit(access.principalId!));
       setStatus(`${next.records.length} approved references synchronized. Offline access expires ${next.expiresAt}.`);
     } catch (e) {
-      if (e instanceof HttpFailure) { setSnapshot(null); setResult(null); setError(e.message); }
+      if (e instanceof HttpFailure) { setSnapshot(null); setOfflineInspection(null); setOffline(false); setResult(null); setError(e.message); }
       else try {
         const saved = await readFieldCache(access.principalId!); setSnapshot(saved.snapshot); setProfile(saved.snapshot.profile);
         setOffline(true); setPending(pendingFieldAudit(access.principalId!)); setStatus('Offline snapshot available. Source updates and revocations cannot be checked until reconnection.');
@@ -38,13 +53,34 @@ function ResponderContent({ query, setQuery, profile, setProfile }: {
     } finally { setBusy(false); }
   }
   useEffect(() => { void synchronize(); }, [access.principalId]);
+  useEffect(() => { setResult(null); }, [query]);
+  useEffect(() => {
+    let current = true; setOfflineInspection(null); setInspectionError('');
+    if (offline && linkedReferenceId && access.principalId) {
+      void offlineFieldReference(access.principalId, linkedReferenceId).then(value => {
+        if (current) { setOfflineInspection(value); setPending(pendingFieldAudit(access.principalId!)); }
+      }).catch(e => { if (current) setInspectionError((e as Error).message); });
+    }
+    return () => { current = false; };
+  }, [offline, linkedReferenceId, access.principalId, snapshot?.generatedAt]);
+  useEffect(() => {
+    const expiresAt = offline ? offlineInspection?.snapshot.expiresAt : snapshot?.expiresAt;
+    if (!expiresAt) return;
+    const refresh = () => tickSnapshotClock(value => value + 1);
+    const timer = setTimeout(refresh, Math.max(0, Date.parse(expiresAt) - Date.now()) + 1);
+    window.addEventListener('focus', refresh); document.addEventListener('visibilitychange', refresh);
+    return () => { clearTimeout(timer); window.removeEventListener('focus', refresh); document.removeEventListener('visibilitychange', refresh); };
+  }, [offline, offlineInspection?.snapshot.expiresAt, snapshot?.expiresAt]);
   async function search(event: FormEvent) {
     event.preventDefault(); setBusy(true); setResult(null); setError('');
     try {
       const response = await fieldApi('lookup', query); setResult(response.result); setOffline(false);
       setStatus(`Live lookup · ${response.snapshotGeneratedAt} · trace ${response.traceId}`);
     } catch (e) {
-      if (e instanceof HttpFailure) setError(e.message);
+      if (e instanceof HttpFailure) {
+        if ([401, 403].includes(e.status)) { setSnapshot(null); setOfflineInspection(null); setOffline(false); }
+        setError(e.message);
+      }
       else try {
         const response = await offlineFieldLookup(access.principalId!, query);
         setResult(response.result); setSnapshot(response.snapshot); setOffline(true);
@@ -52,6 +88,9 @@ function ResponderContent({ query, setQuery, profile, setProfile }: {
       } catch (cacheError) { setError((cacheError as Error).message); }
     } finally { setBusy(false); }
   }
+  const inspectionSnapshot = offline ? offlineInspection?.snapshot : snapshot;
+  const inspectionWindowCurrent = Boolean(inspectionSnapshot && access.principalId && fieldSnapshotWindowIsCurrent(inspectionSnapshot, access.principalId));
+  const linkedReference = inspectionWindowCurrent && linkedReferenceId ? (offline ? offlineInspection?.record.id === linkedReferenceId ? offlineInspection.record : undefined : snapshot?.records.find(r => r.id === linkedReferenceId)) : undefined;
   const symptoms = [...new Map((snapshot?.records ?? []).flatMap(r => r.document.kind === 'assertion' &&
     r.document.predicate === 'ASSOCIATED_WITH_SYMPTOM' && r.document.object ? [[r.document.object.id, r.document.object] as const] : [])).values()];
   return <div className="field-page">
@@ -59,8 +98,13 @@ function ResponderContent({ query, setQuery, profile, setProfile }: {
       <p className="text-slate-600">Find candidate samples and their sourced substance information.</p></div>
       <button type="button" className="field-button" disabled={busy} onClick={synchronize}>Synchronize offline references</button></div>
     <p role="status" className={`mt-3 text-sm ${offline ? 'field-warning' : 'text-slate-600'}`}>{status}</p>
-    {offline && <p className="field-warning">Offline: {pending} lookup audit events pending upload. Reconnect and synchronize to submit them.</p>}
+    {offline && <p className="field-warning">Offline: {pending} reference audit events pending upload. Reconnect and synchronize to submit them.</p>}
     {error && <p className="field-error" role="alert">{error}</p>}
+    {linkedReferenceId && <p className="field-panel text-sm">Linked reference: <span className="break-all">{linkedReferenceId}</span>. Search descriptors are prefilled; choose the context and run a lookup to compare reference candidates.</p>}
+    {linkedReference && inspectionSnapshot && <FieldLinkedReference record={linkedReference} snapshot={inspectionSnapshot} profile={profile} display={display} />}
+    {linkedReferenceId && inspectionError && <p className="field-error" role="alert">{inspectionError}</p>}
+    {linkedReferenceId && inspectionSnapshot && !inspectionWindowCurrent && <p className="field-warning">Exact reference inspection is unavailable because the synchronized snapshot expired or belongs to another account. Reconnect and synchronize.</p>}
+    {linkedReferenceId && !offline && snapshot && inspectionWindowCurrent && !linkedReference && <p className="field-warning">The linked reference is not present in the currently synchronized approved snapshot. It may be unavailable, changed or no longer approved.</p>}
     <form className="field-panel" onSubmit={search}>
       <div className="flex flex-wrap gap-2 mb-4" aria-label="Search mode">{(['pill', 'market', 'symptoms'] as const).map(mode =>
         <button key={mode} type="button" className="field-button" aria-pressed={query.mode === mode} onClick={() => change('mode', mode)}>
@@ -86,37 +130,11 @@ function ResponderContent({ query, setQuery, profile, setProfile }: {
       <div className="flex flex-wrap items-center justify-between gap-4 mt-4"><label className="text-sm"><input type="checkbox" checked={query.includeBroaderContext} onChange={e => change('includeBroaderContext', e.target.checked)} /> Include explicitly labelled broader regional context</label>
         <button className="field-button primary" disabled={busy || query.mode === 'symptoms' && !query.symptomIds.length && !query.term}>{busy ? 'Working…' : 'Find references'}</button></div>
     </form>
-    <details className="field-panel"><summary>Evidence legend — independent from section order and review status</summary>
-      <div className="flex flex-wrap gap-2 mt-3">{Object.keys(profile.tiers).map(tier => <EvidenceBadge key={tier} tier={tier as any} profile={profile} />)}</div>
-      <p className="mt-3 text-sm">Each fact keeps its own tier. Human approval accepts the mapping; it does not turn a prediction into a measurement.</p></details>
-    {result && <section className="mt-5" aria-label="Lookup results">
-      <h2>{result.candidates.length + result.symptomCandidates.length} reference candidates</h2>
-      <p className="field-warning">Appearance and market names do not identify the substance taken. These records concern other specimens or source reports.</p>
-      <p className="text-sm">{result.labSampleCount} distinct laboratory samples in selected region · {result.publishedAlertCount} published alerts · {result.visualReportCount} visual reports. Source coverage is incomplete.</p>
-      {result.excludedUndated > 0 && <p className="field-warning">{result.excludedUndated} undated records excluded by your date filter.</p>}
-      {result.flags.includes('AMBIGUOUS_MARKET_LABEL') && <p className="field-warning">This label belongs to multiple reviewed market groups. All matching groups remain visible.</p>}
-      {result.flags.includes('MULTIPLE_SOURCE_VERSIONS') && <p className="field-warning">Multiple versions of the same source record are shown. They are not independent specimens.</p>}
-      {result.distribution.length > 0 && <div className="field-panel"><h3 className="font-semibold">Composition occurrences in tested reference samples</h3>
-        <p className="text-sm">Denominator: {result.labSampleCount} distinct sampled records. Mixed samples can contain more than one substance. This is not market prevalence.</p>
-        <ul className="mt-2">{result.distribution.map(d => <li key={d.substance.id}>{d.substance.name}: {d.labSampleCount} / {result.labSampleCount} samples</li>)}</ul></div>}
-      {result.candidates.map(c => <article className="field-panel" key={c.record.id}>
-        <div className="flex flex-wrap justify-between gap-2"><h3 className="font-semibold text-lg">{c.record.document.name}</h3><EvidenceBadge tier={c.matchTier} prefix="Match" profile={profile} /></div>
-        <p className="text-sm mt-2">{c.record.document.region.name} · {c.regionScope === 'broader_context' ? 'Broader context — not local sample evidence' : 'Within selected region'} · {c.record.document.timeBasis}: {c.record.document.observedOn ?? 'Date unknown'}</p>
-        <p className="text-sm mt-1">Appearance: {[c.record.document.appearance.colors.join('/'), c.record.document.appearance.shape, c.record.document.appearance.logo, c.record.document.appearance.scoreLine].filter(Boolean).join(' · ') || 'Not reported'}</p>
-        {c.record.document.origin === 'published_alert' && <p className="field-warning">Published source alert — specimen method and sampling coverage may be unavailable.</p>}
-        <div className="overflow-x-auto my-3"><table className="field-table"><thead><tr><th>Reported component</th><th>Reported amount</th><th>Source note</th></tr></thead>
-          <tbody>{c.record.document.components.map(component => <tr key={component.substance.id}><td>{component.substance.name}</td><td>{component.amount === null ? 'Not reported' : `${component.amount} ${component.unit}`}</td><td>{component.note ?? '—'}</td></tr>)}</tbody></table></div>
-        {!c.record.document.components.length && <p className="field-warning">No identified components reported.</p>}
-        {c.record.document.unknownComponents.map((unknown, i) => <p key={i} className="field-warning">Unknown component: {unknown}</p>)}
-        <RecordEvidence record={c.record} profile={profile} />
-        {c.substances.map(card => <SubstanceReference key={card.substance.id} card={card} profile={profile} />)}
-      </article>)}
-      {result.symptomCandidates.map(c => <article className="field-panel" key={c.card.substance.id}><h3>{c.card.substance.name} · {c.matchedSymptomIds.length} matching sourced associations</h3>
-        <p className="field-warning">Association overlap, not a diagnosis or probability.</p>
-        {c.supportingAssertions.map(f => <p key={f.record.id}>{f.record.document.object?.name}: <a href={f.record.document.citation.url}>{f.record.document.citation.publisher}</a></p>)}
-        <SubstanceReference card={c.card} profile={profile} /></article>)}
-      {!result.candidates.length && !result.symptomCandidates.length && <div className="field-panel"><p>No approved matching references. This does not exclude exposure or risk.</p>
-        {access.capabilities.includes('evidence.review') && <Link to="/evidence">Review source mappings</Link>}</div>}
-    </section>}
+    <div className="field-panel"><label className="field-control">Evidence display profile<select aria-label="Evidence display profile" value={display} onChange={e => setDisplay(e.target.value as EvidenceDisplayMode)}><option value="full">Full six evidence kinds</option><option value="compact">Compact responder buckets, retaining every evidence kind</option></select></label>
+      <p className="mt-3 text-sm">{profile.evidenceDisplay?.explanation ?? 'Evidence colors describe how a reference was established. Approval and category remain separate.'}</p>
+      <details className="mt-3"><summary>Evidence legend — independent from section order and review status</summary>
+      <div className="flex flex-wrap gap-2 mt-3">{Object.keys(profile.tiers).map(tier => <EvidenceBadge key={tier} tier={tier as any} profile={profile} display={display} />)}</div>
+      <p className="mt-3 text-sm">Each fact keeps its own tier. Human approval accepts the mapping; it does not turn a prediction into a measurement. Both display profiles retain the full evidence label and icon.</p></details></div>
+    {result && <FieldLookupResults result={result} profile={profile} display={display} canReview={access.capabilities.includes('evidence.review')} linkedReferenceId={linkedReferenceId} />}
   </div>;
 }

@@ -25,7 +25,7 @@ function request(over: Partial<SourceRequest> = {}): SourceRequest {
 test('SourceRegistry - Retrieves executable adapters and blocks planned', () => {
   assert.ok(sourceRegistry.getAdapter('offline_fixture') instanceof OfflineFixtureAdapter);
   assert.ok(sourceRegistry.getAdapter('serp_generic') instanceof SerpAdapter);
-  assert.ok(sourceRegistry.getAdapter('trends_interest_index') instanceof GoogleTrendsAdapter);
+  assert.throws(() => sourceRegistry.getAdapter('trends_interest_index'), NotImplementedError);
 
   assert.throws(() => sourceRegistry.getAdapter('chemical_reference'), NotImplementedError);
 });
@@ -63,16 +63,12 @@ test('SerpAdapter - validation and normalization', async () => {
   assert.ok(obs[0].qualityFlags.includes('PROVIDER_ESTIMATE'));
 });
 
-test('GoogleTrendsAdapter - interest is not a result count', async () => {
+test('GoogleTrendsAdapter - unimplemented transport never invents a measurement', async () => {
   const adapter = new GoogleTrendsAdapter();
   assert.deepStrictEqual(adapter.capabilities(), ['interest_over_time']);
 
-  const raw = await adapter.fetch(request({ entityId: 'cannabis', renderedQuery: 'cannabis', dimension: 'interest_index' }));
-  const obs = adapter.normalize(raw);
-
-  assert.strictEqual(obs.length, 1);
-  assert.strictEqual(obs[0].queryRole, 'interest_index');
-  assert.strictEqual(obs[0].isMissing === false && obs[0].numericValue, 67);
+  await assert.rejects(() => adapter.fetch(request({ entityId: 'cannabis', renderedQuery: 'cannabis', dimension: 'interest_index' })), NotImplementedError);
+  assert.strictEqual(sourceRegistry.getEntry('trends_interest_index')?.status, 'planned');
 });
 
 // -------------------------------------------------------------------------

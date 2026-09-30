@@ -101,13 +101,13 @@ export interface OidcConfig {
   readonly clockSkewSeconds?: number;
 }
 
-export interface VerifiedIdentity {
+export interface VerifiedClaims {
   readonly subject: string;
   readonly email: string;
   readonly name: string | null;
-  readonly role: Role;
   readonly expiresAt: number;
 }
+export interface VerifiedIdentity extends VerifiedClaims { readonly role: Role }
 
 export class GoogleOidcVerifier {
   constructor(
@@ -129,6 +129,14 @@ export class GoogleOidcVerifier {
   }
 
   async verify(idToken: string): Promise<VerifiedIdentity> {
+    const claims = await this.verifyIdentity(idToken);
+    const role = this.roleFor(claims.email);
+    if (!role) throw new TokenRejectedError('no grant exists for this verified identity');
+    return { ...claims, role };
+  }
+
+  /** Identity verification alone never supplies a role or installation access. */
+  async verifyIdentity(idToken: string): Promise<VerifiedClaims> {
     const parts = idToken.split('.');
     if (parts.length !== 3) throw new TokenRejectedError('not a three-part JWS');
 
@@ -162,14 +170,10 @@ export class GoogleOidcVerifier {
     // list meaningless.
     if (claims.email_verified !== true) throw new TokenRejectedError('email address is not verified');
 
-    const role = this.roleFor(claims.email);
-    if (!role) throw new TokenRejectedError(`no grant exists for ${claims.email}`);
-
     return {
       subject: claims.sub,
       email: claims.email.toLowerCase(),
       name: typeof claims.name === 'string' ? claims.name : null,
-      role,
       expiresAt: claims.exp * 1000,
     };
   }
@@ -182,7 +186,9 @@ export class GoogleOidcVerifier {
 export interface SessionPayload {
   readonly sub: string;
   readonly email: string;
-  readonly role: Role;
+  readonly role: Role | null;
+  /** A verified identity may request access without acquiring any capability. */
+  readonly scope?: 'admission';
   readonly exp: number;
 }
 
@@ -222,7 +228,9 @@ export class SessionCodec {
     } catch {
       return null;
     }
-    if (!isRole(payload.role)) return null;
+    if (payload.scope === 'admission' ? payload.role !== null : !isRole(payload.role)) return null;
+    if (payload.scope !== undefined && payload.scope !== 'admission') return null;
+    if (typeof payload.sub !== 'string' || payload.sub === '' || typeof payload.email !== 'string' || payload.email === '') return null;
     if (typeof payload.exp !== 'number' || payload.exp < nowMs) return null;
     return payload;
   }
@@ -259,7 +267,7 @@ export class OidcIdentityProvider implements IdentityProvider {
 
   async resolveOrNull(request: unknown): Promise<Principal | null> {
     const payload = this.codec.verify(this.cookieFrom(request));
-    if (!payload) return null;
+    if (!payload || payload.scope === 'admission' || !isRole(payload.role)) return null;
     return {
       // Stable across email changes, unlike the address. Prefixed so a Google
       // subject can never collide with the `local-user` constant.

@@ -4,9 +4,18 @@ Reproducible-research platform for monitoring psychoactive-substance signals, wi
 
 The first benchmark is a replication pipeline for Jankowski & Hoffmann (2016), JMIR 18(2):e38.
 
-**Status:** active development. `main` is the canonical consolidated branch. The current code includes an end-to-end offline JH16 fixture benchmark plus working research, acquisition, responder-reference and visualisation paths. Planned capabilities are kept separate from implemented behavior.
+**Status:** active integration on `astra/watchdog-integration-20260930`, combining the
+September continuation with the repository and ecosystem updates from `main`.
+Implemented workflows include the offline JH16 fixture benchmark, responder reference lookup,
+scientific figures and maps, durable public acquisition, substance memory, personal provider
+profiles and the paper/extraction workshop. Planned capabilities remain explicitly separate.
+Current checkpoint: [September 30 handoff](docs/HANDOFF_2026-09-30.md).
+The [September 22 handoff](docs/HANDOFF_2026-09-22.md) remains as historical evidence.
 
 ## Quick start
+
+**Existing GCP virtual machine:** use the [Cloud Shell installer](docs/DEPLOY_GCP_VM.md).
+It configures a private IAP tunnel, dependencies, persistent storage and restart/update handling.
 
 ```bash
 npm install
@@ -18,6 +27,10 @@ npm run dev           # local application
 The offline benchmark does not require an API key, Google account or cloud project.
 
 A demo run writes a reproducible artifact set under `runs/<run-id>/`, including the manifest, normalized observations, deterministic analysis, replication verdicts, chart specifications, exports, content-addressed raw responses and diagnostic trace.
+
+The fixture attempt is a **pipeline self-check using the paper's published input counts**.
+Its reproduced verdicts verify the calculations on those same inputs; they do not demonstrate
+independent replication on newly collected data.
 
 ## What is implemented
 
@@ -32,6 +45,13 @@ A demo run writes a reproducible artifact set under `runs/<run-id>/`, including 
 - paper/extraction workshop paths that keep model-generated prose outside the numerical computation path;
 - local SQLite/file persistence and deployment support for durable cloud storage;
 - tests covering scientific invariants, import boundaries and live-provider integration paths.
+
+The integration workspace groups these paths into seven sections, with contextual tools
+and separate settings. Its additional workflows are documented in
+[unified search](docs/UNIFIED_SEARCH.md), [installation access](docs/ADMISSION.md) and
+[research projects](docs/RESEARCH_PROJECTS.md). Historical conflicts and currently reversible
+choices are recorded in [specification reconciliation](docs/SPEC_RECONCILIATION_2026-09-30.md).
+Google Trends transport remains planned and cannot return a placeholder measurement.
 
 ## Scientific guardrails
 

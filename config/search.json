@@ -1,0 +1,11 @@
+{
+  "version": "owned-metadata-search-1",
+  "limits": { "queryCharacters": 160, "defaultPage": 50, "maximumPage": 200, "maximumOffset": 1000000 },
+  "labels": {
+    "substance": "Substancje", "symptom": "Objawy", "target": "Cele molekularne",
+    "sample": "Wygląd i próbki", "market_label": "Nazwy rynkowe", "interaction": "Interakcje",
+    "dataset": "Zbiory danych", "paper": "Publikacje", "run": "Przebiegi", "schedule": "Harmonogramy", "source": "Źródła"
+  },
+  "scope": "Przeszukiwanie zapisanych nazw, identyfikatorów i opisów metadanych. Wyniki zależą od uprawnień i właściciela danych; treść publikacji i komórki danych pozostają w ich widokach. Nie ma jeszcze indeksu osób. Kolejność alfabetyczna nie ocenia wiarygodności.",
+  "ordering": "kind_label_id"
+}

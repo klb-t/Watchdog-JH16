@@ -525,3 +525,195 @@ separation and offline tamper detection. The existing Chromium schedule/history 
 also test purpose selection, pause persistence and separate baseline/research contexts;
 their results will be checked on the published head. No paid or live public-source calls
 were made for this stage.
+
+Published E3.10 head `2e1d0fcc17b495ad007bf5000ffc190e3f223f38` passed Actions
+`34758720915`: **349/349 tests**, zero failures/skips, Chromium, build and JH16 demo.
+The CI browser export passed its CLI verification. Separate artifact retrieval returned
+HTTP 403, so independent ZIP verification and manual screenshot inspection were not claimed.
+
+## 2026-09-14 — E3.11 watched sources and unread changes
+
+The public scheduler and source history were implemented, but there was no saved per-user
+list of contexts to watch or reading state. This stage adds explicit subscriptions from
+history, an inbox with counts and exact change pairs, pause/resume and bounded read batches.
+One shared comparison component now renders both history and inbox exports with the pinned
+comparison profile. Source records, scientific evidence review and the existing acquisition
+pipeline keep their earlier behavior.
+
+Migration 018 stores immutable context/rule identity and private monotonic reading cursors.
+Subscriptions start at the latest linked observation and do not manufacture a retrospective
+backlog. Repeating the action preserves existing state. The queue follows immutable journal
+sequence so a late-linked older receipt cannot disappear behind the cursor; both retrieval
+timestamps remain explicit. The existing history timeline still follows retrieval dates.
+Only new hash transitions count as changes, including reversions. Identical checks remain
+counted; failed/unlinked receipts never become successful source observations.
+
+The batch's captured upper bound controls marking read. Concurrent arrivals remain unread;
+stale revisions and cross-context cursors are rejected. Existing ownership transfer retains
+watch identity and independent reading states. All watch writes use the existing audit chain,
+and the UI/TRACE expose context and batch bounds. New labels, rule identity, ordering and
+limits are validated profile data. No subscriptions are created automatically on upgrade.
+
+Final pre-push checks: TypeScript and production build passed; **339/339 local unit/contract/
+scientific/integration tests passed**, zero failures/skips. Seven new cases include restart,
+migration, ownership transfer, stale updates, paging, concurrent arrivals, pause/restart,
+context isolation, late-linked receipts, HTTP access/CSRF and actual adapter execution over
+fictional transport responses. A new Chromium case adds UI subscription, comparison/export,
+concurrent unread preservation, pause/reload/resume and mobile layout; its result will be
+checked on the published head. No live public collection or paid provider calls were made.
+
+See [SOURCE_WATCHES](SOURCE_WATCHES.md) for exact use and limits. Watches surface new saved
+reference records when the panel is opened/refreshed. External notifications, clinical/batch
+alerts, source-health alerting and watches over receptor assertions/paper revisions remain open.
+
+Published E3.11 head `c9afd37367898e1580150aadce975613d8fe88f2` passed Actions
+`35502214575`: **357/357 tests**, zero failures/skips, Chromium, build and JH16 demo.
+The job produced artifact `10602761987`; no independent artifact download or manual image
+inspection is claimed.
+
+## 2026-09-21 — E3.12 source catalog and access assessments
+
+The existing source registry measures scientific constructs; it was not an operational
+inventory of named services and permissions. A separate `/source-access` surface now seeds
+34 entries (ten community services), derives five implemented public adapters from runtime
+configuration, records independently verified documentation/terms notes, and displays owner
+HTTP activity, private access assessments and unsent request drafts. Custom candidate
+metadata never creates an adapter or network call.
+
+Migration 019 adds immutable source/adapter snapshots, assessment history and drafts.
+Source hashes, optimistic revision checks, expiry and same-origin/capability gates are
+enforced on the backend. Existing public defaults survive upgrade with an explicit label;
+a recorded restrictive, expired or stale assessment blocks the owner's public requests,
+including scheduled jobs, before transport and again after pacing. Narrow agreements do
+not grant use of an unrestricted adapter. The UI includes filters, counts, history, JSON
+export and profile diagnostics. No model transcribes source values and no message is sent.
+
+Eight new integration cases pass, including actual public acquisition over fictional
+transport, schedule holds, owner isolation, source changes, expiry, stale tabs, request
+drafts, migration/restart/ownership transfer and HTTP gates. A Chromium acceptance flow
+covers filters, access history, drafts/downloads, mobile layout and private candidate
+creation; the exact published-head CI is the remaining browser gate.
+
+The two new MHT conversations were read and reconciled in
+[CONVERSATION_DELTA_2026-09-20](CONVERSATION_DELTA_2026-09-20.md). Compatible source details
+are included now; global appearance matching, case modeling, reviewed PK/PD constraints,
+comorbidity and measurement suggestions remain explicit future work. The actual regional
+lookup difference and unverified model claims are identified rather than silently changing
+scientific or clinical behavior. The subsequent admission/invitation requirement is also
+recorded with verified current gaps. See [SOURCE_ACCESS](SOURCE_ACCESS.md) for operation
+and scope.
+
+Final E3.12 pre-push validation: **347/347 local unit/contract/scientific/integration
+tests passed**, zero failures/skips; TypeScript and production build passed. The current
+19-browser-test suite will run on the published head in GitHub Actions.
+
+## 2026-09-21 — E3.13 VM installer and E3.12 browser correction
+
+E3.12 run `35614465513` failed browser startup: the goal-navigation schema rejected the
+new internal `/source-access` route because it only allowed letters. The actual production
+bundle reproduced the Zod error. The shared schema now accepts internal hyphenated slugs,
+retains rejection of external targets, and has a regression test against the shipped profile.
+The initial failed run is not a passed 366-test checkpoint. Its artifact download returned
+HTTP 403, so no separate manual artifact inspection is claimed.
+
+The owner's VM request adds a Cloud Shell installer for an existing dedicated GCP VM,
+scoped IAP firewall rules with connectivity checked before restrictions, signed Docker
+packages, pinned source archives, a non-root read-only image and durable owner-only runtime.
+Systemd starts after reboot; updates preserve keys and stop the writer for a complete local
+backup before switching versions. `watchdogctl` exposes status, logs, restart and backup.
+No cloud resources, IAM grants or actual messages were created by the agent.
+
+The Dockerfile now builds the client and installs Chromium before running browser tests,
+uses Node 24 in both stages and excludes local secret files from its build context. A new
+Actions job builds the real image, starts it with the production restrictions, writes a
+fictional source candidate through the API and checks persistence after container replacement.
+That CI gate is pending publication; Docker is unavailable in the local agent environment.
+
+Pre-publication validation: **354/354 local unit/contract/scientific/integration tests**,
+zero failures/skips, TypeScript and production build passed. Six new installer cases exercise
+CLI boundaries, scoped firewall updates, IAP failure ordering, collision refusal, private
+durable runtime and Bash syntax. See [DEPLOY_GCP_VM](DEPLOY_GCP_VM.md).
+
+The owner requested closure and a handoff to a fresh conversation. Admission/invitation
+implementation has not started; it remains the next product stage after deployment validation.
+
+## 2026-09-22 — publication blocked; continuation checkpoint
+
+The local E3.13 code commit is `983ee65fd7c435b59e7a250d95c6cf84ca650095`, with tree
+`01efdd90892e704d7b9972047f324d3dc3f6f1c3`. The GitHub API created the equivalent commit
+`3868f1f1f7727bf4249a1fb812dbfddca0dd33b2`, but subsequent connector requests failed with
+HTTP 400 `Invalid MCP request metadata` before the branch ref was updated. Direct `git push`
+also failed because no CLI credentials are installed. `git ls-remote` still reports `1e583c1`.
+The installer is therefore **not yet on the branch and its CI has not run**. No container
+or GCP deployment success is claimed. This is an infrastructure blocker, not an approval denial.
+
+[HANDOFF_2026-09-22](HANDOFF_2026-09-22.md) preserves decisions, exact implementation limits,
+deployment instructions, the two archive deltas and the next E4.5 slice. An incremental Git
+bundle preserves the unpublished commits for recovery on top of the published E3.12 head.
+The next session should restore publication, verify the real-container and browser CI,
+then close E3.13 before beginning E4.5. No unrelated product stage was started.
+
+## 2026-09-22 — resumed publication checks; authentication still blocked
+
+The supplied ZIP checksums and incremental bundle verified against the existing clean
+checkout at `c47399378817bca7685978b0ee4d74e66b91d23c`. Public GitHub API reads confirm
+that PR #1 is still draft, its base is unchanged, and its head remains `1e583c1`.
+Actions `35614465513` is failed at `npm run test:all`; no E3.13/container run exists.
+
+The GitHub connector still rejects requests with HTTP 400 `Invalid MCP request metadata`.
+The initial direct push was rejected by automatic approval review over destination and
+disclosure authorization. The attached `RECOVER.md` explicitly names the repository,
+branch and push. After verifying that destination through GitHub, inspecting all 20
+changed source/test/documentation files and checking added lines for credential patterns,
+the exact-commit push was permitted but failed for lack of GitHub authentication.
+No force push, PR merge, base change or remote write succeeded.
+
+On the unchanged application tree, `npm run test:all` passes TypeScript and the production
+build, then reports **356 passing / 17 failing / 0 skipped** out of 373 tests. All 17
+failures report the missing Chromium executable; this is not a green full-suite result.
+The 356 include two non-browser E2E cases in addition to the 354 unit/contract/scientific/
+integration cases reported previously. A normal Playwright Chromium install failed after
+download timeouts and an invalid downloaded archive. Docker remains unavailable.
+`npm run demo:jh16` passes its fixture self-check with 32 observations and the two
+pre-registered verdicts; it makes no claim of independent replication.
+
+The remaining route is restored connector/CLI authentication, or a user-approved browser
+fallback as required by `control-browser`. E3.13 remains open, and E4.5 has not started.
+Only this validation/blocker documentation changed in the resumption.
+
+## 2026-09-30 — integrated private research workspace
+
+The owner delegated autonomous continuation after the repository/history audit. The
+integration branch combines continuation `c3508c1` and `main` `1c81a36`, preserving PR #1
+and its base. The old publication blocker is resolved: published `c3508c1` passed both
+verify/container in Actions 35829482923 on September 23. No live GCP provisioning occurred.
+
+E4.5 now provides closed admission, verified applicant requests, email-bound one-use
+invitations, separate developer grants, revocation in existing sessions and protection of
+the last active access manager. E5.9 adds owned immutable research-project revisions,
+explicit scientific meaning, pinned materials, separate schedule pointers and deterministic
+workspace archives with an independently anchored verifier. E5.10 groups existing paths
+into seven capability-filtered sections and adds literal owner-scoped metadata search with
+current source availability and exact deep links. E6.3 preserves local denominators while
+showing global appearance/market candidates separately, six evidence kinds by default,
+expiring principal-bound reference inspection and persisted offline inspection receipts.
+
+The clean local canonical gate passes **419/419**, zero failures/skips/cancellations;
+TypeScript, production build and JH16 demo pass. Local browser installation failed, so these
+browser cases used Chromium 153 without changing repository dependencies; Actions retains
+its standard Playwright installation. Docker is unavailable locally; new-head container CI
+is verified after publication. Earlier failing intermediate runs are not green checkpoints.
+Corrected issues include shared demo output directories, migration expectations, stable
+form labels after reload and a stale offline worker asset list. Atomic worker generation
+and read-back validation now guard the observed shell mismatch.
+
+Google Trends no longer returns a fabricated constant: its transport is explicitly planned.
+Frozen JH scientific contracts, inputs and calculations remain unchanged. The demo retains
+32 observations, 16 Pi, 16 Hi and `pipeline_self_check`; it is not independent replication.
+No paid provider, actual OAuth account or person-directed message was used. Generic paper
+execution, causal/time-series work, clinical cases/PK-PD and devices remain open slices.
+
+[Reconciliation](SPEC_RECONCILIATION_2026-09-30.md), [design rules](DESIGN_RULES.md) and
+[handoff](HANDOFF_2026-09-30.md) record conflicts, earlier omissions, reversible defaults
+and precise implementation limits. The reconstruction uses the prior archive audit, not a
+new raw-history scan. Public documentation contains no private correspondence identities.

@@ -2,6 +2,7 @@ import {
   SourceAdapter, RawFetchResult, Observation, ProvenanceMetadata, ValidatedParams,
   SourceCapability, SourceRequest, assertValidSourceRequest, baseObservationFields
 } from './base';
+import { NotImplementedError } from '../utils/errors';
 
 /**
  * Google Trends interest-over-time.
@@ -14,7 +15,7 @@ import {
  */
 export class GoogleTrendsAdapter implements SourceAdapter {
   readonly adapter_id = 'google_trends_adapter';
-  readonly adapter_version = '2.0.0';
+  readonly adapter_version = '3.0.0';
 
   capabilities(): SourceCapability[] {
     return ['interest_over_time'];
@@ -33,15 +34,8 @@ export class GoogleTrendsAdapter implements SourceAdapter {
   async fetch(request: SourceRequest): Promise<RawFetchResult> {
     assertValidSourceRequest(request);
 
-    const fakeResponse = { interest_over_time: { averages: [{ value: 67 }] } };
-
-    return {
-      payload: Buffer.from(JSON.stringify(fakeResponse), 'utf-8'),
-      status: 'SUCCESS',
-      http_status: 200,
-      metadata: { provider: 'google_trends_mock' },
-      request
-    };
+    throw new NotImplementedError('trends_interest_index',
+      'planned: no real Google Trends transport is implemented');
   }
 
   normalize(raw: RawFetchResult): Observation[] {

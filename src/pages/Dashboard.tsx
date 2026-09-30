@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { fetchRuns, fetchSources } from '../lib/api';
 import { Run, Source } from '../types';
-import { Activity, Database, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { Activity, Database, CheckCircle2, XCircle, Clock, type LucideIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { GoalNavigator } from '../components/GoalNavigator';
 import { useAccess } from '../lib/access';
@@ -17,10 +17,11 @@ function DashboardContent() {
   const [runs, setRuns] = useState<Run[]>([]);
   const [sources, setSources] = useState<Source[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
-    setRuns([]); setSources([]);
+    setRuns([]); setSources([]); setError(null);
     if (!access.principalId || !access.capabilities.includes('run.view')) { setLoading(false); return; }
     setLoading(true);
     Promise.all([fetchRuns(), fetchSources()])
@@ -30,23 +31,25 @@ function DashboardContent() {
         setSources(s);
         setLoading(false);
       })
-      .catch(e => { if (active) { console.error(e); setLoading(false); } });
+      .catch(e => { if (active) { setError(e instanceof Error ? e.message : 'Nie udało się pobrać stanu.'); setLoading(false); } });
     return () => { active = false; };
   }, [access.principalId, access.capabilities.join('|')]);
 
   const completedRuns = runs.filter(r => r.status === 'COMPLETED').length;
   const failedRuns = runs.filter(r => r.status === 'FAILED').length;
-  const activeRuns = runs.filter(r => ['QUEUED', 'RUNNING', 'NORMALIZING', 'ANALYZING'].includes(r.status)).length;
+  const activeRuns = runs.filter(r => !['COMPLETED', 'FAILED', 'CANCELLED'].includes(r.status)).length;
+  const liveSources = sources.filter(source => source.status === 'implemented').length;
+  const fixtureSources = sources.filter(source => source.status === 'fixture').length;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-8">
       <GoalNavigator />
       {access.capabilities.includes('run.view') && <div>
         <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
         <p className="text-slate-500 mt-1 text-sm">System status and recent activity</p>
       </div>}
 
-      {access.capabilities.includes('run.view') && (loading ? (
+      {access.capabilities.includes('run.view') && (error ? <p role="alert" className="p-4 border border-red-200 rounded-lg text-red-800">{error}</p> : loading ? (
         <div className="animate-pulse space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[1,2,3,4].map(i => <div key={i} className="h-32 bg-white rounded-xl border border-slate-200"></div>)}
@@ -55,7 +58,7 @@ function DashboardContent() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <StatCard title="Registered Sources" value={sources.length} icon={Database} />
+            <StatCard title="Źródła w rejestrze" value={sources.length} description={`Gotowe integracje: ${liveSources} · źródła testowe: ${fixtureSources}`} icon={Database} />
             <StatCard title="Active Runs" value={activeRuns} icon={Activity} />
             <StatCard title="Completed" value={completedRuns} icon={CheckCircle2} className="text-emerald-600" />
             <StatCard title="Failed" value={failedRuns} icon={XCircle} className="text-red-600" />
@@ -98,7 +101,7 @@ function DashboardContent() {
   );
 }
 
-function StatCard({ title, value, icon: Icon, className }: any) {
+function StatCard({ title, value, description, icon: Icon, className }: { title: string; value: number; description?: string; icon: LucideIcon; className?: string }) {
   return (
     <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center space-x-4">
       <div className={cn("p-3 rounded-lg bg-slate-50", className)}>
@@ -107,6 +110,7 @@ function StatCard({ title, value, icon: Icon, className }: any) {
       <div>
         <p className="text-sm font-medium text-slate-500">{title}</p>
         <p className="text-2xl font-semibold tracking-tight">{value}</p>
+        {description && <p className="text-xs text-slate-500 mt-1">{description}</p>}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useAccess } from '../lib/access';
 import { fieldApi } from '../lib/field_client';
 import { defaultFieldProfile, RecordEvidence } from '../components/FieldEvidence';
@@ -6,15 +7,18 @@ import type { ReferenceDocument, ReferenceRecord } from '../../shared/field';
 
 export function EvidenceReview() {
   const access = useAccess();
+  const [searchParams] = useSearchParams();
+  const requestedReferenceId = searchParams.get('reference');
   const [records, setRecords] = useState<ReferenceRecord[]>([]), [catalog, setCatalog] = useState<ReferenceDocument[]>([]);
   const [profile, setProfile] = useState(defaultFieldProfile), [input, setInput] = useState('');
-  const [selected, setSelected] = useState<string | null>(null), [reviewed, setReviewed] = useState(false);
+  const [selected, setSelected] = useState<string | null>(requestedReferenceId), [reviewed, setReviewed] = useState(false);
   const [error, setError] = useState(''), [busy, setBusy] = useState(false);
   const record = records.find(r => r.id === selected);
   async function refresh() {
     const data = await fieldApi('references'); setRecords(data.records); setProfile(data.profile);
     const proposals = await fieldApi('catalog'); setCatalog(proposals.proposals);
   }
+  useEffect(() => { if (requestedReferenceId) { setSelected(requestedReferenceId); setReviewed(false); } }, [requestedReferenceId]);
   useEffect(() => { refresh().catch(e => setError(e.message)); }, []);
   async function act(fn: () => Promise<unknown>) {
     setBusy(true); setError('');

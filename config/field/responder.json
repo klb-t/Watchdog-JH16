@@ -1,5 +1,5 @@
 {
-  "version": "responder-reference-1",
+  "version": "responder-reference-2",
   "staleAfterHours": 24,
   "offlineMaxHours": 8,
   "regions": [
@@ -160,5 +160,14 @@
       "verifiedOn": "2026-09-08",
       "citationUrl": "https://www.drugs-test.nl/"
     }
-  ]
+  ],
+  "evidenceDisplay": {
+    "defaultMode": "full",
+    "explanation": "Evidence colors describe how a reference was established. They are not calibrated confidence, objectivity, clinical probability or a universal trust score. Category order, source limitations and human mapping approval remain separate.",
+    "compactColors": {
+      "Confirmed": "#166534",
+      "Reference": "#616923",
+      "Unconfirmed": "#a4470c"
+    }
+  }
 }

@@ -1,7 +1,6 @@
 import { SourceAdapter } from './base';
 import { OfflineFixtureAdapter } from './offline_fixture';
 import { SerpAdapter } from './serp';
-import { GoogleTrendsAdapter } from './google_trends';
 import { FixtureSourceAdapter } from './fixture_source';
 import { NotImplementedError } from '../utils/errors';
 import type { Source } from '../../../src/types';
@@ -57,10 +56,9 @@ export class SourceRegistry {
     // as a source id is exactly the Source/Provider conflation D5 forbids, and
     // a test in tests/contract/providers.test.ts now fails if it reappears.
     this.register('trends_interest_index', {
-      adapter: new GoogleTrendsAdapter(),
-      status: 'fixture',
+      status: 'planned',
       capabilities: ['interest_over_time'],
-      description: 'Google Trends interest-over-time index (mocked until real HTTP fetch is implemented). A distinct signal from SERP result counts — not a substitute for JH16 FAITHFUL Ni/Ni_harm.'
+      description: 'Google Trends interest-over-time index: real transport not implemented. A distinct signal from SERP result counts — not a substitute for JH16 FAITHFUL Ni/Ni_harm.'
     });
 
     // Honest status for planned/blocked sources
