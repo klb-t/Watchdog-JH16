@@ -2,6 +2,11 @@
 
 Data audytu: 2026-09-30 UTC.
 
+**Aktualizacja wznowienia:** integrator w zdalnym `main` `9a8adba` przyjął ten
+kontrakt i przydzielił dokładne pliki. CLINICAL-COORD-1 jest rozwiązany; claim
+`d0a228b` i postęp implementacji zapisuje `CLINICAL.md`. Poniżej zachowano
+historyczny audyt sprzed przydziału.
+
 Stan: **audyt zakończony; implementacja nie rozpoczęta; claim oczekuje przydziału**.
 Ten dokument nie zamyka E6.4 ani E6.5. Nie stanowi aprobaty medycznej.
 

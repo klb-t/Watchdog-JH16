@@ -27,9 +27,9 @@ syntetyczny w pamięci, bez API, migracji, wspólnej aprobaty i nawigacji.
 | owner | clinical-20260930 |
 | base_sha | 312ba246f9bdeb035019e2ff4c1a09aaef0a734c |
 | branch | codex/clinical-audit-20260930, PR #6 |
-| status | claimed; E6.4a implementation next |
-| updated_at_utc | 2026-09-30T22:29:00Z |
-| next_checkpoint | strict schema, fictional fixture, incomplete-observation tests and independent review |
+| status | claimed; E6.4a passed; E6.4b in progress |
+| updated_at_utc | 2026-09-30T22:34:44Z |
+| next_checkpoint | E6.4b deterministic interpreter after E6.4a gate |
 
 Dokładnie przydzielone pliki:
 - `shared/clinical_demo.ts`
@@ -157,3 +157,25 @@ Bez płatnych wywołań, kontaktowania osób, publikowania danych i zaleceń lec
 Oddaj małe commity, kontrakt, fikcyjne fixture, działający przebieg, testy
 i checkpoint z pierwszym następnym działaniem. Integrator aktualizuje globalny
 stan i ledger na podstawie rzeczywistych wyników, nie aspiracji pakietu.
+
+
+## Checkpoint 1 — E6.4a, 2026-09-30 UTC
+
+Przydział integratora odczytany z `main` `9a8adba8a22671769ecd2b0291e23e1007d8c6fc`.
+Claim opublikowany jako `d0a228b47465d2beb504d9f3bd59e641b6488f3e`.
+Bazowy kod pozostaje `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`.
+
+Zaimplementowano `shared/clinical_demo.ts`, `shared/clinical_demo_validation.ts`,
+`tests/helpers/clinical_demo.ts` i `tests/unit/clinical_demo_case.test.ts`.
+Ścisły model zachowuje jawne braki, oba zegary, źródła, reported/measured,
+konflikty, poprzednie obserwacje, mieszaniny częściowo nieznane i alternatywy.
+Supersession może korygować reported na measured, zachowując obie obserwacje.
+Nie ma importu danych pacjenta, API ani trwałego zapisu.
+
+`node --import tsx --test tests/unit/clinical_demo_case.test.ts`: **14/14 pass**.
+`npm run lint`: **exit 0** po korekcie typowania wyniku strict parse Zod;
+wcześniejsza próba wykazała trzy TS2322 i została poprawiona bez zmiany tsconfig.
+Niezależny audyt: **18 dodatkowych jednorazowych assertions pass**, nie są
+wliczane do 14 testów repo. Schemat nie dowodzi fikcyjnego pochodzenia dowolnego
+tekstu: uruchamialne demo będzie wybierać wyłącznie dostarczone fixture.
+Odrębny przegląd nie zatwierdza treści medycznej. E6.4b i E6.5a pozostają otwarte.
