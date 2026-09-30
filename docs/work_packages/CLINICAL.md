@@ -27,9 +27,9 @@ syntetyczny w pamięci, bez API, migracji, wspólnej aprobaty i nawigacji.
 | owner | clinical-20260930 |
 | base_sha | 312ba246f9bdeb035019e2ff4c1a09aaef0a734c |
 | branch | codex/clinical-audit-20260930, PR #6 |
-| status | claimed; E6.4a passed; E6.4b in progress |
+| status | claimed; E6.4a/b passed; E6.5a in progress |
 | updated_at_utc | 2026-09-30T22:34:44Z |
-| next_checkpoint | E6.4b deterministic interpreter after E6.4a gate |
+| next_checkpoint | E6.5a profile selector, bounded CLI demo and final regression |
 
 Dokładnie przydzielone pliki:
 - `shared/clinical_demo.ts`
@@ -179,3 +179,40 @@ Niezależny audyt: **18 dodatkowych jednorazowych assertions pass**, nie są
 wliczane do 14 testów repo. Schemat nie dowodzi fikcyjnego pochodzenia dowolnego
 tekstu: uruchamialne demo będzie wybierać wyłącznie dostarczone fixture.
 Odrębny przegląd nie zatwierdza treści medycznej. E6.4b i E6.5a pozostają otwarte.
+
+
+## Checkpoint 2 — E6.4b, 2026-09-30 UTC
+
+Poprzedni opublikowany etap E6.4a: `12ea35996cfe5368c6347c7a779c48bd84f4ae60`.
+Dodano `backend/watchdog_api/clinical_demo/executor.ts`, `executor_manifest.ts`
+i `tests/unit/clinical_demo_executor.test.ts`. Brak I/O w interpreterze; wykonanie
+czyta jawny snapshot fixture. Własny manifest przypina bajty modułów i lockfile
+oraz wersję Node; CLI ma dostarczać rzeczywiste bajty checkoutu. Manifest nie jest
+podpisem ani atestacją rzeczywiście zainstalowanych zależności.
+
+Reguły mają osobny przegląd dokładnego hasha, fikcyjną applicability i typowane
+porównanie skalarne. Trace rozróżnia wynik, applicability, kwalifikację reguły,
+operacje i komplet braków. Zachowuje wykluczone superseded ID, wymagane i faktyczne
+hashe źródeł. Archiwum obejmuje cały niezmieniony przypadek i zależności; historyczny
+odczyt wymaga bieżących praw do hasha przypadku, wszystkich reguł i źródeł. Replay
+weryfikuje identyczność z archiwum, nie przywraca prawa do nowego wykonania.
+
+Niezależny audyt wykrył i potwierdził naprawę dwóch problemów: cofnięte źródło
+obserwacji spoza cytatów reguły nie blokowało jej wykonania; przypadek wiązał
+obserwacje z samym ID źródła. Teraz `sourcePins` zastępuje `sourceIds` i wymaga
+konkretnych hashy. Zmienione/ponownie zatwierdzone źródło nie zmienia pochodzenia
+starej obserwacji: potrzebny jest nowy przypadek/pin i nowy hash. Cofnięte,
+niezatwierdzone i nieczytelne źródło blokuje także kwalifikację całej reguły dla
+selektora, nawet gdy inna zależność jest zwyczajnie niezmierzona.
+
+`node --import tsx --test tests/unit/clinical_demo_case.test.ts tests/unit/clinical_demo_executor.test.ts`:
+**46/46 pass** (15 przypadek + 31 interpreter), zero fail/skipped/cancelled.
+`npm run lint`: **exit 0**. Niezależny przegląd: 19 pierwszych i 7 końcowych
+jednorazowych assertions; dodatkowe scenariusze zostały utrwalone w testach repo.
+
+Granice: to zaufany harness fixture w pamięci, nie serwer uprawnień. Przekazane
+booleany/listy dostępu nie nadają żadnych rzeczywistych praw. Posiadanie reguły w
+wejściu pochodzi z harnessu; osobna produkcyjna kontrola prawa odczytu reguły
+przed nowym wykonaniem pozostaje zadaniem przyszłego API. Wspólny model aprobat,
+referencje/offline, migracje i nawigacja nie zostały zmienione. Gate rdzenia
+pozwala teraz rozpocząć E6.5a bez dodatkowej decyzji właściciela.

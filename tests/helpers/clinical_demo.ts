@@ -22,7 +22,7 @@ export const testClinicalCase = (changes: Partial<ClinicalCase> = {}): ClinicalC
   schemaVersion: CLINICAL_DEMO_VERSION, fixtureId: 'fixture:case-a', purpose: 'software-demonstration',
   revision: 1, previousCaseHash: null, referenceTime: known('2026-01-01T00:00:00Z'),
   context: { species: known('fixture:species-a'), population: known('fixture:population-a'), setting: known('fixture:setting-a') },
-  sourceIds: ['fixture:source-a'],
+  sourcePins: [{ referenceId: 'fixture:source-a', contentHash: canonicalHash(testClinicalSource()) }],
   exposures: [
     { id: 'fixture:exposure-a', certainty: 'known', substanceIds: ['fixture:substance-a'], classIds: ['fixture:class-a'],
       unknownComposition: false, route: known('fixture:route-a'), eventTime: known('2026-01-01T00:00:00Z'), sourceId: 'fixture:source-a' },

@@ -176,7 +176,7 @@ test('E6.4a rejects dangling observation, source, exposure and hypothesis links'
 });
 
 test('E6.4a rejects duplicate IDs and self links instead of aliasing evidence', () => {
-  for (const key of ['sourceIds', 'exposures', 'medications', 'observations', 'hypotheses', 'appearances'] as const) {
+  for (const key of ['sourcePins', 'exposures', 'medications', 'observations', 'hypotheses', 'appearances'] as const) {
     const specimen: any = testClinicalCase();
     assert.ok(specimen[key].length > 0, `${key} fixture coverage`);
     specimen[key].push(copy(specimen[key][0]));
@@ -192,6 +192,34 @@ test('E6.4a rejects duplicate IDs and self links instead of aliasing evidence', 
   const collision = testClinicalCase();
   collision.appearances[0].id = collision.observations[0].id;
   assert.throws(() => validateClinicalCase(collision), 'record IDs cannot alias across categories');
+});
+
+test('E6.4a case source pins bind exact content into the case hash and reject omitted, malformed or duplicate pins', () => {
+  const original = testClinicalCase();
+  const modified = copy(original);
+  modified.sourcePins[0].contentHash = original.sourcePins[0].contentHash === 'a'.repeat(64) ? 'b'.repeat(64) : 'a'.repeat(64);
+  assert.notEqual(canonicalHash(validateClinicalCase(original)), canonicalHash(validateClinicalCase(modified)));
+  const mutations: ((specimen: any) => void)[] = [
+    specimen => { delete specimen.sourcePins; },
+    specimen => { specimen.sourcePins = undefined; },
+    specimen => { specimen.sourcePins = null; },
+    specimen => { specimen.sourcePins = []; },
+    specimen => { specimen.sourcePins = ['fixture:source-a']; },
+    specimen => { delete specimen.sourcePins[0].contentHash; },
+    specimen => { delete specimen.sourcePins[0].referenceId; },
+    specimen => { specimen.sourcePins[0].contentHash = 'not-a-sha256'; },
+    specimen => { specimen.sourcePins[0].contentHash = 'a'.repeat(63); },
+    specimen => { specimen.sourcePins[0].referenceId = 'arbitrary-patient-record'; },
+    specimen => { specimen.sourcePins[0].unreviewedGuess = true; },
+    specimen => { specimen.sourcePins.push(copy(specimen.sourcePins[0])); },
+    specimen => { specimen.sourcePins.push({ referenceId: specimen.sourcePins[0].referenceId, contentHash: modified.sourcePins[0].contentHash }); },
+    specimen => { specimen.sourceIds = specimen.sourcePins.map(pin => pin.referenceId); delete specimen.sourcePins; },
+  ];
+  for (const mutate of mutations) {
+    const specimen = copy(original);
+    mutate(specimen);
+    assert.throws(() => validateClinicalCase(specimen));
+  }
 });
 
 test('E6.4a later revisions require a prior content hash and arbitrary fixture imports remain closed', () => {

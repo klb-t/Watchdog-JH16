@@ -11,6 +11,7 @@ const missing = z.object({ state: z.literal('missing'), reason: z.enum(['not_rec
 const known = <T extends z.ZodType>(value: T) => z.discriminatedUnion('state', [z.object({ state: z.literal('known'), value }).strict(), missing]);
 const modes = z.array(z.enum(['reported', 'measured'])).min(1).max(2).refine(values => new Set(values).size === values.length, 'Duplicate modes');
 const base = { schemaVersion: z.literal(CLINICAL_DEMO_VERSION), purpose: z.literal('software-demonstration') };
+const referencePin = z.object({ referenceId: id, contentHash: hash }).strict();
 const exposure = z.object({ id, certainty: z.enum(['known', 'possible']), substanceIds: ids, classIds: ids,
   unknownComposition: z.boolean(), route: known(id), eventTime: known(timestamp), sourceId: id,
 }).strict().refine(value => value.unknownComposition || value.substanceIds.length + value.classIds.length > 0,
@@ -29,7 +30,7 @@ const hypothesis = z.object({ id,
 export const ClinicalCaseSchema = z.object({ ...base,
   fixtureId: z.enum(['fixture:case-a', 'fixture:case-b']), revision, previousCaseHash: hash.nullable(),
   referenceTime: known(timestamp), context: z.object({ species: known(id), population: known(id), setting: known(id) }).strict(),
-  sourceIds: ids.min(1), exposures: z.array(exposure).max(100), medications: z.array(exposure).max(100),
+  sourcePins: z.array(referencePin).min(1).max(100), exposures: z.array(exposure).max(100), medications: z.array(exposure).max(100),
   comorbidityIds: ids, observations: z.array(ClinicalObservationSchema).max(200), hypotheses: z.array(hypothesis).max(100),
   appearances: z.array(z.object({ id, description: text, sourceId: id }).strict()).max(100),
 }).strict().superRefine((value, ctx) => {
@@ -37,7 +38,8 @@ export const ClinicalCaseSchema = z.object({ ...base,
   if ((value.revision === 1) !== (value.previousCaseHash === null)) issue('First revision has no previous hash; later revisions require one');
   const records = [...value.exposures, ...value.medications, ...value.observations, ...value.hypotheses, ...value.appearances];
   if (new Set(records.map(record => record.id)).size !== records.length) issue('Record IDs must be globally unique within a case');
-  const sources = new Set(value.sourceIds);
+  const sources = new Set(value.sourcePins.map(pin => pin.referenceId));
+  if (sources.size !== value.sourcePins.length) issue('Duplicate case source reference IDs');
   for (const record of [...value.exposures, ...value.medications, ...value.observations, ...value.appearances])
     if (!sources.has(record.sourceId)) issue(`Unknown source ${record.sourceId}`);
   const observations = new Map(value.observations.map(observation => [observation.id, observation]));
@@ -77,7 +79,6 @@ export const ClinicalDependencySchema = z.object({ id, quantityId: id, unit: id,
   if (value.eventWindow && (value.eventWindow.minOffsetMs > value.eventWindow.maxOffsetMs || !value.requireEventTime))
     ctx.addIssue({ code: 'custom', message: 'An event window requires event time and ordered bounds' });
 });
-const referencePin = z.object({ referenceId: id, contentHash: hash }).strict();
 export const ClinicalRuleSchema = z.object({ ...base, id, revision,
   references: z.array(referencePin).min(1).max(100),
   applicability: z.object({ species: ids.min(1), population: ids.min(1), setting: ids.min(1) }).strict(),

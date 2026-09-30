@@ -45,7 +45,8 @@ export interface ClinicalCase {
   previousCaseHash: string | null;
   referenceTime: KnownOrMissing<string>;
   context: ClinicalContext;
-  sourceIds: string[];
+  /** Exact source content used when the fictional case was recorded. */
+  sourcePins: ClinicalReferencePin[];
   exposures: ClinicalExposure[];
   medications: ClinicalExposure[];
   comorbidityIds: string[];
