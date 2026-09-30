@@ -1,4 +1,4 @@
-import type { FieldSnapshot, OfflineLookupEvent, FieldQuery, FieldResult } from '../../shared/field';
+import type { FieldSnapshot, OfflineLookupEvent, FieldQuery, FieldResult, ReferenceRecord } from '../../shared/field';
 import { verifySnapshot } from '../../shared/field_snapshot';
 import { validateFieldQuery } from '../../shared/field_validation';
 import { lookupField } from '../../shared/field_lookup';
@@ -44,9 +44,21 @@ export function pendingFieldAudit(principalId: string) { return queue(principalI
 export async function flushFieldAudit(principalId: string) {
   const events = queue(principalId);
   if (!events.length) return;
-  const { acceptedIds } = await fieldApi('offline-events', { events });
-  // Keep events added while the request was in flight, as well as unacknowledged ones.
-  localStorage.setItem(QUEUE, JSON.stringify({ principalId, events: queue(principalId).filter(e => !acceptedIds.includes(e.id)) }));
+  // Global discovery can have many result IDs. Keep each request below the
+  // server's JSON limit; never truncate an event or acknowledge unsent receipts.
+  const batches: OfflineLookupEvent[][] = []; let batch: OfflineLookupEvent[] = [], bytes = 20;
+  for (const event of events) {
+    const size = new TextEncoder().encode(JSON.stringify(event)).length + 1;
+    if (size > 1_000_000) throw new Error('An offline audit receipt is too large to synchronize without truncation.');
+    if (batch.length && bytes + size > 1_000_000) { batches.push(batch); batch = []; bytes = 20; }
+    batch.push(event); bytes += size;
+  }
+  if (batch.length) batches.push(batch);
+  for (const next of batches) {
+    const { acceptedIds } = await fieldApi('offline-events', { events: next });
+    // Preserve events added during the request and receipts not acknowledged.
+    localStorage.setItem(QUEUE, JSON.stringify({ principalId, events: queue(principalId).filter(e => !acceptedIds.includes(e.id)) }));
+  }
 }
 export async function offlineFieldLookup(principalId: string, input: FieldQuery): Promise<{ result: FieldResult; snapshot: FieldSnapshot }> {
   const query = validateFieldQuery(input);
@@ -55,8 +67,21 @@ export async function offlineFieldLookup(principalId: string, input: FieldQuery)
   const events = queue(principalId);
   if (events.length >= 100) throw new Error('Offline audit queue is full. Reconnect before the next lookup.');
   events.push({ id: crypto.randomUUID(), clientOccurredAt: new Date().toISOString(), snapshotHash: hash,
-    query, resultIds: [...result.candidates.map(c => c.record.id), ...result.symptomCandidates.map(c => c.card.substance.id)] });
+    query, resultIds: [...[...result.candidates, ...result.globalCandidates].map(c => c.record.id), ...result.symptomCandidates.map(c => c.card.substance.id)] });
   // Audit persists before any result reaches the UI. Never silently drop a lookup.
   localStorage.setItem(QUEUE, JSON.stringify({ principalId, events }));
   return { result, snapshot };
+}
+
+/** Exact cached inspection has its own receipt; it never pretends to execute a query. */
+export async function offlineFieldReference(principalId: string, referenceId: string): Promise<{ record: ReferenceRecord; snapshot: FieldSnapshot }> {
+  const { snapshot, hash } = await readFieldCache(principalId);
+  const record = snapshot.records.find(r => r.id === referenceId);
+  if (!record) throw new Error('The linked reference is not present in the approved offline snapshot.');
+  const events = queue(principalId);
+  if (events.length >= 100) throw new Error('Offline audit queue is full. Reconnect before inspecting another reference.');
+  events.push({ id: crypto.randomUUID(), kind: 'reference_inspection', referenceId,
+    clientOccurredAt: new Date().toISOString(), snapshotHash: hash, resultIds: [record.id] });
+  localStorage.setItem(QUEUE, JSON.stringify({ principalId, events }));
+  return { record, snapshot };
 }

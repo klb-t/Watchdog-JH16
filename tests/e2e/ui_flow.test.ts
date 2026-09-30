@@ -1,6 +1,6 @@
 import { test, before, after } from 'node:test';
 import * as assert from 'node:assert';
-import { chromium, Browser, Page } from 'playwright';
+import { chromium, Browser, Page, type Route as PlaywrightRoute } from 'playwright';
 import { spawn, ChildProcess, execFileSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -175,6 +175,100 @@ test('E3.9: source history compares preserved values, exports a verifiable snaps
   }catch(error){
     fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-history-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));
     await page.screenshot({path:'test-artifacts/source-history-failure.png',fullPage:false});throw error;
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
+
+test('E3.11: watched changes preserve unread arrivals, compare and export exact versions, and resume after reload',async()=>{
+  const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  const request=withCollectionPurpose(loadAutomationProfile().defaults.substanceJob,'monitoring');
+  const append=async(value:string)=>{
+    const db=new Database(DB_PATH);db.pragma('foreign_keys=ON');try{
+      return await sourceSnapshot(db,new AutomationRepository(db,new LocalFileSystemStore(STORE_PATH)),{fictional:true,amount:value},
+        {cid:999999993,name:'Fictional watched compound',request});
+    }finally{db.close();}
+  };
+  try{
+    const first=await append('1.00');
+    await page.goto(`${baseUrl}/memory`);await page.getByRole('button',{name:'Fictional watched compound',exact:false}).click();
+    const history=page.locator('[data-testid="source-history"]'),inbox=page.locator('[data-testid="source-watch-inbox"]');
+    await history.getByLabel('Źródło i kontekst pobrania',{exact:true}).selectOption(String(first.sequence));
+    const subscribed=page.waitForResponse(r=>r.url().endsWith('/api/memory/watches')&&r.request().method()==='POST'&&r.status()===201);
+    await history.getByRole('button',{name:'Obserwuj nowe zmiany',exact:true}).click();const watch=(await (await subscribed).json()).watch;
+    await inbox.getByText('Brak nowych zmian treści w tym kontekście.',{exact:true}).waitFor();
+    await append('1.00');const changed=await append('2.00');
+    await inbox.getByRole('button',{name:'Sprawdź zapisane zmiany',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 1 · Nowe powiązane sprawdzenia: 2',{exact:true}).waitFor();
+    await inbox.getByRole('button',{name:'Pokaż dokładne różnice',exact:true}).click();
+    const comparison=inbox.locator('[data-testid="source-comparison"]');await comparison.getByText('Zachowane rekordy różnią się treścią.',{exact:true}).waitFor();
+    assert.match((await comparison.textContent())!,/"1.00"/);assert.match((await comparison.textContent())!,/"2.00"/);
+    const downloading=page.waitForEvent('download');await comparison.getByRole('button',{name:'Pobierz porównanie JSON',exact:true}).click();
+    await (await downloading).saveAs('test-artifacts/source-watch-comparison.json');
+    const saved=JSON.parse(fs.readFileSync('test-artifacts/source-watch-comparison.json','utf8'));assert.equal(saved.body.to.sequence,changed.sequence);
+    fs.writeFileSync('test-artifacts/source-watch-verification.txt',execFileSync(process.execPath,['--import','tsx','scripts/verify_source_comparison.ts',
+      'test-artifacts/source-watch-comparison.json',saved.contentHash],{encoding:'utf8'}));
+    await page.setViewportSize({width:390,height:844});await comparison.scrollIntoViewIfNeeded();
+    const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/source-watch-mobile.png',fullPage:false});
+    const later=await append('3.00');
+    await inbox.getByRole('button',{name:'Oznacz tę partię jako przeczytaną',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 1 · Nowe powiązane sprawdzenia: 1',{exact:true}).waitFor();
+    const pending=await (await fetch(`${baseUrl}/api/memory/watches/${watch.id}`)).json();
+    assert.equal(pending.watch.reviewedThrough,changed.sequence);assert.equal(pending.entries[0].to.sequence,later.sequence);
+    assert.equal(await inbox.locator('[data-testid="source-comparison"]').count(),0);
+    await inbox.getByRole('button',{name:'Wstrzymaj obserwowanie',exact:true}).click();
+    await inbox.getByRole('button',{name:'Wznów obserwowanie',exact:true}).waitFor();
+    await page.reload();await inbox.getByLabel('Obserwowane źródło',{exact:true}).selectOption(watch.id);
+    await inbox.getByRole('button',{name:'Wznów obserwowanie',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 1 · Nowe powiązane sprawdzenia: 1',{exact:true}).waitFor();
+    await page.setViewportSize({width:1280,height:900});await inbox.scrollIntoViewIfNeeded();
+    await page.screenshot({path:'test-artifacts/source-watch-desktop.png',fullPage:false});
+    await inbox.getByRole('button',{name:'Oznacz tę partię jako przeczytaną',exact:true}).click();
+    await inbox.getByText('Nowe zmiany treści: 0 · Nowe powiązane sprawdzenia: 0',{exact:true}).waitFor();
+    assert.deepEqual(errors,[]);
+  }catch(error){
+    fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-watch-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));
+    await page.screenshot({path:'test-artifacts/source-watch-failure.png',fullPage:false});throw error;
+  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
+});
+
+test('E3.12: source catalog filters forums, persists access history and exports unsent requests without enabling adapters',async()=>{
+  const errors:string[]=[];const onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
+  try{
+    await page.goto(`${baseUrl}/source-access`);await page.locator('[data-testid="source-access-page"]').waitFor();
+    assert.equal(await page.locator('[data-testid="source-stat-total"]').textContent(),'34');
+    assert.equal(await page.locator('[data-testid="source-stat-implemented"]').textContent(),'5');
+    await page.getByLabel('Rodzina źródeł',{exact:true}).first().selectOption('community');
+    assert.equal(await page.locator('[data-testid^="source-card-"]').count(),10);
+    await page.getByRole('button',{name:'Reddit',exact:true}).click();
+    await page.getByLabel('Nowy status',{exact:true}).selectOption('permission_needed');
+    await page.getByLabel('Uzasadnienie i zakres ograniczeń',{exact:true}).fill('FICTIONAL test: obtain a scoped agreement before use.');
+    await page.getByLabel('Odsyłacz lub numer dokumentu / korespondencji',{exact:true}).fill('fictional-review-only');
+    await page.getByRole('button',{name:'Zapisz ocenę',exact:true}).click();await page.getByRole('status').filter({hasText:'Ocena zapisana.'}).waitFor();
+    await page.getByLabel('Cel projektu',{exact:true}).fill('FICTIONAL research request for testing.');
+    await page.getByLabel('Jakie dane i jaki zakres',{exact:true}).fill('Only an agreed fictional export');
+    await page.getByLabel('Planowane przetwarzanie (w tym LLM, jeśli dotyczy)',{exact:true}).fill('Deterministic copying; no model processing requested');
+    await page.getByLabel('Przechowywanie i usuwanie danych',{exact:true}).fill('Thirty days subject to agreement');
+    await page.getByLabel('Nadawca / afiliacja podana przez Ciebie',{exact:true}).fill('FICTIONAL APPLICANT');
+    await page.getByRole('button',{name:'Zapisz szkic',exact:true}).click();
+    const button=page.getByRole('button',{name:'Pobierz tekst prośby',exact:true}).first();await button.waitFor();
+    fs.mkdirSync('test-artifacts',{recursive:true});const downloading=page.waitForEvent('download');await button.click();await (await downloading).saveAs('test-artifacts/source-access-request.txt');
+    const text=fs.readFileSync('test-artifacts/source-access-request.txt','utf8');assert.match(text,/FICTIONAL APPLICANT/);assert.match(text,/Undecided/);
+    await page.setViewportSize({width:390,height:844});const layout=await page.locator('main').evaluate(el=>({clientWidth:el.clientWidth,scrollWidth:el.scrollWidth}));assert.ok(layout.scrollWidth<=layout.clientWidth+1,JSON.stringify(layout));
+    await page.screenshot({path:'test-artifacts/source-access-mobile.png',fullPage:false});
+    await page.reload();await page.getByRole('button',{name:'Reddit',exact:true}).click();await page.locator('[data-testid="source-detail"]').waitFor();
+    assert.equal(await page.getByLabel('Nowy status',{exact:true}).inputValue(),'permission_needed');
+    const overview=await (await fetch(`${baseUrl}/api/source-access`)).json(),reddit=overview.rows.find((r:any)=>r.source.entry.id==='reddit');
+    assert.equal(reddit.acquisition,'not_implemented');assert.equal(reddit.draftCount,1);assert.equal(overview.stats.access.requested,0);
+    await page.getByRole('button',{name:'Zamknij',exact:true}).click();
+    await page.locator('summary').filter({hasText:'Dodaj własne źródło'}).click();
+    await page.getByLabel('Nazwa źródła',{exact:true}).fill('FICTIONAL new forum');await page.getByLabel('Oficjalna strona HTTPS',{exact:true}).fill('https://fictional.example/forum');await page.getByLabel('Zakres i uwagi',{exact:true}).fill('FICTIONAL source with no live collection.');
+    await page.getByRole('button',{name:'Dodaj kandydata',exact:true}).click();await page.getByRole('status').filter({hasText:'Kandydat zapisany'}).waitFor();
+    await page.locator('[data-testid="source-stat-total"]').filter({hasText:'35'}).waitFor();
+    assert.equal(await page.locator('[data-testid="source-stat-total"]').textContent(),'35');assert.equal(await page.locator('[data-testid="source-stat-implemented"]').textContent(),'5');
+    const exporting=page.waitForEvent('download');await page.getByRole('button',{name:'Pobierz przegląd JSON',exact:true}).click();await (await exporting).saveAs('test-artifacts/source-access-overview.json');
+    const saved=JSON.parse(fs.readFileSync('test-artifacts/source-access-overview.json','utf8'));assert.equal(saved.stats.total,35);assert.equal(saved.stats.implemented,5);assert.equal(saved.stats.drafts,1);
+    await page.setViewportSize({width:1280,height:900});await page.screenshot({path:'test-artifacts/source-access-desktop.png',fullPage:false});assert.deepEqual(errors,[]);
+  }catch(error){fs.mkdirSync('test-artifacts',{recursive:true});fs.writeFileSync('test-artifacts/source-access-failure.json',JSON.stringify({message:String(error),errors,body:await page.locator('body').innerText()},null,2));await page.screenshot({path:'test-artifacts/source-access-failure.png',fullPage:false});throw error;
   }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
 });
 
@@ -535,6 +629,8 @@ test('source-copy browser: explicit column form to reviewed statistics and porta
 test('E5.8e: a paper quote binds real source columns to an approved operation, survives reload and exports a verifiable context',async()=>{
   const errors:string[]=[],onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
   const publication=fs.mkdtempSync('/tmp/watchdog-paper-ui-');
+  const catalogUrl=baseUrl+'/api/research/operations';
+  let releaseCatalog=()=>{},catalogRoute:((route:PlaywrightRoute)=>Promise<void>)|undefined;
   try {
     const call=async(route:string,body:unknown)=>{const r=await fetch(baseUrl+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.ok(r.ok,await r.clone().text());return r.json();};
     const {testDataset}=await import('../helpers/workbench');
@@ -559,8 +655,20 @@ test('E5.8e: a paper quote binds real source columns to an approved operation, s
     await page.setViewportSize({width:390,height:844});await page.getByLabel('Dokładny cytat opisujący operację',{exact:true}).scrollIntoViewIfNeeded();
     const layout=await page.locator('main').evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}));assert.ok(layout.scroll<=layout.width+1,JSON.stringify(layout));
     await page.screenshot({path:'test-artifacts/paper-operation-mobile.png',fullPage:false});
+    // The proposal renders before act() finishes refreshing the saved-plan options.
+    // Hold that real refresh so the pending state is covered deterministically.
+    const catalogGate=new Promise<void>(resolve=>{releaseCatalog=resolve;});let heldCatalog=false;
+    catalogRoute=async route=>{if(route.request().method()==='GET'&&!heldCatalog){heldCatalog=true;await catalogGate;}await route.continue();};
+    await page.route(catalogUrl,catalogRoute);
+    const catalogRequested=page.waitForRequest(request=>request.url()===catalogUrl&&request.method()==='GET');
     await page.getByRole('button',{name:'Przygotuj plan analizy pracy',exact:true}).click();
     await page.locator('[data-testid="paper-operation-review"]').waitFor();
+    await catalogRequested;
+    assert.equal(await page.getByLabel('Zapisany plan',{exact:true}).isDisabled(),true,'review may be visible while its catalogue is still pending');
+    assert.equal(await page.getByLabel('Zapisany plan',{exact:true}).inputValue(),'','the new option is not available until the catalogue refresh finishes');
+    releaseCatalog();
+    await page.waitForFunction(()=>{const select=globalThis.document.querySelector<HTMLSelectElement>('select[aria-label="Zapisany plan"]');return !!select&&!select.disabled&&select.value!=='';},undefined,{timeout:30_000});
+    await page.unroute(catalogUrl,catalogRoute);catalogRoute=undefined;
     const id=await page.getByLabel('Zapisany plan',{exact:true}).inputValue();assert.ok(id);
     assert.ok(await page.getByRole('button',{name:'Zatwierdź metodę tej analizy',exact:true}).isDisabled());
     assert.equal(await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).count(),0);
@@ -587,5 +695,5 @@ test('E5.8e: a paper quote binds real source columns to an approved operation, s
   }catch(error){
     fs.writeFileSync('test-artifacts/paper-operation-failure.json',JSON.stringify({message:String(error),pageErrors:errors,url:page.url(),body:await page.locator('body').innerText()},null,2));
     await page.screenshot({path:'test-artifacts/paper-operation-failure.png',fullPage:false});throw error;
-  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
+  }finally{releaseCatalog();if(catalogRoute)await page.unroute(catalogUrl,catalogRoute);page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
 });

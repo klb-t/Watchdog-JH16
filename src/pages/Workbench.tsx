@@ -16,8 +16,8 @@ export function Workbench() {
 
 function WorkbenchContent() {
   const access = useAccess(), svgRef = useRef<SVGSVGElement>(null);
-  const [params] = useSearchParams(), openedDataset = useRef<string | null>(null);
-  const requestedDataset = params.get('dataset');
+  const [params] = useSearchParams(), openedDataset = useRef<string | null>(null), openedFigure = useRef<string | null>(null), openedMethod = useRef<string | null>(null), restoringMethod = useRef(false);
+  const requestedDataset = params.get('dataset'), requestedFigure = params.get('figure'), requestedMethod = params.get('method');
   const [currentProfile, setCurrentProfile] = useState<WorkbenchProfile | null>(null), [records, setRecords] = useState<DatasetRecord[]>([]), [saved, setSaved] = useState<SavedFigure[]>([]);
   const [geometryLayers, setGeometryLayers] = useState<GeometryLayerRecord[]>([]), [inspectedRegion, setInspectedRegion] = useState<string | null>(null);
   const [archivedProfile, setArchivedProfile] = useState<WorkbenchProfile | null>(null);
@@ -50,12 +50,32 @@ function WorkbenchContent() {
     else setError('The requested dataset is unavailable for this account.');
   }, [currentProfile, requestedDataset, records]);
   useEffect(() => {
+    if (!currentProfile || !requestedFigure || openedFigure.current === requestedFigure) return;
+    openedFigure.current = requestedFigure;
+    const selected = saved.find(f => f.id === requestedFigure), data = selected && records.find(r => r.id === selected.spec.datasetId && r.contentHash === selected.spec.datasetHash && r.approvalState === 'APPROVED');
+    if (!selected || !data) { setError('The requested saved figure or its exact approved dataset is unavailable for this account.'); return; }
+    setError(''); setPlaying(false); setInspected(null); setDatasetId(data.id); setSpec(selected.spec); setNotice(`Restored exact figure ${selected.hash}.`);
+  }, [currentProfile, requestedFigure, saved, records]);
+  useEffect(() => {
+    if (!currentProfile || !requestedMethod || openedMethod.current === requestedMethod) return;
+    let active = true;
+    workbenchApi(`methods/${encodeURIComponent(requestedMethod)}`).then(data => {
+      if (!active) return;
+      const source = records.find(r => r.id === data.method.datasetId);
+      if (!source) { setError('The requested method source is unavailable for this account.'); return; }
+      openedMethod.current = requestedMethod; restoringMethod.current = true;
+      setError(''); setPlaying(false); setInspected(null); setDatasetId(source.id); setSpec(data.method.selection.figure);
+      setMethod(data.method); setMethodReviewed(false); setAnalysis(null); setNotice(`Opened pinned method ${data.method.hash}.`);
+    }).catch(e => { if (active) setError(e.message); });
+    return () => { active = false; };
+  }, [currentProfile, requestedMethod, records]);
+  useEffect(() => {
     if (!spec || spec.profileHash === currentProfile?.contentHash || spec.profileHash === archivedProfile?.contentHash) return;
     let active = true;
     workbenchApi(`profiles/${spec.profileHash}`).then(p => { if (active) setArchivedProfile(p); }).catch(e => { if (active) setError(e.message); });
     return () => { active = false; };
   }, [spec?.profileHash, currentProfile?.contentHash, archivedProfile?.contentHash]);
-  useEffect(() => { setMethod(null); setAnalysis(null); }, [spec?.channels.x, spec?.channels.y, spec?.channels.time, spec?.filters, spec?.selectedIds, spec?.timeValue, datasetId]);
+  useEffect(() => { if (restoringMethod.current) { restoringMethod.current = false; return; } setMethod(null); setAnalysis(null); }, [spec?.channels.x, spec?.channels.y, spec?.channels.time, spec?.filters, spec?.selectedIds, spec?.timeValue, datasetId]);
   useEffect(() => { setInspectedRegion(null); setInspected(null); }, [datasetId, spec?.geography?.layerId]);
   const frames = record && spec?.channels.time ? [...new Set(record.document.rows.map(r => r.values[spec.channels.time!]).filter(v => v !== null))].sort((a, b) => typeof a === 'number' && typeof b === 'number' ? a - b : String(a).localeCompare(String(b))) : [];
   useEffect(() => {

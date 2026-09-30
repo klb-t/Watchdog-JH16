@@ -76,12 +76,71 @@ test('E6 browser: individual source review, live lookup, offline reload and audi
   await page.getByLabel('Pill name or logo', { exact: true }).fill('X');
   await page.getByRole('button', { name: 'Find references', exact: true }).click();
   await page.getByRole('heading', { name: 'Fictional Green X', exact: true }).waitFor();
-  await page.getByText(/Offline: 1 lookup audit events pending upload/).waitFor();
+  await page.getByText(/Offline: 1 reference audit events pending upload/).waitFor();
   await page.screenshot({ path: path.join(artifacts, 'responder-offline.png'), fullPage: true });
   await context.setOffline(false);
   await page.getByRole('button', { name: 'Synchronize offline references', exact: true }).click();
   await page.getByText(/2 approved references synchronized/).waitFor();
-  assert.equal(await page.getByText(/lookup audit events pending upload/).count(), 0);
+  assert.equal(await page.getByText(/reference audit events pending upload/).count(), 0);
+});
+
+test('E6 browser: global appearance alternatives and exact assertion links preserve source context online and offline', async () => {
+  const foreign = testSample({ key: 'foreign-browser', name: 'Fictional Foreign Green X',
+    region: { id: 'TEST-OTHER', name: 'Fictional other region', parentId: null },
+    citation: { ...testSample().citation, sourceRecordId: 'foreign-browser' } });
+  const imported = await fetch(base + '/api/field/references', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(foreign) });
+  assert.equal(imported.status, 201); const { record } = await imported.json();
+  const approved = await fetch(base + `/api/field/references/${record.id}/approve`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ expectedHash: record.contentHash }) });
+  assert.equal(approved.status, 200);
+  const references = await (await fetch(base + '/api/field/references')).json();
+  const assertion = references.records.find((r: any) => r.document.kind === 'assertion');
+  await page.goto(base + `/responder?mode=pill&term=X&reference=${record.id}`);
+  await page.getByLabel('Linked source reference').getByRole('heading', { name: 'Fictional Foreign Green X', exact: true }).waitFor();
+  assert.equal(await page.getByLabel('Pill name or logo', { exact: true }).inputValue(), 'X');
+  assert.equal(await page.getByLabel('Lookup results').count(), 0, 'a deep link does not run a clinical lookup');
+  await page.getByLabel('Color', { exact: true }).selectOption('green');
+  await page.getByLabel('Region', { exact: true }).selectOption('NL-NB');
+  await page.getByRole('button', { name: 'Find references', exact: true }).click();
+  await page.getByLabel('Global archive context').getByRole('heading', { name: 'Fictional Foreign Green X', exact: true }).waitFor();
+  await page.getByText('Local denominator: 1 distinct sampled records.', { exact: false }).waitFor();
+  await page.getByText('Archive denominator: 2 distinct sampled records.', { exact: false }).waitFor();
+  await page.getByText('Evidence legend — independent from section order and review status', { exact: true }).click();
+  const legend = page.locator('details').filter({ has: page.getByText('Evidence legend — independent from section order and review status', { exact: true }) });
+  const colors = () => legend.locator('.evidence-badge').evaluateAll(elements => [...new Set(elements.map(element => getComputedStyle(element).color))]);
+  assert.equal((await colors()).length, 6);
+  await page.getByLabel('Evidence display profile', { exact: true }).selectOption('compact');
+  assert.equal((await colors()).length, 3); assert.equal(await legend.locator('[data-evidence-tier]').count(), 6);
+  assert.match(await page.getByLabel('Global archive context').textContent() ?? '', /Other region — not local sample evidence/);
+  await page.goto(base + `/responder?mode=pill&term=Fictional+A&reference=${assertion.id}`);
+  await page.getByLabel('Linked source reference').getByText('Fictional interaction used only to verify software behavior.', { exact: true }).waitFor();
+  assert.equal(await page.getByLabel('Lookup results').count(), 0);
+  await page.goto(base + `/evidence?reference=${assertion.id}`);
+  await page.getByTestId('mapping-document').filter({ hasText: 'Fictional interaction used only to verify software behavior.' }).waitFor();
+  await page.goto(base + `/responder?mode=pill&term=X&reference=${record.id}`);
+  await page.getByLabel('Linked source reference').waitFor();
+  await page.evaluate(async () => { await navigator.serviceWorker.ready; });
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+  await context.setOffline(true); await page.reload();
+  await page.getByText(/Offline snapshot available/).waitFor();
+  await page.getByLabel('Linked source reference').getByRole('heading', { name: 'Fictional Foreign Green X', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Find references', exact: true }).click();
+  await page.getByLabel('Global archive context').getByRole('heading', { name: 'Fictional Foreign Green X', exact: true }).waitFor();
+  await page.getByText(/Offline: 2 reference audit events pending upload/).waitFor();
+  const receiptKinds = await page.evaluate(() => JSON.parse(localStorage.getItem('watchdog-field-audit-1')!).events.map((event: any) => event.kind ?? 'lookup'));
+  assert.deepEqual(receiptKinds, ['reference_inspection', 'lookup']);
+  await page.evaluate(() => {
+    const expiry = Date.parse(JSON.parse(localStorage.getItem('watchdog-field-snapshot-1')!).snapshot.expiresAt);
+    Date.now = () => expiry + 1;
+    window.dispatchEvent(new Event('focus'));
+  });
+  await page.getByText(/Exact reference inspection is unavailable because the synchronized snapshot expired/).waitFor();
+  assert.equal(await page.getByLabel('Linked source reference').count(), 0);
+  await page.evaluate((referenceId: string) => {
+    history.pushState({}, '', `/responder?mode=pill&term=Fictional+A&reference=${referenceId}`);
+    window.dispatchEvent(new PopStateEvent('popstate'));
+  }, assertion.id);
+  await page.getByRole('alert').filter({ hasText: /Offline snapshot expired/ }).waitFor();
+  assert.equal(await page.getByLabel('Linked source reference').count(), 0);
 });
 
 test('E5 browser: regional figures, 3D camera, context tools, statistics, favourites and publication export', async () => {

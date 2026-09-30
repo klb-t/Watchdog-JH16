@@ -194,7 +194,7 @@ export class FieldReferenceRepository {
         return event.id;
       }
       this.db.prepare('INSERT INTO field_offline_receipts VALUES (?,?,?)').run(event.id, actorId, hash);
-      this.audit(actorId, 'responder.lookup.offline', event.snapshotHash, requestId,
+      this.audit(actorId, event.kind === 'reference_inspection' ? 'responder.reference.offline' : 'responder.lookup.offline', event.snapshotHash, requestId,
         { ...event, clientReported: true, clientClockVerified: false, resultsRecomputedByServer: false });
       return event.id;
     }))();

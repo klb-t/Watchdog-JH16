@@ -20,6 +20,9 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:all
       - run: npm run demo:jh16
+      - name: Print browser failures
+        if: failure()
+        run: python3 -c "import pathlib; [print(str(p), p.read_text()[:16000]) for p in pathlib.Path('test-artifacts').glob('*.json')]"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -27,3 +30,12 @@ jobs:
           path: test-artifacts/
           if-no-files-found: ignore
           retention-days: 14
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image with its complete test gate
+        run: docker build --tag watchdog:ci .
+      - name: Verify production container and persistent data
+        run: bash scripts/check_container.sh watchdog:ci

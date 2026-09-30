@@ -16,7 +16,7 @@ import { traceMiddleware, errorHandler } from '../../backend/watchdog_api/api/mi
 import { tracer } from '../../backend/watchdog_api/utils/tracer';
 import { approve } from '../../backend/watchdog_api/domain/approval';
 import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
-import { validateReferenceDocument, validateFieldQuery } from '../../shared/field_validation';
+import { validateReferenceDocument, validateFieldQuery, validateFieldProfile } from '../../shared/field_validation';
 import { verifySnapshot } from '../../shared/field_snapshot';
 import { lookupField } from '../../shared/field_lookup';
 import { CONTENT_CATEGORIES, type ReferenceDocument, type SampleDocument } from '../../shared/field';
@@ -201,4 +201,106 @@ test('E6: versioned real catalog validates as source-derived proposals, with no 
   const profile = loadFieldProfile();
   assert.equal(Object.keys(profile.tiers).length, 6);
   assert.ok(Object.values(profile.tiers).every(t => t.label && t.icon && t.color));
+});
+
+test('E6 global context: other regions remain visible without changing local specimen denominators or approval', async () => {
+  const h = await harness();
+  try {
+    const local = await h.add(testSample());
+    const foreignDocument = testSample({ key: 'foreign', name: 'Fictional Foreign Green X',
+      region: { id: 'TEST-OTHER', name: 'Fictional other region', parentId: null },
+      citation: { ...testSample().citation, sourceRecordId: 'foreign-specimen' },
+      components: [{ substance: { id: 'test-b', name: 'Fictional B', type: 'substance' }, amount: null, unit: null, note: null }],
+      unknownComponents: ['Fictional unresolved component'] });
+    const foreign = await h.add(foreignDocument);
+    await h.add({ ...foreignDocument, key: 'foreign-new-version', name: 'Fictional Foreign Green X updated' });
+    await h.add({ ...foreignDocument, key: 'unapproved', citation: { ...foreignDocument.citation, sourceRecordId: 'unapproved' } }, false);
+    const national = await h.add(testSample({ key: 'national-context',
+      region: { id: 'NL', name: 'Netherlands', parentId: null },
+      citation: { ...testSample().citation, sourceRecordId: 'national-bulletin' },
+      origin: 'published_alert', evidenceTier: 'CURATED_SECONDARY', timeBasis: 'published', testMethod: null }));
+    const snapshot = h.service.snapshot('test');
+    const result = lookupField(snapshot, testQuery());
+    assert.deepEqual(result.candidates.map(c => c.record.id), [local.id]);
+    assert.equal(result.globalCandidates.length, 3);
+    assert.equal(result.globalCandidates.find(c => c.record.id === foreign.id)!.regionScope, 'global_context');
+    assert.equal(result.globalCandidates.find(c => c.record.id === national.id)!.regionScope, 'broader_context');
+    assert.equal(result.labSampleCount, 1); assert.deepEqual(result.distribution.map(d => [d.substance.id, d.labSampleCount]), [['test-a', 1]]);
+    assert.equal(result.globalSummary.recordCount, 4); assert.equal(result.globalSummary.labSampleCount, 2);
+    assert.equal(result.globalSummary.distinctSourceRecordCount, 3);
+    assert.deepEqual(result.globalSummary.distribution.map(d => [d.substance.id, d.labSampleCount]), [['test-a', 1], ['test-b', 1]]);
+    assert.ok(result.flags.includes('MULTIPLE_SOURCE_VERSIONS'));
+    assert.ok([...result.candidates, ...result.globalCandidates].every(c => c.matchTier === 'MODELED_PREDICTED'));
+    assert.deepEqual(lookupField({ ...snapshot, records: [...snapshot.records].reverse() }, testQuery()), result);
+    const withNational = lookupField(snapshot, testQuery({ includeBroaderContext: true }));
+    assert.equal(withNational.candidates.length, 2); assert.equal(withNational.globalCandidates.length, 2);
+    assert.equal(withNational.labSampleCount, 1); assert.deepEqual(withNational.globalSummary, result.globalSummary);
+    const response = await h.call('/lookup', testQuery()); assert.equal(response.status, 200);
+    const audit = h.db.prepare("SELECT metadata_json FROM audit_events WHERE action='responder.lookup' ORDER BY rowid DESC LIMIT 1").get() as any;
+    const metadata = JSON.parse(audit.metadata_json);
+    assert.deepEqual(metadata.globalContextIds, result.globalCandidates.map(c => c.record.id));
+    assert.equal(metadata.resultIds.length, 4);
+    h.repo.revoke(foreign.id, 'fictional-reviewer', randomUUID());
+    assert.ok(!lookupField(h.service.snapshot('test'), testQuery()).globalCandidates.some(c => c.record.id === foreign.id));
+  } finally { await h.close(); }
+});
+
+test('E6 global context: matching foreign dates and source assertions keep their own regional context', async () => {
+  const h = await harness();
+  try {
+    await h.add(testSample());
+    const foreignRegion = { id: 'TEST-OTHER', name: 'Fictional other region', parentId: null };
+    const foreign = await h.add(testSample({ key: 'foreign', region: foreignRegion,
+      citation: { ...testSample().citation, sourceRecordId: 'foreign' } }));
+    await h.add(testSample({ key: 'foreign-undated', region: foreignRegion, origin: 'visual_report', evidenceTier: 'UNKNOWN',
+      observedOn: null, timeBasis: 'unknown', testMethod: null, citation: { ...testSample().citation, sourceRecordId: 'undated' } }));
+    await h.add(testSample({ key: 'unrelated-undated', name: 'Fictional unrelated appearance', appearance: { colors: ['blue'], shape: null, logo: null, scoreLine: null },
+      origin: 'visual_report', evidenceTier: 'UNKNOWN', observedOn: null, timeBasis: 'unknown', testMethod: null }));
+    const localAssertion = await h.add(testAssertion({ key: 'local-fact', region: { id: 'NL', name: 'Netherlands', parentId: null } }));
+    const foreignAssertion = await h.add(testAssertion({ key: 'foreign-fact', region: foreignRegion }));
+    const result = lookupField(h.service.snapshot('test'), testQuery({ from: '2026-09-01' }));
+    assert.equal(result.excludedUndated, 0); assert.equal(result.globalExcludedUndated, 1);
+    const localFacts = result.candidates[0].substances[0].sections.flatMap(s => s.facts).map(f => f.record.id);
+    const foreignCard = result.globalCandidates.find(c => c.record.id === foreign.id)!.substances[0];
+    const foreignFacts = foreignCard.sections.flatMap(s => s.facts).map(f => f.record.id);
+    assert.ok(localFacts.includes(localAssertion.id)); assert.ok(!localFacts.includes(foreignAssertion.id));
+    assert.ok(foreignFacts.includes(foreignAssertion.id)); assert.ok(!foreignFacts.includes(localAssertion.id));
+    assert.deepEqual(foreignCard.referenceRegion, foreignRegion);
+  } finally { await h.close(); }
+});
+
+test('E6 global context: foreign market labels discover alternatives while regional mappings and languages stay distinct', async () => {
+  const h = await harness();
+  try {
+    await h.add(testSample());
+    const foreign = await h.add(testSample({ key: 'foreign-market', region: { id: 'TEST-OTHER', name: 'Fictional other region', parentId: null },
+      market: { label: 'test label', group: 'foreign-market', language: 'nl' }, citation: { ...testSample().citation, sourceRecordId: 'foreign' } }));
+    await h.add(testSample({ key: 'foreign-wrong-language', region: { id: 'TEST-OTHER', name: 'Fictional other region', parentId: null },
+      market: { label: 'test label', group: 'other-language-market', language: 'pl' }, citation: { ...testSample().citation, sourceRecordId: 'wrong-language' } }));
+    const result = lookupField(h.service.snapshot('test'), testQuery({ mode: 'market', term: 'test label', expansionMode: 'LOCALIZED_SYNONYMS' }));
+    assert.equal(result.candidates.length, 1); assert.deepEqual(result.globalCandidates.map(c => c.record.id), [foreign.id]);
+    assert.ok(!result.flags.includes('AMBIGUOUS_MARKET_LABEL')); assert.ok(result.flags.includes('AMBIGUOUS_GLOBAL_MARKET_LABEL'));
+    assert.equal(lookupField(h.service.snapshot('test'), testQuery({ mode: 'market', term: 'Fictional A', expansionMode: 'LOCALIZED_SYNONYMS' })).globalCandidates.length, 0);
+  } finally { await h.close(); }
+});
+
+test('E6 evidence profiles: full kinds are the default; incomplete compact mapping fails validation', () => {
+  const profile = loadFieldProfile();
+  assert.equal(profile.evidenceDisplay!.defaultMode, 'full');
+  assert.match(profile.evidenceDisplay!.explanation, /not calibrated confidence/);
+  const invalid = structuredClone(profile); delete invalid.evidenceDisplay!.compactColors.Unconfirmed;
+  assert.throws(() => validateFieldProfile(invalid), /Every compact evidence bucket/);
+});
+
+test('E6 exact offline inspection receipts remain distinct from query execution and reject mismatched reference IDs', async () => {
+  const h = await harness();
+  try {
+    const event = { id: randomUUID(), kind: 'reference_inspection', referenceId: 'field-example', clientOccurredAt: new Date().toISOString(), snapshotHash: 'a'.repeat(64), resultIds: ['field-example'] };
+    assert.equal((await h.call('/offline-events', { events: [event] })).status, 200);
+    assert.equal((await h.call('/offline-events', { events: [event] })).status, 200);
+    assert.equal((await h.call('/offline-events', { events: [{ ...event, id: randomUUID(), resultIds: ['different'] }] })).status, 400);
+    const rows = h.db.prepare("SELECT metadata_json FROM audit_events WHERE action='responder.reference.offline'").all() as any[];
+    assert.equal(rows.length, 1); assert.equal(JSON.parse(rows[0].metadata_json).resultsRecomputedByServer, false);
+    assert.equal(JSON.parse(rows[0].metadata_json).query, undefined);
+  } finally { await h.close(); }
 });

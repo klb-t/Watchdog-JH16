@@ -17,9 +17,13 @@ const boundary = (operation: string, fn: (req: Request, res: Response) => unknow
     void tracer.runWithSpan('field_reference', operation, () => fn(req, res),
       { actor_id: req.principal?.id, request_id: requestId() }).catch(next);
   };
-const offlineEvents = z.object({ events: z.array(z.object({ id: z.uuid(), clientOccurredAt: z.iso.datetime(),
-  snapshotHash: z.string().regex(/^[a-f0-9]{64}$/), query: FieldQuerySchema,
-  resultIds: z.array(z.string().max(200)).max(1000) }).strict()).max(100) }).strict();
+const receiptFields = { id: z.uuid(), clientOccurredAt: z.iso.datetime(),
+  snapshotHash: z.string().regex(/^[a-f0-9]{64}$/), resultIds: z.array(z.string().max(200)).max(10000) };
+const offlineEvents = z.object({ events: z.array(z.union([
+  z.object({ ...receiptFields, kind: z.literal('lookup').optional(), query: FieldQuerySchema }).strict(),
+  z.object({ ...receiptFields, kind: z.literal('reference_inspection'), referenceId: z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9_.:-]{0,199}$/) }).strict()
+    .refine(e => e.resultIds.length === 1 && e.resultIds[0] === e.referenceId, 'Reference inspection must identify its one displayed mapping.'),
+])).max(100) }).strict();
 
 export function buildFieldRouter(repository: FieldReferenceRepository, service: FieldService) {
   const router = Router();

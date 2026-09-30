@@ -1,0 +1,42 @@
+{
+  "version": "workspace-navigation-1",
+  "labels": {
+    "primary": "Main navigation",
+    "section": "Section navigation",
+    "utilities": "Account and tools",
+    "settings": "Ustawienia",
+    "diagnostics": "Diagnostyka",
+    "access": "Dostęp użytkowników"
+  },
+  "groups": [
+    { "id": "dashboard", "label": "Pulpit", "icon": "dashboard", "views": [
+      { "label": "Pulpit", "href": "/", "anyCapability": [] }
+    ] },
+    { "id": "data", "label": "Dane i źródła", "icon": "database", "views": [
+      { "label": "Integracje i dostęp", "href": "/source-access", "anyCapability": ["provider.view"] },
+      { "label": "Źródła pomiarów", "href": "/sources", "anyCapability": ["run.view"] }
+    ] },
+    { "id": "analysis", "label": "Analiza danych", "icon": "analysis", "views": [
+      { "label": "Tabele, wykresy i mapy", "href": "/workbench", "anyCapability": ["workbench.view"] },
+      { "label": "Metody obliczeń", "href": "/analyzers", "anyCapability": ["run.view"] }
+    ] },
+    { "id": "collection", "label": "Zbieranie cykliczne", "icon": "calendar", "views": [
+      { "label": "Zadania i harmonogramy", "href": "/automation", "anyCapability": ["run.create"] }
+    ] },
+    { "id": "projects", "label": "Projekty badawcze", "icon": "project", "views": [
+      { "label": "Projekty badawcze", "href": "/projects", "anyCapability": ["method.propose"] }
+    ] },
+    { "id": "papers", "label": "Prace i replikacje", "icon": "paper", "views": [
+      { "label": "Tekst, metodologia i ekstrakcja", "href": "/research", "anyCapability": ["method.propose"] },
+      { "label": "Nowe badanie", "href": "/study", "anyCapability": ["run.create"] },
+      { "label": "Przegląd metody", "href": "/method", "anyCapability": ["method.propose"] },
+      { "label": "Uruchomienia i wyniki", "href": "/runs", "anyCapability": ["run.view"] }
+    ] },
+    { "id": "database", "label": "Baza i wyszukiwanie", "icon": "search", "views": [
+      { "label": "Wyszukiwanie", "href": "/search", "anyCapability": ["run.view", "run.create", "workbench.view", "responder.lookup", "evidence.review", "method.propose"] },
+      { "label": "Kartoteka substancji", "href": "/memory", "anyCapability": ["responder.lookup", "evidence.review"] },
+      { "label": "Objawy i próbki", "href": "/responder", "anyCapability": ["responder.lookup"] },
+      { "label": "Przegląd dowodów", "href": "/evidence", "anyCapability": ["evidence.review"] }
+    ] }
+  ]
+}

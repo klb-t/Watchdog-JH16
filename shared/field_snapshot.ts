@@ -15,6 +15,13 @@ const snapshotShape = z.object({ version: z.literal('field-snapshot-1'), generat
     contentHash: hash, approvedHash: hash, approvedBy: z.string().min(1), approvedAt: z.iso.datetime(),
     approvalState: z.literal('APPROVED'), importedAt: z.iso.datetime(), rawSha256: hash }).strict()).max(10000),
 }).strict();
+/** Rechecked when displaying an exact cached reference, as well as on lookup. */
+export function fieldSnapshotWindowIsCurrent(snapshot: FieldSnapshot, principalId: string, now = Date.now()): boolean {
+  const created = Date.parse(snapshot.generatedAt), expires = Date.parse(snapshot.expiresAt);
+  return snapshot.principalId === principalId && Number.isFinite(created) && Number.isFinite(expires) &&
+    created <= now + 60_000 && expires > now && expires > created &&
+    expires - created <= snapshot.profile.offlineMaxHours * 3_600_000;
+}
 /** Integrity and local authorization-window check, not a signature or proof of publisher truth.
  * Revocation can only be learned on reconnect; the explicit expiry bounds that delay. */
 export async function verifySnapshot(input: unknown, expectedHash: string, principalId: string, now = Date.now()): Promise<FieldSnapshot> {
@@ -22,8 +29,7 @@ export async function verifySnapshot(input: unknown, expectedHash: string, princ
   const snapshot = input as FieldSnapshot;
   validateFieldProfile(snapshot.profile);
   if (snapshot.principalId !== principalId || await digest(snapshot) !== expectedHash) throw new Error('Offline snapshot identity or integrity mismatch.');
-  const created = Date.parse(snapshot.generatedAt), expires = Date.parse(snapshot.expiresAt);
-  if (created > now + 60_000 || expires <= now || expires <= created || expires - created > snapshot.profile.offlineMaxHours * 3_600_000)
+  if (!fieldSnapshotWindowIsCurrent(snapshot, principalId, now))
     throw new Error('Offline snapshot expired or its clock window is invalid. Reconnect to synchronize.');
   if (new Set(snapshot.records.map(r => r.id)).size !== snapshot.records.length) throw new Error('Duplicate snapshot records.');
   for (const record of snapshot.records) {

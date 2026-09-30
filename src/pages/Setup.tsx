@@ -111,7 +111,7 @@ export function Setup() {
   useEffect(() => { load(); }, []);
 
   const signOut = async () => {
-    await fetch('/api/auth/signout', { method: 'POST' });
+    await fetch('/api/auth/signout', { method: 'POST',headers:{'Content-Type':'application/json'},body:'{}' });
     window.dispatchEvent(new Event('watchdog-session-changed'));
     load();
   };

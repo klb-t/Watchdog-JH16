@@ -2,10 +2,12 @@ import { Router, Request, Response, NextFunction } from 'express';
 import {
   Identity, buildIdentity, authorize, Capability, capabilitiesFor, ROLES, AUTHORIZATION_PROFILE_VERSION,
   SESSION_COOKIE_NAME, sessionCookieHeader, clearSessionCookieHeader,
-  principalIdFor, emailFingerprint, TokenRejectedError, ForbiddenError, UnauthenticatedError,
+  principalIdFor, emailFingerprint, TokenRejectedError, ForbiddenError, UnauthenticatedError, isRole, can, SessionPayload,
 } from '../identity';
 import { PrincipalRepository } from '../db/repositories/principals';
 import { Principal } from '../domain/principal';
+import type { AdmissionStatus } from '../../../shared/admission';
+import { sameOriginMutation } from './request_security';
 
 /**
  * The authentication surface (E4.1).
@@ -43,11 +45,30 @@ export function principalMiddleware(deps: AuthDeps) {
   return async (req: Request, _res: Response, next: NextFunction) => {
     try {
       req.principal = await deps.identity.resolve(req);
+      if (deps.identity.mode === 'oidc' && req.principal) {
+        const p = req.principal;
+        const stored = deps.principals.get(p.id);
+        const roles = p.email ? deps.principals.effectiveRoles(p.email,deps.identity.verifier?.roleFor(p.email) ?? null) : [];
+        // The signed cookie proves identity. It never freezes permissions for
+        // twelve hours after an owner revokes or changes a grant.
+        req.principal = stored?.active && stored.email === p.email && roles.length ? { ...p, roles } : null;
+      }
     } catch {
       req.principal = null;
     }
     next();
   };
+}
+
+/** Mount after /api/auth. An admission identity is not an application user. */
+export function requireInstallationAccess(req: Request, _res: Response, next: NextFunction) {
+  if (!req.principal) return next(new UnauthenticatedError());
+  next();
+}
+
+function sessionIdentity(req: Request, deps: AuthDeps): SessionPayload | null {
+  const cookie = req.headers.cookie?.split(';').map(p => p.trim()).find(p => p.startsWith(`${SESSION_COOKIE_NAME}=`));
+  return deps.identity.codec?.verify(cookie?.slice(SESSION_COOKIE_NAME.length+1)) ?? null;
 }
 
 /** Route-level gate. The only way a mutating route should be reachable. */
@@ -64,7 +85,18 @@ export function requireCapability(capability: Capability) {
 
 export function buildAuthRouter(deps: AuthDeps): Router {
   const router = Router();
+  router.use((_req,res,next) => { res.setHeader('Cache-Control','no-store');next(); });
+  router.use(sameOriginMutation);
   const now = deps.now ?? (() => new Date());
+  const rolesFor = (email: string) => deps.principals.effectiveRoles(email,deps.identity.verifier?.roleFor(email) ?? null);
+  const admissionStatus = (req: Request): AdmissionStatus => {
+    const identity = sessionIdentity(req,deps);
+    if (!identity) return { verified:false,email:null,status:'anonymous',request:null };
+    const request = deps.principals.requestFor(principalIdFor(identity.sub));
+    const grant = deps.principals.grant(identity.email);
+    const status = rolesFor(identity.email).length ? 'approved' : grant?.active === false ? 'revoked' : request?.status ?? 'unrequested';
+    return { verified:true,email:identity.email,status,request };
+  };
 
   /**
    * What the frontend needs to render a sign-in button, and nothing more.
@@ -80,6 +112,7 @@ export function buildAuthRouter(deps: AuthDeps): Router {
       grant_count: Object.keys(deps.identity.config.grants).length,
       roles: ROLES,
       signed_in: !!req.principal,
+      admission_enabled: deps.identity.mode === 'oidc',
     });
   });
 
@@ -115,27 +148,28 @@ export function buildAuthRouter(deps: AuthDeps): Router {
         return res.status(400).json({ error: { code: 'validation_error', message: 'id_token is required.' } });
       }
 
-      const verified = await deps.identity.verifier.verify(token);
+      const verified = await deps.identity.verifier.verifyIdentity(token);
       const id = principalIdFor(verified.subject);
       const at = now().toISOString();
 
-      deps.principals.upsertOnSignIn({
-        id, email: verified.email, displayName: verified.name,
-        role: verified.role, identityProvenance: 'google-oidc', at,
-      });
+      deps.principals.recordIdentity({ id,email:verified.email,displayName:verified.name,at });
+      const roles = rolesFor(verified.email);
+      deps.principals.syncRoles(id,roles);
 
       // The session's own lifetime, not Google's: a token minted with an
       // eight-hour expiry must not silently extend the session beyond what
       // this deployment intends.
       const exp = Math.min(now().getTime() + SESSION_TTL_SECONDS * 1000, verified.expiresAt);
       const cookie = deps.identity.codec.sign({
-        sub: verified.subject, email: verified.email, role: verified.role, exp,
+        sub: verified.subject, email: verified.email, role: roles[0] ?? null, exp,
+        ...(roles.length ? {} : { scope:'admission' as const }),
       });
 
       res.setHeader('Set-Cookie',
         sessionCookieHeader(cookie, Math.floor((exp - now().getTime()) / 1000), deps.secureCookies));
       res.json({
-        principal: { id, email: verified.email, roles: [verified.role] },
+        principal: roles.length ? { id,email:verified.email,roles } : null,
+        admission: roles.length ? 'approved' : 'unrequested',
         expires_at: new Date(exp).toISOString(),
       });
     } catch (e) {
@@ -146,6 +180,77 @@ export function buildAuthRouter(deps: AuthDeps): Router {
         return res.status(401).json({ error: { code: 'unauthenticated', message: e.message } });
       }
       next(e);
+    }
+  });
+
+  router.get('/admission/status',(req,res) => res.json(admissionStatus(req)));
+
+  router.post('/admission/request',(req,res) => {
+    const identity = sessionIdentity(req,deps);
+    if (!identity) return res.status(401).json({ error:{ code:'unauthenticated' } });
+    const reason = req.body?.reason;
+    if (typeof reason !== 'string' || reason.trim().length < 10 || reason.length > 4000) {
+      return res.status(400).json({ error:{ code:'validation_error',message:'Explain your intended use in 10–4000 characters.' } });
+    }
+    if (rolesFor(identity.email).length) return res.status(409).json({ error:{ code:'already_admitted' } });
+    res.json({ request:deps.principals.submitRequest(principalIdFor(identity.sub),identity.email,reason.trim(),now().toISOString()) });
+  });
+
+  router.post('/admission/activate',(req,res) => {
+    const identity = sessionIdentity(req,deps);
+    if (!identity || !deps.identity.codec) return res.status(401).json({ error:{ code:'unauthenticated' } });
+    const roles = rolesFor(identity.email);
+    const principal = deps.principals.get(principalIdFor(identity.sub));
+    if (!roles.length || !principal?.active) return res.status(403).json({ error:{ code:'access_pending' } });
+    const cookie = deps.identity.codec.sign({ sub:identity.sub,email:identity.email,role:roles[0],exp:identity.exp });
+    res.setHeader('Set-Cookie',sessionCookieHeader(cookie,Math.floor((identity.exp-now().getTime())/1000),deps.secureCookies));
+    res.json({ activated:true });
+  });
+
+  router.get('/admission/admin',requireCapability('principal.invite'),(_req,res) => res.json({
+    requests:deps.principals.requests(),invitations:deps.principals.invitations(),grants:deps.principals.grants(),roles:ROLES,
+    principals:deps.principals.list().filter(p => p.email).map(p => ({ id:p.id,email:p.email,
+      roles:p.active ? rolesFor(p.email!) : [],active:!!p.active && !!rolesFor(p.email!).length })),
+  }));
+
+  router.post('/admission/grants',requireCapability('principal.manage'),(req,res) => {
+    const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const roles = req.body?.roles;
+    const active = req.body?.active;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !Array.isArray(roles) || !roles.every(isRole) || typeof active !== 'boolean' || (active && !roles.length)) {
+      return res.status(400).json({ error:{ code:'validation_error',message:'A valid email, explicit role profiles and active state are required.' } });
+    }
+    const removingManager = can(rolesFor(email),'principal.manage') && (!active || !can(roles,'principal.manage'));
+    if (deps.identity.mode === 'oidc' && removingManager && !deps.principals.list().some(p => p.active && p.email && p.email !== email && can(rolesFor(p.email),'principal.manage'))) {
+      return res.status(409).json({ error:{ code:'last_access_manager',message:'Keep another active developer before removing the last access manager.' } });
+    }
+    res.json({ grant:deps.principals.setGrant(email,roles,active,req.principal!.id,now().toISOString()) });
+  });
+
+  router.post('/admission/invitations',requireCapability('principal.invite'),(req,res) => {
+    const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    const message = req.body?.message ?? '';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || typeof message !== 'string' || message.length > 4000) {
+      return res.status(400).json({ error:{ code:'validation_error',message:'A valid email and message up to 4000 characters are required.' } });
+    }
+    const at = now(), expiresAt = new Date(at.getTime()+7*24*60*60*1000);
+    const created = deps.principals.createInvitation(email,message,req.principal!.id,at.toISOString(),expiresAt.toISOString());
+    res.status(201).json({ ...created,invite_path:`/?invite=${created.token}` });
+  });
+
+  router.post('/admission/invitations/:id/revoke',requireCapability('principal.invite'),(req,res) => {
+    res.json({ revoked:deps.principals.revokeInvitation(req.params.id,req.principal!.id,now().toISOString()) });
+  });
+
+  router.post('/admission/invitations/accept',(req,res) => {
+    const identity = sessionIdentity(req,deps), token = req.body?.token;
+    if (!identity) return res.status(401).json({ error:{ code:'unauthenticated' } });
+    if (typeof token !== 'string' || token.length > 200) return res.status(400).json({ error:{ code:'validation_error' } });
+    try {
+      const request = deps.principals.acceptInvitation(token,principalIdFor(identity.sub),identity.email,now().toISOString());
+      res.json({ request });
+    } catch {
+      res.status(404).json({ error:{ code:'invitation_unavailable',message:'Invitation unavailable for this verified identity.' } });
     }
   });
 

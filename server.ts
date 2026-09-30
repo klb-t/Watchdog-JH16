@@ -13,7 +13,7 @@ import { buildApiRouter } from './backend/watchdog_api/api/routes';
 import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middleware';
 import { ExtractionDatasetService } from './backend/watchdog_api/services/extraction_dataset';
 import { buildIdentity, assertAuthSafeForEnvironment, readAuthConfig } from './backend/watchdog_api/identity';
-import { buildAuthRouter, principalMiddleware } from './backend/watchdog_api/api/auth_routes';
+import { buildAuthRouter, principalMiddleware, requireInstallationAccess } from './backend/watchdog_api/api/auth_routes';
 import { PrincipalRepository } from './backend/watchdog_api/db/repositories/principals';
 import { db, sqlite, dbPath } from './backend/watchdog_api/db/client';
 import { assertStorageSafeForEnvironment } from './backend/watchdog_api/storage/durability';
@@ -24,6 +24,9 @@ import { FieldService } from './backend/watchdog_api/field/service';
 import { loadFieldProfile } from './backend/watchdog_api/config/field';
 import { buildFieldRouter } from './backend/watchdog_api/api/field_routes';
 import { AutomationRepository } from './backend/watchdog_api/db/repositories/automation';
+import {loadSourceAccessProfile} from './backend/watchdog_api/config/source_access';
+import {SourceAccessService} from './backend/watchdog_api/services/source_access';
+import {buildSourceAccessRouter} from './backend/watchdog_api/api/source_access_routes';
 import { AutomationService } from './backend/watchdog_api/services/automation';
 import { loadAutomationProfile } from './backend/watchdog_api/config/automation';
 import { buildAutomationRouter, buildMemoryRouter } from './backend/watchdog_api/api/automation_routes';
@@ -40,6 +43,11 @@ import { PersonalSearch } from './backend/watchdog_api/services/personal_search'
 import { RunOrchestrator } from './backend/watchdog_api/services/run_orchestrator';
 import { MethodSpecRepository } from './backend/watchdog_api/db/repositories/method_specs';
 import { buildSettingsRouter } from './backend/watchdog_api/api/settings_routes';
+import { buildSearchRouter } from './backend/watchdog_api/api/search_routes';
+import { SearchRepository } from './backend/watchdog_api/db/repositories/search';
+import { ResearchProjectsRepository } from './backend/watchdog_api/db/repositories/research_projects';
+import { ResearchProjectsService } from './backend/watchdog_api/services/research_projects';
+import { buildResearchProjectsRouter } from './backend/watchdog_api/api/research_project_routes';
 
 const app = express();
 const PORT = Number(process.env.PORT ?? 3000);
@@ -84,6 +92,9 @@ export async function configureApp() {
 
   app.use(principalMiddleware(authDeps));
   app.use('/api/auth', buildAuthRouter(authDeps));
+  app.use('/api', requireInstallationAccess);
+  app.use('/api/search', buildSearchRouter(new SearchRepository(sqlite, store)));
+  app.use('/api/projects', buildResearchProjectsRouter(new ResearchProjectsService(new ResearchProjectsRepository(sqlite), store)));
   const fieldRepository = new FieldReferenceRepository(sqlite, store);
   const fieldService = new FieldService(fieldRepository, loadFieldProfile());
   app.use('/api/field', buildFieldRouter(fieldRepository, fieldService));
@@ -104,6 +115,7 @@ export async function configureApp() {
   app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans));
   app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
   app.use('/api/memory', buildMemoryRouter(automationRepository));
+  app.use('/api/source-access',buildSourceAccessRouter(new SourceAccessService(automationRepository.access,loadSourceAccessProfile(),automation.profile)));
   app.use('/api/diagnostics', buildDiagnosticRouter(new AuditRepository(sqlite)));
   app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite), assistant));
   app.use(errorHandler);

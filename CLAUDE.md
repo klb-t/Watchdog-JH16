@@ -9,6 +9,20 @@ Its first scientific benchmark is a replication of Jankowski & Hoffmann 2016
 Optimise for **an agent that can be left alone for hours and still produce inspectable,
 correct, non-fabricated work.**
 
+### Current work authority — 2026-09-30
+
+The maintainer has authorized autonomous continuation of the current product work. The
+historical E1-only sequence and deferred-authentication restriction below have been superseded
+by the broader implemented workflows and later access requirements. Verify current code and
+the ledger, then continue reversible implementation and integration without asking which task
+to do next. This does not authorize changing a locked scientific method, inventing measurements,
+paid spending, publishing private data, or removing historical evidence.
+
+Read [design rules](docs/DESIGN_RULES.md) and
+[specification reconciliation](docs/SPEC_RECONCILIATION_2026-09-30.md) alongside the current
+state. The reconciliation distinguishes owner instructions from assistant proposals and
+unresolved choices; it is a reconstruction of the supplied audit, not a new archive search.
+
 ---
 
 ## 0. First action of every session
@@ -69,20 +83,24 @@ its purpose, because the purpose is scientific evidence.
 
 Recognise and refuse these.
 
-- **Infrastructure before flow.** A previous attempt stalled for weeks debugging OAuth before
-  a single feature worked end to end. Authentication is deferred to Epic E4 by explicit
-  decision. Do not add it earlier, do not add "just a little" of it, do not suggest it.
-- **Breadth before depth.** The archive contains a large number of ambitious features. E1 is
-  one narrow vertical slice that works completely. Do not widen it.
+- **Infrastructure before flow.** Prefer a working, tested user flow over speculative platform
+  expansion. Authentication already exists; the current sign-in/admission requirement is
+  authorized work. Do not treat the original E4 scheduling decision as a permanent prohibition.
+- **Breadth before depth.** Complete the acceptance criteria of each current slice. The initial
+  E1-only scope is historical; later requirements include workbench, research, automation,
+  responder references, search and admission. A registry entry alone does not deliver any of them.
 - **Registry entries mistaken for implementations.** A source in the registry with status
   `planned` is a plan. Do not report it as a capability, do not count it in a progress
   summary, do not let the UI render it as available.
-- **Rewrites.** Existing code from prior agent passes is to be inventoried and refactored, not
-  discarded. If you believe a file must be replaced, say so explicitly with reasons and wait.
+- **Rewrites.** Inventory and preserve existing behavior and evidence. Routine refactors and
+  integration fixes are authorized; explain consequential changes and verify them. An
+  irreversible replacement of evidence, contracts or a substantial working subsystem needs a
+  concrete migration plan and a maintainer decision.
 
 ## 3. Working rhythm
 
-- Work in small commits with messages of the form `E1.4: <what changed>`.
+- Work in small inspectable commits. Use the current task identifier when one exists; do not
+  label later work as E1 merely to follow an obsolete naming example.
 - After each task: run the task's test, tick the box in `docs/spec/07_EPICS_AND_TASKS.md`,
   commit both together.
 - If you are blocked, write the blocker into `docs/spec/07_EPICS_AND_TASKS.md` under
@@ -95,7 +113,7 @@ Recognise and refuse these.
 Ask the maintainer only for decisions that are genuinely his — not for permission to proceed.
 
 Ask about: paid API credentials and spending; anything touching real personal or medical data;
-a scientific-methodology change to a locked preset; a proposed rewrite of existing code;
+a scientific-methodology change to a locked preset; an irreversible subsystem replacement;
 a conflict between two specification files that you cannot resolve by precedence.
 
 Do not ask about: naming, file layout, library choice within the declared stack, test
@@ -106,6 +124,9 @@ that.
 
 When specifications conflict, higher wins:
 
+0. Current explicit maintainer instructions govern task scope and supersede older workflow
+   restrictions within that scope. Routine implementation autonomy does not imply approval of
+   a scientific-methodology change. Record an explicit method revision as a separate version.
 1. `docs/spec/03_JH2016_CONTRACT.md` — locked scientific invariants
 2. Provenance, reproducibility and data-integrity contracts
 3. `docs/spec/00_STATE_AND_DECISIONS.md` — current architectural decisions
@@ -132,3 +153,5 @@ Never weaken a higher contract to make a lower one easier.
 | `docs/spec/10_EVIDENCE_TIER_AND_TRUST_UI.md` | Colour-coded evidence tiers; two-axis design; UI convention |
 | `docs/spec/11_FIELD_AND_CLINICAL_INTERFACES.md` | Epic E6: responder card, symptom search, pill ID |
 | `docs/spec/12_DRUG_DOMAIN_ONTOLOGY_AND_ASSERTIONS.md` | Assertion model, predicate vocabulary, market-label/misrepresentation query |
+| `docs/DESIGN_RULES.md` | Scoped rules, transformation contracts, reversible defaults and acceptance checks |
+| `docs/SPEC_RECONCILIATION_2026-09-30.md` | Conflicting history, superseded restrictions and previously missed requirements |

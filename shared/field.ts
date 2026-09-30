@@ -39,11 +39,14 @@ export interface ReferenceRecord<T extends ReferenceDocument = ReferenceDocument
   approvedHash: string | null; approvedBy: string | null; approvedAt: string | null;
   approvalState: 'PROPOSED' | 'APPROVED'; importedAt: string; rawSha256: string;
 }
+export type EvidenceDisplayMode = 'full' | 'compact';
 export interface FieldProfile {
   version: string; staleAfterHours: number; offlineMaxHours: number;
   regions: Region[];
   categories: { id: ContentCategory; label: string }[];
   tiers: Record<EvidenceTier, { label: string; bucket: string; icon: string; color: string }>;
+  evidenceDisplay?: { defaultMode: EvidenceDisplayMode; explanation: string;
+    compactColors: Record<string, string> };
   colors: { id: string; label: string; aliases: string[] }[];
   disclaimer: string;
   contacts: { regionId: string; name: string; phone: string | null; url: string;
@@ -62,25 +65,38 @@ export interface FieldQuery {
 export interface FactView { record: ReferenceRecord<AssertionDocument>; contradicted: boolean }
 export interface SubstanceCard {
   substance: Entity;
+  referenceRegion?: Region;
   sections: { id: ContentCategory; label: string; facts: FactView[] }[];
   missingInteractions: boolean;
 }
 export interface SampleCandidate {
   record: ReferenceRecord<SampleDocument>;
   matchTier: EvidenceTier;
-  regionScope: 'selected_region' | 'broader_context';
+  regionScope: 'selected_region' | 'broader_context' | 'global_context';
   substances: SubstanceCard[];
   path: string[];
 }
+export interface FieldSampleSummary {
+  recordCount: number; distinctSourceRecordCount: number;
+  labSampleCount: number; publishedAlertCount: number; visualReportCount: number;
+  distribution: { substance: Entity; labSampleCount: number }[];
+}
 export interface FieldResult {
   query: FieldQuery; candidates: SampleCandidate[];
+  /** Matching archived records outside the regional result, never included in local denominators. */
+  globalCandidates: SampleCandidate[];
+  /** All matching approved archived records, including the regional result. Not worldwide coverage. */
+  globalSummary: FieldSampleSummary; globalExcludedUndated: number;
   symptomCandidates: { card: SubstanceCard; supportingAssertions: FactView[]; matchedSymptomIds: string[] }[];
   labSampleCount: number; publishedAlertCount: number; visualReportCount: number;
   distribution: { substance: Entity; labSampleCount: number }[];
   excludedUndated: number; flags: string[];
 }
 
-export interface OfflineLookupEvent {
-  id: string; clientOccurredAt: string; snapshotHash: string;
-  query: FieldQuery; resultIds: string[];
+export interface OfflineFieldReceipt {
+  id: string; clientOccurredAt: string; snapshotHash: string; resultIds: string[];
 }
+export type OfflineLookupEvent = OfflineFieldReceipt & (
+  { kind?: 'lookup'; query: FieldQuery } |
+  { kind: 'reference_inspection'; referenceId: string }
+);

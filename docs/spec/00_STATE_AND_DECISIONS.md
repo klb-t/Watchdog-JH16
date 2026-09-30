@@ -1,11 +1,60 @@
 # State and binding decisions
 
-Last updated: 2026-09-13, Astra continuation. Update this file whenever a
+Last updated: 2026-09-30, integration continuation. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**2026-09-30 current authority and integration:** the owner delegated autonomous
+development after reviewing the repository/history audit. Routine reversible product
+changes no longer require discussion under the September 12 sequencing restriction.
+Scientific contracts, human hash-bound review, privacy and spending limits still apply.
+`astra/watchdog-integration-20260930` combines continuation `c3508c1` with `main`
+`1c81a36`; PR #1 and its base are preserved. New work covers seven-section navigation,
+unified owned search, closed admission, durable research projects and explicit local/global
+appearance context. Implementation and validation are tracked in the ledger; incomplete
+tasks are not claimed complete. See [reconciliation](../SPEC_RECONCILIATION_2026-09-30.md)
+and [design rules](../DESIGN_RULES.md) for historical conflicts and reversible defaults.
+
+**Current local gate:** after a clean build, `npm run test:all` passes **419/419**, with
+zero skipped/cancelled/failing tests, including production-browser flows. TypeScript and
+production build pass. `npm run demo:jh16` preserves 32 observations, 16 Pi and 16 Hi and
+the `pipeline_self_check` meaning. E4.5, E5.9, E5.10 and E6.3 are complete within their
+documented scopes. The installation-wide API boundary, session revocation, immutable project
+archives and offline expiry/inspection audit are exercised. Local Chromium 153 substitutes
+for the broken local Playwright download; Actions uses its standard browser installation.
+**Published and CI-verified code:** `f381b1ef68b7fc5ea75ae2e9cfcf45755d3a25b1` in
+[PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4), targeting `main`. Both `verify` and
+`container` passed in the [branch run 36754887636](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754887636)
+and [PR run 36754891991](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754891991).
+The standard Playwright browser passes 419/419; the real image builds and its production
+start/persistence check passes. This evidence is separate from the older E3.13 result below.
+The following checkpoint commit records documentation only. See [current handoff](../HANDOFF_2026-09-30.md).
+
+**E3.13 block resolved:** verified GitHub Actions
+[35829482923](https://github.com/klb-t/Watchdog-JH16/actions/runs/35829482923) on
+published `c3508c1`: both `verify` and `container` completed successfully on September 23.
+This includes the full browser suite, JH16 fixture demo, production image and persistent
+storage check. No live GCP provisioning is claimed. The entries below retain historical
+checkpoints and are superseded where they describe publication/authentication as blocked.
+
+**2026-09-22 publication retry:** the supplied recovery archive and local unpublished
+commits were verified. GitHub still reports branch/PR head `1e583c1`; PR #1 remains a
+draft against `claude/ai-studio-last-commit-gjqxy4`. The connector still fails with
+`Invalid MCP request metadata`, and direct Git has no authentication. The local
+`c473993` baseline passes typecheck/build and 356 tests, with 17 browser cases failing
+to launch because Chromium is absent; its download also failed. The JH16 fixture demo
+passes. Docker is absent, so E3.13 remains open pending publication and both CI jobs.
+See the latest progress and blocked-ledger entries before retrying.
+
+**2026-09-21 deployment checkpoint:** the owner is preparing a Compute Engine VM and
+requested a ready installer. `docs/DEPLOY_GCP_VM.md` documents the implemented private
+IAP/SSH installation and durable single-writer runtime. The closed sign-in/admission UI
+is still E4.5; this installer deliberately uses local-owner mode behind the private tunnel.
+No GCP resources have been provisioned by the agent. See the latest progress entry for
+exact validation. The owner now asks to close this stage and hand off to a new conversation.
 
 **2026-09-13 source-history checkpoint:** E3.9 implements linked successful source checks,
 version histories and structural comparisons over existing substance reference records.
@@ -54,10 +103,11 @@ material. Older counts and scope descriptions below are historical checkpoints.
   partially applied. The list itself is not preserved, and E0.1's audit supersedes it as
   intended.
 
-**Current state: E0, E1 and the D17 slice are complete. One item is blocked: the PostgreSQL
-backend, deliberately and with its reasoning recorded.**
+**Historical E0/E1/D17 checkpoint:** E0, E1 and the D17 slice were complete at this
+checkpoint. PostgreSQL remained planned, with its reasoning recorded. Later completed
+slices and current validation are listed above and in the task ledger.
 
-`npm run test:all` is green — 231 passing, 0 skipped, 0 failing — and `npm run demo:jh16`
+At that checkpoint, `npm run test:all` was green — 231 passing, 0 skipped, 0 failing — and `npm run demo:jh16`
 has been verified on a clean clone, offline, with no credentials: it produces a run directory
 whose Pi and Hi reproduce every value published in the paper's own tables, and two runs are
 byte-identical apart from run id and timestamps.
@@ -72,10 +122,11 @@ runbook (`docs/DEPLOY_GCP.md`).
 Nothing in that list is switched on by default. Every provider derives its status from live
 credential state on each read, so an absent key yields `blocked` with the exact variable that
 would fix it, and removing a key takes a provider out of service with no invalidation step.
-The production bundle has been booted and probed directly (auth config, readiness, SPA); the
-container image itself has **not** been built, because this environment has no Docker daemon —
+At that historical checkpoint, the production bundle had been booted and probed directly
+(auth config, readiness, SPA); the container image had **not** been built, because that
+environment had no Docker daemon —
 `tests/integration/deployment.test.ts` asserts the Dockerfile's properties instead, and the
-first real `docker build` remains unverified.
+first real `docker build` was still unverified. E3.13's Actions result above supersedes that limit.
 
 Two things worth carrying forward about how that slice was built. First, `E3.4` is only
 half-done and says so: PostgreSQL could not be tested against a real server from here, so it
@@ -123,10 +174,10 @@ Five sources were reconciled into this package. Where they conflict, this file g
 | Source | Status |
 |---|---|
 | `watchdog_ai_studio_package_v3` (23 docs + config, produced externally) | Superseded on stack, auth, providers. Retained for scope, data model, source catalogue, diagnostics contract. |
-| Package v5 (auth deferral, provider abstraction, method compiler, approval gate) | **Binding.** Carried forward in full. |
+| Package v5 (auth deferral, provider abstraction, method compiler, approval gate) | Scientific and provenance contracts remain binding. Auth deferral and initial workflow scope were superseded by later owner requirements and September 30 continuation. |
 | Conversation archive, 156 threads, 2024-11 → 2026-04 | Historical seed. Already distilled; do not re-mine without a specific question. |
 | AI Studio build session, 2026-08 | Source of the repository facts in §1 and of decision D9. |
-| Six Claude-side conversations, 2025-09 → 2026-04, recovered 2026-08 (see D12) | Source of the field/clinical evidence-tier and responder-interface design in `10_EVIDENCE_TIER_AND_TRUST_UI.md` and `11_FIELD_AND_CLINICAL_INTERFACES.md`. This material predates v3 and was not carried into it — treat it as independently binding within its own scope, not as superseded by v3's silence on the topic. |
+| Six Claude-side conversations, 2025-09 → 2026-04, recovered 2026-08 (see D12) | Source of field/clinical requirements previously missed by v3. Retain explicit owner requirements within their scope; the September 30 reconciliation corrects unsupported assistant attribution of approval and unresolved presentation choices. Earlier archive summaries do not make every proposed default binding. |
 
 Note on how this fifth source was found: it was not volunteered by any package. The maintainer
 asked directly whether responder-facing interfaces, symptom search, pill identification and a
@@ -512,9 +563,9 @@ Do not block on these. Proceed with the stated default and flag the assumption.
 | Q2 | Do SerpApi credits exist and on which plan? | Irrelevant to E1 and E2 — all work runs on frozen fixtures |
 | Q3 | Which LLM provider for the compiler in E2? | Any configured provider; the compiler is provider-neutral by D5 |
 | Q4 | Is the reference harm-score set (Nutt et al. 2010) available as data? | E2 loads it from a versioned config file; ship a fixture with a clear placeholder marker if the real scores are not to hand |
-| Q5 | What retention and access policy applies to a responder's lookup history in E6? | Default to no patient-identifying fields accepted anywhere in the field interface (§`11_FIELD_AND_CLINICAL_INTERFACES.md`), audit events retained per the standard `audit_events` policy, visible only to the querying principal and an explicitly granted reviewer role. Revisit when E4 identity exists and real roles can be defined. |
-| Q6 | Which regional emergency and poison-control contacts ship as defaults in E6? | None hardcoded; a configuration table keyed by geography, empty until populated. The Dutch entry, when added, should be verified against current NVIC and 112 routing rather than assumed from training data. |
-| Q7 | Deployment posture: controlled academic/research service, institutional licence, public read-only harm-reduction surface, or open distribution? | Genuinely undecided, not defaulted. This changes access-control and licensing requirements well beyond E4's RBAC scope. Preserve as a strategy question; do not let any epic's design quietly assume one answer. |
+| Q5 | What retention and access policy applies to a responder's lookup history in E6? | No patient-identifying fields are accepted by the current field schema. Identity, capability and owner checks now exist; see FIELD_REFERENCE.md for current audit and expiring offline contracts. Broader retention policy and clinical case data remain separate open design work. |
+| Q6 | Which regional emergency and poison-control contacts ship as defaults in E6? | Versioned Dutch entries now ship in `config/field/responder.json`, with citations and verification dates. Other regional coverage and refresh policy remain open; this checkpoint does not claim a fresh external verification of those contacts. |
+| Q7 | Deployment posture: controlled academic/research service, institutional licence, public read-only harm-reduction surface, or open distribution? | This installation is private, with explicit admission; the code repository is public. Broader service, distribution and licensing strategy remains undecided. Do not infer it from this installation's access controls. |
 
 ## 5. Epic overview
 
@@ -528,8 +579,8 @@ Do not block on these. Proceed with the stated default and flag the assumption.
 | **E5** | Generic workbench, replication engine, paper pipeline | An arbitrary CSV can be transformed, analysed and charted without a source-code change |
 | **E6** | Field and clinical interfaces: symptom search, pill/sample identification, evidence-tier UI, offline responder mode | A responder card renders end to end from fixtures, entirely offline, with every fact's evidence tier visible and every pill match capped below `PRIMARY_EMPIRICAL` |
 
-Only E0 and E1 are broken into tasks in `07_EPICS_AND_TASKS.md`. Later epics are deliberately
-coarse; they will be decomposed when their turn comes, against the repository as it is then.
+The ledger now decomposes concrete E0–E6 slices. Epic-level ambitions remain broader than
+the completed slices; use each task's tested scope rather than treating a whole epic as done.
 
 
 ### E5.4 implementation checkpoint — 2026-09-09
@@ -617,3 +668,29 @@ contexts while identical source content still deduplicates. Old data remain uncl
 and retain their hashes. Labels are profile data; no evidence tier, approval, scientific
 method or geographic coverage follows from the purpose label. Named collections and
 resolution/retention/series/alert policies remain open. See COLLECTION_CONTEXT.md.
+
+### E3.11 checkpoint — watched sources and private reading state (2026-09-14)
+
+Source history now offers explicit private watches. Migration 018 stores immutable context
+and rule identity with mutable, audited reading state. The existing acquisition journal
+supplies exact change pairs; equal content is a check, not a change. Reading batches use
+append sequence so late-linked receipts are not skipped, and display retrieval times
+separately. The history timeline retains its existing retrieval-date order. Read cursors
+never grant scientific approval, swallow later arrivals or cross context/owner boundaries.
+The UI reuses the source comparison/export surface. No extra collector, model, external
+message or clinical-alert interpretation is introduced. See SOURCE_WATCHES.md.
+
+### E3.12 checkpoint — operational source access (2026-09-21)
+
+A separate catalog preserves D5's scientific source registry. Named source candidates,
+technical channels, terms evidence, own access assessments and actual HTTP activity stay
+independent. No catalog entry or request draft grants access or supplies missing code.
+Public acquisition honors current owner assessments before requests, including after pacing;
+upgrade preserves the existing public defaults without relabeling them as documented grants.
+See SOURCE_ACCESS.md and ASTRA_PROGRESS.md. E3.11 head `c9afd37` passed 357/357 CI tests.
+
+The two new conversations and installation-admission clarification are reconciled in
+CONVERSATION_DELTA_2026-09-20.md. One engine and data-driven institution profiles remain
+binding. Global appearance context, longitudinal case constraints and investigation
+suggestions are planned; clinical model examples are not approved evidence. The owner
+still requires discussion before changing prior decisions or implementation direction.

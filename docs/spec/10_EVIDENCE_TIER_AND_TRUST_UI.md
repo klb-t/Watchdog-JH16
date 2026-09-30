@@ -1,11 +1,13 @@
-# Evidence tier and trust UI
+# Evidence classification and display profiles
 
 ## Provenance of this design
 
-This is not a new invention. Across six conversations between 2025-09 and 2026-04, the
-maintainer independently designed a colour-coded evidence classification for this exact
-system, and refined it through his own correction. That correction is worth preserving close to
-verbatim, because it is the reason this document has two axes instead of one:
+The historical specification reconstructed this model from conversations about evidence
+colors, responder information and category order. The maintainer did distinguish the kind of
+evidence from where PK/PD and other information belongs on a card. The following excerpt is
+preserved from the earlier specification, including its transcript wording; the six enum values
+and the compact mapping below are repository representations, not a claim that every detail
+was independently and finally approved by the maintainer:
 
 > *"trzeba pomyśleć, bo było mówione, że farmakokinetyka i farmakodynamika zawsze w pierwszej,
 > zielonej ramce. Ale jak to będzie apoksymowane, żeby cały czas było na górze, to wtedy po
@@ -14,17 +16,20 @@ verbatim, because it is the reason this document has two axes instead of one:
 
 In English: pharmacokinetics and pharmacodynamics belong at the top of a substance card
 regardless of which colour their specific data happens to carry, so the display order cannot
-simply follow the trust-colour gradient — the two orderings have to be separated. That is
-decision D12 in one sentence, and it is the maintainer's, not an inference from this package.
+simply follow the color order. That supports D12's independent category/evidence axes; it
+does not establish a numerical trust scale or a universal rank of source objectivity.
 
-A simplified three-colour version of the same idea was designed separately, specifically for
-the time-critical responder card. Both versions are formalised below; they are the same
-underlying tier collapsed to different granularity for different audiences, not two competing
-systems.
+The [2026-09-30 reconciliation](../SPEC_RECONCILIATION_2026-09-30.md) corrects the earlier
+assertion that a separate three-color responder system had been approved. The recovered
+history includes changes to the trip-report/prediction colors and an explicit objection to
+reducing them to three. Preserve that uncertainty rather than attributing the repository's
+collapse to a settled user decision. Full six-kind display is now the reversible default;
+compact responder buckets are an optional presentation profile. The names, colors and grouping
+remain versioned configuration; choosing a profile never changes a stored evidence value.
 
 ## Two independent axes
 
-**Axis 1 — evidence tier.** How was this fact established. Six values, ordered:
+**Axis 1 — evidence kind.** How was this fact established. Six stored values with configured display colors:
 
 | Tier | Colour | Meaning for a general substance fact | Meaning for a specimen identification |
 |---|---|---|---|
@@ -55,16 +60,21 @@ sit:
 11. Legal status
 12. Alerts
 
-A card renders top to bottom in this fixed order. Each section's *border* colour reflects the
-tier of the specific fact shown, which may vary fact-by-fact within a section — a PK section can
-show a green onset time next to an orange predicted half-life for a novel substance, and the
-UI must be able to hold that mixed state rather than assigning one colour per section.
+A card renders top to bottom in this fixed order. Each fact's border reflects its evidence
+kind under the selected display profile. A category does not get one inherited evidence color.
+PK/PD stays in its category position independently of the kind or approval of an individual
+reference. Display must preserve this distinction when multiple eligible kinds occur together.
 
-These two axes were designed together and neither replaces the other. Do not collapse them
-into one ordering: tier answers "how much should I trust this," category answers "what kind of
-fact is this," and a system that only had one axis would either bury pharmacokinetics under
-unrelated high-trust content or promote an irrelevant fact just because it happened to be
-well-sourced.
+Evidence kind answers how a fact was established; category answers what the fact concerns.
+Neither is calibrated confidence, clinical probability, objectivity or a universal source trust
+score. Domain ceiling comparisons in existing validation are explicit eligibility rules, not
+measured confidence. Source relevance and limitations remain inspectable alongside the facts.
+
+The current responder clinical eligibility boundary still excludes nonprimary/noncurated
+clinical statements. A six-kind legend or a different color profile does not widen that boundary.
+Exact reference inspection retains provenance for excluded mappings while withholding their
+clinical statement text. Broader clinical rendering remains a separate feature to design and
+validate.
 
 ## Relationship to approval_state and quality_flags_json
 
@@ -86,27 +96,31 @@ them defeats the purpose of the third:
 All three render together as a small badge cluster wherever evidence-bearing content appears.
 None substitutes for another.
 
-## UI collapse for the responder card
+## Reversible responder display profiles
 
-The full six-tier scale is for the researcher-facing analysis UI, where the distinction between
-`RAW_OBSERVATIONAL` and `MODELED_PREDICTED` matters for methodology. Under field time pressure
-it does not — the operationally relevant question collapses to whether a fact is independently
-confirmed or not. `11_FIELD_AND_CLINICAL_INTERFACES.md` uses this three-bucket collapse:
+`config/field/responder.json` defines the default display mode and compact bucket colors;
+`config/evidence/tier-display.json` defines the six kinds, labels, icons and full colors.
+Responder offers these profiles without changing the reference, its hash or its approval:
 
-| Responder-card bucket | Colour | Collapses |
+- **Full:** the default. Show the configured color, distinct icon and exact label of each kind.
+- **Compact:** an optional presentation. Group colors into the historical repository buckets,
+  while retaining the exact six-kind label and icon on every badge.
+
+| Compact bucket | Colour | Stored kinds |
 |---|---|---|
 | Confirmed | green | `PRIMARY_EMPIRICAL` |
 | Reference | olive | `CURATED_SECONDARY` |
-| Unconfirmed | orange | `RAW_OBSERVATIONAL`, `MODELED_PREDICTED`, `SPECULATIVE` |
+| Unconfirmed | orange | `RAW_OBSERVATIONAL`, `MODELED_PREDICTED`, `SPECULATIVE`, `UNKNOWN` |
 
-This is a display-only collapse. The underlying `evidence_tier` value is never overwritten or
-lost; the responder card simply renders fewer buckets than the researcher UI reads from the
-same column.
+The legacy bucket name “Confirmed” identifies a primary reference measurement; it does not
+identify the current specimen or certify a diagnosis. Compact presentation loses visual color
+granularity, explicitly, but keeps the evidence kind as text and an icon. Switching back restores
+the full colors. Category order, approval, source context and quality flags remain unchanged.
 
 ## Fusion weights — recorded, not implemented
 
-The maintainer's history contains a proposed numeric weighting for combining evidence across
-tiers into a single fused confidence score:
+The earlier specification recorded the following candidate weighting for evidence fusion.
+The reconciliation does not establish approval of these numbers as a scientific method:
 
 | Tier | Proposed weight |
 |---|---|
@@ -133,13 +147,12 @@ The maintainer's source catalogue research separately rated sources with a stati
 (for example BindingDB and IUPHAR at four stars, PubChem BioAssay at two). This is a coarser,
 source-level signal and is not the same thing as `evidence_tier`, which is assigned per fact.
 A single source can contain facts at multiple tiers — PubChem holds both curated experimental
-values and computed ADMET predictions under one roof. Use the star rating, where available, as
-a prior when a new source is registered; it does not replace tagging each fact on ingestion.
+values and computed ADMET predictions under one roof. Keep a historical star annotation with its provenance where available. It is not a calibrated
+prior, a universal source-objectivity ranking or a substitute for classifying individual facts.
 
 ## Accessibility — non-negotiable given the context of use
 
-A responder using this card may be working in poor light, under stress, or may be colourblind
-(affecting roughly 8% of men). **Colour is never the only signal.** Every tier and every
+A responder using this card may be working in poor light, under stress, or may be colourblind. **Colour is never the only signal.** Every tier and every
 approval state pairs with a distinct icon and a text label. This is not a nice-to-have for this
 specific interface — a tool meant to be read correctly in a crisis that silently fails for a
 colourblind user has failed at its one job for that user.
@@ -150,6 +163,6 @@ colourblind user has failed at its one job for that user.
 |---|---|
 | tier orthogonality | changing `approval_state` on a row never changes its `evidence_tier`, and vice versa |
 | pill-match ceiling | any composition row sourced only from visual matching has `evidence_tier` ≤ `MODELED_PREDICTED`, enforced in the domain layer, not just by UI convention |
-| responder collapse | all six tiers map to exactly one of the three responder-card buckets, and the mapping is total |
+| display profiles | full six-kind display is the default; optional compact colors preserve every evidence label/icon and do not change approval or category order |
 | colourblind-safe rendering | a snapshot test with colour information stripped still allows every tier and approval state to be distinguished by icon and label alone |
 | no silent fusion | no code path computes a combined confidence score from multiple `evidence_tier` values without going through an approved `MethodSpec` |

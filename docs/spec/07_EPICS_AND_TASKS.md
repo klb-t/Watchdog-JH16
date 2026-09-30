@@ -32,9 +32,28 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   research and monitoring use the existing public queue/scheduler. Migration 017 snapshots
   purpose and actual request hash in jobs/receipts; histories and exports keep contexts
   distinct while identical content deduplicates. Old contexts/hashes stay unclassified.
-  Five integration cases and full local regression pass: 332/332, zero failures/skips.
-  Browser schedule/history cases are extended for CI. See COLLECTION_CONTEXT.md; named
+  Published head `2e1d0fc` passed Actions `34758720915`: 349/349, including Chromium.
+  See COLLECTION_CONTEXT.md; named
   collections, resolution/retention policies, geographic collection and alerts remain open.
+- [x] **E3.11 — Private watched-source reading queue.** Explicit subscriptions to exact
+  source contexts, deterministic change/reversion pairs, immutable context identity and
+  private monotonic reading cursors with stale-write protection. New arrivals survive
+  reading a displayed batch; pause/resume preserves backlog. History and inbox reuse the
+  same comparison/export component. Seven new integration cases pass; full local regression
+  is 339/339. Published head `c9afd37` passed 357/357 CI tests. See SOURCE_WATCHES.md;
+  clinical/batch alerts and external notifications remain open.
+- [x] **E3.12 — Source access catalog and private assessments.** Separate operational
+  inventory, 34 source entries, derived integration status, owner HTTP activity, scoped
+  terms/documentation evidence, immutable assessments and unsent request drafts. Explicit
+  holds/expiry/stale profiles stop public collection before transport, including schedules.
+  Eight integration cases pass; Chromium coverage added. See SOURCE_ACCESS.md.
+- [x] **E3.13 — Existing GCP VM installation.** Cloud Shell orchestrator, pinned source
+  archive, IAP-scoped firewall, Docker, durable private runtime, systemd, backup/update
+  commands and Polish runbook implemented. Local installer/profile regression passes;
+  Both verify and real-container build/start/persistence passed on `c3508c1` in
+  [Actions 35829482923](https://github.com/klb-t/Watchdog-JH16/actions/runs/35829482923),
+  verified again on 2026-09-30. The September 22 publication block is resolved.
+  No live GCP provisioning is claimed. See DEPLOY_GCP_VM.md.
 - [x] **E5.7a — Paper intake and explicit substitution plans.** Immutable submitted text,
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.
@@ -398,6 +417,15 @@ condition; PostgreSQL and S3 migration; a real worker process.
 
 ## E4 — Identity
 
+- [x] **E4.5 — Closed installation admission and invitations.** Sign-in-only anonymous
+  UI; verified unknown email can submit a reason and inspect application status only.
+  Email-bound one-use invitations submit requests; developer/dev grants peer profiles
+  separately. Expiry, revocation and immutable audit have live server-side enforcement,
+  including current-role checks in existing sessions and last-manager protection. Local
+  development and operator bootstrap grants are preserved. Migration 020, real HTTP and
+  production-browser coverage pass in the 419-test clean gate on 2026-09-30.
+  See ADMISSION.md; a live OAuth account/domain remains an installation check.
+
 - [x] **E4.2 — Peer capability profiles.** One shared resolver, `/auth/me` union, UI navigation
   and route gates, additive role migration, full principal role sets. Matrix + real HTTP tests
   verify researcher/responder separation, combined profiles, restricted institutional access,
@@ -469,6 +497,23 @@ a drug-specific concept into the generic method registry.
 
 ## E6 — Field and clinical interfaces
 
+- [x] **E6.3 — Global appearance context without geographic identity inference.**
+  Preserve local sample denominators; distinguish global appearance matches with source
+  geography/time. Appearance and market-label lookups now show separately counted global
+  archive candidates; symptoms stay regional. Six-kind evidence display is the reversible
+  default under the owner's 2026-09-30 authority, with optional compact colors. Exact
+  reference links enforce principal/expiry and persist offline inspection receipts before
+  display. Offline worker generation verifies current HTML and assets. Full browser flows,
+  expiry, receipts and shell regressions pass in the 419-test clean gate. See FIELD_REFERENCE.md.
+- [ ] **E6.4 — Case hypotheses and reviewed constraints.** Fictional non-identifying
+  case schema; temporal observations, known/possible exposures, PK/PD, mixtures,
+  comorbidity and non-toxicological alternatives; required-input checks and exact traces.
+  No invented probability or missing-edge exclusion.
+- [ ] **E6.5 — Profile-bound measurement suggestions.** Reviewed dependencies and an
+  institution's available-test dictionary; explicit gaps, information assumptions and
+  reasons. Device adapters and validated quantitative PK are later sub-slices.
+  Acceptance detail: CONVERSATION_DELTA_2026-09-20.md.
+
 - [x] **E6.1 — Reviewed responder references.** Versioned sample/alert/assertion import into
   the existing graph, individual approval/revocation, regional pill/market/symptom lookup,
   fixed twelve-category reference cards and independent evidence/review/quality signals.
@@ -529,6 +574,20 @@ just because the schema for all three already exists.
 
 ## Continued research vertical slices
 
+- [x] **E5.9 — Durable research projects.** Owned projects with immutable revisions,
+  explicit question/state/scientific meaning, ownership-checked pinned artifact links,
+  separately represented live schedules and portable verified workspace archives.
+  Migration 021; restart, ownership/tamper/race/size checks and production-browser revision,
+  exact-source links and standalone ZIP verification pass in the 419-test clean gate.
+  Dependencies and future schedule outputs are not copied automatically. This is an owned
+  workspace archive, not a general executable paper compiler. See RESEARCH_PROJECTS.md.
+- [x] **E5.10 — Seven-section workspace and unified search.** Capability-filtered primary
+  navigation, contextual access to existing deep links and literal deterministic search
+  across actual indexed objects. Private results remain owner-scoped; unsupported entities
+  are not invented. Literal metadata search, current availability, precise deep links,
+  approval/ownership and mobile navigation pass in the 419-test clean gate on 2026-09-30.
+  Search cost still scales with catalogue metadata. See UNIFIED_SEARCH.md.
+
 - [x] **E5.8e — Source-linked selected paper operations.** Manual quote or saved assessment
   operation -> approved numeric columns and explicit origins/substitutions -> immutable
   method proposal -> human review -> real describe/Pearson/Spearman execution -> history
@@ -537,6 +596,26 @@ just because the schema for all three already exists.
   `docs/ASTRA_PROGRESS.md`. This does not mark the general paper compiler complete.
 
 ## Blocked
+
+### Historical E3.13 publication block — resolved 2026-09-30
+
+The block below describes September 22 only. Published `c3508c1` passed both jobs
+of Actions `35829482923` on September 23, including the Chromium suite and the
+production container persistence check. It no longer blocks development. The owner
+authorized autonomous continuation on September 30; current work uses a separate
+integration branch, preserving PR #1 and its base.
+
+The owner requested publication from `HANDOFF_2026-09-22.md`. The recovery checksums,
+bundle ancestry and clean local `c473993` checkout were verified. GitHub PR #1 and its
+branch still point at `1e583c1`; Actions `35614465513` failed, and the new container job
+has not run. The GitHub connector returns HTTP 400 `Invalid MCP request metadata`.
+Direct Git lacks credentials. Local typecheck/build and 356 tests pass; 17 browser
+tests cannot launch without Chromium, whose download failed. No Docker is installed.
+
+**Unblock:** restore an authenticated publication channel for the existing repository
+and branch, then push without force and verify both `verify` and `container` on the
+published head. A browser fallback requires user approval under `control-browser`.
+Historical instruction: do not merge PR #1 or change its base; E4.5 had not started then.
 
 ### Continuation checkpoint (2026-09-08)
 

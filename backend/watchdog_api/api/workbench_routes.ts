@@ -87,6 +87,13 @@ export function buildWorkbenchRouter(repo: WorkbenchRepository, service: Workben
     const { figure, method } = z.object({ figure: FigureSchema, method: z.string() }).strict().parse(req.body);
     res.status(201).json({ method: await service.prepare(req.principal!.id, figure, method, requestId()) });
   }));
+  router.get('/methods/:id', requireCapability('workbench.analyze'), boundary('method_read', async (req, res) => {
+    const actor = req.principal!.id, method = repo.ownedMethod(req.params.id, actor);
+    if (!method || !await repo.getDataset(method.datasetId, actor, true)) throw new WorkbenchError('Owned method not found.', 404);
+    // Source visibility may change during the asynchronous read.
+    if (!repo.ownedMethod(req.params.id, actor)) throw new WorkbenchError('Owned method not found.', 404);
+    res.json({ method });
+  }));
   router.post('/methods/:id/approve', requireCapability('method.approve'), boundary('method_approve', async (req, res) => {
     const body = approval.parse(req.body), method = repo.method(req.params.id);
     if (!method || !await repo.getDataset(method.datasetId, req.principal!.id)) throw new WorkbenchError('Dataset access is required.', 403);

@@ -1,9 +1,10 @@
-import { test } from 'node:test';
+import { test, after } from 'node:test';
 import * as assert from 'node:assert';
 import { execFileSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { createHash } from 'node:crypto';
+import { tmpdir } from 'node:os';
 
 /**
  * E1.24 — the E1 exit test.
@@ -13,11 +14,18 @@ import { createHash } from 'node:crypto';
  */
 
 const ROOT = process.cwd();
-const RUNS = path.join(ROOT, 'runs');
+// Other browser workflows can legitimately execute the demo concurrently.
+// Isolate its output without deleting or counting somebody else's run.
+const DEMO_ROOT = fs.mkdtempSync(path.join(tmpdir(), 'watchdog-determinism-'));
+for (const name of ['config', 'fixtures', 'node_modules']) {
+  fs.symlinkSync(path.join(ROOT, name), path.join(DEMO_ROOT, name), 'dir');
+}
+const RUNS = path.join(DEMO_ROOT, 'runs');
+after(() => fs.rmSync(DEMO_ROOT, { recursive: true, force: true }));
 
 function runDemo(): string {
   const before = new Set(fs.existsSync(RUNS) ? fs.readdirSync(RUNS) : []);
-  execFileSync(process.execPath, ['--import', 'tsx', 'scripts/demo_jh16.ts'], { cwd: ROOT, stdio: 'pipe' });
+  execFileSync(process.execPath, ['--import', 'tsx', path.join(ROOT, 'scripts/demo_jh16.ts')], { cwd: DEMO_ROOT, stdio: 'pipe' });
   const after = fs.readdirSync(RUNS).filter(d => !before.has(d));
   assert.strictEqual(after.length, 1, 'the demo should produce exactly one run directory');
   return path.join(RUNS, after[0]);

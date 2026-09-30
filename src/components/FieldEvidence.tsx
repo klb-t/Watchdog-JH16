@@ -1,19 +1,25 @@
-import type { FieldProfile, ReferenceRecord, FactView, SubstanceCard } from '../../shared/field';
+import type { FieldProfile, ReferenceRecord, FactView, SubstanceCard, EvidenceDisplayMode } from '../../shared/field';
 import type { EvidenceTier } from '../../backend/watchdog_api/domain/evidence_tier';
 import tierDisplay from '../../config/evidence/tier-display.json';
 import fallbackProfile from '../../config/field/responder.json';
 export const defaultFieldProfile = { ...fallbackProfile, tiers: tierDisplay } as FieldProfile;
 
-export function EvidenceBadge({ tier, profile = defaultFieldProfile, prefix }: { tier: EvidenceTier; profile?: FieldProfile; prefix?: string }) {
+/** A reversible presentation choice. Evidence data, approval and categories are untouched. */
+export function evidencePresentation(profile: FieldProfile, tier: EvidenceTier, display: EvidenceDisplayMode = profile.evidenceDisplay?.defaultMode ?? 'full') {
   const value = profile.tiers[tier] ?? profile.tiers.UNKNOWN;
-  return <span className="evidence-badge" style={{ color: value.color, borderColor: value.color }}>
-    <span aria-hidden="true">{value.icon}</span> {prefix ? `${prefix}: ` : ''}{value.label} · {value.bucket}
+  return { ...value, color: display === 'compact' ? profile.evidenceDisplay?.compactColors[value.bucket] ?? value.color : value.color };
+}
+export function EvidenceBadge({ tier, profile = defaultFieldProfile, prefix, display }: { tier: EvidenceTier; profile?: FieldProfile; prefix?: string; display?: EvidenceDisplayMode }) {
+  const mode = display ?? profile.evidenceDisplay?.defaultMode ?? 'full';
+  const value = evidencePresentation(profile, tier, mode);
+  return <span className="evidence-badge" data-evidence-tier={tier} data-evidence-display={mode} style={{ color: value.color, borderColor: value.color }}>
+    <span aria-hidden="true">{value.icon}</span> {prefix ? `${prefix}: ` : ''}{value.label}{mode === 'compact' ? ` · ${value.bucket}` : ''}
   </span>;
 }
-export function RecordEvidence({ record, profile = defaultFieldProfile }: { record: ReferenceRecord; profile?: FieldProfile }) {
+export function RecordEvidence({ record, profile = defaultFieldProfile, display }: { record: ReferenceRecord; profile?: FieldProfile; display?: EvidenceDisplayMode }) {
   const age = Math.max(0, (Date.now() - Date.parse(record.document.citation.retrievedAt)) / 3_600_000);
   return <div className="space-y-2 text-sm">
-    <div className="flex flex-wrap gap-2"><EvidenceBadge tier={record.document.evidenceTier} profile={profile} />
+    <div className="flex flex-wrap gap-2"><EvidenceBadge tier={record.document.evidenceTier} profile={profile} display={display} />
       <span className="evidence-badge">{record.approvalState === 'APPROVED' ? '✓ Approved mapping' : '◷ Proposed mapping'}</span>
       {record.document.qualityFlags.map(flag => <span className="evidence-badge" key={flag}>⚑ {flag}</span>)}
       {age > profile.staleAfterHours && <span className="evidence-badge text-amber-800">◷ Source refresh overdue</span>}
@@ -43,24 +49,25 @@ export function FieldSafety({ profile = defaultFieldProfile, regionId = 'NL' }: 
     {!contacts.length && <p>No verified contacts configured for this region.</p>}
   </aside>;
 }
-function Fact({ fact, profile }: { fact: FactView; profile: FieldProfile }) {
+function Fact({ fact, profile, display }: { fact: FactView; profile: FieldProfile; display?: EvidenceDisplayMode }) {
   const d = fact.record.document;
-  return <article className="field-fact" style={{ borderLeftColor: profile.tiers[d.evidenceTier].color }}>
+  return <article className="field-fact" style={{ borderLeftColor: evidencePresentation(profile, d.evidenceTier, display).color }}>
     {fact.contradicted && <strong className="text-rose-800">⚠ Conflicting evidence — sources remain separate</strong>}
     <p className="font-medium">{d.subject.name}{d.object ? ` → ${d.object.name}` : ''}</p>
     <p lang={d.statement.language}>{d.statement.text}</p>
     <p className="text-sm text-slate-600">{d.statement.kind === 'source_excerpt' ? 'Source excerpt' : 'Curator summary'} · language: {d.statement.language}
       {d.validFrom || d.validTo ? ` · valid ${d.validFrom ?? 'unknown start'} to ${d.validTo ?? 'no reported end'}` : ''}</p>
     {['mechanism', 'severity', 'population'].map(key => <p key={key} className="text-sm">{key}: {d.statement[key as 'mechanism'] ?? 'Not reported by this source'}</p>)}
-    <RecordEvidence record={fact.record} profile={profile} />
+    <RecordEvidence record={fact.record} profile={profile} display={display} />
   </article>;
 }
-export function SubstanceReference({ card, profile }: { card: SubstanceCard; profile: FieldProfile }) {
+export function SubstanceReference({ card, profile, display }: { card: SubstanceCard; profile: FieldProfile; display?: EvidenceDisplayMode }) {
   return <details className="field-substance"><summary><strong>{card.substance.name}</strong> · clinical and reference information</summary>
+    {card.referenceRegion && <p className="text-sm text-slate-600">Reference context: {card.referenceRegion.name}. Region-specific facts concern this reference context.</p>}
     {card.missingInteractions && <p className="field-warning">No approved interaction references available. Missing data does not mean absence of interaction.</p>}
     {card.sections.map((section, i) => <section key={section.id} className="mt-4" data-category={section.id}>
       <h4 className="font-semibold">{i + 1}. {section.label}</h4>
-      {section.facts.length ? section.facts.map(f => <Fact key={f.record.id} fact={f} profile={profile} />) : <p className="text-sm text-slate-500">No approved reference in this category.</p>}
+      {section.facts.length ? section.facts.map(f => <Fact key={f.record.id} fact={f} profile={profile} display={display} />) : <p className="text-sm text-slate-500">No approved reference in this category.</p>}
     </section>)}
   </details>;
 }
