@@ -99,10 +99,102 @@ export function PaperOperations({ documents, assessments, substitutions, initial
         <details><summary>Debug: źródło, wersje, braki i pełny plan</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-96 overflow-auto">{JSON.stringify(selected,null,2)}</pre></details>
         {selected.method.approvalState!=='APPROVED'?<><label className="block text-sm"><input type="checkbox" checked={reviewed} onChange={e=>setReviewed(e.target.checked)} disabled={busy}/> Sprawdziłem cytat, interpretację, dane i tę specyfikację.</label><button className={buttonClass} disabled={busy||!reviewed||!access.capabilities.includes('method.approve')} onClick={()=>act(async()=>{setSelected((await api(`/api/research/operations/${selected.id}/approve`,{expectedHash:selected.hash,methodHash:selected.method.hash})).operation);setReviewed(false);})}>Zatwierdź metodę tej analizy</button></>
           :<button className={buttonClass} disabled={busy||!access.capabilities.includes('workbench.analyze')} onClick={()=>act(async()=>{try{const r=await api(`/api/research/operations/${selected.id}/execute`,{expectedHash:selected.hash});setResult(r.result);}finally{setSelected((await api(`/api/research/operations/${selected.id}`)).operation);}})}>Wykonaj analizę pracy bez LLM</button>}
+        {profile?.comparison && <PaperComparison key={selected.hash} operation={selected} profile={profile.comparison} parentBusy={busy}/>}
         {selected.runs.map((r:any)=><div key={r.id} className="text-sm border-t pt-2 flex flex-wrap gap-3"><span>{r.status} · {new Date(r.createdAt).toLocaleString()}</span>{r.status==='COMPLETED'&&<><button className="underline" disabled={busy} onClick={()=>act(async()=>setResult((await api(`/api/research/operations/${selected.id}/runs/${r.id}`)).result))}>Pokaż zapisany wynik</button><button className="underline" disabled={busy} onClick={()=>act(()=>download(r.id))}>Pobierz pakiet z publikacją</button></>}</div>)}
         {!!selected.runs.length&&<p className="text-xs">Pakiet zawiera pełny dostarczony tekst pracy i dane źródłowe. Przejrzyj je przed udostępnieniem.</p>}
         {result&&<div data-testid="paper-operation-result" className="space-y-2"><p className="font-semibold">Wynik wybranej operacji · {result.paperBinding?.body.meaning}</p><div className="overflow-x-auto"><table className="w-full text-sm text-left"><caption className="sr-only">Wyniki analizy pracy</caption><thead><tr><th>Statystyka</th><th>Wartość</th><th>Jednostka</th></tr></thead><tbody>{result.artifact.results.map((r:any,i:number)=><tr key={i}><td className="p-2">{r.metricKey}</td><td>{r.isMissing?'nieokreślona':r.valueNumeric??r.valueText??'brak'}</td><td>{r.unit}</td></tr>)}</tbody></table></div><details><summary>Parametry, liczebność i ślad wykonania</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-64 overflow-auto">{JSON.stringify({runId:result.runId,hash:result.hash,traceId:result.traceId,artifact:result.artifact},null,2)}</pre></details></div>}
       </div>}
     </section>
   </div>;
+}
+
+/** A contextual comparison of one immutable paper operation, never a new primary screen. */
+function PaperComparison({ operation, profile, parentBusy }: { operation: any; profile: any; parentBusy: boolean }) {
+  const access = useAccess();
+  const [versions, setVersions] = useState<any[]>([]), [selected, setSelected] = useState<any>(null);
+  const [editing, setEditing] = useState(true), [reviewed, setReviewed] = useState(false);
+  const [quote, setQuote] = useState(''), [expected, setExpected] = useState(''), [expectedMissing, setExpectedMissing] = useState(false);
+  const [unit, setUnit] = useState(''), [unitMissing, setUnitMissing] = useState(false);
+  const [statistic, setStatistic] = useState(operation.body.method === 'describe' ? 'describe.mean' : operation.body.method);
+  const [rationale, setRationale] = useState(''), [toleranceKind, setToleranceKind] = useState('absolute');
+  const [toleranceValue, setToleranceValue] = useState(''), [toleranceRationale, setToleranceRationale] = useState('');
+  const [busy, setBusy] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState(''), [result, setResult] = useState<any>(null);
+  const disabled = busy || parentBusy, canReview = access.capabilities.includes('method.approve'), canAnalyze = access.capabilities.includes('workbench.analyze');
+  const loadVersions = async () => setVersions((await api(`/api/research/comparisons?operationId=${encodeURIComponent(operation.id)}`)).comparisons);
+  useEffect(() => { let live = true; api(`/api/research/comparisons?operationId=${encodeURIComponent(operation.id)}`)
+    .then(r => { if (live) setVersions(r.comparisons); }).catch(e => { if (live) setError(e.message); }); return () => { live = false; };
+  }, [operation.id]);
+  const act = async (fn: () => Promise<void>) => { setBusy(true); setError(''); setNotice(''); try { await fn(); } catch (e) { setError((e as Error).message); } finally { try { await loadVersions(); } catch (e) { setError((e as Error).message); } setBusy(false); } };
+  const open = async (id: string) => { setSelected((await api(`/api/research/comparisons/${id}`)).comparison); setEditing(false); setReviewed(false); setResult(null); };
+  const revise = () => { const c = selected.body.claim; setQuote(c.quote); setExpected(c.expectedValue === null ? '' : String(c.expectedValue)); setExpectedMissing(c.expectedValue === null);
+    setUnit(c.unit ?? ''); setUnitMissing(c.unit === null); setStatistic(c.statistic); setRationale(c.rationale); setToleranceKind(c.tolerance.kind);
+    setToleranceValue(String(c.tolerance.value)); setToleranceRationale(c.tolerance.rationale); setReviewed(false); setResult(null); setEditing(true); };
+  const valid = quote.length > 0 && rationale.trim().length > 0 && toleranceRationale.trim().length > 0 &&
+    (expectedMissing || expected.trim() !== '' && Number.isFinite(Number(expected))) && (unitMissing || unit.trim().length > 0) &&
+    toleranceValue.trim() !== '' && Number.isFinite(Number(toleranceValue)) && Number(toleranceValue) >= 0;
+  const save = async () => { const response = await api('/api/research/comparisons', { operationId: operation.id, operationHash: operation.hash,
+    claim: { quote, expectedValue: expectedMissing ? null : Number(expected), unit: unitMissing ? null : unit.trim(), statistic, rationale,
+      tolerance: { kind: toleranceKind, value: Number(toleranceValue), rationale: toleranceRationale } }, supersedes: selected ? { id: selected.id, hash: selected.hash } : null });
+    setSelected(response.comparison); setEditing(false); setReviewed(false); setResult(null); setNotice(profile.saveNotice); };
+  const download = async (runId: string) => { const response = await fetch(`/api/research/comparisons/${selected.id}/runs/${runId}/export`, { cache: 'no-store' });
+    if (!response.ok) { const e = await response.json(); throw new Error(e.message ?? profile.downloadError); }
+    const url = URL.createObjectURL(await response.blob()), anchor = document.createElement('a'); anchor.href = url; anchor.download = 'watchdog-paper-comparison.zip'; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
+    setNotice(`${profile.downloadNotice} ${response.headers.get('X-Package-Manifest-SHA256')}`); };
+  const selectedClaim = selected?.body.claim;
+  const core = result?.paperComparison?.core ?? result?.result?.paperComparison?.core;
+  return <section className="border rounded p-3 space-y-3 min-w-0" data-testid="paper-comparison">
+    <h4 className="font-semibold">{profile.title}</h4><p className="text-sm bg-amber-50 p-3">{profile.notice}</p><p className="text-sm">{profile.inheritedLabel}</p>
+    {error && <p role="alert" className="text-red-800 break-words">{error}</p>}{notice && <p role="status" className="text-sm break-all">{notice}</p>}
+    <details><summary>{profile.sourceLabel}</summary><pre className="text-sm whitespace-pre-wrap break-words max-h-64 overflow-auto">{operation.body.document.body.text}</pre></details>
+    {editing && <fieldset disabled={disabled} className="space-y-3 min-w-0" data-testid="paper-comparison-editor">
+      {selected && <p className="text-xs break-all">{profile.versionLabel}: {selected.id} → {profile.saveLabel}</p>}
+      <label className="block">{profile.quoteLabel}<textarea aria-label={profile.quoteLabel} className={formClass} value={quote} onChange={e => setQuote(e.target.value)} rows={3}/></label>
+      <div className="grid sm:grid-cols-2 gap-3"><div className="space-y-2"><label className="block">{profile.expectedLabel}<input type="number" step="any" aria-label={profile.expectedLabel} className={formClass} value={expected} disabled={expectedMissing} onChange={e => setExpected(e.target.value)}/></label>
+        <label className="block text-sm"><input type="checkbox" checked={expectedMissing} onChange={e => setExpectedMissing(e.target.checked)}/> {profile.expectedMissingLabel}</label></div>
+        <div className="space-y-2"><label className="block">{profile.unitLabel}<input aria-label={profile.unitLabel} className={formClass} value={unit} disabled={unitMissing} onChange={e => setUnit(e.target.value)}/></label>
+          <label className="block text-sm"><input type="checkbox" checked={unitMissing} onChange={e => setUnitMissing(e.target.checked)}/> {profile.unitMissingLabel}</label></div></div>
+      <label className="block">{profile.statisticLabel}<select aria-label={profile.statisticLabel} className={formClass} value={statistic} onChange={e => setStatistic(e.target.value)}>
+        {profile.statistics.filter((s: any) => operation.body.method === 'describe' ? s.id.startsWith('describe.') : s.id === operation.body.method).map((s: any) => <option key={s.id} value={s.id}>{s.label}</option>)}
+      </select></label>
+      <label className="block">{profile.rationaleLabel}<textarea aria-label={profile.rationaleLabel} className={formClass} value={rationale} onChange={e => setRationale(e.target.value)} rows={2}/></label>
+      <div className="grid sm:grid-cols-2 gap-3"><label>{profile.toleranceKindLabel}<select aria-label={profile.toleranceKindLabel} className={formClass} value={toleranceKind} onChange={e => setToleranceKind(e.target.value)}><option value="absolute">{profile.absoluteLabel}</option><option value="relative">{profile.relativeLabel}</option></select></label>
+        <label>{profile.toleranceValueLabel}<input type="number" step="any" min="0" aria-label={profile.toleranceValueLabel} className={formClass} value={toleranceValue} onChange={e => setToleranceValue(e.target.value)}/></label></div>
+      <label className="block">{profile.toleranceRationaleLabel}<textarea aria-label={profile.toleranceRationaleLabel} className={formClass} value={toleranceRationale} onChange={e => setToleranceRationale(e.target.value)} rows={2}/></label>
+      <button className={buttonClass} disabled={!valid || !canAnalyze} onClick={() => act(save)}>{profile.saveLabel}</button>
+    </fieldset>}
+    {selected && !editing && <div className="space-y-3" data-testid="paper-comparison-review">
+      <p className="text-xs break-all">{profile.versionLabel}: {selected.id} · SHA-256 {selected.hash}</p>
+      <blockquote className="border-l-2 pl-3 whitespace-pre-wrap break-words">{selectedClaim.quote}</blockquote>
+      <dl className="text-sm space-y-1"><div><dt className="inline font-semibold">{profile.expectedLabel}: </dt><dd className="inline">{selectedClaim.expectedValue ?? profile.missingLabel}</dd></div>
+        <div><dt className="inline font-semibold">{profile.unitLabel}: </dt><dd className="inline">{selectedClaim.unit ?? profile.missingLabel}</dd></div>
+        <div><dt className="inline font-semibold">{profile.statisticLabel}: </dt><dd className="inline">{selectedClaim.statistic}</dd></div>
+        <div><dt className="inline font-semibold">{profile.rationaleLabel}: </dt><dd className="inline whitespace-pre-wrap">{selectedClaim.rationale}</dd></div>
+        <div><dt className="inline font-semibold">{profile.toleranceKindLabel}: </dt><dd className="inline">{selectedClaim.tolerance.kind === 'absolute' ? profile.absoluteLabel : profile.relativeLabel} · {selectedClaim.tolerance.value}</dd></div>
+        <div><dt className="inline font-semibold">{profile.toleranceRationaleLabel}: </dt><dd className="inline whitespace-pre-wrap">{selectedClaim.tolerance.rationale}</dd></div></dl>
+      <p className="text-sm" data-testid="paper-comparison-approval">{selected.review ? profile.reviewedLabel : profile.unreviewedLabel}</p>
+      {!selected.review ? <><label className="block text-sm"><input type="checkbox" checked={reviewed} disabled={disabled} onChange={e => setReviewed(e.target.checked)}/> {profile.reviewLabel}</label>
+        <button className={buttonClass} disabled={disabled || !reviewed || !canReview} onClick={() => act(async () => { setSelected((await api(`/api/research/comparisons/${selected.id}/approve`, { expectedHash: selected.hash })).comparison); setReviewed(false); })}>{profile.approveLabel}</button></>
+        : <div className="flex flex-wrap gap-3"><button className={buttonClass} disabled={disabled || !canAnalyze || operation.method.approvalState !== 'APPROVED'} onClick={() => act(async () => {
+          try { const r = await api(`/api/research/comparisons/${selected.id}/execute`, { expectedHash: selected.hash }); setResult(r.result); }
+          finally { setSelected((await api(`/api/research/comparisons/${selected.id}`)).comparison); }
+        })}>{profile.executeLabel}</button><button className="underline text-sm" disabled={disabled || !canReview} onClick={() => act(async () => { setSelected((await api(`/api/research/comparisons/${selected.id}/revoke`, { expectedHash: selected.hash })).comparison); setReviewed(false); setResult(null); })}>{profile.revokeLabel}</button></div>}
+      {operation.method.approvalState !== 'APPROVED' && <p className="text-sm">{profile.methodRequiredLabel}</p>}
+      <button className="underline text-sm" disabled={disabled || !canAnalyze} onClick={revise}>{profile.reviseLabel}</button>
+      <details data-testid="paper-comparison-exposure"><summary>{profile.priorExposureLabel}</summary><p className="text-sm">{profile.exposureNotice}</p><pre className="text-xs whitespace-pre-wrap break-all max-h-64 overflow-auto">{JSON.stringify(selected.body.priorExposure, null, 2)}</pre></details>
+      <h5 className="font-semibold text-sm">{profile.attemptsLabel}</h5>
+      {!selected.attempts.length && <p className="text-sm">{profile.noAttemptsLabel}</p>}
+      {selected.attempts.map((attempt: any) => <div key={attempt.id} className="border-t pt-2 text-sm space-y-2" data-testid="paper-comparison-attempt"><p className="break-all">{attempt.status} · {attempt.runId} · {attempt.id}</p>
+        {attempt.resultHash && <div className="flex flex-wrap gap-3"><button className="underline" disabled={disabled} onClick={() => act(async () => setResult((await api(`/api/research/comparisons/${selected.id}/runs/${attempt.runId}`)).result))}>{profile.showResultLabel}</button>
+          <button className="underline" disabled={disabled} onClick={() => act(() => download(attempt.runId))}>{profile.exportLabel}</button></div>}
+      </div>)}
+      <details><summary>{profile.detailsLabel}</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-64 overflow-auto">{JSON.stringify(selected, null, 2)}</pre></details>
+      {core && <div data-testid="paper-comparison-result" className="space-y-2"><h5 className="font-semibold">{profile.resultLabel}</h5>
+        <p className="text-sm"><b>{profile.verdictLabel}: </b>{core.verdict}</p>
+        <div className="overflow-x-auto"><table className="w-full text-sm text-left"><thead><tr><th>{profile.expectedLabel}</th><th>{profile.observedLabel}</th><th>{profile.deviationLabel}</th></tr></thead><tbody><tr><td>{core.expectedValue ?? profile.missingLabel} · {core.expectedUnit ?? profile.missingLabel}</td><td>{core.observedValue ?? profile.missingLabel} · {core.observedUnit ?? profile.missingLabel}</td><td>{core.deviation ?? profile.missingLabel}</td></tr></tbody></table></div>
+        <p className="text-sm break-words"><b>{profile.reasonLabel}: </b>{core.reason} · {core.rationale}</p>
+        <details><summary>{profile.rawResultLabel}</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-96 overflow-auto">{JSON.stringify(core, null, 2)}</pre></details>
+      </div>}
+    </div>}
+    <details open data-testid="paper-comparison-history"><summary>{profile.historyLabel} ({versions.length})</summary><div className="space-y-2 pt-2">{versions.map(v => <button key={v.id} disabled={disabled} className="block underline text-sm break-all text-left" onClick={() => act(() => open(v.id))}>{profile.openLabel} · {v.id} · {v.review ? profile.reviewedLabel : profile.unreviewedLabel} · {v.attempts.length}</button>)}</div></details>
+  </section>;
 }

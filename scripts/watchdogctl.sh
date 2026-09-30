@@ -1,28 +1,92 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 umask 077
+die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
+root=${WATCHDOG_ROOT:-/}
+[[ $root == /* && -d $root ]] || die 'WATCHDOG_ROOT must be an existing absolute directory.'
+root=$(cd "$root" && pwd -P)
+[[ $root != / ]] || root=''
+helper="$root/usr/local/lib/watchdog/watchdog_backup.py"
+require_admin() { [[ -n $root ]] || ((EUID == 0)) || die 'Use sudo.'; }
+# An isolated filesystem does not isolate host commands: require explicit stubs.
+require_commands() {
+  [[ -n $root ]] || return 0
+  local cmd resolved
+  for cmd in "$@"; do
+    resolved=$(command -v "$cmd") || die "Missing test command: $cmd"
+    resolved=$(readlink -f "$resolved")
+    [[ $resolved == "$root/"* ]] || die "Isolated WATCHDOG_ROOT requires $cmd stub beneath that root."
+  done
+}
+lock() {
+  install -d -m 0755 "$root/run/lock"
+  exec 9>"$root/run/lock/watchdog-install.lock"
+  flock -n 9 || die 'Another install/backup is running.'
+}
+image_id() {
+  local value reference
+  value=$(docker inspect --format '{{.Image}}' watchdog 2>/dev/null) || value=''
+  if [[ ! $value =~ ^sha256:[a-f0-9]{64}$ ]]; then
+    reference=$(sed -n 's/^WATCHDOG_IMAGE=//p' "$root/etc/watchdog/release.env")
+    if [[ $reference =~ ^sha256:[a-f0-9]{64}$ ]]; then value=$reference
+    else value=$(docker image inspect --format '{{.Id}}' "$reference") || return 1; fi
+  fi
+  [[ $value =~ ^sha256:[a-f0-9]{64}$ ]] || return 1
+  printf '%s\n' "$value"
+}
 case "${1:-help}" in
-  status) systemctl --no-pager status watchdog.service; cat /etc/watchdog/release.env ;;
-  logs) journalctl -u watchdog.service -n 150 --no-pager ;;
+  status)
+    require_commands systemctl
+    code=0; systemctl --no-pager status watchdog.service || code=$?
+    if [[ -f $root/etc/watchdog/recovery-required ]]; then cat "$root/etc/watchdog/recovery-required"; fi
+    if [[ -f $root/etc/watchdog/release.env ]]; then cat "$root/etc/watchdog/release.env"; fi
+    exit "$code"
+    ;;
+  logs) require_commands journalctl; journalctl -u watchdog.service -n 150 --no-pager ;;
   restart)
-    ((EUID == 0)) || { echo 'Use sudo.' >&2; exit 1; }
-    exec 9>/run/lock/watchdog-install.lock
-    flock -n 9 || { echo 'Another install/backup is running.' >&2; exit 1; }
+    require_admin; require_commands systemctl; lock
+    [[ ! -e $root/etc/watchdog/recovery-required ]] || die 'Recovery required; inspect /etc/watchdog/recovery-required before starting.'
     systemctl restart watchdog.service ;;
   backup)
-    ((EUID == 0)) || { echo 'Use sudo.' >&2; exit 1; }
-    exec 9>/run/lock/watchdog-install.lock
-    flock -n 9 || { echo 'Another install/backup is running.' >&2; exit 1; }
-    install -d -m 0700 /var/backups/watchdog
+    (($# <= 2)) || die 'Usage: watchdogctl backup [ABSOLUTE_ARCHIVE]'
+    require_admin; require_commands systemctl docker; lock
+    [[ ! -e $root/etc/watchdog/recovery-required ]] || die 'Recovery required; preserve the pre-update backup and inspect the marker first.'
+    install -d -m 0700 "$root/var/backups/watchdog"
+    file=${2:-"$root/var/backups/watchdog/$(date -u +%Y%m%dT%H%M%SZ)-$$.tar.gz"}
+    [[ $file == /* ]] || die 'Backup destination must be absolute.'
+    immutable=$(image_id) || die 'Cannot determine the immutable image compatible with this state.'
     active=false; systemctl is-active --quiet watchdog.service && active=true
-    # Always restart a previously running service if tar/disk space fails.
-    trap 'if $active; then systemctl start watchdog.service; fi' EXIT
+    finish_backup() {
+      local code=$?
+      trap - EXIT
+      if $active; then
+        if ! systemctl start watchdog.service; then
+          printf '%s\n' 'ERROR: backup ended but the previously active service could not restart.' >&2
+          code=1
+        fi
+      fi
+      exit "$code"
+    }
+    trap finish_backup EXIT
+    trap 'exit 130' INT
+    trap 'exit 143' TERM
     systemctl stop watchdog.service
-    file="/var/backups/watchdog/$(date -u +%Y%m%dT%H%M%SZ)-$$.tar.gz"
-    tar -czf "$file.partial" -C / etc/watchdog var/lib/watchdog etc/systemd/system/watchdog.service usr/local/sbin/watchdogctl
-    mv "$file.partial" "$file"
-    sha256sum "$file" > "$file.sha256"
-    printf 'Private backup (contains vault keys): %s\n' "$file"
+    if ! running=$(docker inspect --format '{{.State.Running}}' watchdog 2>/dev/null); then
+      containers=$(docker ps --all --format '{{.Names}}') || die 'Cannot verify that Docker has stopped the data writer.'
+      if printf '%s\n' "$containers" | grep -qx watchdog; then die 'Cannot inspect the existing Watchdog container.'; fi
+      running=absent
+    fi
+    [[ $running == false || $running == absent ]] || die 'A Watchdog container is still running; refusing an inconsistent backup.'
+    python3 "$helper" create --root "${root:-/}" --output "$file" --image-id "$immutable"
+    python3 "$helper" verify --archive "$file"
+    printf 'Private verified backup (contains vault keys): %s\n' "$file"
     ;;
-  *) printf '%s\n' 'Usage: sudo watchdogctl status | logs | restart | backup'; [[ ${1:-help} == help ]] ;;
+  verify)
+    (($# == 2)) || die 'Usage: watchdogctl verify ARCHIVE'
+    python3 "$helper" verify --archive "$2" ;;
+  restore)
+    (($# == 3)) || die 'Usage: watchdogctl restore ARCHIVE NEW_ABSOLUTE_DIRECTORY'
+    # Staging only: never touches the active installation or invokes Docker/systemd.
+    python3 "$helper" restore --archive "$2" --destination "$3" ;;
+  *) printf '%s\n' 'Usage: watchdogctl status | logs | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY'; [[ ${1:-help} == help ]] ;;
 esac

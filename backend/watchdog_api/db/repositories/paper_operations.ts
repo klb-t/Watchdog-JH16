@@ -35,6 +35,6 @@ export class PaperOperationsRepository {
   runs(owner: string, methodId: string) {
     return this.db.prepare(`SELECT r.id,r.status,r.created_at AS createdAt,r.completed_at AS completedAt,a.sha256 AS resultHash
       FROM runs r LEFT JOIN artifacts a ON a.run_id=r.id AND a.kind='workbench_result'
-      WHERE r.owner_principal_id=? AND json_extract(r.effective_config,'$.methodId')=? ORDER BY r.created_at DESC,r.id LIMIT 100`).all(owner, methodId);
+      WHERE r.owner_principal_id=? AND json_extract(r.effective_config,'$.methodId')=? ORDER BY r.created_at DESC,r.id`).all(owner, methodId);
   }
 }

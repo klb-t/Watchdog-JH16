@@ -20,13 +20,26 @@ uzgodniony z integratorem, zawierający wymagane zmiany
 
 | Pole | Stan początkowy |
 | --- | --- |
-| owner | nieprzydzielony |
-| base_sha | do ustalenia z integratorem po checkpointcie fali |
-| branch | nieutworzona; własna gałąź pakietu |
-| files | poniższy zakres jest propozycją do rozłącznego przydziału |
-| status | prepared, unclaimed |
-| updated_at_utc | 2026-09-30 |
-| next_checkpoint | audyt obecnych operacji, istniejącego evaluateClaim i kontrakt jednego porównania |
+| owner | Codex RESEARCH e15f2c5a4cd2 — E5.7d, przydział integratora `9a8adba` |
+| base_sha | `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`, zweryfikowany opublikowany main po fali |
+| branch | `codex/watchdog-research-20260930` — izolowany checkout |
+| files | dokładny przydział E5.7d z `docs/WORK_COORDINATION.md` na zdalnym main `9a8adba`; migracja 022, shared/paper_comparison.ts, serwis/repozytorium porównań, przydzielone punkty workbench/API/UI/eksportu, testy i dokumentacja |
+| status | implemented, CI green, ready for integrator review — PR #7 |
+| updated_at_utc | 2026-09-30T22:49:00Z |
+| next_checkpoint | integracja z pozostałymi pakietami i pełna bramka na wspólnym headzie; kod zweryfikowany na `21ad029327ea368a0955ab041e82db58fc1f4a67` |
+
+Audyt, implementacja i pełne dowody: [checkpoint RESEARCH](RESEARCH_CHECKPOINT_2026-09-30.md).
+Claim opublikowano w `da0b051`, następnie trzy małe checkpointy implementacji:
+`17518dd`, `bab9ad1`, `21ad029`. Gotowy jest przepływ cytat → jawny claim →
+osobny przegląd → zamrożenie → nowe wykonanie → trwała historia i eksport v2.
+Nowe testy naukowe/integracyjne: 21/21; wcześniejsze regresje pakietu: 29/29.
+CI na pełnym headzie: **457/457**, w tym dwa nowe rzeczywiste testy przeglądarkowe;
+zielone JH16 i bramka kontenerowa z trwałością danych. Lokalnie lint/build/JH16
+pass, 430 testów pass i 27 fail przy uruchamianiu nieobecnego Chromium.
+PR: https://github.com/klb-t/Watchdog-JH16/pull/7.
+Globalny ledger pozostaje własnością integratora. Proponowany odbiór dotyczy
+wyłącznie E5.7d; E5.7b pozostaje otwarte. Poniższa instrukcja przydziału i
+historyczny audyt zachowują wcześniejsze wymagania i stan.
 
 Własny checkout/gałąź i opublikowany claim poprzedzają edycję. Integrator
 rozstrzyga konflikt; plik claimu nie jest atomową blokadą. Przed uznaniem

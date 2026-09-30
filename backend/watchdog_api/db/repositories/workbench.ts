@@ -12,6 +12,7 @@ export { WorkbenchError } from './workbench_error';
 import { appendAudit } from './audit';
 import { ResearchRepository } from './research';
 import { PaperOperationsRepository } from './paper_operations';
+import { PaperComparisonsRepository, type ComparisonFreezeRef } from './paper_comparisons';
 import { verifyDatasetExtraction,datasetExtractionMapping } from '../../workbench/extraction_data';
 import type { MethodSpec, AnalysisArtifact, TypedSeries } from '../../domain/method_spec';
 import { assertTransition, type RunState } from '../../domain/run_state';
@@ -110,6 +111,7 @@ export class WorkbenchRepository {
     const result = spec.analysis ? await this.resultForFigure(spec, actor) : null;
     if ((result || geometry) && !await this.getDataset(spec.datasetId, actor)) throw new WorkbenchError('Dataset approval was revoked.', 409);
     if (geometry && !await this.geography.get(geometry.id, actor)) throw new WorkbenchError('Geometry approval was revoked.', 409);
+    if (result) this.requireComparisonResult(actor, result.runId, result);
     return { record, spec, result, geometry };
   }
   private async resultForFigure(spec: FigureSpec, actor: string) {
@@ -130,6 +132,7 @@ export class WorkbenchRepository {
     if (!liveMethod || liveMethod.hash !== ref.methodHash || liveMethod.approvalState !== 'APPROVED') throw new WorkbenchError('Method approval was revoked.', 409);
     const binding = this.paperBinding(actor, ref.methodId);
     if (canonicalHash(binding) !== canonicalHash(result.paperBinding ?? null)) throw new WorkbenchError('Result paper context mismatch.', 409);
+    this.requireComparisonResult(actor, result.runId, result);
     return { ...result, hash: ref.resultHash, manifest: { hash: row.manifest_hash, document: manifest } };
   }
   async saveFigure(actor: string, spec: FigureSpec, favorite: boolean, requestId: string): Promise<SavedFigure> {
@@ -189,7 +192,17 @@ export class WorkbenchRepository {
     })();
     return this.method(id);
   }
-  createRun(actor: string, config: unknown) {
+  approvalReceipts(methodId: string) {
+    const method = this.method(methodId);
+    if (!method) throw new WorkbenchError('Approved method required.', 409);
+    const data = this.db.prepare('SELECT approved_hash,approved_by,approved_at FROM datasets WHERE id=?').get(method.datasetId) as any;
+    const event = (id: string, actions: string[]) => (this.db.prepare(`SELECT id FROM audit_events WHERE object_id=? AND action IN (${actions.map(() => '?').join(',')}) ORDER BY rowid DESC LIMIT 1`).get(id, ...actions) as any)?.id ?? null;
+    return { method: { eventId: event(methodId, ['workbench.method.approve', 'workbench.method.revoke']), hash: method.approvedHash, actor: method.approvedBy, at: method.approvedAt },
+      dataset: { eventId: event(method.datasetId, ['dataset.approve', 'dataset.revoke']), hash: data?.approved_hash ?? null, actor: data?.approved_by ?? null, at: data?.approved_at ?? null } };
+  }
+  comparisonBinding(actor: string, runId: string) { return new PaperComparisonsRepository(this.db).forRun(actor, runId); }
+  createRun(actor: string, config: unknown, comparison?: ComparisonFreezeRef, requestId = '') {
+    if (comparison) return new PaperComparisonsRepository(this.db).createRun(actor, comparison, config, requestId);
     const id = randomUUID();
     this.db.prepare(`INSERT INTO runs(id,run_type,status,owner_principal_id,visibility,created_at,effective_config,effective_config_hash)
       VALUES (?,'WORKBENCH_ANALYSIS','CREATED',?,'private',?,?,?)`).run(id, actor, new Date().toISOString(), JSON.stringify(config), canonicalHash(config));
@@ -203,6 +216,13 @@ export class WorkbenchRepository {
     const sequence = (this.db.prepare('SELECT count(*) n FROM run_steps WHERE run_id=?').get(id) as any).n;
     this.db.prepare(`INSERT INTO run_steps(id,run_id,step_name,sequence,status,started_at,completed_at,implementation_version,warning_json)
       VALUES (?,?,?,?,?,?,?,?,?)`).run(randomUUID(), id, to, sequence, to === 'FAILED' ? 'FAILED' : to === 'COMPLETED' ? 'COMPLETED' : 'RUNNING', new Date().toISOString(), ['COMPLETED', 'FAILED'].includes(to) ? new Date().toISOString() : null, 'workbench-1', JSON.stringify(metadata));
+  }
+  private requireComparisonResult(actor: string, runId: string, payload: any) {
+    const binding = this.comparisonBinding(actor, runId), envelope = payload.paperComparison;
+    if (!binding && !envelope) return;
+    if (binding && canonicalHash(binding.run.effectiveConfig.approvalReceipts) !== canonicalHash(this.approvalReceipts(binding.comparison.body.plan.methodId))) throw new WorkbenchError('Method or dataset approval receipt was revoked or replaced.', 409);
+    if (!binding || !envelope || canonicalHash(binding) !== canonicalHash({ comparison: envelope.comparison, review: envelope.review, freeze: envelope.freeze, attempt: envelope.attempt, run: envelope.run }) || canonicalHash(envelope.core) !== envelope.coreHash)
+      throw new WorkbenchError('Comparison result binding mismatch.', 409);
   }
   async persistResult(runId: string, actor: string, payload: { methodId: string; methodHash: string; datasetHash: string; inputHash: string; artifact: AnalysisArtifact; inputs: TypedSeries[]; [key: string]: unknown }) {
     const hash = canonicalHash(payload), bytes = Buffer.from(canonicalizeJson(payload));
@@ -223,6 +243,7 @@ export class WorkbenchRepository {
       if (!live || live.hash !== payload.methodHash || live.approvalState !== 'APPROVED' || live.approvedAt !== method.approvedAt || live.approvedBy !== method.approvedBy || !dataset || dataset.sha256 !== payload.datasetHash || dataset.approved_hash !== payload.datasetHash || !(dataset.owner_principal_id === actor || dataset.visibility === 'shared_aggregate'))
         throw new WorkbenchError('Dataset or method approval changed before result finalization.', 409);
       if (canonicalHash(this.paperBinding(actor, method.id)) !== canonicalHash(payload.paperBinding ?? null)) throw new WorkbenchError('Paper context changed before result finalization.', 409);
+      this.requireComparisonResult(actor, runId, payload);
       const now = new Date().toISOString(), analysisId = `analysis-${runId}`;
       this.db.prepare(`INSERT INTO artifacts(id,run_id,kind,media_type,object_uri,sha256,byte_size,owner_principal_id,visibility,created_at,metadata_json)
         VALUES (?,?,?,?,?,?,?,?,'private',?,?)`).run(randomUUID(), runId, 'workbench_result', 'application/json', uri, hash, bytes.length, actor, now, JSON.stringify({ manifestHash }));
