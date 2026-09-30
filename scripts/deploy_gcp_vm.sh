@@ -5,7 +5,7 @@ set -Eeuo pipefail
 usage() {
   cat <<'EOF'
 Usage: bash scripts/deploy_gcp_vm.sh --project PROJECT --zone ZONE --instance VM [--ref REF] [--plan]
-Default ref: astra/watchdog-continuation-20260908. Run from a GitHub checkout.
+Default ref: main. Run from a GitHub checkout.
 Without flags, project defaults to gcloud's current project; zone/VM are prompted.
 Configures only the selected VM, scoped firewall rules and boot-disk retention.
 App access: SSH through IAP + Cloud Shell Web Preview, port 8080.
@@ -13,7 +13,7 @@ App access: SSH through IAP + Cloud Shell Web Preview, port 8080.
 EOF
 }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
-project=''; zone=''; instance=''; ref='astra/watchdog-continuation-20260908'; plan=false
+project=''; zone=''; instance=''; ref='main'; plan=false
 while (($#)); do
   case "$1" in
     --help|-h) usage; exit 0 ;;

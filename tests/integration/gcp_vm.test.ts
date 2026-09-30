@@ -74,6 +74,19 @@ test('E3.13: IAP is proved before deny rules; deployment is pinned and credentia
   }finally{h.clean();}
 });
 
+test('E3.13: deployment follows integrated main by default and preserves explicit revision selection',()=>{
+  for(const ref of [undefined,'release/operator-selected','b'.repeat(40)]) {
+    const h=harness();try {
+      const result=h.run(ref?['--ref',ref]:[]);assert.equal(result.status,0,result.stderr);
+      const fetch=h.calls().find(a=>a[0]==='git'&&a.includes('fetch'))!;
+      assert.ok(fetch,'source revision must be fetched before archiving');
+      assert.deepEqual(fetch.slice(fetch.indexOf('fetch')),['fetch','origin',ref??'main']);
+      const archive=h.calls().find(a=>a[0]==='git'&&a.includes('archive'))!;
+      assert.equal(archive.at(-1),'a'.repeat(40),'archive the resolved commit, not a moving branch name');
+    }finally{h.clean();}
+  }
+});
+
 test('E3.13: failed IAP leaves previous SSH paths and boot-disk settings intact',()=>{
   const h=harness({FAIL_IAP:'1'});try {
     const result=h.run();assert.notEqual(result.status,0);assert.match(result.stderr,/IAP SSH failed/);

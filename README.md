@@ -99,7 +99,7 @@ tests/           unit, integration and scientific-invariant tests
 
 ## Live integrations
 
-Live providers are optional. Depending on configuration, the project supports Google sign-in/capability grants, personal model providers, OpenRouter/OpenAI-compatible generation, SerpApi result counts, GCS object storage and Cloud Run deployment.
+Live providers are optional. Depending on configuration, the project supports Google sign-in/capability grants, personal model providers, OpenRouter/OpenAI-compatible generation, SerpApi result counts and GCS object storage. The current private deployment path is the [Compute Engine VM installer](docs/DEPLOY_GCP_VM.md). The [legacy Cloud Run recipe](docs/DEPLOY_GCP.md) is blocked because its bucket-mounted SQLite storage does not satisfy the database contract.
 
 Provider support means the protocol path exists; it does not imply every vendor/account combination has been integration-tested.
 

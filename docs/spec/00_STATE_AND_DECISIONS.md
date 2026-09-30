@@ -17,6 +17,10 @@ E2.1 additionally corrects entity alignment and enforces graph/input/approval in
 22/22 focused scientific and 9/9 related integration tests, typecheck and JH16 demo pass.
 Executor/ratio are 1.0.1; frozen method files are unchanged. This is a contract repair,
 not scientific approval or a new methodology.
+E3.14 updates the VM default to merged `main` and blocks the unsupported legacy Cloud Run
+recipe before cloud mutations. E3.5 is reopened for Cloud Run: bucket-mounted SQLite is
+not established as safe by the path-based durability gate or local-container tests. The
+private disk-backed VM and GCS object adapter remain separate implemented paths.
 
 **2026-09-30 current authority and integration:** the owner delegated autonomous
 development after reviewing the repository/history audit. Routine reversible product

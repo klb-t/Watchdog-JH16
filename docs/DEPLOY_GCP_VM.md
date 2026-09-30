@@ -1,11 +1,12 @@
 # Watchdog na istniejącej maszynie GCP
 
-Ten instalator uruchamia obecną gałąź rozwojową na jednej, przeznaczonej dla Watchdoga
+Ten instalator uruchamia zintegrowaną gałąź `main` na jednej, przeznaczonej dla Watchdoga
 maszynie Compute Engine. Wykonujesz go w **Cloud Shell**, nie w terminalu SSH samej VM.
 Instalacja nie wymaga klucza LLM. To prywatna instalacja właściciela: dostęp przez IAP/SSH,
 w aplikacji wspólna tożsamość `local-user` z pełnymi możliwościami deweloperskimi.
-Ekran zamkniętego logowania, formularz prośby o dostęp i zaproszenia e-mail są kolejnym
-etapem E4.5. Nie udostępniaj tego tunelu innym użytkownikom jako gotowego systemu kont.
+Repozytorium zawiera logowanie, formularz prośby o dostęp i zaproszenia powiązane z adresem
+e-mail, ale ten instalator nie konfiguruje Google OAuth i pozostawia tryb właściciela.
+Nie udostępniaj tego tunelu innym użytkownikom jako gotowego systemu kont.
 
 ## Przygotuj VM
 
@@ -30,7 +31,7 @@ Szczegóły połączenia: [oficjalny opis IAP](https://docs.cloud.google.com/iap
 Otwórz Cloud Shell przyciskiem terminala w konsoli Google Cloud. Wklej:
 
 ```bash
-git clone --branch astra/watchdog-continuation-20260908 https://github.com/klb-t/Watchdog-JH16.git
+git clone --branch main https://github.com/klb-t/Watchdog-JH16.git
 cd Watchdog-JH16
 bash scripts/deploy_gcp_vm.sh --project TWOJ_PROJEKT --zone TWOJA_STREFA --instance TWOJA_VM
 ```
@@ -41,8 +42,16 @@ Podmień trzy wartości, np. strefę na `europe-central2-a`. Nazwy wypisze też:
 gcloud compute instances list --project TWOJ_PROJEKT
 ```
 
-Jeśli masz już checkout, zamiast klonować drugi raz przejdź do niego i wykonaj `git pull
---ff-only`. Repozytorium prywatne wymaga zalogowania GitHuba w Cloud Shell: `gh auth login`,
+Jeśli masz już checkout, zamiast klonować drugi raz przejdź do niego i zaktualizuj
+instalator z `main` (samo `git pull` na dawnej gałęzi kontynuacji nie pobierze integracji):
+
+```bash
+git fetch origin
+git switch main
+git pull --ff-only origin main
+```
+
+Repozytorium prywatne wymaga zalogowania GitHuba w Cloud Shell: `gh auth login`,
 potem `gh auth setup-git`. Klucze i historia `.git` nie są kopiowane na VM.
 
 `--plan` pokazuje zakres bez pobierania kodu i zmian w chmurze. `--ref PEŁNY_SHA` pozwala

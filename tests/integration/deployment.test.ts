@@ -43,14 +43,15 @@ test('E3.5: the container never bakes in a credential', () => {
   }
 });
 
-test('E3.5: the deploy pins a single instance, because SQLite has one writer', () => {
+test('E3.5: disabled historical recipe retains its source for inspection, not deployment evidence', () => {
   const sh = read('scripts', 'deploy_cloudrun.sh');
   assert.match(sh, /--max-instances 1/,
     'a second instance would be a second writer against one SQLite file');
   assert.match(sh, /Postgres backend exists/, 'and the reason must be recorded where it is set');
 
-  // Durable storage is configured by the same command that deploys, so the
-  // two cannot drift apart.
+  // This historical mount is precisely the unsupported configuration. Static
+  // inspection does not establish filesystem durability; cloudrun_guard.test
+  // executes the guard and proves no cloud command can be reached.
   assert.match(sh, /STORE_BACKEND=gcs/);
   assert.match(sh, /DB_PATH=\/mnt\/watchdog\/watchdog\.sqlite/);
   assert.match(sh, /--add-volume-mount/);

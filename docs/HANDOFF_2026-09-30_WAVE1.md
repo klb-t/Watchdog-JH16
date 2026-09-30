@@ -83,3 +83,24 @@ bez przekazanej aprobaty nadal istnieje; ta poprawka nie reklamuje jego usunięc
 
 Checkpoint E4.6 jest zdalnie zapisany jako `9c02487190e9ae288c7a19bbf549bbbea0d7a672`
 (lokalnie `c7ebcb2`, to samo drzewo). Wspólna bramka całej fali nadal oczekuje.
+
+## Checkpoint 3 — E3.14, instalacja i korekta trwałości
+
+Installer VM domyślnie wybiera `main`, nadal obsługuje jawne gałęzie/SHA i archiwizuje
+rozwiązaną rewizję. Test kontroluje rzeczywiste polecenia Git przez atrapę środowiska.
+Stary installer Cloud Run blokuje wykonanie przed każdym wywołaniem gcloud; test
+uruchamia go z atrapą gcloud i sprawdza brak skutków ubocznych. `--help` działa.
+Prywatna VM, publiczność usług i istniejące dane nie zostały zmodyfikowane.
+
+E3.5 ponownie otwarte w części Cloud Run. Poprzednie twierdzenie o poprawnym SQLite
+na GCS FUSE jest wycofane na podstawie kontraktu platformy, a nie testu żywego wdrożenia.
+Oficjalne źródła i warunki nowego wdrożenia są w `DEPLOY_GCP.md`.
+
+`node --import tsx --test tests/integration/cloudrun_guard.test.ts
+tests/integration/gcp_vm.test.ts`: **9/9 pass**.
+`node --import tsx --test tests/integration/deployment.test.ts`: **10/10 pass**.
+Historyczny test statyczny otrzymał poprawny opis; nie reklamuje weryfikacji trwałości.
+
+Lokalny Chromium 154 pobrano prawidłowo, ale proces kończy się przy `socket()` z
+`Operation not permitted`. E2E pozostaje niewykonane w tym środowisku; potrzebna
+standardowa bramka przeglądarkowa w CI. Nie omijamy ograniczeń środowiska.
