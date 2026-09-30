@@ -16,17 +16,35 @@ przed implementacją ustal z integratorem dokładny opublikowany SHA i claim.
 Uwzględnij wynik `codex/watchdog-wave1-20260930`; zakres E6.4/E6.5 sprawdź
 ponownie w kodzie. Nie traktuj tego pliku jako aktualnego raportu implementacji.
 
-## Claim — uzupełnia przydzielony właściciel
+## Claim — clinical-20260930
 
-| Pole | Stan początkowy |
+Przydział integratora: zdalny `main`, commit `9a8adba` (odczytany 2026-09-30 UTC).
+Zastępuje wcześniejsze awaiting-assignment w audycie; zakres to czysty rdzeń
+syntetyczny w pamięci, bez API, migracji, wspólnej aprobaty i nawigacji.
+
+| Pole | Stan |
 | --- | --- |
-| owner | nieprzydzielony |
-| base_sha | do ustalenia z integratorem po checkpointcie fali |
-| branch | nieutworzona; własna gałąź pakietu |
-| files | poniższy zakres jest propozycją do rozłącznego przydziału |
-| status | prepared, unclaimed |
-| updated_at_utc | 2026-09-30 |
-| next_checkpoint | zweryfikowany brak kontraktu przypadku i mały schema/fixture do przeglądu |
+| owner | clinical-20260930 |
+| base_sha | 312ba246f9bdeb035019e2ff4c1a09aaef0a734c |
+| branch | codex/clinical-audit-20260930, PR #6 |
+| status | claimed; E6.4a implementation next |
+| updated_at_utc | 2026-09-30T22:29:00Z |
+| next_checkpoint | strict schema, fictional fixture, incomplete-observation tests and independent review |
+
+Dokładnie przydzielone pliki:
+- `shared/clinical_demo.ts`
+- `shared/clinical_demo_validation.ts`
+- `tests/helpers/clinical_demo.ts`
+- `backend/watchdog_api/clinical_demo/executor.ts`
+- `backend/watchdog_api/clinical_demo/executor_manifest.ts`
+- `shared/clinical_demo_profile.ts`
+- `shared/clinical_demo_selector.ts`
+- `tests/unit/clinical_demo_case.test.ts`
+- `tests/unit/clinical_demo_executor.test.ts`
+- `tests/unit/clinical_demo_profile.test.ts`
+- `scripts/demo_clinical.ts`
+- `docs/work_packages/CLINICAL.md`
+- `docs/work_packages/CLINICAL_AUDIT_2026-09-30.md`
 
 Własny checkout/gałąź i opublikowany claim poprzedzają zmiany. Integrator
 przydziela rozłączne pliki; status w Markdown nie jest atomową blokadą.
