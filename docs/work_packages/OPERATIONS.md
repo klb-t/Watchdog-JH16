@@ -20,13 +20,13 @@ zmian tej fali ani nie uruchamiaj historycznej gałęzi kontynuacji z runbooka.
 
 | Pole | Stan początkowy |
 | --- | --- |
-| owner | nieprzydzielony |
-| base_sha | do ustalenia z integratorem po checkpointcie fali |
-| branch | nieutworzona; własna gałąź pakietu |
-| files | zakres poniżej jest propozycją, wymaga rozłącznego przydziału |
-| status | prepared, unclaimed |
-| updated_at_utc | 2026-09-30 |
-| next_checkpoint | audyt bieżących skryptów, możliwości lokalnego runtime i dokładny przydział |
+| owner | Codex OPERATIONS, session ec4ff56ac2e8 |
+| base_sha | `312ba246f9bdeb035019e2ff4c1a09aaef0a734c` — published main verified through GitHub |
+| branch | `codex/watchdog-operations-20260930` |
+| files | `scripts/watchdogctl.sh`, `scripts/gcp_vm_bootstrap.sh`, new `scripts/watchdog_backup.py`, `tests/integration/operations_*.test.ts`, `docs/DEPLOY_GCP_VM.md`, this package |
+| status | claimed — isolated branch; no overlapping operations remote branch observed |
+| updated_at_utc | 2026-09-30T22:10:00Z |
+| next_checkpoint | backup format, isolated restore and executable failure tests |
 
 Integrator rozstrzyga konflikt. Stary claim wymaga sprawdzenia zdalnej gałęzi;
 nie wolno go przejąć samym upływem czasu. Użyj odrębnego checkoutu i gałęzi,
