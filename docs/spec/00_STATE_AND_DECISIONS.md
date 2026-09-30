@@ -25,8 +25,13 @@ the `pipeline_self_check` meaning. E4.5, E5.9, E5.10 and E6.3 are complete withi
 documented scopes. The installation-wide API boundary, session revocation, immutable project
 archives and offline expiry/inspection audit are exercised. Local Chromium 153 substitutes
 for the broken local Playwright download; Actions uses its standard browser installation.
-New-head verify/container CI is checked after publication, separately from the old E3.13
-result below. See [current handoff](../HANDOFF_2026-09-30.md).
+**Published and CI-verified code:** `f381b1ef68b7fc5ea75ae2e9cfcf45755d3a25b1` in
+[PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4), targeting `main`. Both `verify` and
+`container` passed in the [branch run 36754887636](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754887636)
+and [PR run 36754891991](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754891991).
+The standard Playwright browser passes 419/419; the real image builds and its production
+start/persistence check passes. This evidence is separate from the older E3.13 result below.
+The following checkpoint commit records documentation only. See [current handoff](../HANDOFF_2026-09-30.md).
 
 **E3.13 block resolved:** verified GitHub Actions
 [35829482923](https://github.com/klb-t/Watchdog-JH16/actions/runs/35829482923) on

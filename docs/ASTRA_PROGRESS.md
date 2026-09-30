@@ -701,8 +701,13 @@ expiring principal-bound reference inspection and persisted offline inspection r
 The clean local canonical gate passes **419/419**, zero failures/skips/cancellations;
 TypeScript, production build and JH16 demo pass. Local browser installation failed, so these
 browser cases used Chromium 153 without changing repository dependencies; Actions retains
-its standard Playwright installation. Docker is unavailable locally; new-head container CI
-is verified after publication. Earlier failing intermediate runs are not green checkpoints.
+its standard Playwright installation. Docker is unavailable locally; the published code
+`f381b1ef68b7fc5ea75ae2e9cfcf45755d3a25b1` passed both verify/container in branch run
+[36754887636](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754887636) and PR run
+[36754891991](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754891991). Standard-browser
+419/419, the demo and actual image build/start/persistence passed. [PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4)
+targets `main`; PR #1 is preserved. The following checkpoint changes documentation only.
+Earlier failing intermediate runs are not green checkpoints.
 Corrected issues include shared demo output directories, migration expectations, stable
 form labels after reload and a stale offline worker asset list. Atomic worker generation
 and read-back validation now guard the observed shell mismatch.
