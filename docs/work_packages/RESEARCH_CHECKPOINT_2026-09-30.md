@@ -1,5 +1,8 @@
 # RESEARCH checkpoint 1 — audit and proposed comparison contract
 
+Historical audit below; the assigned implementation and current acceptance are
+recorded in **Checkpoint 2 — E5.7d implementation** at the end of this document.
+
 Recorded: 2026-09-30T22:08:10Z. Owner: Codex RESEARCH session e15f2c5a4cd2.
 Base: `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`, tree
 `6e142be013eed96393770067f02051507b382c97`. Branch:
@@ -230,3 +233,128 @@ node --import tsx --test tests/e2e/workbench_field.test.ts tests/e2e/research_pr
 Add the new comparison flow to the actual browser suite, and record its exact
 command. Missing Chromium is a blocker, never passed. The integrator owns the
 full combined-head gate. Fixture software acceptance is not scientific validation.
+
+## Checkpoint 2 — E5.7d implementation
+
+Assignment: remote `docs/WORK_COORDINATION.md` at integrator commit `9a8adba`,
+read before implementation. Confirmed base remains
+`312ba246f9bdeb035019e2ff4c1a09aaef0a734c`; claim published as
+`da0b051e08152239a160efb53fe3203f9bacd6ba`. Migration 022 and the exact
+assigned RESEARCH paths were used. No shared ledger, locked JH16 preset or
+other worker's checkout was edited. PR: https://github.com/klb-t/Watchdog-JH16/pull/7.
+
+Published implementation checkpoints:
+
+| Remote commit | Scope |
+| --- | --- |
+| `17518dd1b21ad00d26259be5e6d5b6114fbe2ec4` | Strict scalar claim, immutable revisions/events/attempts, transactional fresh-run birth and approval-event binding |
+| `bab9ad19ef6dccb894bf492a962d01c3ac852d1d` | API, standalone v2 comparison export, adversarial integration tests and continued execution after account adoption |
+| `21ad029327ea368a0955ab041e82db58fc1f4a67` | Contextual review UI, archived UI profile compatibility, production browser tests and user documentation |
+
+The final implementation tree is `ac60c933c74cee160ed5182b671bb7d7be9cc36c`.
+Local commits and API-published commits differ in commit metadata; each published
+tree was compared exactly with its corresponding local commit tree. No force push.
+
+Implemented flow: exact retained quotation → immutable scalar claim and explicit
+tolerance → separate hash-bound review → freeze receipt → new bound run →
+deterministic comparison core and durable attempt → portable verified export.
+The service invokes the existing executor and wraps the existing comparison
+semantics. It adds no statistic, generated numerical code or tolerance inference.
+See `docs/PAPER_ANALYSES.md` for the UI, API and export contract.
+
+The claim pins source, operation, method, dataset and selection hashes. Revision
+and freeze snapshots retain known prior exposure; external exposure remains
+unknown. Run creation and ATTEMPT reservation share a transaction. Historical
+actors survive account adoption, while new freezes/attempts identify the new
+owner. Comparison, method and dataset approval-event identities are checked
+before and after asynchronous input reads, at finalization and at result/export
+read. Same-clock revoke/reapprove cannot revive an old execution. Failed or
+interrupted attempts remain visible after reopening SQLite.
+
+The core binds the complete claim, executor/version, plan, typed inputs and
+artifact hash; run IDs, receipts and clocks remain in a separate envelope.
+Repeated executions of the same claim/data have byte-identical cores and
+distinct run envelopes. Source/method ambiguity and unit issues remain distinct
+from missing numbers. Counts are excluded until their inherited units are
+resolved. Nonfinite input and arithmetic overflow cannot become valid evidence.
+
+`watchdog-research-package-2` adds `research/comparison.json` and `COMPARISON.md`.
+The standalone verifier checks exact quotations, all bindings and receipt order,
+and recomputes scalar-versus-tolerance arithmetic. It does not recompute the
+underlying statistic, authenticate a human/clock or prove independence. An
+externally retained manifest hash remains necessary against wholesale rewriting.
+Uncompared packages stay v1; old operation/UI formats remain readable.
+
+### Acceptance and independent review
+
+Five subagents worked on disjoint backend, export, tests and UI scopes plus a
+read-only independent audit; integration/API/documentation stayed with the root.
+The audit found and verified corrections for approval-epoch I/O races, the last
+asynchronous result read, overflow, intervening exposure and account adoption.
+It reported no remaining material backend/export blocker.
+
+Focused command:
+
+```bash
+node --import tsx --test tests/scientific/paper_comparison.test.ts tests/integration/paper_comparisons.test.ts
+```
+
+Result: **21/21 pass**, independently repeated after the last adoption fix.
+Tests cover stale/foreign approvals, ex-post run injection, immutable revisions,
+real database reopen/interruption/rollback, more than 100 attempts, two owners,
+revoked shared inputs, all three same-clock revoke/reapprove races, late-read
+revocation, continued account adoption, scalar/unit/missingness/overflow cases,
+cohort scope, deterministic cores, v1 compatibility and five internally rehashed
+semantic corruptions of the export. The prior operation/project/package/
+replication regression command above also passed **29/29**.
+
+Production browser command (after `npm run build`):
+
+```bash
+node --import tsx --test tests/e2e/paper_comparisons.test.ts tests/e2e/workbench_field.test.ts tests/e2e/research_projects.test.ts
+```
+
+The two new browser tests use the real production server, HTTP API, SQLite and
+Chromium. They cover review gating, execution, reload, download and standalone
+verification, a null-valued superseding revision, mobile containment and durable
+executor failure. Local Chromium could not start (missing installed headless
+shell; an available binary also failed with `socket(): Operation not permitted`).
+No local browser assertion is claimed as passed; CI is the browser acceptance.
+
+The first core checkpoint CI run `36786796560` passed both `verify` and
+`container`: **440/440 tests**, zero skipped, JH16 demo and the actual container
+persistence check. This is intermediate evidence, not acceptance of later UI/API.
+
+Final acceptance recorded 2026-09-30T22:49:00Z for implementation head
+`21ad029327ea368a0955ab041e82db58fc1f4a67`:
+
+| Gate | Observed result |
+| --- | --- |
+| Local `npm run lint` | exit 0 |
+| Local `npm run test:all` | lint/build pass; 457 tests, 430 pass, 27 browser-launch failures, zero skipped; exit 1 |
+| Local `npm run demo:jh16` | exit 0; 32 observations, 16 Pi, 16 Hi, both existing verdicts reproduced, pipeline_self_check retained |
+| CI `verify`, job `110131979221` | success; clean npm ci, lint/build, **457/457 pass**, zero skipped, JH16 demo pass |
+| CI `container`, job `110131979398` | success; full image test gate **457/457 pass**, zero skipped; real production start, non-root/read-only image, loopback HTTP, API write and persistence pass |
+
+CI run: https://github.com/klb-t/Watchdog-JH16/actions/runs/36787396456.
+Both new E5.7d browser tests passed in both CI jobs. The 27 local failures all
+report the missing Playwright headless-shell executable, before browser
+interaction; they are recorded as failures, not skipped or passed. Existing
+chunk-size and CJS import.meta build warnings remain. Dependencies/lockfile
+were not changed. This final checkpoint commit changes only documentation;
+the exact tested implementation head above is retained for reproducibility.
+
+### Integrator handoff
+
+Proposed ledger change: mark only **E5.7d** implemented after accepting this PR
+and running the combined-head gate. Keep **E5.7b** open. Preserve the distinction
+between software fixture acceptance and scientific approval, and between the
+comparison verdict and method/data/population/analysis fidelity. The latter are
+explicitly unassessed by this slice.
+
+Next action: integrate PR #7 with the other assigned packages, retain migration
+022 and API/export bindings, resolve shared imports without discarding adjacent
+work, then run `npm run test:all`, `npm run demo:jh16` and the existing production
+container persistence gate on that exact combined head. No new paid service,
+real patient data, live measurement, real scientific review or VM deployment
+was performed by this package.
