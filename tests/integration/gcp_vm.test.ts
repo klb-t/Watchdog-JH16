@@ -112,6 +112,6 @@ test('E3.13: runtime unit enforces durable single-writer private deployment',()=
   assert.ok(!unit.includes('--privileged'));assert.ok(!unit.includes('docker.sock'));
   const bootstrap=readFileSync(path.join(root,'scripts/gcp_vm_bootstrap.sh'),'utf8');
   assert.ok(bootstrap.indexOf('docker build --pull')<bootstrap.indexOf('systemctl stop watchdog.service'));
-  assert.ok(bootstrap.indexOf('Pre-update backup:')<bootstrap.indexOf('> /etc/watchdog/release.env'));
+  assert.ok(bootstrap.indexOf('Pre-update backup:')<bootstrap.indexOf('> "$root/etc/watchdog/release.env"'));
   assert.ok(!bootstrap.includes('WATCHDOG_ALLOW_EPHEMERAL_STORAGE'));
 });
