@@ -16,17 +16,35 @@ przed implementacją ustal z integratorem dokładny opublikowany SHA i claim.
 Uwzględnij wynik `codex/watchdog-wave1-20260930`; zakres E6.4/E6.5 sprawdź
 ponownie w kodzie. Nie traktuj tego pliku jako aktualnego raportu implementacji.
 
-## Claim — uzupełnia przydzielony właściciel
+## Claim — clinical-20260930
 
-| Pole | Stan początkowy |
+Przydział integratora: zdalny `main`, commit `9a8adba` (odczytany 2026-09-30 UTC).
+Zastępuje wcześniejsze awaiting-assignment w audycie; zakres to czysty rdzeń
+syntetyczny w pamięci, bez API, migracji, wspólnej aprobaty i nawigacji.
+
+| Pole | Stan |
 | --- | --- |
-| owner | nieprzydzielony |
-| base_sha | do ustalenia z integratorem po checkpointcie fali |
-| branch | nieutworzona; własna gałąź pakietu |
-| files | poniższy zakres jest propozycją do rozłącznego przydziału |
-| status | prepared, unclaimed |
-| updated_at_utc | 2026-09-30 |
-| next_checkpoint | zweryfikowany brak kontraktu przypadku i mały schema/fixture do przeglądu |
+| owner | clinical-20260930 |
+| base_sha | 312ba246f9bdeb035019e2ff4c1a09aaef0a734c |
+| branch | codex/clinical-audit-20260930, PR #6 |
+| status | claimed; ready for integration; E6.4a/b + E6.5a source-run demo verified |
+| updated_at_utc | 2026-09-30T22:49:31Z |
+| next_checkpoint | integrator review + full gate on combined head; API/persistence/UI remain a later allocation |
+
+Dokładnie przydzielone pliki:
+- `shared/clinical_demo.ts`
+- `shared/clinical_demo_validation.ts`
+- `tests/helpers/clinical_demo.ts`
+- `backend/watchdog_api/clinical_demo/executor.ts`
+- `backend/watchdog_api/clinical_demo/executor_manifest.ts`
+- `shared/clinical_demo_profile.ts`
+- `shared/clinical_demo_selector.ts`
+- `tests/unit/clinical_demo_case.test.ts`
+- `tests/unit/clinical_demo_executor.test.ts`
+- `tests/unit/clinical_demo_profile.test.ts`
+- `scripts/demo_clinical.ts`
+- `docs/work_packages/CLINICAL.md`
+- `docs/work_packages/CLINICAL_AUDIT_2026-09-30.md`
 
 Własny checkout/gałąź i opublikowany claim poprzedzają zmiany. Integrator
 przydziela rozłączne pliki; status w Markdown nie jest atomową blokadą.
@@ -139,3 +157,141 @@ Bez płatnych wywołań, kontaktowania osób, publikowania danych i zaleceń lec
 Oddaj małe commity, kontrakt, fikcyjne fixture, działający przebieg, testy
 i checkpoint z pierwszym następnym działaniem. Integrator aktualizuje globalny
 stan i ledger na podstawie rzeczywistych wyników, nie aspiracji pakietu.
+
+
+## Checkpoint 1 — E6.4a, 2026-09-30 UTC
+
+Przydział integratora odczytany z `main` `9a8adba8a22671769ecd2b0291e23e1007d8c6fc`.
+Claim opublikowany jako `d0a228b47465d2beb504d9f3bd59e641b6488f3e`.
+Bazowy kod pozostaje `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`.
+
+Zaimplementowano `shared/clinical_demo.ts`, `shared/clinical_demo_validation.ts`,
+`tests/helpers/clinical_demo.ts` i `tests/unit/clinical_demo_case.test.ts`.
+Ścisły model zachowuje jawne braki, oba zegary, źródła, reported/measured,
+konflikty, poprzednie obserwacje, mieszaniny częściowo nieznane i alternatywy.
+Supersession może korygować reported na measured, zachowując obie obserwacje.
+Nie ma importu danych pacjenta, API ani trwałego zapisu.
+
+`node --import tsx --test tests/unit/clinical_demo_case.test.ts`: **14/14 pass**.
+`npm run lint`: **exit 0** po korekcie typowania wyniku strict parse Zod;
+wcześniejsza próba wykazała trzy TS2322 i została poprawiona bez zmiany tsconfig.
+Niezależny audyt: **18 dodatkowych jednorazowych assertions pass**, nie są
+wliczane do 14 testów repo. Schemat nie dowodzi fikcyjnego pochodzenia dowolnego
+tekstu: uruchamialne demo będzie wybierać wyłącznie dostarczone fixture.
+Odrębny przegląd nie zatwierdza treści medycznej. E6.4b i E6.5a pozostają otwarte.
+
+
+## Checkpoint 2 — E6.4b, 2026-09-30 UTC
+
+Poprzedni opublikowany etap E6.4a: `12ea35996cfe5368c6347c7a779c48bd84f4ae60`.
+Dodano `backend/watchdog_api/clinical_demo/executor.ts`, `executor_manifest.ts`
+i `tests/unit/clinical_demo_executor.test.ts`. Brak I/O w interpreterze; wykonanie
+czyta jawny snapshot fixture. Własny manifest przypina bajty modułów i lockfile
+oraz wersję Node; CLI ma dostarczać rzeczywiste bajty checkoutu. Manifest nie jest
+podpisem ani atestacją rzeczywiście zainstalowanych zależności.
+
+Reguły mają osobny przegląd dokładnego hasha, fikcyjną applicability i typowane
+porównanie skalarne. Trace rozróżnia wynik, applicability, kwalifikację reguły,
+operacje i komplet braków. Zachowuje wykluczone superseded ID, wymagane i faktyczne
+hashe źródeł. Archiwum obejmuje cały niezmieniony przypadek i zależności; historyczny
+odczyt wymaga bieżących praw do hasha przypadku, wszystkich reguł i źródeł. Replay
+weryfikuje identyczność z archiwum, nie przywraca prawa do nowego wykonania.
+
+Niezależny audyt wykrył i potwierdził naprawę dwóch problemów: cofnięte źródło
+obserwacji spoza cytatów reguły nie blokowało jej wykonania; przypadek wiązał
+obserwacje z samym ID źródła. Teraz `sourcePins` zastępuje `sourceIds` i wymaga
+konkretnych hashy. Zmienione/ponownie zatwierdzone źródło nie zmienia pochodzenia
+starej obserwacji: potrzebny jest nowy przypadek/pin i nowy hash. Cofnięte,
+niezatwierdzone i nieczytelne źródło blokuje także kwalifikację całej reguły dla
+selektora, nawet gdy inna zależność jest zwyczajnie niezmierzona.
+
+`node --import tsx --test tests/unit/clinical_demo_case.test.ts tests/unit/clinical_demo_executor.test.ts`:
+**46/46 pass** (15 przypadek + 31 interpreter), zero fail/skipped/cancelled.
+`npm run lint`: **exit 0**. Niezależny przegląd: 19 pierwszych i 7 końcowych
+jednorazowych assertions; dodatkowe scenariusze zostały utrwalone w testach repo.
+
+Granice: to zaufany harness fixture w pamięci, nie serwer uprawnień. Przekazane
+booleany/listy dostępu nie nadają żadnych rzeczywistych praw. Posiadanie reguły w
+wejściu pochodzi z harnessu; osobna produkcyjna kontrola prawa odczytu reguły
+przed nowym wykonaniem pozostaje zadaniem przyszłego API. Wspólny model aprobat,
+referencje/offline, migracje i nawigacja nie zostały zmienione. Gate rdzenia
+pozwala teraz rozpocząć E6.5a bez dodatkowej decyzji właściciela.
+
+
+## Checkpoint 3 — E6.5a i działające demo, 2026-09-30 UTC
+
+Poprzedni opublikowany rdzeń E6.4b: `5f8ab5812d22906ccb5577e9853c4dca1837ee9d`.
+Dodano `shared/clinical_demo_profile.ts`, `shared/clinical_demo_selector.ts`,
+`tests/unit/clinical_demo_profile.test.ts` oraz `scripts/demo_clinical.ts`.
+
+Selector ponownie oblicza trace z bieżącego wejścia fixture, zamiast przyjmować
+historyczne `eligible=true`. Źródła, osobny przegląd reguły i applicability
+warunkują kwalifikację. Propozycje pochodzą wyłącznie z brakującej obserwacji lub
+wartości, zgodnej z profilem wielkości, dokładnej jednostki, trybu, kontekstu
+i jawnie prospektywnego czasu. Profil jest niezależny od `FieldProfile` i praw.
+
+Wszystkie pierwotne braki pozostają widoczne również przy znalezieniu kandydata.
+Niedostępny test, niezgodne jednostki/czas, `not_applicable`, konflikt, źródło lub
+aprobata pozostają lukami. Przyszły pomiar nie naprawia metadanych historycznych
+ani konkretnego pinned observation ID. Przy konflikcie/niejednoznaczności ta
+pierwsza wersja wstrzymuje propozycje dla całej reguły i jawnie podaje powód.
+Kolejność według ID nie jest rankingiem. Nie utworzono pomiaru ani zlecenia.
+
+### Uruchomienie i zaobserwowane wyniki
+
+Z katalogu repo z zainstalowanymi zależnościami:
+
+```sh
+node --import tsx scripts/demo_clinical.ts fixture:case-a available
+node --import tsx scripts/demo_clinical.ts fixture:case-b available
+node --import tsx scripts/demo_clinical.ts fixture:case-b unavailable
+```
+
+| Fixture / profil | Wynik reguły | Kandydaci pomiaru | Zachowane luki |
+| --- | --- | --- | --- |
+| A / available | supported | 0 | Brak luk zależności tej reguły; hipotezy bez reguł nadal jawne. |
+| B / available | undetermined | 1 | missing_value — propozycja nie wypełnia pomiaru. |
+| B / unavailable | undetermined | 0 | missing_value oraz test_unavailable. |
+
+JSON na stdout zawiera pełny przypadek, reguły, źródła, trace, archiveHash,
+profileHash, wynik historycznego replay oraz próbę cofnięcia źródła. Dwa identyczne
+uruchomienia dają identyczne bajty. Zmiana dostępności zmienia profileHash i
+propozycje bez zmiany caseHash, traceHash lub aprobat. CLI przyjmuje tylko dwa
+wbudowane identyfikatory przypadku i dwie wersje dostępności; odrzuca JSON,
+ścieżki plików i dodatkowe argumenty. Bez zapisu, sieci lub dowolnego importu.
+
+`executorHash` przypina rdzeń, schemat, lockfile i Node. Osobne `recipe` oraz
+`recipeHash` przypinają rzeczywiste bajty CLI, selektora, profilu i helpera fixture,
+wiążąc je z executorem. `reportHash` obejmuje wynik całej demonstracji. Te hashe
+sprawdzają zawartość; nie stanowią podpisu, zaufanej atestacji ani zatwierdzenia
+medycznego. Zmiana selektora nie unieważnia automatycznie rdzenia historycznego
+replay, bo obie tożsamości pozostają oddzielne.
+
+### Końcowa walidacja tego pakietu
+
+```sh
+npm run lint
+npm run build
+node --import tsx --test tests/unit/clinical_demo_case.test.ts tests/unit/clinical_demo_executor.test.ts tests/unit/clinical_demo_profile.test.ts tests/integration/field_reference.test.ts tests/integration/field_shell.test.ts tests/unit/field_ui.test.ts
+```
+
+Testy: **91/91 pass**, zero fail/skipped/cancelled — 15 przypadku, 31 executora,
+19 profilu/CLI i 26 istniejącej regresji referencji. Testy CLI uruchamiają
+rzeczywiste procesy, sprawdzają allowlist, komplet przepływu, deterministyczny
+stdout oraz zachowanie historycznego replay po cofnięciu źródła.
+`npm run lint`: **exit 0**.
+Produkcyjny `npm run build`: **exit 0** (trzy istniejące ostrzeżenia import.meta/CJS).
+Niezależny odbiór E6.5a: 24 jednorazowe dodatkowe assertions pass, bez edycji kodu
+przez audytora. Wykryte granice czasu (precyzja sekund i zakres roku), historycznej
+missingness oraz źródeł objęto testami repo.
+
+Nie ma nowego browser flow, bo integrator wyłączył API/nawigację z przydziału.
+Wcześniejszy lokalny blocker Chromium pozostaje jawny i nie jest raportowany jako
+browser pass. Nie testowano trwałej izolacji właścicieli, restartu ani stale
+revision serwisu, ponieważ serwis przypadku nie powstał. Profile/read grants
+pochodzą z zaufanego harnessu; produkcyjne API musi ustalać je samodzielnie.
+
+**Pierwszy następny ruch:** integrator odbiera opublikowany head PR #6 i uruchamia
+pełną bramkę na wspólnym headzie, a dopiero w kolejnym przydziale łączy demo z
+rzeczywistą autoryzacją, zapisem/API i kontekstowym UI. Nie oznaczać całych E6.4
+ani E6.5 jako ukończonych; zamknięty jest wyłącznie opisany syntetyczny wycinek.

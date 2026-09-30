@@ -6,6 +6,8 @@ import { WorkbenchRepository, WorkbenchError } from '../db/repositories/workbenc
 import { filterRows, selectionIdentity, type FigureSpec, type WorkbenchProfile } from '../../../shared/workbench';
 import { checkFigureProfile } from '../config/workbench';
 import { tracer } from '../utils/tracer';
+import type { ComparisonFreezeRef } from '../db/repositories/paper_comparisons';
+import { evaluatePaperComparison } from '../services/paper_comparisons';
 
 export class WorkbenchService {
   readonly profile: WorkbenchProfile;
@@ -39,13 +41,15 @@ export class WorkbenchService {
     assertValidMethodSpec(methodSpec);
     return this.repo.proposeMethod(actor, record.id, methodSpec, { figure: selection, columns: names }, requestId);
   }
-  async execute(actor: string, methodId: string, requestId: string) {
+  async execute(actor: string, methodId: string, requestId: string, comparison?: ComparisonFreezeRef) {
     const method = this.repo.method(methodId);
     if (!method || method.approvalState !== 'APPROVED') throw new WorkbenchError('An individually approved method is required.', 409);
+    const approvalReceipts = comparison ? this.repo.approvalReceipts(methodId) : null;
     const { record, spec: figure } = await this.repo.requireFigure(method.selection.figure, actor);
+    if (comparison && canonicalHash(approvalReceipts) !== canonicalHash(this.repo.approvalReceipts(methodId))) throw new WorkbenchError('Method or dataset approval receipt changed during input reads.', 409);
     const profile = this.profileForFigure(figure);
     const paperBinding = this.repo.paperBinding(actor, method.id);
-    const runId = this.repo.createRun(actor, { methodId, methodHash: method.hash, datasetHash: record.contentHash, selection: method.selection });
+    const runId = this.repo.createRun(actor, { methodId, methodHash: method.hash, datasetHash: record.contentHash, selection: method.selection, ...(comparison ? { approvalReceipts } : {}) }, comparison, requestId);
     return tracer.runWithSpan('workbench', 'analysis', async () => {
       try {
         this.repo.transitionRun(runId, 'VALIDATING'); assertValidMethodSpec(method.spec);
@@ -61,9 +65,14 @@ export class WorkbenchService {
         const artifact = await new TypeScriptMethodExecutor().execute(method.spec, series, { approvable: {
           id: method.id, kind: 'method_spec', content: method.spec, approvedHash: method.approvedHash, approvedBy: method.approvedBy, approvedAt: method.approvedAt } });
         this.repo.transitionRun(runId, 'EXPORTING');
+        const comparisonBinding = this.repo.comparisonBinding(actor, runId);
+        const core = comparisonBinding ? { ...evaluatePaperComparison(comparisonBinding.comparison.body.claim, artifact.results),
+          comparisonHash: comparisonBinding.comparison.hash, artifactHash: canonicalHash(artifact), plan: comparisonBinding.comparison.body.plan, inputHash: canonicalHash(series), inputs: series,
+          executor: { id: artifact.executorId, version: artifact.executorVersion } } : null;
+        const paperComparison = comparisonBinding ? { ...comparisonBinding, core, coreHash: canonicalHash(core) } : null;
         const result = { version: 'workbench-result-1', runId, datasetHash: record.contentHash, methodId, methodHash: method.hash,
           selection: method.selection, methodSpec: method.spec, inputs: series, source: record.document.source, comparisonScope: record.document.comparisonScope,
-          profile, ...(paperBinding ? { paperBinding } : {}),
+          profile, ...(paperComparison ? { paperComparison } : {}), ...(paperBinding ? { paperBinding } : {}),
           artifact, inputHash: canonicalHash(series), inputRowIds: rows.map(r => r.id), traceId: tracer.getContext()?.trace_id };
         const saved = await this.repo.persistResult(runId, actor, result);
         this.repo.transitionRun(runId, 'COMPLETED'); this.repo.audit(actor, 'workbench.analysis', runId, requestId, { resultHash: saved.hash, methodHash: method.hash });

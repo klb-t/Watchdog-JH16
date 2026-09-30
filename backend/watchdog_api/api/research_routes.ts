@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import { tracer } from '../utils/tracer';
 import { PaperOperationService, loadPaperOperationProfile } from '../services/paper_operations';
+import { PaperComparisonService } from '../services/paper_comparisons';
+import { researchPackage } from '../workbench/publication';
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
 import { requireCapability } from './auth_routes';
@@ -18,12 +20,43 @@ import { loadExtractionDatasetProfile } from '../config/extraction_dataset';
 const route = (fn: (req: Request,res: Response) => unknown) => (req: Request,res: Response,next: NextFunction) => {
   Promise.resolve().then(() => fn(req,res)).catch(e => e instanceof AutomationError || e instanceof WorkbenchError ? res.status(e.status).json({ error: e.code, message: e.message }) : next(e));
 };
-export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntakeService, extraction: ExtractionWorkshop, automation: AutomationRepository, worker: AutomationService, datasets?:ExtractionDatasetService, operations?:PaperOperationService) {
+export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntakeService, extraction: ExtractionWorkshop, automation: AutomationRepository, worker: AutomationService, datasets?:ExtractionDatasetService, operations?:PaperOperationService, comparisons?:PaperComparisonService) {
   const router = Router(); router.use(requireCapability('method.propose')); router.use(sameOriginMutation);
   router.use((_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
   router.get('/', route((req,res) => res.json({ datasetProfile: loadExtractionDatasetProfile(), documents: repo.documents(req.principal!.id).map(d=>({ ...d, body:{...d.body,text:undefined}, characterCount:d.body.text.length })), assessments: repo.assessments(req.principal!.id),
     substitutions: repo.substitutions(req.principal!.id), extractors: repo.extractors(req.principal!.id), jobs:automation.jobs(req.principal!.id).filter(j=>j.request.kind==='paper_review') })));
   const op = () => { if (!operations) throw new WorkbenchError('Paper operations are not configured.', 503); return operations; };
+  const comparison = () => { if (!comparisons) throw new WorkbenchError('Paper comparisons are not configured.', 503); return comparisons; };
+  const comparisonReview = z.object({ expectedHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict();
+  const comparisonRequest = () => tracer.getContext()?.request_id ?? randomUUID();
+  router.get('/comparisons', route(async(req,res)=> {
+    const query = z.object({ operationId: z.string().min(1) }).strict().parse(req.query);
+    res.json({ comparisons: await comparison().list(req.principal!.id, query.operationId) });
+  }));
+  router.post('/comparisons', requireCapability('workbench.analyze'), route(async(req,res)=> {
+    res.status(201).json({ comparison: await comparison().propose(req.principal!.id, req.body, comparisonRequest()) });
+  }));
+  router.get('/comparisons/:id', route(async(req,res)=>res.json({ comparison: await comparison().get(req.principal!.id,req.params.id) })));
+  router.post('/comparisons/:id/approve', requireCapability('method.approve'), route(async(req,res)=> {
+    const b = comparisonReview.parse(req.body);
+    res.json({ comparison: await comparison().approve(req.principal!.id,req.params.id,b.expectedHash,comparisonRequest()) });
+  }));
+  router.post('/comparisons/:id/revoke', requireCapability('method.approve'), route(async(req,res)=> {
+    const b = comparisonReview.parse(req.body);
+    res.json({ comparison: await comparison().revoke(req.principal!.id,req.params.id,b.expectedHash,comparisonRequest()) });
+  }));
+  router.post('/comparisons/:id/execute', requireCapability('workbench.analyze'), route(async(req,res)=> {
+    const b = comparisonReview.parse(req.body);
+    res.json({ result: await comparison().execute(req.principal!.id,req.params.id,b.expectedHash,comparisonRequest()) });
+  }));
+  router.get('/comparisons/:id/runs/:runId', route(async(req,res)=>res.json(await comparison().result(req.principal!.id,req.params.id,req.params.runId))));
+  router.get('/comparisons/:id/runs/:runId/export', route(async(req,res)=> {
+    const v = await comparison().result(req.principal!.id,req.params.id,req.params.runId);
+    const bundle = researchPackage(v.record,v.spec,v.profile,v.result,v.geometry);
+    repo.audit(req.principal!.id,'paper.comparison.export',req.params.id,{runId:req.params.runId,manifestHash:bundle.manifestHash});
+    res.setHeader('X-Package-Manifest-SHA256',bundle.manifestHash); res.setHeader('X-Package-SHA256',bundle.sha256);
+    res.attachment('watchdog-paper-comparison.zip').type('application/zip').send(bundle.bytes);
+  }));
   router.get('/operations', route((req,res) => res.json({profile:loadPaperOperationProfile(),operations:op().list(req.principal!.id)})));
   router.get('/operations/:id', route((req,res) => res.json({operation:op().get(req.principal!.id,req.params.id)})));
   router.post('/operations',requireCapability('workbench.analyze'),route(async(req,res)=>res.status(201).json({operation:await op().prepare(req.principal!.id,req.body,tracer.getContext()?.request_id??randomUUID())})));

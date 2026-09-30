@@ -90,3 +90,83 @@ Etykiety, rodzaje pochodzenia i opcje braków są w `config/paper-operation-ui.j
 Walidator porównuje obsługiwane zasady z rejestrem wykonawców. Dodanie etykiety
 nie dodaje implementacji obliczeń. Nowy wykonawca wymaga kontraktu i weryfikacji
 numerycznej; ogólny kompilator całych prac pozostaje osobnym zadaniem.
+
+## E5.7d — twierdzenie i zamrożone porównanie
+
+Pod zapisanym planem dostępne jest **Porównanie z twierdzeniem pracy**. Wskaż
+dokładny cytat twierdzenia, oczekiwaną wartość, jednostkę i statystykę oraz
+uzasadnij interpretację i tolerancję bezwzględną albo względną. Tolerancja
+względna jest proporcją (np. 0,1 oznacza 10%). Formularz nie sugeruje tolerancji
+na podstawie wyniku. Nieznaną wartość lub jednostkę oznacz jako brak; nie wpisuj
+zera w zastępstwie brakującej informacji.
+
+1. **Zapisz niezmienną wersję porównania**. Wersja przypina źródło, cytat,
+   operację, metodę, dane, kohortę i postępowanie z brakami. Zachowuje znane
+   wcześniejsze wersje i wykonania, również nieudane; ekspozycja poza systemem
+   pozostaje nieznana.
+2. Przeczytaj zapisany claim, zaznacz osobny przegląd i wybierz **Zatwierdź tę
+   wersję porównania**. To osobna czynność wobec zatwierdzenia metody i danych.
+   Nie jest wymagany drugi człowiek ani przyznawane zatwierdzenie całej pracy.
+3. **Zamroź porównanie i wykonaj nową próbę** zapisuje zamrożenie, a następnie
+   tworzy nowy run z trwałym powiązaniem. Nie można dołączyć istniejącego runu
+   po fakcie. Kolejność potwierdzają numery zdarzeń, także gdy czasy są identyczne.
+4. Odczytaj wynik i pobierz pakiet. **Przygotuj kolejną wersję** zachowuje
+   poprzednika oraz historię; zmiana nie poprawia wcześniejszego werdyktu.
+
+Obsługiwane są Pearson, Spearman i średnia/mediana/odchylenie standardowe/
+minimum/maksimum istniejącej operacji describe. Liczności describe pozostają
+wyłączone, ponieważ dotychczasowy format przypisuje im jednostkę pomiaru.
+Nie zmieniamy jednostek starych artefaktów. Porównanie wymaga dokładnego klucza
+jednego skalara; nie wybiera dowolnej pierwszej liczby ani nie przelicza jednostek.
+
+| Stan porównania | Znaczenie |
+| --- | --- |
+| reproduced | Wartość mieści się w zadeklarowanej tolerancji, z uwzględnieniem jej granicy |
+| deviates | Wartość leży poza tolerancją; odchylenie pozostaje zapisane |
+| not_computable | Brak wyniku albo niewykonalne porównanie, np. zerowa baza względna |
+| method_unclear | Niejednoznaczny skalar, niezgodne/brakujące jednostki lub brak wymaganej interpretacji |
+
+Wynik zawiera uporządkowane przyczyny. Niejednoznaczność metody/jednostek ma
+pierwszeństwo przed brakiem liczby. Nieprawidłowe i nieskończone wartości są
+odrzucane przed hashowaniem; przepełnienie obliczenia kończy próbę błędem,
+zamiast zapisać pozorny werdykt. Stan wykonania FAILED jest odrębny od werdyktu.
+
+Porównanie nie zmienia oznaczenia reanalizy, proxy ani symulacji. Wierność
+metody, danych, populacji i analizy pozostaje osobno nieoceniona względem całej
+publikacji. Zamrożenie dowodzi tylko kolejności zapisanej w tym systemie;
+nie dowodzi wcześniejszej nieznajomości danych ani niezależności badania.
+
+Kontrola wykonania wiąże konkretne zdarzenia zatwierdzenia porównania, metody
+i danych. Cofnięcie i ponowne zatwierdzenie w trakcie zapisu przerywa próbę,
+nawet jeśli hash danych i czas zegarowy się nie zmieniły. Wyniki związane ze
+zastąpionymi aprobatami nie są ponownie udostępniane jako aktualnie zatwierdzone:
+historia pozostaje, a nowe wykonanie otrzymuje nowe powiązanie. Przerwana próba
+przeżywa restart z dotychczasowym stanem; system nie usuwa jej ani nie dopisuje
+wyniku. Przeniesienie lokalnego właściciela na konto zachowuje pierwotnych
+aktorów zapisanych w archiwalnych zdarzeniach.
+
+### Weryfikowalny eksport porównania
+
+Pakiet z porównaniem ma wersję `watchdog-research-package-2`, plik
+`research/comparison.json` i objaśnienia w `COMPARISON.md`. Pakiety bez
+porównania pozostają w wersji 1, a wcześniejsze konteksty operacji są nadal
+odczytywane. Pełny tekst źródła i niewybrane wiersze nadal są w archiwum.
+
+Weryfikator sprawdza dokładny cytat, plan i wejścia, hashe, zdarzenia przeglądu/
+zamrożenia/runu oraz przelicza samo porównanie skalar–tolerancja. **Nie przelicza
+statystyki źródłowej**, nie potwierdza tożsamości recenzenta ani wiarygodnego
+zegara, nie ocenia naukowej poprawności. Zachowaj hash manifestu poza archiwum.
+
+Deterministyczny rdzeń ma hash claimu, plan, wejścia, hash artefaktu wykonawcy,
+wersję algorytmu i wynik porównania. Numery runów, śladów i czasy należą do
+osobnej koperty zdarzeń. Dwie próby tej samej zamrożonej wersji i danych mają
+identyczny rdzeń, lecz różne identyfikatory wykonania.
+
+API pod `/api/research/comparisons` udostępnia utworzenie wersji, listę dla
+`operationId`, odczyt `/:id`, osobne POST `/:id/approve`, `/:id/revoke`,
+`/:id/execute` z dokładnym `expectedHash` oraz odczyt/eksport
+`/:id/runs/:runId`. Właściciel pochodzi z sesji; zapis nie przyjmuje aktora
+ani starego runu. Obowiązują istniejące uprawnienia method.propose,
+workbench.analyze i method.approve oraz kontrola pochodzenia żądań.
+
+E5.7d nie zamyka ogólnego kompilatora publikacji i replikacji E5.7b.
