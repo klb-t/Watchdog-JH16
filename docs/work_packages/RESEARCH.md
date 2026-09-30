@@ -20,18 +20,20 @@ uzgodniony z integratorem, zawierający wymagane zmiany
 
 | Pole | Stan początkowy |
 | --- | --- |
-| owner | Codex RESEARCH e15f2c5a4cd2 — audyt; przydział implementacji oczekuje |
+| owner | Codex RESEARCH e15f2c5a4cd2 — E5.7d, przydział integratora `9a8adba` |
 | base_sha | `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`, zweryfikowany opublikowany main po fali |
 | branch | `codex/watchdog-research-20260930` — izolowany checkout |
-| files | zapis audytu: ten plik i `docs/work_packages/RESEARCH_CHECKPOINT_2026-09-30.md`; pliki implementacji są tylko propozycją |
-| status | audited, implementation_unclaimed — brak potwierdzonego przydziału integratora |
-| updated_at_utc | 2026-09-30T22:08:10Z |
-| next_checkpoint | integrator przydziela konkretne pliki/migrację i numer wycinka; następnie rdzeń paper-comparison-1 |
+| files | dokładny przydział E5.7d z `docs/WORK_COORDINATION.md` na zdalnym main `9a8adba`; migracja 022, shared/paper_comparison.ts, serwis/repozytorium porównań, przydzielone punkty workbench/API/UI/eksportu, testy i dokumentacja |
+| status | claimed, implementing — przydział odczytany ze zdalnego main |
+| updated_at_utc | 2026-09-30T22:27:00Z |
+| next_checkpoint | walidowany paper-comparison-1 i testy; następnie trwałe review/freeze/nowe wykonanie |
 
 Pierwszy audyt i propozycja kontraktu: [checkpoint RESEARCH](RESEARCH_CHECKPOINT_2026-09-30.md).
 Testy pakietu: 29/29 pass. Pełna lokalna bramka: lint/build pass, 409 pass,
 25 fail przy uruchamianiu nieobecnego Chromium; demo JH16 pass. Nie wdrożono
 jeszcze nowego przepływu porównania i nie zmieniono globalnego ledgeru.
+Blokada organizacyjna tego checkpointu została zniesiona przez przydział
+integratora `9a8adba`; poniższy historyczny audyt zachowuje wcześniejszy stan.
 
 Własny checkout/gałąź i opublikowany claim poprzedzają edycję. Integrator
 rozstrzyga konflikt; plik claimu nie jest atomową blokadą. Przed uznaniem
