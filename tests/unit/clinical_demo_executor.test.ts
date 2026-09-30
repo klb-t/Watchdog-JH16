@@ -159,6 +159,83 @@ test('E6.4b false comparison preserves every hypothesis and all mixture/unknown/
   assert.deepEqual(fixture.hypotheses.map(h => h.kind), ['substance', 'class', 'mixture', 'unknown_composition', 'comorbidity', 'non_toxicological']);
 });
 
+test('E6.4b supersession cannot hide a pinned observation conflict using invalid source provenance', () => {
+  for (const mode of ['revoked', 'unreviewed', 'unreadable', 'missing', 'changed', 'reapproved_changed'] as const) {
+    const request = input(), original = request.case.observations[0];
+    request.rules[0].dependencies[0].observationId = original.id;
+    request.reviews = [testClinicalRuleReview(request.rules[0])];
+    request.case.observations.push(testClinicalObservation({ id: 'fixture:conflict', value: known(-2), contradicts: [original.id] }));
+    assertBlocked(executeClinicalDemo(request).trace.rules[0], 'observation_conflict');
+    const source = testClinicalSourceState({ document: testClinicalSource({ id: 'fixture:replacement-source' }) });
+    request.case.sourcePins.push({ referenceId: source.document.id, contentHash: source.contentHash });
+    request.sources.push(source);
+    request.case.observations.push(testClinicalObservation({ id: 'fixture:replacement', supersedes: 'fixture:conflict', sourceId: source.document.id }));
+    const valid = executeClinicalDemo(request);
+    assert.equal(valid.trace.rules[0].outcome, 'supported');
+    const evidence = valid.trace.rules[0].operations.filter(item => item.operation === 'supersession_provenance').map(item => JSON.parse(item.detail));
+    assert.ok(evidence.some(item => item.observationId === 'fixture:replacement' && item.supersedes === 'fixture:conflict'
+      && item.status === 'approved' && item.actualHash === source.contentHash));
+    const historical = canonicalizeJson(valid.archive);
+    if (mode === 'revoked' || mode === 'unreviewed') source.status = mode;
+    if (mode === 'unreadable') source.readable = false;
+    if (mode === 'missing') request.sources.pop();
+    if (mode === 'changed' || mode === 'reapproved_changed') source.document.statement = 'Changed fictional correction source.';
+    if (mode === 'reapproved_changed') source.contentHash = source.approvedHash = canonicalHash(source.document);
+    const blocked = executeClinicalDemo(request).trace.rules[0];
+    assertBlocked(blocked);
+    assert.equal(blocked.eligible, false, mode);
+    assert.ok(blocked.gaps.some(item => item.code.startsWith('source_') && item.observationIds.includes('fixture:replacement')), mode);
+    assert.equal(canonicalizeJson(valid.archive), historical);
+  }
+});
+
+test('E6.4b every relevant supersession chain link needs current provenance but unrelated chains do not', () => {
+  const request = input(), original = request.case.observations[0];
+  request.rules[0].dependencies[0].observationId = original.id;
+  request.reviews = [testClinicalRuleReview(request.rules[0])];
+  const source = testClinicalSourceState({ document: testClinicalSource({ id: 'fixture:chain-source' }) });
+  request.case.sourcePins.push({ referenceId: source.document.id, contentHash: source.contentHash });
+  request.sources.push(source);
+  request.case.observations.push(
+    testClinicalObservation({ id: 'fixture:conflict', value: known(-2), contradicts: [original.id] }),
+    testClinicalObservation({ id: 'fixture:intermediate', supersedes: 'fixture:conflict', sourceId: source.document.id }),
+    testClinicalObservation({ id: 'fixture:last', supersedes: 'fixture:intermediate' }),
+  );
+  assert.equal(executeClinicalDemo(request).trace.rules[0].outcome, 'supported');
+  const originalStatement = source.document.statement;
+  for (const position of ['fixture:intermediate', 'fixture:last']) {
+    request.case.observations.find(item => item.id === 'fixture:intermediate')!.sourceId = position === 'fixture:intermediate' ? source.document.id : 'fixture:source-a';
+    request.case.observations.find(item => item.id === 'fixture:last')!.sourceId = position === 'fixture:last' ? source.document.id : 'fixture:source-a';
+    for (const mode of ['revoked', 'unreadable', 'changed'] as const) {
+      source.status = mode === 'revoked' ? 'revoked' : 'approved';
+      source.readable = mode !== 'unreadable';
+      source.document.statement = mode === 'changed' ? 'Changed fictional chain source.' : originalStatement;
+      const blocked = executeClinicalDemo(request).trace.rules[0];
+      assertBlocked(blocked);
+      assert.equal(blocked.eligible, false, `${position}:${mode}`);
+      assert.ok(blocked.gaps.some(item => item.code.startsWith('source_') && item.observationIds.includes(position)));
+      const evidence = blocked.operations.filter(item => item.operation === 'supersession_provenance').map(item => JSON.parse(item.detail));
+      assert.deepEqual(evidence.map(item => item.observationId), ['fixture:intermediate', 'fixture:last']);
+    }
+    source.status = 'approved'; source.readable = true; source.document.statement = originalStatement;
+  }
+  source.status = 'revoked';
+  let blocked = executeClinicalDemo(request).trace.rules[0];
+  assertBlocked(blocked, 'source_unapproved');
+  assert.equal(blocked.eligible, false);
+  request.case.observations.find(item => item.id === 'fixture:intermediate')!.sourceId = 'fixture:source-a';
+  request.case.observations.find(item => item.id === 'fixture:last')!.sourceId = source.document.id;
+  blocked = executeClinicalDemo(request).trace.rules[0];
+  assertBlocked(blocked, 'source_unapproved');
+  assert.equal(blocked.eligible, false);
+  request.case.observations.find(item => item.id === 'fixture:last')!.sourceId = 'fixture:source-a';
+  request.case.observations.push(
+    testClinicalObservation({ id: 'fixture:unrelated-old', quantityId: 'fixture:q-beta' }),
+    testClinicalObservation({ id: 'fixture:unrelated-new', quantityId: 'fixture:q-beta', supersedes: 'fixture:unrelated-old', sourceId: source.document.id }),
+  );
+  assert.equal(executeClinicalDemo(request).trace.rules[0].outcome, 'supported');
+});
+
 test('E6.4b approved source cannot substitute for a separate exact-hash rule review', () => {
   const request = input(); request.reviews = [];
   assertBlocked(executeClinicalDemo(request).trace.rules[0], 'rule_unapproved');

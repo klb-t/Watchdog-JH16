@@ -33,6 +33,20 @@ test('paper comparison core: missing scalar and absent expected value are explic
   assert.equal(evaluatePaperComparison(claim({ expectedValue: 0, tolerance: { ...fixture.tolerance, kind: 'relative' } }), [scalar({ valueNumeric: 0 })]).verdict, 'not_computable');
 });
 
+test('paper comparison core: declared tolerances never assert preregistration after prior exposure', () => {
+  for (const kind of ['absolute', 'relative'] as const) {
+    for (const valueNumeric of [1, 0.5]) {
+      const result = evaluatePaperComparison(claim({
+        rationale: 'A revised comparison after observing the first result.',
+        tolerance: { kind, value: 0.1, rationale: 'Tolerance chosen after prior exposure.' },
+      }), [scalar({ valueNumeric })]);
+      assert.equal(result.verdict, valueNumeric === 1 ? 'reproduced' : 'deviates');
+      assert.match(result.rationale, /declared tolerance/);
+      assert.doesNotMatch(result.rationale, /pre[- ]?register/i);
+    }
+  }
+});
+
 test('paper comparison core: exact metric, cardinality and scalar shape block ambiguous selection', () => {
   assert.equal(evaluatePaperComparison(claim(), [scalar({ metricKey: 'pearson.extra' })]).verdict, 'not_computable');
   assert.equal(evaluatePaperComparison(claim(), [scalar(), scalar()]).verdict, 'method_unclear');

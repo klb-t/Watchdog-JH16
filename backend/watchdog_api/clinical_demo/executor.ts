@@ -60,6 +60,32 @@ function gap(code: string, detail: string, dependencyId: string | null = null, o
   return { code, detail, dependencyId, observationIds: [...observationIds].sort() };
 }
 
+function relevantSupersessionRecords(record: ClinicalCase, candidates: ClinicalCase['observations']): ClinicalCase['observations'] {
+  const relevantIds = new Set(candidates.map(observation => observation.id));
+  for (const other of record.observations) {
+    if (candidates.some(candidate => candidate.contradicts.includes(other.id) || other.contradicts.includes(candidate.id)))
+      relevantIds.add(other.id);
+  }
+  const successors = new Map<string, ClinicalCase['observations']>();
+  for (const observation of byId(record.observations)) {
+    if (observation.supersedes !== null)
+      successors.set(observation.supersedes, [...(successors.get(observation.supersedes) ?? []), observation]);
+  }
+  const pending = [...relevantIds].sort();
+  const visited = new Set<string>();
+  const consulted = new Map<string, ClinicalCase['observations'][number]>();
+  for (let index = 0; index < pending.length; index++) {
+    const target = pending[index];
+    if (visited.has(target)) continue;
+    visited.add(target);
+    for (const successor of successors.get(target) ?? []) {
+      consulted.set(successor.id, successor);
+      pending.push(successor.id);
+    }
+  }
+  return byId([...consulted.values()]);
+}
+
 function checkApplicability(record: ClinicalCase, rule: ClinicalRule): { applicability: ClinicalApplicability; gaps: ClinicalGap[] } {
   const gaps: ClinicalGap[] = [];
   let mismatch = false;
@@ -81,6 +107,27 @@ function checkDependency(record: ClinicalCase, dependency: ClinicalDependency, s
     ? observation.quantityId === dependency.quantityId : observation.id === dependency.observationId));
   const active = candidates.filter(observation => !superseded.has(observation.id));
   const add = (code: string, detail: string, ids: string[] = []) => gaps.push(gap(code, detail, dependency.id, ids));
+  const checkedSources = new Set<string>();
+  const checkObservationSource = (observation: ClinicalCase['observations'][number]) => {
+    if (checkedSources.has(observation.id)) return;
+    checkedSources.add(observation.id);
+    const ids = [observation.id], source = sources.get(observation.sourceId);
+    if (!source) add('source_missing', `Observation source ${observation.sourceId} is unavailable.`, ids);
+    else {
+      if (!source.readable) add('source_unreadable', `Observation source ${observation.sourceId} is not currently readable.`, ids);
+      const actualHash = canonicalHash(source.document);
+      const casePin = record.sourcePins.find(pin => pin.referenceId === observation.sourceId);
+      if (actualHash !== source.contentHash || !casePin || actualHash !== casePin.contentHash)
+        add('source_changed', `Observation source ${observation.sourceId} does not match the case-pinned content hash.`, ids);
+      if (source.status !== 'approved' || source.approvedHash !== actualHash)
+        add('source_unapproved', `Observation source ${observation.sourceId} lacks current approval for its exact content.`, ids);
+    }
+  };
+  // Supersession is evidence too: a record outside an ID-pinned dependency can
+  // remove a conflicting observation. Validate every successor in the relevant
+  // chains, even intermediate records, before that exclusion permits execution.
+  // Unrelated observation chains do not become dependencies of this rule.
+  for (const successor of relevantSupersessionRecords(record, candidates)) checkObservationSource(successor);
   if (!candidates.length) add('missing_observation', `No observation matches ${dependency.quantityId}.`);
   else if (!active.length) add('observation_superseded', 'All matching observations are explicitly superseded.', candidates.map(value => value.id));
   if (active.length > 1) add('observation_ambiguous', 'Multiple active observations match; no newest-value selection is performed.', active.map(value => value.id));
@@ -104,17 +151,7 @@ function checkDependency(record: ClinicalCase, dependency: ClinicalDependency, s
       if (offset < dependency.eventWindow.minOffsetMs || offset > dependency.eventWindow.maxOffsetMs)
         add('event_window_mismatch', `Event offset ${offset} ms falls outside the declared inclusive window.`, ids);
     }
-    const source = sources.get(observation.sourceId);
-    if (!source) add('source_missing', `Observation source ${observation.sourceId} is unavailable.`, ids);
-    else {
-      if (!source.readable) add('source_unreadable', `Observation source ${observation.sourceId} is not currently readable.`, ids);
-      const actualHash = canonicalHash(source.document);
-      const casePin = record.sourcePins.find(pin => pin.referenceId === observation.sourceId);
-      if (actualHash !== source.contentHash || !casePin || actualHash !== casePin.contentHash)
-        add('source_changed', `Observation source ${observation.sourceId} does not match the case-pinned content hash.`, ids);
-      if (source.status !== 'approved' || source.approvedHash !== actualHash)
-        add('source_unapproved', `Observation source ${observation.sourceId} lacks current approval for its exact content.`, ids);
-    }
+    checkObservationSource(observation);
   }
   const accepted = active.length === 1 && !gaps.length ? active[0] : null;
   return { dependency, observationIds: candidates.map(value => value.id), acceptedObservationId: accepted?.id ?? null,
@@ -150,6 +187,16 @@ function evaluateRule(input: ClinicalExecutionInput, rule: ClinicalRule): Clinic
   const dependencies = byId(rule.dependencies).map(dependency => checkDependency(input.case, dependency, sources));
   for (const dependency of dependencies) {
     operations.push({ operation: 'dependency', detail: `${dependency.dependency.id}:${dependency.gaps.length ? 'blocked' : 'satisfied'}` });
+    const candidates = input.case.observations.filter(item => dependency.observationIds.includes(item.id));
+    for (const successor of relevantSupersessionRecords(input.case, candidates)) {
+      const source = sources.get(successor.sourceId);
+      operations.push({ operation: 'supersession_provenance', detail: canonicalizeJson({
+        dependencyId: dependency.dependency.id, observationId: successor.id, supersedes: successor.supersedes,
+        sourceId: successor.sourceId, casePinnedHash: input.case.sourcePins.find(pin => pin.referenceId === successor.sourceId)?.contentHash ?? null,
+        actualHash: source ? canonicalHash(source.document) : null, contentHash: source?.contentHash ?? null,
+        readable: source?.readable ?? false, status: source?.status ?? null, approvedHash: source?.approvedHash ?? null,
+      }) });
+    }
     for (const observationId of dependency.observationIds) {
       const observation = input.case.observations.find(item => item.id === observationId)!;
       const successors = input.case.observations.filter(item => item.supersedes === observationId).map(item => item.id).sort();
@@ -207,7 +254,7 @@ const DependencyTraceSchema = z.object({ dependency: ClinicalDependencySchema, o
 const RuleTraceSchema = z.object({ ruleId: id, ruleHash: digest, references: z.array(z.object({ referenceId: id, contentHash: digest }).strict()).max(100), hypothesisId: id,
   applicability: z.enum(['applicable', 'inapplicable', 'undetermined']), outcome: z.enum(['supported', 'contradicted', 'undetermined']), execution: z.enum(['evaluated', 'blocked']),
   meaning: z.string().min(1).max(1000), eligible: z.boolean(), dependencies: z.array(DependencyTraceSchema).max(100), gaps: z.array(GapSchema).max(200100),
-  operations: z.array(z.object({ operation: z.string().max(100), detail: z.string().max(32768) }).strict()).max(40500),
+  operations: z.array(z.object({ operation: z.string().max(100), detail: z.string().max(32768) }).strict()).max(60500),
 }).strict();
 const TraceSchema = z.object({ schemaVersion: z.literal(CLINICAL_DEMO_VERSION), purpose: z.literal('software-demonstration'), caseHash: digest, executorHash: digest,
   rules: z.array(RuleTraceSchema).max(100), unresolvedHypothesisIds: z.array(id).max(100), limitations: z.array(z.string().max(2000)).max(100) }).strict();

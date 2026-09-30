@@ -46,8 +46,8 @@ function verifyComparisonCalculation(claim, result, core, plan) {
     verdict = withinTolerance ? 'reproduced' : 'deviates';
     reason = withinTolerance ? 'within_tolerance' : 'outside_tolerance';
     rationale = claim.tolerance.kind === 'absolute'
-      ? `Observed ${observed.toFixed(4)} is ${Math.abs(deviation).toFixed(4)} from the claimed ${expected}, ${withinTolerance ? 'within' : 'outside'} the pre-registered ±${tolerance}.`
-      : `Observed ${observed.toFixed(4)} differs from the claimed ${expected} by ${(deviation * 100).toFixed(1)}%, ${withinTolerance ? 'within' : 'outside'} the pre-registered ±${(tolerance * 100).toFixed(0)}%.`;
+      ? `Observed ${observed.toFixed(4)} is ${Math.abs(deviation).toFixed(4)} from the claimed ${expected}, ${withinTolerance ? 'within' : 'outside'} the declared tolerance ±${tolerance}.`
+      : `Observed ${observed.toFixed(4)} differs from the claimed ${expected} by ${(deviation * 100).toFixed(1)}%, ${withinTolerance ? 'within' : 'outside'} the declared tolerance ±${(tolerance * 100).toFixed(0)}%.`;
   }
   check(core.verdict === verdict && core.withinTolerance === withinTolerance && core.deviation === deviation && core.reason === reason && core.rationale === rationale, 'Comparison verdict, arithmetic or rationale does not follow recorded semantics.');
 }

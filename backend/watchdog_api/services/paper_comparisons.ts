@@ -32,8 +32,11 @@ export function evaluatePaperComparison(raw: PaperComparisonClaim, results: read
   const evaluated = evaluateClaim({ claim_key: claim.statistic, claim_type: 'paper_scalar', statistic: claim.statistic,
     claimed_value_numeric: claim.expectedValue, unit: claim.unit, tolerance_kind: claim.tolerance.kind, tolerance_value: claim.tolerance.value }, selected!.valueNumeric);
   if (evaluated.deviation !== null && !Number.isFinite(evaluated.deviation)) throw new WorkbenchError('Comparison arithmetic overflow; no finite deviation can be retained.');
+  // Freezing before this attempt does not establish preregistration: revisions
+  // may follow earlier results, and exposure outside Watchdog is unknown.
+  const rationale = evaluated.rationale.replace('the pre-registered ±', 'the declared tolerance ±');
   return { ...base, verdict: evaluated.verdict, withinTolerance: evaluated.within_tolerance, deviation: evaluated.deviation,
-    reason: claim.expectedValue === null ? 'absent_expected' : claim.tolerance.kind === 'relative' && claim.expectedValue === 0 ? 'zero_relative_base' : evaluated.within_tolerance ? 'within_tolerance' : 'outside_tolerance', rationale: evaluated.rationale };
+    reason: claim.expectedValue === null ? 'absent_expected' : claim.tolerance.kind === 'relative' && claim.expectedValue === 0 ? 'zero_relative_base' : evaluated.within_tolerance ? 'within_tolerance' : 'outside_tolerance', rationale };
 }
 
 export class PaperComparisonService {
