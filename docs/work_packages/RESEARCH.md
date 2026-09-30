@@ -20,13 +20,18 @@ uzgodniony z integratorem, zawierający wymagane zmiany
 
 | Pole | Stan początkowy |
 | --- | --- |
-| owner | nieprzydzielony |
-| base_sha | do ustalenia z integratorem po checkpointcie fali |
-| branch | nieutworzona; własna gałąź pakietu |
-| files | poniższy zakres jest propozycją do rozłącznego przydziału |
-| status | prepared, unclaimed |
-| updated_at_utc | 2026-09-30 |
-| next_checkpoint | audyt obecnych operacji, istniejącego evaluateClaim i kontrakt jednego porównania |
+| owner | Codex RESEARCH e15f2c5a4cd2 — audyt; przydział implementacji oczekuje |
+| base_sha | `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`, zweryfikowany opublikowany main po fali |
+| branch | `codex/watchdog-research-20260930` — izolowany checkout |
+| files | zapis audytu: ten plik i `docs/work_packages/RESEARCH_CHECKPOINT_2026-09-30.md`; pliki implementacji są tylko propozycją |
+| status | audited, implementation_unclaimed — brak potwierdzonego przydziału integratora |
+| updated_at_utc | 2026-09-30T22:08:10Z |
+| next_checkpoint | integrator przydziela konkretne pliki/migrację i numer wycinka; następnie rdzeń paper-comparison-1 |
+
+Pierwszy audyt i propozycja kontraktu: [checkpoint RESEARCH](RESEARCH_CHECKPOINT_2026-09-30.md).
+Testy pakietu: 29/29 pass. Pełna lokalna bramka: lint/build pass, 409 pass,
+25 fail przy uruchamianiu nieobecnego Chromium; demo JH16 pass. Nie wdrożono
+jeszcze nowego przepływu porównania i nie zmieniono globalnego ledgeru.
 
 Własny checkout/gałąź i opublikowany claim poprzedzają edycję. Integrator
 rozstrzyga konflikt; plik claimu nie jest atomową blokadą. Przed uznaniem
