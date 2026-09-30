@@ -27,9 +27,9 @@ syntetyczny w pamięci, bez API, migracji, wspólnej aprobaty i nawigacji.
 | owner | clinical-20260930 |
 | base_sha | 312ba246f9bdeb035019e2ff4c1a09aaef0a734c |
 | branch | codex/clinical-audit-20260930, PR #6 |
-| status | claimed; E6.4a/b passed; E6.5a in progress |
-| updated_at_utc | 2026-09-30T22:34:44Z |
-| next_checkpoint | E6.5a profile selector, bounded CLI demo and final regression |
+| status | claimed; ready for integration; E6.4a/b + E6.5a source-run demo verified |
+| updated_at_utc | 2026-09-30T22:49:31Z |
+| next_checkpoint | integrator review + full gate on combined head; API/persistence/UI remain a later allocation |
 
 Dokładnie przydzielone pliki:
 - `shared/clinical_demo.ts`
@@ -216,3 +216,82 @@ wejściu pochodzi z harnessu; osobna produkcyjna kontrola prawa odczytu reguły
 przed nowym wykonaniem pozostaje zadaniem przyszłego API. Wspólny model aprobat,
 referencje/offline, migracje i nawigacja nie zostały zmienione. Gate rdzenia
 pozwala teraz rozpocząć E6.5a bez dodatkowej decyzji właściciela.
+
+
+## Checkpoint 3 — E6.5a i działające demo, 2026-09-30 UTC
+
+Poprzedni opublikowany rdzeń E6.4b: `5f8ab5812d22906ccb5577e9853c4dca1837ee9d`.
+Dodano `shared/clinical_demo_profile.ts`, `shared/clinical_demo_selector.ts`,
+`tests/unit/clinical_demo_profile.test.ts` oraz `scripts/demo_clinical.ts`.
+
+Selector ponownie oblicza trace z bieżącego wejścia fixture, zamiast przyjmować
+historyczne `eligible=true`. Źródła, osobny przegląd reguły i applicability
+warunkują kwalifikację. Propozycje pochodzą wyłącznie z brakującej obserwacji lub
+wartości, zgodnej z profilem wielkości, dokładnej jednostki, trybu, kontekstu
+i jawnie prospektywnego czasu. Profil jest niezależny od `FieldProfile` i praw.
+
+Wszystkie pierwotne braki pozostają widoczne również przy znalezieniu kandydata.
+Niedostępny test, niezgodne jednostki/czas, `not_applicable`, konflikt, źródło lub
+aprobata pozostają lukami. Przyszły pomiar nie naprawia metadanych historycznych
+ani konkretnego pinned observation ID. Przy konflikcie/niejednoznaczności ta
+pierwsza wersja wstrzymuje propozycje dla całej reguły i jawnie podaje powód.
+Kolejność według ID nie jest rankingiem. Nie utworzono pomiaru ani zlecenia.
+
+### Uruchomienie i zaobserwowane wyniki
+
+Z katalogu repo z zainstalowanymi zależnościami:
+
+```sh
+node --import tsx scripts/demo_clinical.ts fixture:case-a available
+node --import tsx scripts/demo_clinical.ts fixture:case-b available
+node --import tsx scripts/demo_clinical.ts fixture:case-b unavailable
+```
+
+| Fixture / profil | Wynik reguły | Kandydaci pomiaru | Zachowane luki |
+| --- | --- | --- | --- |
+| A / available | supported | 0 | Brak luk zależności tej reguły; hipotezy bez reguł nadal jawne. |
+| B / available | undetermined | 1 | missing_value — propozycja nie wypełnia pomiaru. |
+| B / unavailable | undetermined | 0 | missing_value oraz test_unavailable. |
+
+JSON na stdout zawiera pełny przypadek, reguły, źródła, trace, archiveHash,
+profileHash, wynik historycznego replay oraz próbę cofnięcia źródła. Dwa identyczne
+uruchomienia dają identyczne bajty. Zmiana dostępności zmienia profileHash i
+propozycje bez zmiany caseHash, traceHash lub aprobat. CLI przyjmuje tylko dwa
+wbudowane identyfikatory przypadku i dwie wersje dostępności; odrzuca JSON,
+ścieżki plików i dodatkowe argumenty. Bez zapisu, sieci lub dowolnego importu.
+
+`executorHash` przypina rdzeń, schemat, lockfile i Node. Osobne `recipe` oraz
+`recipeHash` przypinają rzeczywiste bajty CLI, selektora, profilu i helpera fixture,
+wiążąc je z executorem. `reportHash` obejmuje wynik całej demonstracji. Te hashe
+sprawdzają zawartość; nie stanowią podpisu, zaufanej atestacji ani zatwierdzenia
+medycznego. Zmiana selektora nie unieważnia automatycznie rdzenia historycznego
+replay, bo obie tożsamości pozostają oddzielne.
+
+### Końcowa walidacja tego pakietu
+
+```sh
+npm run lint
+npm run build
+node --import tsx --test tests/unit/clinical_demo_case.test.ts tests/unit/clinical_demo_executor.test.ts tests/unit/clinical_demo_profile.test.ts tests/integration/field_reference.test.ts tests/integration/field_shell.test.ts tests/unit/field_ui.test.ts
+```
+
+Testy: **91/91 pass**, zero fail/skipped/cancelled — 15 przypadku, 31 executora,
+19 profilu/CLI i 26 istniejącej regresji referencji. Testy CLI uruchamiają
+rzeczywiste procesy, sprawdzają allowlist, komplet przepływu, deterministyczny
+stdout oraz zachowanie historycznego replay po cofnięciu źródła.
+`npm run lint`: **exit 0**.
+Produkcyjny `npm run build`: **exit 0** (trzy istniejące ostrzeżenia import.meta/CJS).
+Niezależny odbiór E6.5a: 24 jednorazowe dodatkowe assertions pass, bez edycji kodu
+przez audytora. Wykryte granice czasu (precyzja sekund i zakres roku), historycznej
+missingness oraz źródeł objęto testami repo.
+
+Nie ma nowego browser flow, bo integrator wyłączył API/nawigację z przydziału.
+Wcześniejszy lokalny blocker Chromium pozostaje jawny i nie jest raportowany jako
+browser pass. Nie testowano trwałej izolacji właścicieli, restartu ani stale
+revision serwisu, ponieważ serwis przypadku nie powstał. Profile/read grants
+pochodzą z zaufanego harnessu; produkcyjne API musi ustalać je samodzielnie.
+
+**Pierwszy następny ruch:** integrator odbiera opublikowany head PR #6 i uruchamia
+pełną bramkę na wspólnym headzie, a dopiero w kolejnym przydziale łączy demo z
+rzeczywistą autoryzacją, zapisem/API i kontekstowym UI. Nie oznaczać całych E6.4
+ani E6.5 jako ukończonych; zamknięty jest wyłącznie opisany syntetyczny wycinek.
