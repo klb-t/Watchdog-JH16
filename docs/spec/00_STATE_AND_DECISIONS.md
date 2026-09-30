@@ -21,10 +21,14 @@ E3.14 updates the VM default to merged `main` and blocks the unsupported legacy 
 recipe before cloud mutations. E3.5 is reopened for Cloud Run: bucket-mounted SQLite is
 not established as safe by the path-based durability gate or local-container tests. The
 private disk-backed VM and GCS object adapter remain separate implemented paths.
-E5.7c implements source-linked exploratory cohort selection and v1/v2 portable verification;
-13/13 integration checks and lint/build pass. Its browser acceptance is pending CI because
-local Chromium cannot create its required socket. Do not mark the slice or E5.7b complete
-from API tests alone. Future independent-thread packages are in `docs/work_packages/`.
+E5.7c implements source-linked exploratory cohort selection and v1/v2 portable verification.
+Its real browser acceptance and the complete **434/434** test gate pass inside the CI
+container on `827fa11`, followed by production start and persistence checks (Actions
+`36766360252`, container job `110061407148`). Local Chromium is blocked by socket
+permissions; the local gate is 409 pass / 25 browser-launch failures, not green.
+The separate host `verify` job's final status belongs in the wave handoff. E5.7b remains
+open. Future independent-thread packages are in `docs/work_packages/`; `AGENTS.md`
+now points fresh agents to the current state and ownership protocol.
 
 **2026-09-30 current authority and integration:** the owner delegated autonomous
 development after reviewing the repository/history audit. Routine reversible product

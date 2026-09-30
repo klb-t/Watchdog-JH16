@@ -115,7 +115,7 @@ UI obejmuje wyszukiwanie wierszy bez utraty zaznaczeń, liczniki i przegląd pla
 
 Nowy eksport `paper-operation-2` weryfikuje podzbiór, cytat, wejścia i wynik;
 pełne dane źródłowe pozostają w pakiecie. `paper-operation-1` nadal działa.
-**13/13** testów integracyjnych paper_operations + research_projects, lint i build
+**13/13** testów integracyjnych paper_operations + research_package, lint i build
 przeszły. Niezależny przegląd uruchomił dodatkowo dawny ui-1/v1 i podzbiór z
 samym null: oba zachowują deterministyczny, weryfikowalny eksport. Te dodatkowe
 próby były jednorazowe; nie są nowymi testami w ledgerze.
@@ -128,3 +128,52 @@ Pakiety przyszłych wątków: [RESEARCH](work_packages/RESEARCH.md),
 [CLINICAL](work_packages/CLINICAL.md), [OPERATIONS](work_packages/OPERATIONS.md).
 Nie uruchomiono osobnych głównych czatów. Pierwsza fala korzystała z sześciu
 subagentów oraz przeglądów krzyżowych; właściwe pliki i claims opisuje koordynacja.
+
+## Checkpoint 5 — publikacja i lokalna wspólna bramka
+
+Kod i pakiety opublikowano w [PR #5](https://github.com/klb-t/Watchdog-JH16/pull/5)
+na headzie `827fa1150fb0e2efbbc13d7979d992197ec09fc0`.
+Kolejne opublikowane commity: `1a642e9` (organizacja), `9c02487` (E4.6),
+`fe674eb` (E2.1), `757c1fb` (E3.14), `827fa11` (E5.7c/pakiety).
+Każde drzewo GitHub porównano z odpowiadającym lokalnym commitem — identyczne.
+Własną lokalną historię zachowano na `local/watchdog-wave1-checkpoints-20260930`;
+gałąź robocza została wyrównana do opublikowanego headu bez zmiany plików.
+
+`npm run clean && npm run test:all`: lint i produkcyjny build przechodzą;
+**434 testy, 409 pass, 25 fail, 0 skipped/cancelled**. Wszystkie 25 niepowodzeń
+pochodzi z uruchomienia Chromium w testach przeglądarkowych (wspomniana blokada
+socket), nie z zaliczonych testów API/silnika. Nie jest to pełna zielona bramka.
+Docker jest nieobecny lokalnie. Standardowy PR CI
+[36766360252](https://github.com/klb-t/Watchdog-JH16/actions/runs/36766360252)
+sprawdza oba brakujące zakresy: przeglądarkę i realny kontener. Wynik zapisz poniżej.
+
+Zachowane następne kierunki:
+
+- Pakiety osobnych wątków są przygotowane, ale nieprzydzielone. Do wznowienia
+  wystarczy wskazać repo, ten handoff oraz wybrany plik z `docs/work_packages/`.
+- Istniejący MethodSpec już wykonuje graf zależności. Proponowany następny
+  wycinek pochodzenia to wersjonowane ślady kroków (hash wejść/wyjść, wersja
+  prymitywu, zachowanie/strata/dodanie, odrzucone ID), nie drugi równoległy silnik.
+  To propozycja audytu, nie ukończona funkcja ani zmiana zatwierdzonej metody.
+- Replikacja całej pracy, potwierdzające podziały i kliniczne reguły pozostają
+  osobnymi zadaniami. Bieżący sukces fixture nie zastępuje walidacji naukowej.
+
+## Checkpoint 6 — pełna bramka kontenera
+
+Head kodu: `827fa1150fb0e2efbbc13d7979d992197ec09fc0`, drzewo
+`1702844bc299096ffb807e56e6b71e4c20579857`. Job `container` w
+[36766360252](https://github.com/klb-t/Watchdog-JH16/actions/runs/36766360252)
+zakończony sukcesem. Odczytano log, nie tylko status:
+
+- lint/build oraz **434/434 testy, 0 fail, 0 skipped**, w tym E5.7c w przeglądarce;
+- gotowy obraz `sha256:339d5a8d9737912e2d0efd10118040684d182a157d277f0a70ff5ba2568dd0a5`;
+- produkcyjny start, użytkownik nie-root, obraz tylko do odczytu, HTTP przez loopback,
+  zapis API i zachowanie danych po wymianie kontenera — wszystkie przeszły.
+
+E5.7c można zaznaczyć jako ukończone w podanym wąskim zakresie. Wcześniejsze
+notatki o oczekującej akceptacji przeglądarkowej są historyczne. Osobny job
+`verify` poza Dockerem nadal instalował zależności przeglądarki o 19:36 UTC;
+nie mylić jego statusu z zakończoną pełną bramką obrazu.
+
+Dodano `AGENTS.md` jako krótki punkt wejścia dla nowych sesji. Końcowa aktualizacja
+stanu/handoffu/instrukcji jest wyłącznie dokumentacyjna; nie zmienia przetestowanego kodu.
