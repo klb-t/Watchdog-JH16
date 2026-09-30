@@ -4,8 +4,9 @@ Reproducible-research platform for monitoring psychoactive-substance signals, wi
 
 The first benchmark is a replication pipeline for Jankowski & Hoffmann (2016), JMIR 18(2):e38.
 
-**Status:** active integration on `astra/watchdog-integration-20260930`, combining the
-September continuation with the repository and ecosystem updates from `main`.
+**Status:** the September 30 integration is merged into `main` through
+[PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4), combining the September continuation
+with the repository and ecosystem updates. Its final verify/container CI passed.
 Implemented workflows include the offline JH16 fixture benchmark, responder reference lookup,
 scientific figures and maps, durable public acquisition, substance memory, personal provider
 profiles and the paper/extraction workshop. Planned capabilities remain explicitly separate.

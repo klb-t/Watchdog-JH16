@@ -733,3 +733,14 @@ selected plan before reading its ID; real HTTP and review/approval/execution/exp
 remain intact. No product behavior or scientific calculation changes. The earlier verified
 code runs above remain valid; the failed branch run is not called green. Latest final-head
 checks are linked from [PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4).
+
+### Final integration merged into main
+
+Final head `29b52a1b16130d967c95d83d1b8300330ae3b9a1` passes 419/419 locally and both
+verify/container in [branch run 36756509467](https://github.com/klb-t/Watchdog-JH16/actions/runs/36756509467)
+and [PR run 36756514793](https://github.com/klb-t/Watchdog-JH16/actions/runs/36756514793).
+This includes the deterministic catalogue race regression, standard browser, demo and real
+container build/start/persistence. PR #4 was marked ready and merged into `main` as
+`ac0c72832a5db4193e0a6d02404ffd7f733bd0dc`. Its tree exactly matches the tested PR head,
+`ce69a71f38b828426a0e14c843f508d7ab48799d`. PR #1 remains open with its original base.
+The subsequent main commit updates this evidence and status documentation only.

@@ -11,8 +11,9 @@ decision changes or an epic completes.
 development after reviewing the repository/history audit. Routine reversible product
 changes no longer require discussion under the September 12 sequencing restriction.
 Scientific contracts, human hash-bound review, privacy and spending limits still apply.
-`astra/watchdog-integration-20260930` combines continuation `c3508c1` with `main`
-`1c81a36`; PR #1 and its base are preserved. New work covers seven-section navigation,
+`astra/watchdog-integration-20260930` combines continuation `c3508c1` with the former `main`
+`1c81a36` and is now merged into `main` through PR #4 (`ac0c728`). PR #1 and its base
+are preserved. New work covers seven-section navigation,
 unified owned search, closed admission, durable research projects and explicit local/global
 appearance context. Implementation and validation are tracked in the ledger; incomplete
 tasks are not claimed complete. See [reconciliation](../SPEC_RECONCILIATION_2026-09-30.md)
@@ -25,13 +26,15 @@ the `pipeline_self_check` meaning. E4.5, E5.9, E5.10 and E6.3 are complete withi
 documented scopes. The installation-wide API boundary, session revocation, immutable project
 archives and offline expiry/inspection audit are exercised. Local Chromium 153 substitutes
 for the broken local Playwright download; Actions uses its standard browser installation.
-**Published and CI-verified code:** `f381b1ef68b7fc5ea75ae2e9cfcf45755d3a25b1` in
-[PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4), targeting `main`. Both `verify` and
-`container` passed in the [branch run 36754887636](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754887636)
-and [PR run 36754891991](https://github.com/klb-t/Watchdog-JH16/actions/runs/36754891991).
+**Final CI-verified head:** `29b52a1b16130d967c95d83d1b8300330ae3b9a1` in merged
+[PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4). Both `verify` and `container`
+passed in the [branch run 36756509467](https://github.com/klb-t/Watchdog-JH16/actions/runs/36756509467)
+and [PR run 36756514793](https://github.com/klb-t/Watchdog-JH16/actions/runs/36756514793).
 The standard Playwright browser passes 419/419; the real image builds and its production
 start/persistence check passes. This evidence is separate from the older E3.13 result below.
-The following checkpoint commit records documentation only. See [current handoff](../HANDOFF_2026-09-30.md).
+Merge `ac0c72832a5db4193e0a6d02404ffd7f733bd0dc` has the exact verified head tree
+(`ce69a71f38b828426a0e14c843f508d7ab48799d`). The subsequent main checkpoint changes
+documentation only. See [current handoff](../HANDOFF_2026-09-30.md).
 
 **E3.13 block resolved:** verified GitHub Actions
 [35829482923](https://github.com/klb-t/Watchdog-JH16/actions/runs/35829482923) on
