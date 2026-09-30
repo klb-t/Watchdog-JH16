@@ -722,3 +722,14 @@ execution, causal/time-series work, clinical cases/PK-PD and devices remain open
 [handoff](HANDOFF_2026-09-30.md) record conflicts, earlier omissions, reversible defaults
 and precise implementation limits. The reconstruction uses the prior archive audit, not a
 new raw-history scan. Public documentation contains no private correspondence identities.
+
+### Browser test synchronization after the evidence checkpoint
+
+Documentation-only checkpoint `7d47938` passed both jobs in PR run 36755407246, but branch
+run 36755401412 failed one E5.8e test inside the container: the paper-operation review was
+visible while the catalogue refresh still disabled its saved-plan select. The test read
+the select before the new option existed. Synchronization now waits for the enabled,
+selected plan before reading its ID; real HTTP and review/approval/execution/export checks
+remain intact. No product behavior or scientific calculation changes. The earlier verified
+code runs above remain valid; the failed branch run is not called green. Latest final-head
+checks are linked from [PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4).

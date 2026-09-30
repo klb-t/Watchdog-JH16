@@ -1,6 +1,6 @@
 import { test, before, after } from 'node:test';
 import * as assert from 'node:assert';
-import { chromium, Browser, Page } from 'playwright';
+import { chromium, Browser, Page, type Route as PlaywrightRoute } from 'playwright';
 import { spawn, ChildProcess, execFileSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -629,6 +629,8 @@ test('source-copy browser: explicit column form to reviewed statistics and porta
 test('E5.8e: a paper quote binds real source columns to an approved operation, survives reload and exports a verifiable context',async()=>{
   const errors:string[]=[],onError=(e:Error)=>errors.push(e.message);page.on('pageerror',onError);
   const publication=fs.mkdtempSync('/tmp/watchdog-paper-ui-');
+  const catalogUrl=baseUrl+'/api/research/operations';
+  let releaseCatalog=()=>{},catalogRoute:((route:PlaywrightRoute)=>Promise<void>)|undefined;
   try {
     const call=async(route:string,body:unknown)=>{const r=await fetch(baseUrl+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.ok(r.ok,await r.clone().text());return r.json();};
     const {testDataset}=await import('../helpers/workbench');
@@ -653,8 +655,20 @@ test('E5.8e: a paper quote binds real source columns to an approved operation, s
     await page.setViewportSize({width:390,height:844});await page.getByLabel('Dokładny cytat opisujący operację',{exact:true}).scrollIntoViewIfNeeded();
     const layout=await page.locator('main').evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}));assert.ok(layout.scroll<=layout.width+1,JSON.stringify(layout));
     await page.screenshot({path:'test-artifacts/paper-operation-mobile.png',fullPage:false});
+    // The proposal renders before act() finishes refreshing the saved-plan options.
+    // Hold that real refresh so the pending state is covered deterministically.
+    const catalogGate=new Promise<void>(resolve=>{releaseCatalog=resolve;});let heldCatalog=false;
+    catalogRoute=async route=>{if(route.request().method()==='GET'&&!heldCatalog){heldCatalog=true;await catalogGate;}await route.continue();};
+    await page.route(catalogUrl,catalogRoute);
+    const catalogRequested=page.waitForRequest(request=>request.url()===catalogUrl&&request.method()==='GET');
     await page.getByRole('button',{name:'Przygotuj plan analizy pracy',exact:true}).click();
     await page.locator('[data-testid="paper-operation-review"]').waitFor();
+    await catalogRequested;
+    assert.equal(await page.getByLabel('Zapisany plan',{exact:true}).isDisabled(),true,'review may be visible while its catalogue is still pending');
+    assert.equal(await page.getByLabel('Zapisany plan',{exact:true}).inputValue(),'','the new option is not available until the catalogue refresh finishes');
+    releaseCatalog();
+    await page.waitForFunction(()=>{const select=globalThis.document.querySelector<HTMLSelectElement>('select[aria-label="Zapisany plan"]');return !!select&&!select.disabled&&select.value!=='';},undefined,{timeout:30_000});
+    await page.unroute(catalogUrl,catalogRoute);catalogRoute=undefined;
     const id=await page.getByLabel('Zapisany plan',{exact:true}).inputValue();assert.ok(id);
     assert.ok(await page.getByRole('button',{name:'Zatwierdź metodę tej analizy',exact:true}).isDisabled());
     assert.equal(await page.getByRole('button',{name:'Wykonaj analizę pracy bez LLM',exact:true}).count(),0);
@@ -681,5 +695,5 @@ test('E5.8e: a paper quote binds real source columns to an approved operation, s
   }catch(error){
     fs.writeFileSync('test-artifacts/paper-operation-failure.json',JSON.stringify({message:String(error),pageErrors:errors,url:page.url(),body:await page.locator('body').innerText()},null,2));
     await page.screenshot({path:'test-artifacts/paper-operation-failure.png',fullPage:false});throw error;
-  }finally{page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
+  }finally{releaseCatalog();if(catalogRoute)await page.unroute(catalogUrl,catalogRoute);page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});fs.rmSync(publication,{recursive:true,force:true});}
 });
