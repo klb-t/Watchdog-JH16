@@ -58,7 +58,7 @@ export class PaperComparisonsRepository {
   }
   requireFreeze(owner: string, ref: ComparisonFreezeRef) {
     const comparison = this.get(owner, ref.id), freeze = this.receipt(ref.freezeId), review = this.review(owner, ref.id);
-    if (comparison.hash !== ref.hash || !freeze || freeze.kind !== 'FREEZE' || freeze.comparisonId !== ref.id || freeze.comparisonHash !== ref.hash || freeze.actorId !== review?.actorId || !review || freeze.data.reviewId !== review.id || review.sequence >= freeze.sequence)
+    if (comparison.hash !== ref.hash || !freeze || freeze.kind !== 'FREEZE' || freeze.comparisonId !== ref.id || freeze.comparisonHash !== ref.hash || !review || freeze.data.reviewId !== review.id || review.sequence >= freeze.sequence)
       throw new WorkbenchError('Frozen comparison review was revoked or replaced.', 409);
     return { comparison, review, freeze };
   }
