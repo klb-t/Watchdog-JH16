@@ -1,7 +1,7 @@
 {
-  "version": "paper-operation-ui-1",
+  "version": "paper-operation-ui-2",
   "title": "Analizy prac",
-  "introduction": "Powiąż cytat z konkretnymi kolumnami i sprawdź metodę przed obliczeniami. Działa bez klucza LLM. Każdy plan obejmuje jedną operację i wszystkie wiersze wybranego zbioru.",
+  "introduction": "Powiąż cytat z konkretnymi kolumnami i sprawdź metodę przed obliczeniami. Działa bez klucza LLM. Każdy plan obejmuje jedną operację na wszystkich wierszach albo jawnie wybranej kohorcie.",
   "scopeLabel": "Analiza wybranej części pracy; replikacja całości nie została ustalona.",
   "methods": [
     {
@@ -74,5 +74,15 @@
       "id": "fail",
       "label": "Przerwij, jeśli są braki"
     }
-  ]
+  ],
+  "cohort": {
+    "title": "Wiersze objęte analizą",
+    "allRows": "Wszystkie wiersze zbioru",
+    "selectedRows": "Jawnie wybrana kohorta",
+    "quoteLabel": "Dokładny cytat dotyczący doboru kohorty",
+    "rationaleLabel": "Uzasadnienie doboru wierszy i odstępstwa",
+    "searchLabel": "Szukaj wierszy kohorty",
+    "notice": "Dobór wierszy pozostaje interpretacją użytkownika. Sam cytat nie potwierdza kryteriów włączenia. Wybrane identyfikatory zostaną zamrożone w planie i wymagają osobnego zatwierdzenia metody. To analiza eksploracyjna, nie prerejestracja ani niezależna próba potwierdzająca. Pełny zbiór, również pominięte wiersze, pozostaje w eksporcie.",
+    "reviewLabel": "Kohorta eksploracyjna"
+  }
 }

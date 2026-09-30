@@ -179,4 +179,8 @@ execution are available independently; their results are not implied by a paper 
 The **Analizy prac** tab now connects a saved source quote or assessment operation to an
 approved dataset, reviewed method, deterministic execution and a verifiable publication
 package. It supports a selected describe/Pearson/Spearman operation, preserving unresolved
-requirements and explicit data substitutions. See [the step-by-step guide](PAPER_ANALYSES.md).
+requirements and explicit data substitutions. An optional source-quoted cohort freezes
+nonempty selected row IDs and a rationale, using the existing statistical executor and
+individual method review. Changing that selection requires a new approval. The package
+retains all source rows and verifies the cohort inputs; it does not establish preregistration
+or independent confirmation. See [the step-by-step guide](PAPER_ANALYSES.md).

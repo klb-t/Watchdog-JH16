@@ -61,6 +61,13 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 - [ ] **E5.7b — General executable replication and hypothesis studies.** Connect reviewed
   assessments to frozen MethodSpecs and actual acquired inputs; confirmation partitions,
   comparison families, hypothesis prioritization and project/draft evidence graphs remain open.
+- [ ] **E5.7c — Source-linked exploratory cohorts.** Implemented explicit nonempty row
+  selection with a unique paper quotation and rationale, canonical IDs and a pinned dataset.
+  Context changes require fresh method approval. v2 packages verify selected rows and retain
+  complete inputs; old all-row v1 packages remain supported. Integration 13/13, lint/build
+  and independent archived-v1/null-only cohort probes pass. Browser acceptance test added
+  but locally blocked by Chromium socket restrictions; await CI before ticking this slice.
+  This does not complete E5.7b or establish a confirmatory partition/independent replication.
 - [x] **E5.8a — Deterministic JSON/CSV extraction and goal navigation.** Form-based or LLM-
   proposed copy profiles, exact-output tests, hash-bound activation, lexical provenance,
   persistent test/execution history and exports; ten capability-filtered goal paths.

@@ -52,6 +52,14 @@ export class PaperOperationService {
       throw new WorkbenchError('Assessment source anchor mismatch.', 409);
     const dataset = await this.workbench.repo.getDataset(input.datasetId, owner);
     if (!dataset || dataset.contentHash !== input.datasetHash) throw new WorkbenchError('An accessible, approved dataset version is required.', 409);
+    const rowIds = input.cohort ? [...input.cohort.rowIds].sort() : null;
+    const availableIds = new Set(dataset.document.rows.map(r => r.id));
+    if (rowIds?.some(id => !availableIds.has(id))) throw new WorkbenchError('Every cohort row must exist in the exact dataset version.');
+    const cohort = input.cohort ? { version: 'paper-cohort-1', rowIds: rowIds!,
+      anchor: anchorQuote(excerpt, input.cohort.quote), rationale: input.cohort.rationale,
+      sourceRowCount: dataset.document.rows.length, interpretation: 'USER_DECLARED_EXPLORATORY_COHORT' } : null;
+    const selectedIds = rowIds ? new Set(rowIds) : null;
+    const selectedRows = dataset.document.rows.filter(r => !selectedIds || selectedIds.has(r.id));
     const requirements: any[] = assessment?.body.assessment.dataRequirements ?? [];
     const bindings = [...input.bindings].sort((a, b) => a.role.localeCompare(b.role)).map(b => {
       const column = dataset.document.columns.find(c => c.key === b.column);
@@ -65,13 +73,14 @@ export class PaperOperationService {
         throw new WorkbenchError('Substitution file hash does not match the preserved raw dataset source.', 409);
       return { ...b, columnDefinition: column, substitution, sourceFileVerified: !!substitution?.body.sourceHash };
     });
-    const origins = bindings.map(b => b.origin), evidenceTiers = [...new Set(dataset.document.rows.map(r => r.evidenceTier))];
+    const origins = bindings.map(b => b.origin), evidenceTiers = [...new Set(selectedRows.map(r => r.evidenceTier))];
     const meaning = origins.includes('synthetic_scenario') ? 'SIMULATION_NOT_EMPIRICAL_EVIDENCE'
       : origins.every(o => o === 'original_data_reuse') ? 'REANALYSIS_NOT_INDEPENDENT_REPLICATION'
       : origins.some(o => ['prior_dataset', 'proxy_measure', 'new_expert_panel'].includes(o)) ? 'EXPLORATORY_METHOD_VARIANT' : 'SCOPED_ANALYSIS_NOT_REPLICATION';
-    const body = { version: 'paper-operation-1', source, document, assessment, anchor, excerptCharacters,
+    const body = { version: cohort ? 'paper-operation-2' : 'paper-operation-1', source, document, assessment, anchor, excerptCharacters,
       method: input.method, datasetId: dataset.id, datasetHash: dataset.contentHash, bindings, missingPolicy: input.missingPolicy,
-      scopeNote: input.scopeNote, meaning, scope: 'selected_operation_all_dataset_rows', replicability: 'NOT_YET_ESTABLISHED',
+      scopeNote: input.scopeNote, meaning, scope: cohort ? 'selected_operation_explicit_cohort' : 'selected_operation_all_dataset_rows',
+      ...(cohort ? { cohort } : {}), replicability: 'NOT_YET_ESTABLISHED',
       interpretation: 'USER_REVIEWED_BINDING_NOT_AUTOMATIC_COMPILATION', originsVerified: false, evidenceTiers,
       unboundRequirements: requirements.filter(r => !bindings.some(b => b.requirementId === r.id)),
       otherOperations: assessment?.body.assessment.operations.filter((_: any, i: number) => source.kind !== 'assessment_operation' || i !== source.operationIndex) ?? [],
@@ -81,6 +90,7 @@ export class PaperOperationService {
     const figure = defaultFigure(dataset, this.workbench.profile);
     figure.renderer = body.profile.methods.find(m => m.id === input.method)!.renderer;
     figure.channels = { ...figure.channels, x: bindings[0].column, y: bindings[1]?.column ?? bindings[0].column, z: null };
+    figure.selectedIds = rowIds ?? [];
     figure.style.title = document.body.title.slice(0, 250);
     figure.style.subtitle = `${body.profile.scopeLabel} ${meaning}`;
     const method = await this.workbench.prepare(owner, figure, input.method, requestId, {

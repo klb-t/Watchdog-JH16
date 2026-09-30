@@ -104,3 +104,27 @@ Historyczny test statyczny otrzymał poprawny opis; nie reklamuje weryfikacji tr
 Lokalny Chromium 154 pobrano prawidłowo, ale proces kończy się przy `socket()` z
 `Operation not permitted`. E2E pozostaje niewykonane w tym środowisku; potrzebna
 standardowa bramka przeglądarkowa w CI. Nie omijamy ograniczeń środowiska.
+
+## Checkpoint 4 — E5.7c, eksploracyjny podzbiór publikacji
+
+Operacja publikacji może wybrać jawne ID wierszy zamiast całej tabeli. Dokładny
+cytat, uzasadnienie, wersja danych i posortowane ID są utrwalone w kontekście i
+hashu metody. Pusta selekcja jest błędem, a zmiana podzbioru wymaga nowej aprobaty.
+Wybór zachowuje braki pomiarów; nie ustanawia nietkniętej próby potwierdzającej.
+UI obejmuje wyszukiwanie wierszy bez utraty zaznaczeń, liczniki i przegląd planu.
+
+Nowy eksport `paper-operation-2` weryfikuje podzbiór, cytat, wejścia i wynik;
+pełne dane źródłowe pozostają w pakiecie. `paper-operation-1` nadal działa.
+**13/13** testów integracyjnych paper_operations + research_projects, lint i build
+przeszły. Niezależny przegląd uruchomił dodatkowo dawny ui-1/v1 i podzbiór z
+samym null: oba zachowują deterministyczny, weryfikowalny eksport. Te dodatkowe
+próby były jednorazowe; nie są nowymi testami w ledgerze.
+
+Dodano rzeczywisty test E2E (390 px, wybór/puste wejście, przegląd, wykonanie,
+odtworzenie i eksport). Jest **niezweryfikowany lokalnie** do czasu standardowego CI.
+E5.7c pozostaje niezaznaczone; E5.7b/E5.8b również pozostają otwarte.
+
+Pakiety przyszłych wątków: [RESEARCH](work_packages/RESEARCH.md),
+[CLINICAL](work_packages/CLINICAL.md), [OPERATIONS](work_packages/OPERATIONS.md).
+Nie uruchomiono osobnych głównych czatów. Pierwsza fala korzystała z sześciu
+subagentów oraz przeglądów krzyżowych; właściwe pliki i claims opisuje koordynacja.

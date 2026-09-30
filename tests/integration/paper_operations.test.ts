@@ -20,13 +20,14 @@ import { readZip } from '../../backend/watchdog_api/utils/zip';
 import { TypeScriptMethodExecutor } from '../../backend/watchdog_api/analysis/executor';
 import type { PaperOperationInput } from '../../shared/paper_operation';
 import { testDataset } from '../helpers/workbench';
+import { selectionIdentity } from '../../shared/workbench';
 
 async function harness() {
   const dir=mkdtempSync(path.join(tmpdir(),'watchdog-paper-operation-')), db=new Database(':memory:');
   db.pragma('foreign_keys = ON'); runMigrations(db);
   const store=new LocalFileSystemStore(path.join(dir,'store')), wb=new WorkbenchRepository(db,store), workbench=new WorkbenchService(wb,loadWorkbenchProfile());
   const research=new ResearchRepository(db), repo=new PaperOperationsRepository(db), service=new PaperOperationService(repo,research,workbench);
-  const paper=research.saveDocument('owner',{title:'Fictional methods for software testing',source:'https://example.org/method-fixture',text:'🧪 Method. Pearson correlation compared scores and counts. A separate expert panel was required.',coverage:'excerpt',language:'en',geography:[]});
+  const paper=research.saveDocument('owner',{title:'Fictional methods for software testing',source:'https://example.org/method-fixture',text:'🧪 Method. Pearson correlation compared scores and counts. A separate expert panel was required. Rows one, three and five formed the cohort.',coverage:'excerpt',language:'en',geography:[]});
   const dataset=await wb.importDataset(testDataset(),'owner','test'); await wb.approveDataset(dataset.id,'owner',dataset.contentHash,true,'test');
   const input:PaperOperationInput={source:{kind:'manual_quote',documentId:paper.id,documentHash:paper.hash,quote:'Pearson correlation compared scores and counts.'},method:'pearson',datasetId:dataset.id,datasetHash:dataset.contentHash,
     bindings:[{role:'a',column:'interest',rationale:'Fictional scores for a deterministic test.',origin:'synthetic_scenario',requirementId:null,substitution:null},
@@ -160,5 +161,60 @@ test('paper operation: revocation during result loading blocks historical output
     const p=await h.service.prepare('owner',h.input,'test');await h.approve(p);const r=await h.service.execute('owner',p.id,p.hash,'test');
     const get=h.store.get.bind(h.store);h.store.get=async(uri)=>{const bytes=await get(uri);if(uri.includes('/manifest-'))h.db.prepare('UPDATE method_specs SET approved_hash=NULL WHERE id=?').run(p.method.id);return bytes;};
     await assert.rejects(h.service.result('owner',p.id,r.runId),/approval was revoked/);
+  }finally{h.close();}
+});
+
+test('paper cohort: source-linked rows are frozen, computed in dataset order and independently verified with the full source retained',async()=>{
+  const h=await harness();try{
+    const cohort={rowIds:['row-5','row-1','row-3'],quote:'Rows one, three and five formed the cohort.',rationale:'Explicit fictional inclusion criterion. The null measurement stays in the cohort before pairwise exclusion.'};
+    const plan=await h.service.prepare('owner',{...h.input,cohort},'test');
+    assert.equal(plan.body.version,'paper-operation-2');assert.equal(plan.body.scope,'selected_operation_explicit_cohort');
+    assert.deepEqual(plan.body.cohort.rowIds,['row-1','row-3','row-5']);assert.equal(plan.body.cohort.sourceRowCount,5);
+    assert.deepEqual(plan.method.selection.figure.selectedIds,plan.body.cohort.rowIds);
+    assert.equal(plan.body.replicability,'NOT_YET_ESTABLISHED');assert.equal(plan.body.cohort.interpretation,'USER_DECLARED_EXPLORATORY_COHORT');
+    const repeated=await h.service.prepare('owner',{...h.input,cohort:{...cohort,rowIds:['row-3','row-5','row-1']}},'test');
+    assert.equal(repeated.hash,plan.hash);assert.equal(repeated.method.hash,plan.method.hash);
+    await assert.rejects(h.service.execute('owner',plan.id,plan.hash,'test'),/approved method/);
+    await h.approve(plan);const result=await h.service.execute('owner',plan.id,plan.hash,'test');
+    assert.deepEqual(result.inputs[0].entityIds,['row-1','row-3','row-5']);assert.deepEqual(result.inputs[0].values,[10,30,null]);
+    assert.equal(result.artifact.results[0].statisticMetadata?.n,2);assert.equal(result.artifact.results[0].valueNumeric,1);
+    assert.ok(!result.inputs[0].qualityFlags.includes('PROVIDER_DISCONTINUITY'));
+    const changed=await h.service.prepare('owner',{...h.input,cohort:{...cohort,rowIds:['row-1','row-3']}},'test');
+    assert.notEqual(changed.hash,plan.hash);assert.notEqual(changed.method.hash,plan.method.hash);assert.equal(changed.method.approvalState,'PROPOSED');
+    await assert.rejects(h.service.execute('owner',changed.id,changed.hash,'test'),/approved method/);
+    const pkg=await h.service.export('owner',plan.id,result.runId), entries=readZip(pkg.bytes), target=path.join(h.dir,'cohort-export');
+    const json=(name:string)=>JSON.parse(entries.find(e=>e.name===name)!.content.toString());
+    const put=(name:string,value:unknown)=>{entries.find(e=>e.name===name)!.content=Buffer.from(canonicalizeJson(value));};
+    const write=()=>{for(const e of entries){const f=path.join(target,e.name);mkdirSync(path.dirname(f),{recursive:true});writeFileSync(f,e.content);}};
+    assert.equal(json('dataset.json').rows.length,5);assert.equal(json('research/paper-binding.json').body.document.body.text,h.paper.body.text);
+    write();const verified=spawnSync(process.execPath,[path.join(target,'verify.mjs'),target,pkg.manifestHash],{encoding:'utf8'});
+    assert.equal(verified.status,0,verified.stdout+verified.stderr);
+    // Rehash an internally consistent method/figure edit. It still cannot change the source-linked cohort.
+    const figure=json('figure.json'), method=json('analysis/method.json'), altered=json('analysis/result.json'), manifest=json('analysis/manifest.json');
+    figure.selectedIds=['row-1','row-2','row-3'];
+    method.assumptions=method.assumptions.map((s:string)=>s.startsWith('selection_sha256=')?`selection_sha256=${canonicalHash(selectionIdentity(figure,['interest','mentions']))}`:s);
+    altered.methodSpec=method;altered.methodHash=canonicalHash(method);figure.analysis.methodHash=altered.methodHash;
+    figure.analysis.resultHash=canonicalHash(altered);manifest.method.hash=altered.methodHash;manifest.method.approvedHash=altered.methodHash;
+    manifest.outputs[0].sha256=figure.analysis.resultHash;
+    put('analysis/method.json',method);put('analysis/result.json',altered);put('analysis/manifest.json',manifest);put('figure.json',figure);
+    const workspace=json('workspace.json');workspace.figure=figure;put('workspace.json',workspace);
+    const outer=json('package-manifest.json');outer.identity.figureHash=canonicalHash(figure);outer.identity.resultHash=figure.analysis.resultHash;outer.identity.analysisManifestHash=canonicalHash(manifest);
+    outer.files=outer.files.map((item:any)=>{const e=entries.find(e=>e.name===item.path)!;return {...item,bytes:e.content.length,sha256:createHash('sha256').update(e.content).digest('hex')};});put('package-manifest.json',outer);write();
+    const invalid=spawnSync(process.execPath,[path.join(target,'verify.mjs'),target,canonicalHash(outer)],{encoding:'utf8'});
+    assert.notEqual(invalid.status,0);assert.match(invalid.stderr,/cohort and figure selection disagree/);
+  }finally{h.close();}
+});
+
+test('paper cohort: empty, duplicate, foreign and unsupported source selections fail without creating a plan',async()=>{
+  const h=await harness();try{
+    const cohort={rowIds:['row-1'],quote:'Rows one, three and five formed the cohort.',rationale:'Fictional selected cohort.'};
+    for(const rows of [[],['row-1','row-1'],['foreign-row']])await assert.rejects(h.service.prepare('owner',{...h.input,cohort:{...cohort,rowIds:rows}},'test'));
+    await assert.rejects(h.service.prepare('owner',{...h.input,cohort:{...cohort,quote:'an invented criterion'}},'test'),/does not occur/);
+    await assert.rejects(h.service.prepare('owner',{...h.input,cohort:{...cohort,quote:' '}},'test'),/ambiguous/);
+    await assert.rejects(h.service.prepare('owner',{...h.input,cohort:{...cohort,rationale:' '}},'test'));
+    assert.equal(h.repo.list('owner').length,0);
+    const a=assessment(h), source={kind:'assessment_operation',assessmentId:a.id,assessmentHash:a.hash,operationIndex:0};
+    const plan=await h.service.prepare('owner',{...h.input,source,cohort},'test');
+    assert.equal(plan.body.cohort.anchor.quote,cohort.quote);assert.equal(plan.body.unboundRequirements.length,2);
   }finally{h.close();}
 });
