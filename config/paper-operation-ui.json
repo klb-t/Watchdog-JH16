@@ -1,5 +1,5 @@
 {
-  "version": "paper-operation-ui-2",
+  "version": "paper-operation-ui-3",
   "title": "Analizy prac",
   "introduction": "Powiąż cytat z konkretnymi kolumnami i sprawdź metodę przed obliczeniami. Działa bez klucza LLM. Każdy plan obejmuje jedną operację na wszystkich wierszach albo jawnie wybranej kohorcie.",
   "scopeLabel": "Analiza wybranej części pracy; replikacja całości nie została ustalona.",
@@ -84,5 +84,82 @@
     "searchLabel": "Szukaj wierszy kohorty",
     "notice": "Dobór wierszy pozostaje interpretacją użytkownika. Sam cytat nie potwierdza kryteriów włączenia. Wybrane identyfikatory zostaną zamrożone w planie i wymagają osobnego zatwierdzenia metody. To analiza eksploracyjna, nie prerejestracja ani niezależna próba potwierdzająca. Pełny zbiór, również pominięte wiersze, pozostaje w eksporcie.",
     "reviewLabel": "Kohorta eksploracyjna"
+  },
+  "comparison": {
+    "title": "Porównanie z twierdzeniem pracy",
+    "notice": "Zapisz twierdzenie i samodzielnie uzasadnioną tolerancję, następnie osobno zatwierdź tę wersję. Zamrożenie poprzedza nowe wykonanie w tym systemie; nie dowodzi prerejestracji, braku wcześniejszej znajomości danych ani niezależnej replikacji.",
+    "quoteLabel": "Dokładny cytat twierdzenia liczbowego",
+    "expectedLabel": "Oczekiwana wartość",
+    "expectedMissingLabel": "Wartość oczekiwana nie jest podana",
+    "unitLabel": "Jednostka twierdzenia",
+    "unitMissingLabel": "Jednostka nie jest podana",
+    "statisticLabel": "Statystyka do porównania",
+    "rationaleLabel": "Interpretacja twierdzenia i ograniczenia",
+    "toleranceKindLabel": "Rodzaj tolerancji",
+    "toleranceValueLabel": "Wartość tolerancji",
+    "toleranceRationaleLabel": "Uzasadnienie tolerancji przed wykonaniem",
+    "absoluteLabel": "Bezwzględna",
+    "relativeLabel": "Względna",
+    "saveLabel": "Zapisz niezmienną wersję porównania",
+    "reviewLabel": "Sprawdziłem dokładny cytat, wartość, jednostkę, statystykę i tolerancję tej wersji.",
+    "approveLabel": "Zatwierdź tę wersję porównania",
+    "revokeLabel": "Cofnij zatwierdzenie porównania",
+    "executeLabel": "Zamroź porównanie i wykonaj nową próbę",
+    "reviseLabel": "Przygotuj kolejną wersję",
+    "historyLabel": "Wersje porównania i próby",
+    "openLabel": "Otwórz wersję",
+    "versionLabel": "Wersja",
+    "reviewedLabel": "Zatwierdzona dokładna wersja",
+    "unreviewedLabel": "Brak aktualnego zatwierdzenia",
+    "attemptsLabel": "Zapisane próby (także nieukończone i błędne)",
+    "noAttemptsLabel": "Brak zapisanych prób tej wersji.",
+    "priorExposureLabel": "Wcześniejsza ekspozycja zapisana przy utworzeniu wersji",
+    "exposureNotice": "Historia dotyczy tylko tego systemu. Ekspozycja poza systemem pozostaje nieznana.",
+    "showResultLabel": "Pokaż porównanie tej próby",
+    "exportLabel": "Pobierz pakiet porównania",
+    "resultLabel": "Wynik porównania",
+    "detailsLabel": "Zamrożony zapis, hashe i pełna historia",
+    "sourceLabel": "Pełny zapisany tekst źródła twierdzenia",
+    "missingLabel": "brak (null)",
+    "saveNotice": "Wersja zapisana. Osobno przejrzyj i zatwierdź dokładnie zapisane twierdzenie.",
+    "downloadNotice": "Pobrano pakiet. Zachowaj osobno SHA-256 manifestu:",
+    "downloadError": "Eksport porównania nie powiódł się.",
+    "inheritedLabel": "Porównanie dziedziczy pochodzenie, kohortę, braki i ograniczenia planu widocznego powyżej.",
+    "methodRequiredLabel": "Przed zamrożeniem porównania wymagane jest także zatwierdzenie metody planu.",
+    "statistics": [
+      {
+        "id": "pearson",
+        "label": "Korelacja Pearsona"
+      },
+      {
+        "id": "spearman",
+        "label": "Korelacja rang Spearmana"
+      },
+      {
+        "id": "describe.mean",
+        "label": "Średnia"
+      },
+      {
+        "id": "describe.median",
+        "label": "Mediana"
+      },
+      {
+        "id": "describe.sd",
+        "label": "Odchylenie standardowe"
+      },
+      {
+        "id": "describe.min",
+        "label": "Minimum"
+      },
+      {
+        "id": "describe.max",
+        "label": "Maksimum"
+      }
+    ],
+    "verdictLabel": "Ocena zgodności",
+    "observedLabel": "Wartość obliczona",
+    "deviationLabel": "Odchylenie",
+    "reasonLabel": "Przyczyna i ograniczenia",
+    "rawResultLabel": "Pełny wynik i ślad pochodzenia"
   }
 }
