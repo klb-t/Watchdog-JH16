@@ -47,3 +47,21 @@ Sprawdź head/remote oraz `git status`; nie zakładaj, że opis prac w toku jest
 nadal aktualny. Odczytaj późniejsze checkpointy poniżej, wyniki agentów i pakiety.
 Najpierw utrwal/zweryfikuj istniejące zmiany; nie rozpoczynaj drugiej implementacji
 tego samego wycinka. Nie scalaj nieprzetestowanego zestawu do `main`.
+
+## Checkpoint 1 — E4.6, cofnięcie dostępu
+
+Zakończono ograniczenie bypassu przeglądu do właściciela zbioru oraz przeniesienie
+asynchronicznego sprawdzania źródeł przed odczyt filtrowanych metadanych wyszukiwarki.
+Trzy nowe testy HTTP obejmują cofnięcie udostępnienia przed/w trakcie odczytu,
+przegląd przez właściciela, ponowne zatwierdzenie i brak wycieku liczników.
+
+`node --import tsx --test tests/integration/workbench_access_revocation.test.ts
+tests/integration/unified_search_revocation.test.ts tests/integration/unified_search.test.ts
+tests/integration/workbench.test.ts`: **17/17 pass**. Wspólna bramka pozostaje przed nami.
+
+Zależności zainstalowano bez zmiany lockfile: pobrano nagłówki Node 24.19.0 i użyto
+`npm ci --no-audit --no-fund --nodedir=/tmp/watchdog-node-headers/node-v24.19.0`.
+Standardowy Playwright zwrócił uszkodzone archiwum; trwa przygotowanie przeglądarki.
+Bezpośredni `git push` nie miał uwierzytelnienia. Zdalny checkpoint 0 opublikowano
+przez GitHub API: `1a642e91c8a33c3d36e58066963e5cedd695796c` (drzewo identyczne
+z lokalnym `967d5a1`). Lokalne i API-owe SHA mogą się różnić; porównuj drzewa.

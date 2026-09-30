@@ -417,6 +417,14 @@ condition; PostgreSQL and S3 migration; a real worker process.
 
 ## E4 — Identity
 
+- [x] **E4.6 — Revocation-safe shared datasets and search.** Review capability bypasses
+  approval only for the dataset owner. Revoked shared data cannot be read by another
+  researcher/admin/developer, including through an owned method or an in-flight blob read.
+  Unified search resolves provider I/O before permission-filtered enumeration so concurrent
+  revocation removes both metadata and counts. Three new HTTP regressions and the existing
+  workbench/search suites pass: 17/17 focused tests on 2026-09-30. Full integration pending
+  the current parallel wave; see HANDOFF_2026-09-30_WAVE1.md.
+
 - [x] **E4.5 — Closed installation admission and invitations.** Sign-in-only anonymous
   UI; verified unknown email can submit a reason and inspect application status only.
   Email-bound one-use invitations submit requests; developer/dev grants peer profiles

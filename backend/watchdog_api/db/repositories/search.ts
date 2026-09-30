@@ -23,6 +23,9 @@ export class SearchRepository {
   }
   async entries(principal: Principal, requestedKind: SearchKind | 'all'): Promise<IndexedHit[]> {
     const kinds = new Set(this.availableKinds(principal).filter(kind => requestedKind === 'all' || requestedKind === kind));
+    // Resolve provider I/O before reading access-controlled rows. A revocation
+    // during status resolution must be reflected in both results and counts.
+    const sources = kinds.has('source') ? await sourceRegistry.listWithLiveStatus() : [];
     const entries: IndexedHit[] = [], entities = new Map<string, IndexedHit>();
     const add = (hit: SearchHit, terms: string[] = []) => { if (kinds.has(hit.kind)) entries.push({ hit, terms: [hit.label, hit.id, ...terms] }); };
     const fieldHref = (kind: SearchKind, term: string, id: string, state: string | null) => can(principal.roles, 'responder.lookup') && state === 'APPROVED'
@@ -134,7 +137,7 @@ export class SearchRepository {
           [body.request.kind, ...('names' in body.request ? body.request.names : [])]);
       }
     }
-    if (kinds.has('source')) for (const source of await sourceRegistry.listWithLiveStatus()) add({ id: source.source_id, kind: 'source', label: source.source_id,
+    for (const source of sources) add({ id: source.source_id, kind: 'source', label: source.source_id,
       details: [source.adapter, source.status ?? '', source.remediation ?? ''].filter(Boolean), href: '/sources', visibility: 'registry', status: source.status ?? null, contentHash: null, provenance: [] },
       [source.adapter, source.description ?? '', ...(source.capabilities ?? [])]);
     for (const indexed of entities.values()) indexed.hit.provenance.sort((a, b) => a.recordId < b.recordId ? -1 : a.recordId > b.recordId ? 1 : 0);

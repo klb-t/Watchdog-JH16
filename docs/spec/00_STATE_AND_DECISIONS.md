@@ -7,6 +7,13 @@ decision changes or an epic completes.
 
 ## 1. Where the project actually is
 
+**2026-09-30 resumed parallel wave:** work continues from `832947e` on
+`codex/watchdog-wave1-20260930`; see [wave handoff](../HANDOFF_2026-09-30_WAVE1.md)
+and [coordination](../WORK_COORDINATION.md). E4.6 fixes revoked shared-data access
+and metadata/count leaks during asynchronous search; 17/17 focused tests pass.
+The previous 419/419 gate below belongs to the merged integration, not the new wave.
+Full wave validation, further changes and publication hashes are recorded in its handoff.
+
 **2026-09-30 current authority and integration:** the owner delegated autonomous
 development after reviewing the repository/history audit. Routine reversible product
 changes no longer require discussion under the September 12 sequencing restriction.
