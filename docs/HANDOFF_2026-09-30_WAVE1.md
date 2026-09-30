@@ -65,3 +65,21 @@ Standardowy Playwright zwrócił uszkodzone archiwum; trwa przygotowanie przegl�
 Bezpośredni `git push` nie miał uwierzytelnienia. Zdalny checkpoint 0 opublikowano
 przez GitHub API: `1a642e91c8a33c3d36e58066963e5cedd695796c` (drzewo identyczne
 z lokalnym `967d5a1`). Lokalne i API-owe SHA mogą się różnić; porównuj drzewa.
+
+## Checkpoint 2 — E2.1, integralność silnika
+
+Ratio dopasowuje wartości po identyfikatorach. Przykład regresji: `Ni={a:100,b:10}`
+oraz `Ni_harm={b:5,a:20}` daje teraz `Hi={a:20,b:50}`, identycznie jak przy zgodnej
+kolejności. Różne zbiory ID i duplikaty są błędem kontraktu; null nadal znaczy brak.
+Walidator odrzuca samopętle, kolizje symboli, złe kształty i fałszywe nazwy prymitywów;
+executor kontroluje jednostki/semantykę/ID, niefinitywne wartości i związanie dostarczonej
+aprobaty z wykonanym MethodSpec. Bez zmiany zamrożonych formuł czy danych.
+
+Wersje executor/ratio: `1.0.1`. **22/22** testów naukowych (w tym sześć nowych),
+**9/9** powiązanych testów workbench/projektów, `npm run lint` i `npm run demo:jh16`
+przeszły. Demo zachowuje 32 obserwacje, 16 Pi, 16 Hi i `pipeline_self_check`.
+Niezależny przegląd agenta nie wykazał regresji. Niskopoziomowe wykonanie fixture
+bez przekazanej aprobaty nadal istnieje; ta poprawka nie reklamuje jego usunięcia.
+
+Checkpoint E4.6 jest zdalnie zapisany jako `9c02487190e9ae288c7a19bbf549bbbea0d7a672`
+(lokalnie `c7ebcb2`, to samo drzewo). Wspólna bramka całej fali nadal oczekuje.

@@ -13,6 +13,10 @@ and [coordination](../WORK_COORDINATION.md). E4.6 fixes revoked shared-data acce
 and metadata/count leaks during asynchronous search; 17/17 focused tests pass.
 The previous 419/419 gate below belongs to the merged integration, not the new wave.
 Full wave validation, further changes and publication hashes are recorded in its handoff.
+E2.1 additionally corrects entity alignment and enforces graph/input/approval integrity;
+22/22 focused scientific and 9/9 related integration tests, typecheck and JH16 demo pass.
+Executor/ratio are 1.0.1; frozen method files are unchanged. This is a contract repair,
+not scientific approval or a new methodology.
 
 **2026-09-30 current authority and integration:** the owner delegated autonomous
 development after reviewing the repository/history audit. Routine reversible product

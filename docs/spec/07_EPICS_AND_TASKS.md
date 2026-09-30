@@ -405,6 +405,15 @@ start any of them breadth-first. Tasks keep their home epic's number.
 
 ## E2 — Compiler and validation
 
+- [x] **E2.1 — Entity-aligned execution and runtime contract integrity.** Ratios join
+  matching distinct entity IDs rather than positions, rejecting undeclared/ambiguous joins.
+  Method validation rejects self-edges, symbol collisions and incompatible shapes; runtime
+  inputs enforce units, semantics, identities and finite numbers. Supplied approval must bind
+  the executed MethodSpec. Executor/ratio version 1.0.1; shipped JH16 specs/formulas unchanged.
+  Six new regression tests plus previous scientific tests pass (22/22); workbench/project
+  integration 9/9, TypeScript and JH16 demo pass. Direct fixture execution without supplied
+  approval remains an explicit existing low-level API behavior.
+
 Decompose when E1 exits. Contents: the LLM method compiler with its known-answer test on
 JH2016 prose; the reference score set loader; Pearson and Spearman against the reference;
 ambiguity surfacing in the compiler UI.
