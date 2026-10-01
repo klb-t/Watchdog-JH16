@@ -1,3 +1,12 @@
+import { buildAuthRouter as buildAccountsRouter } from './backend/watchdog_api/api/accounts_auth_routes';
+import { buildAccessRouter } from './backend/watchdog_api/api/access_routes';
+import { crossSiteGuard } from './backend/watchdog_api/api/admission_gate';
+import { AdmissionRepository } from './backend/watchdog_api/db/repositories/admission';
+import { AdmissionService } from './backend/watchdog_api/identity/admission';
+import { SignInService, signInPepper } from './backend/watchdog_api/identity/sign_in';
+import { MailService, loadAccessMessages } from './backend/watchdog_api/mail';
+import { appendAudit } from './backend/watchdog_api/db/repositories/audit';
+import { secretStore } from './backend/watchdog_api/secrets';
 import { PaperOperationService } from './backend/watchdog_api/services/paper_operations';
 import { PaperComparisonService } from './backend/watchdog_api/services/paper_comparisons';
 import { PaperComparisonsRepository } from './backend/watchdog_api/db/repositories/paper_comparisons';
@@ -85,16 +94,28 @@ export async function configureApp() {
   assertAuthSafeForEnvironment(readAuthConfig());
   assertStorageSafeForEnvironment({ env: process.env, dbPath, storeBackend, storePath });
 
-  const identity = await buildIdentity();
+  if (process.env.WATCHDOG_TRUST_PROXY) app.set('trust proxy',process.env.WATCHDOG_TRUST_PROXY);
+  const authConfig = readAuthConfig();
+  const admissionRepository = new AdmissionRepository(sqlite);
+  const admission = authConfig.mode === 'accounts' ? new AdmissionService(admissionRepository,authConfig.grants,(...event) => appendAudit(sqlite,...event)) : undefined;
+  const mail = admission ? new MailService(loadAccessMessages().messages) : undefined;
+  const identity = await buildIdentity(process.env,undefined,undefined,admission ? {service:admission,repository:admissionRepository} : undefined);
+  const signIn = admission && mail ? new SignInService(admissionRepository,mail,(await secretStore.resolve('env:SESSION_SIGNING_KEY')).use(signInPepper)) : undefined;
   const authDeps = {
     identity,
     principals: new PrincipalRepository(sqlite),
     secureCookies: IS_PRODUCTION,
+    admission, admissionRepository, mail, signIn,
   };
 
   app.use(principalMiddleware(authDeps));
+  if (admission) {
+    app.use('/api',crossSiteGuard(mail!.publicUrl()));
+    app.use('/api/auth',buildAccountsRouter(authDeps));
+  }
   app.use('/api/auth', buildAuthRouter(authDeps));
   app.use('/api', requireInstallationAccess);
+  if (admission && mail) app.use('/api/access',buildAccessRouter(admission,mail));
   app.use('/api/search', buildSearchRouter(new SearchRepository(sqlite, store)));
   app.use('/api/projects', buildResearchProjectsRouter(new ResearchProjectsService(new ResearchProjectsRepository(sqlite), store)));
   const fieldRepository = new FieldReferenceRepository(sqlite, store);

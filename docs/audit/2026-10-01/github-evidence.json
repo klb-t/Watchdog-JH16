@@ -1,0 +1,187 @@
+{
+  "retrieved_at": "2026-10-01T09:03:59.447Z",
+  "base": "31b813f47455adf58746a272fe1f3e7aecc01383",
+  "branches": [
+    {
+      "name": "astra/watchdog-continuation-20260908",
+      "commit": {
+        "sha": "c3508c16dac269c8209d145374b457e46ba0b7c8",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/c3508c16dac269c8209d145374b457e46ba0b7c8"
+      },
+      "protected": false
+    },
+    {
+      "name": "astra/watchdog-integration-20260930",
+      "commit": {
+        "sha": "29b52a1b16130d967c95d83d1b8300330ae3b9a1",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/29b52a1b16130d967c95d83d1b8300330ae3b9a1"
+      },
+      "protected": false
+    },
+    {
+      "name": "chore/repo-hygiene-2026-09",
+      "commit": {
+        "sha": "4b3d3332f7f374a3d6fd5d07443220a7a29f4dca",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/4b3d3332f7f374a3d6fd5d07443220a7a29f4dca"
+      },
+      "protected": false
+    },
+    {
+      "name": "claude/ai-studio-last-commit-gjqxy4",
+      "commit": {
+        "sha": "9dea9aab41259770889f2798da49c0f8bb82ecba",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/9dea9aab41259770889f2798da49c0f8bb82ecba"
+      },
+      "protected": false
+    },
+    {
+      "name": "codex/clinical-audit-20260930",
+      "commit": {
+        "sha": "0b013b5bca7dff536fb7e2965d55bf1483018e9e",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/0b013b5bca7dff536fb7e2965d55bf1483018e9e"
+      },
+      "protected": false
+    },
+    {
+      "name": "codex/watchdog-integration-20261001",
+      "commit": {
+        "sha": "ca5645cfa385aa1b9ec5c1eb8512fb863f784153",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/ca5645cfa385aa1b9ec5c1eb8512fb863f784153"
+      },
+      "protected": false
+    },
+    {
+      "name": "codex/watchdog-operations-20260930",
+      "commit": {
+        "sha": "92ae68b93ed44e3227e94e4f87abae424ad9df68",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/92ae68b93ed44e3227e94e4f87abae424ad9df68"
+      },
+      "protected": false
+    },
+    {
+      "name": "codex/watchdog-research-20260930",
+      "commit": {
+        "sha": "93f98ed2d1bfdc76f9a5233d7c52bf8c498e71c4",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/93f98ed2d1bfdc76f9a5233d7c52bf8c498e71c4"
+      },
+      "protected": false
+    },
+    {
+      "name": "codex/watchdog-wave1-20260930",
+      "commit": {
+        "sha": "a1449bd5acb8a1a3fb211d849a6f3d179634435f",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/a1449bd5acb8a1a3fb211d849a6f3d179634435f"
+      },
+      "protected": false
+    },
+    {
+      "name": "main",
+      "commit": {
+        "sha": "31b813f47455adf58746a272fe1f3e7aecc01383",
+        "url": "https://api.github.com/repos/klb-t/Watchdog-JH16/commits/31b813f47455adf58746a272fe1f3e7aecc01383"
+      },
+      "protected": false
+    }
+  ],
+  "pull_requests": [
+    {
+      "number": 9,
+      "title": "Integrate verified Research, Clinical and Operations packages",
+      "state": "closed",
+      "merged_at": "2026-09-30T23:38:49Z",
+      "head": "ca5645cfa385aa1b9ec5c1eb8512fb863f784153",
+      "base": "main",
+      "body": "The three completed worker packages remained on separate branches. This integration preserves all worker histories and combines Operations backup/recovery, Research E5.7d reviewed frozen scalar comparisons, and Clinical E6.4a/b + E6.5a synthetic core/CLI.\n\nIndependent integration review found and corrected two issues: comparisons incorrectly described declared tolerances as preregistered; unapproved supersession evidence could suppress a clinical fixture conflict. The fixes preserve the historical JH16 evaluator and add focused regressions, including explicit supersession provenance traces.\n\nValidation before combined CI:\n- Scientific + comparison integration: 68/68 pass.\n- Clinical: 67/67 pass, final typecheck pass.\n- Operations backup/update: 27/27 pass on combined schema including migration 022.\n- Initial combined lint/build pass; local full gate 522 pass / 27 missing-Chromium launch failures (549 tests), zero skipped/cancelled. This is not a full local pass.\n- JH16: 32 observations, 16 Pi, 16 Hi; pipeline_self_check unchanged.\n\nFinal corrected code head ca5645cfa385aa1b9ec5c1eb8512fb863f784153; tree bfe0e52ee4e1e659a29fc591af55adcb0b7c02b3. Require both combined verify and container gates before merge. Final results will be recorded in docs/HANDOFF_2026-10-01_INTEGRATION.md.\n\nIncludes PRs #6, #7, #8. No real VM deployment, clinical validation, actual scientific approval or general paper replication is claimed. Clinical has no product API, persistence or UI. Backup includes image identity, not image bytes; restore remains isolated.\n\n## Final acceptance\nMerged as 80a97253f394f28a030c9bead2040e7443fcf7fa. Actions 36791873648 passed: verify job110146387461 and container job110146387257 each completed 552/552 tests, zero failures/skips/cancellations. JH16 and actual production container start/persistence passed. Merge tree exactly matches corrected tested tree bfe0e52ee4e1e659a29fc591af55adcb0b7c02b3. PRs #6/#7/#8 are confirmed merged through preserved ancestry. Final documentation checkpoint31b813f records state, ledger and recovery instructions."
+    },
+    {
+      "number": 8,
+      "title": "OPERATIONS: verified backup, isolated restore and explicit update recovery",
+      "state": "closed",
+      "merged_at": "2026-09-30T23:38:50Z",
+      "head": "92ae68b93ed44e3227e94e4f87abae424ad9df68",
+      "base": "main",
+      "body": "Existing VM backups were tar files without executable restore or content/schema verification. Mutable image tags and startup failures could also leave recovery state ambiguous.\n\nThis package adds a versioned private archive with file hashes, schema/vault checks and immutable image identity; validates and restores it to a new directory without executing archived code; and makes update failure handling explicit. Build failures keep the previous service, backup failures restart it, and possible migration/start failures stop the new service without downgrading the database. Persistent boot activation follows successful health checks.\n\nValidation on implementation tree d64201419d0ed528e15716334f41631cd4fcfbc1: 62/62 focused tests, including 18 actual backup/restore tests and 9 executable shell failure tests. Restored SQLite records, blobs and a fictional UserVault secret are read back. WAL, hot rollback journals, corrupt/unsafe archives, existing destinations, legacy installation upgrades and recovery guards are covered. Typecheck, baseline build, Bash/Python syntax and independent review passed.\n\nLimits: no local Docker; no actual VM/cloud changes or production data; image ID is included but Docker image bytes are not. Restore stages a private directory and does not activate it. SIGKILL cannot run shell cleanup of a still-live validation service. Full integration/JH16 and real-container evidence must be checked separately on the combined head.\n\nBase: 312ba246f9bdeb035019e2ff4c1a09aaef0a734c. Claims, per-commit identities, exact commands and integration proposal are in docs/work_packages/OPERATIONS.md. Global state and ledger remain integrator-owned."
+    },
+    {
+      "number": 7,
+      "title": "E5.7d: reviewed scalar claims, frozen fresh runs and verifiable research exports",
+      "state": "closed",
+      "merged_at": "2026-09-30T23:38:50Z",
+      "head": "93f98ed2d1bfdc76f9a5233d7c52bf8c498e71c4",
+      "base": "main",
+      "body": "## Why\n\nPaper operations retained a quoted method and an approved execution, but did not bind a separately reviewed numerical claim before a new run. E5.7d adds that binding without treating a scalar match as replication of an entire publication.\n\n## Changes\n\n- Strict versioned claims pin the exact source quotation, operation/method/data/cohort hashes, scalar, unit, rationale and explicit tolerance.\n- Separate hash-bound approval, immutable revisions/events and transactional freeze/attempt/run birth prevent attaching an old result after the fact.\n- Approval-event identities are checked across asynchronous reads and finalization, including same-clock revoke/reapprove; failed/interrupted attempts and historical actors survive restart/account adoption.\n- Existing executors produce a deterministic comparison core in a separate run envelope. Missingness, ambiguity, units and nonfinite values remain explicit.\n- Contextual PaperOperations UI provides review, freeze/execute, history, revisions and download. Research package v2 includes a standalone comparison verifier; v1 and archived UI profiles remain readable.\n- User documentation, synthetic fixtures, adversarial integration tests and two production Chromium flows.\n\n## Evidence\n\nExact code head: `21ad029327ea368a0955ab041e82db58fc1f4a67`, tree `ac60c933c74cee160ed5182b671bb7d7be9cc36c`.\n\n[CI run 36787396456](https://github.com/klb-t/Watchdog-JH16/actions/runs/36787396456): both jobs passed.\n- verify: clean dependency install, lint/build, **457/457 tests**, zero skipped, both new real browser flows, JH16 demo.\n- container: full **457/457** image test gate plus actual production start, non-root/read-only image, HTTP/API write and persistence.\n- New focused scientific/integration tests: **21/21**, independently rerun by the read-only reviewer. Existing package regressions: **29/29**.\n- Local lint/build/JH16 passed. Local full suite: 430 pass / 27 fail at missing Chromium launch; these are not claimed as local browser passes.\n\nFinal `93f98ed2d1bfdc76f9a5233d7c52bf8c498e71c4` only adds acceptance documentation. See `docs/work_packages/RESEARCH_CHECKPOINT_2026-09-30.md` for hashes, commands and limitations.\n\n## Scope and integration\n\nAssigned by remote main coordination `9a8adba`; confirmed code base `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`. Claim `da0b051`; three published implementation checkpoints `17518dd`, `bab9ad1`, `21ad029`. Migration **022** reserved and used. No dependency, global ledger or locked JH16 changes.\n\nVerifier recomputes scalar-versus-tolerance arithmetic, not the underlying statistic; it does not authenticate a reviewer/clock or establish scientific independence. An externally retained manifest hash protects against wholesale rewriting. Fidelity dimensions remain separately unassessed.\n\nIntegrator owns merge, combined-head gates and ledger update. Propose accepting **E5.7d only**; **E5.7b remains open**. Preserve adjacent API/migration/import changes from other packages. No live research or actual scientific approvals were performed."
+    },
+    {
+      "number": 6,
+      "title": "CLINICAL: syntetyczny przypadek, jawne reguły i braki pomiarów",
+      "state": "closed",
+      "merged_at": "2026-09-30T23:38:50Z",
+      "head": "0b013b5bca7dff536fb7e2965d55bf1483018e9e",
+      "base": "main",
+      "body": "## Cel i zakres\nBrakowało wykonywalnego syntetycznego przypadku oraz jawnych zależności reguły. PR dodaje zamknięty przepływ: fikcyjny fixture → applicability i zależności → supported/contradicted/undetermined z odtwarzalnym trace → zachowane braki → propozycje zgodne z fikcyjnym profilem testów.\n\nPrzydział integratora: main `9a8adba8a22671769ecd2b0291e23e1007d8c6fc`, baza kodu `312ba246f9bdeb035019e2ff4c1a09aaef0a734c`. Claim opublikowany przed implementacją; dokładny kontrakt, przydział plików i checkpointy w `docs/work_packages/CLINICAL.md`.\n\n## Zmiany\n- E6.4a: ścisły schema, fikcyjne A/B, jawne missingness, jednostki/czasy/proweniencja, konflikty i supersession, mieszanina/nieznany skład/alternatywa nietoksykologiczna.\n- E6.4b: ograniczony interpreter, osobny przegląd hasha reguły, piny case/rule/reference/executor, blokada nowych wykonań po zmianie lub cofnięciu aprobaty, historyczny replay z bieżącymi warunkami odczytu.\n- E6.5a: wersjonowany profil testów; propozycje tylko z brakujących zależności kwalifikujących się reguł. Niedostępność i wszystkie pierwotne braki pozostają widoczne. Zmiana profilu nie zmienia pomiarów ani praw.\n- Zamknięty CLI z JSON na stdout i hashami rzeczywistych bajtów executora oraz osobnej receptury demo. Brak dowolnego importu historii.\n\n## Walidacja\n```sh\nnpm run lint\nnpm run build\nnode --import tsx --test tests/unit/clinical_demo_case.test.ts tests/unit/clinical_demo_executor.test.ts tests/unit/clinical_demo_profile.test.ts tests/integration/field_reference.test.ts tests/integration/field_shell.test.ts tests/unit/field_ui.test.ts\nnode --import tsx scripts/demo_clinical.ts fixture:case-b available\nnode --import tsx scripts/demo_clinical.ts fixture:case-b unavailable\n```\n\nLint i build: exit 0. Testy: **91/91 pass**, zero fail/skipped/cancelled (65 nowych + 26 istniejących referencji). Niezależne audyty checkpointów przeprowadzone przez osobnego agenta; wykryte błędy proweniencji źródeł i granic czasu naprawione oraz objęte regresją. Testy CLI sprawdzają deterministyczny stdout i zamkniętą listę fixture. Wynik B: undetermined; profil dostępny daje 1 propozycję, niedostępny 0, missing_value pozostaje.\n\n## Granice i odbiór\nTo demonstracja mechanizmu w zaufanym harnessie fixture, bez deklaracji użyteczności klinicznej, rzeczywistych progów ani porad. Przydział wyłącza API, trwały zapis, migracje, nawigację i UI. Parametry dostępu nie zastępują produkcyjnej autoryzacji. Hash zawartości nie stanowi podpisu ani atestacji zależności.\n\nNie dodano browser flow. Wcześniejszy lokalny blocker Chromium pozostaje jawny; nie raportujemy browser pass. Całe E6.4/E6.5 pozostają otwarte. Integrator wykonuje pełną bramkę na zintegrowanym headzie i aktualizuje globalny stan/ledger.\n\nOpublikowane małe etapy:\n- claim: `d0a228b47465d2beb504d9f3bd59e641b6488f3e`\n- E6.4a: `12ea35996cfe5368c6347c7a779c48bd84f4ae60`\n- E6.4b: `5f8ab5812d22906ccb5577e9853c4dca1837ee9d`\n- E6.5a + CLI: `0b013b5bca7dff536fb7e2965d55bf1483018e9e`\n\nPierwszy następny ruch: przegląd pakietu przez integratora oraz pełna bramka na wspólnym headzie."
+    },
+    {
+      "number": 5,
+      "title": "WatchDog: repair scientific/data-access contracts and add paper cohorts",
+      "state": "closed",
+      "merged_at": "2026-09-30T19:41:06Z",
+      "head": "a1449bd5acb8a1a3fb211d849a6f3d179634435f",
+      "base": "main",
+      "body": "The September 30 takeover found four concrete defects: ratios paired rows by position instead of entity ID; shared-data revocation could leak data/metadata; the VM installer selected an obsolete branch; and legacy Cloud Run incorrectly treated GCS FUSE as safe SQLite storage.\n\nThis PR repairs those contracts and adds source-linked exploratory paper cohorts: exact row IDs, source quotation and rationale are frozen into the reviewed method. New v2 exports verify the cohort while retaining complete source inputs and historical v1 compatibility. It also adds checkpoint/ownership instructions and three independent-thread work packages.\n\nValidation completed on code head 827fa1150fb0e2efbbc13d7979d992197ec09fc0:\n- Actions 36766360252: verify AND container succeeded.\n- Both paths passed 434/434 tests, zero failures, skips or cancellations, including real browser cohort/reload/export acceptance.\n- JH16 demo passed: 32 observations, preserved Pi/Hi, correctly labeled pipeline_self_check.\n- Real container production start, non-root/read-only image, loopback HTTP, API write and data persistence after replacement passed.\n- Independent peer reviews checked approval/entity integrity and genuine archived ui-1/v1 packages, null-only cohorts and deterministic export.\n\nThe subsequent a1449bd checkpoint changes only AGENTS.md and state/ledger/handoff documentation; executable sources are unchanged from the verified head. Local browser launch was blocked by sandbox socket permissions (409 passed / 25 launch failures locally); successful browser evidence is the actual CI result above.\n\nLocked JH16 formulas/MethodSpecs are unchanged. Cloud Run remains unsupported and now stops before cloud actions; disk-backed private VM deployment remains separate. No cloud resources, paid providers, private patient data or scientific approvals were introduced.\n\nHandoff: docs/HANDOFF_2026-09-30_WAVE1.md. Coordination: docs/WORK_COORDINATION.md. Larger packets: docs/work_packages/."
+    },
+    {
+      "number": 4,
+      "title": "Integrate continuation and complete the private research workspace",
+      "state": "closed",
+      "merged_at": "2026-09-30T18:12:32Z",
+      "head": "29b52a1b16130d967c95d83d1b8300330ae3b9a1",
+      "base": "main",
+      "body": "Integrates the September continuation with current `main` and completes the private research workspace.\n\n- Closed admission: verified applicant requests, email-bound one-use invitations, separate profile grants, immediate session revocation and last-manager protection.\n- Owned immutable research-project revisions with pinned material, explicit scientific meaning, separate schedule pointers and deterministic archives with a standalone verifier.\n- Seven capability-filtered sections and literal owner-scoped metadata search with current source availability and exact deep links.\n- Distinct local/global appearance and market-label candidates, preserved local denominators, six evidence kinds by default and principal-bound expiring offline inspection with persisted audit receipts.\n- Explicit planned Google Trends transport instead of a fabricated measurement; reconciled historical conflicts, omissions and reversible defaults.\n\nValidation: clean local `npm run test:all` passes 419/419 with zero failures/skips; TypeScript, production build and JH16 demo pass. Final head `29b52a1b16130d967c95d83d1b8300330ae3b9a1` passed both `verify` and `container` in [branch run 36756509467](https://github.com/klb-t/Watchdog-JH16/actions/runs/36756509467) and [PR run 36756514793](https://github.com/klb-t/Watchdog-JH16/actions/runs/36756514793), including standard Playwright Chromium and actual container build/start/persistence. The paper-operation regression holds the real catalogue refresh to verify correct pending-state synchronization, retaining approval/execution/export checks.\n\nFrozen JH16 contracts and calculations are unchanged. The demo remains a pipeline self-check on the paper's 32 input observations, with 16 Pi and 16 Hi. Generic executable paper replication, causal/time-series work, clinical cases/PK-PD, devices and live Trends remain open. No live GCP provisioning or real OAuth-account validation is claimed. PR #1 and its base are preserved.\n\nSupported scope and history: `docs/HANDOFF_2026-09-30.md`, `docs/SPEC_RECONCILIATION_2026-09-30.md`, `docs/DESIGN_RULES.md` and the task ledger."
+    },
+    {
+      "number": 3,
+      "title": "Repository hygiene, canonical docs and licensing",
+      "state": "closed",
+      "merged_at": "2026-09-16T17:20:11Z",
+      "head": "4b3d3332f7f374a3d6fd5d07443220a7a29f4dca",
+      "base": "main",
+      "body": "Consolidated repository cleanup after merging all execution-agent branches into main.\n\n- make main the canonical documented state\n- shorten and correct the project front door\n- move the legacy agent handoff under docs/internal and remove the one-off execution prompt\n- remove unused AI Studio scaffold files\n- add PolyForm Noncommercial source-available licensing and a separate commercial-licensing path\n\nNo implementation code is changed by this PR."
+    },
+    {
+      "number": 2,
+      "title": "Merge Astra execution branch into main",
+      "state": "closed",
+      "merged_at": "2026-09-16T17:06:51Z",
+      "head": "2e1d0fcc17b495ad007bf5000ffc190e3f223f38",
+      "base": "main",
+      "body": "Consolidate execution-agent work into the canonical main branch before repository cleanup."
+    },
+    {
+      "number": 1,
+      "title": "Watchdog: research workflows, public memory, provider routing and extraction",
+      "state": "open",
+      "merged_at": null,
+      "head": "c3508c16dac269c8209d145374b457e46ba0b7c8",
+      "base": "claude/ai-studio-last-commit-gjqxy4",
+      "body": "## Purpose\nTurn the handoff branch into connected responder and research workflows, preserving source provenance and scientific meaning. Users start from a goal, configure their own providers and budgets, then collect, inspect, analyse or prepare an extraction without changing application code.\n\n## Implemented\n- Public collection plans now retain optional baseline/research/monitoring intent across schedules, jobs and HTTP receipts. Migration 017 freezes purpose plus a hash of the actual acquisition request. History and comparison exports keep changed purposes/parameters separate while identical content deduplicates; historical unclassified requests, contexts and exports retain their hashes. Labels are validated profile data, and the context is inspectable from the UI.\n- Source history now preserves repeated successful record/receipt associations and distinguishes unchanged content, changes and reversions. Migration 016 backfills only proven first receipts. Paged source-context histories, a profile-driven UI, exact structural JSON comparison and portable snapshots retain independent source/profile identities. An offline CLI checks a separately supplied export hash and recomputes differences; null, absence, zero and decimal text stay distinct.\n- Responder reference import/review, region/time/appearance/symptom lookup, sourced composition and interactions, independent evidence/category/review/quality signals, bounded offline snapshots and audit synchronization.\n- Generic owned datasets, reviewed deterministic statistics, 2D/3D figures, marker maps and reviewed regional boundaries. Exact geographic joins preserve missing/absent/ambiguous/unmatched states. Time/panel/color/size/alpha/labels, shared context tools, favourite snapshots and reproducible SVG/CSV/JSON/ZIP exports retain their source and method hashes.\n- Durable daily/interval collection and paper scans with leased workers, cancellation, current-owner authorization, bounded source requests and immutable raw receipts. Working public adapters: PubChem, ChEMBL, Wikidata, Europe PMC and arXiv. Substance memory retains original activity values, relations, units, targets and attribution.\n- Personal encrypted keys and settings; a three-step wizard launches the real approved JH16 fixture benchmark and optional public jobs. Language and geography remain separate. Simple mode alone exposes the cost slider.\n- Sixteen text provider profiles, seven task profiles, per-task assignments and model pins. Routing considers context, cost ceilings, comparable reviewed benchmark evidence and measured operational history. OpenRouter has automatic catalog pricing; direct providers currently require reviewed price profiles.\n- New paper/extraction workshop: immutable text or abstract intake, source-receipt lineage, exact unique source quotations, input requirements, explicit reanalysis/proxy/simulation variants and bounded scheduled LLM assessments. Failed/interrupted attempts retain their history without automatic rebilling.\n- Form-defined or LLM-proposed JSON/CSV copy profiles. Models see structure instead of source cell values; deterministic code copies exact lexical values. Exact-output fixture tests precede hash-bound activation. Trials, failures, raw input, provenance and execution exports remain available after reload.\n- Source extraction now continues into reviewed statistics through a profile-driven type/unit/missingness/citation form. Datasets retain raw source, tested parser execution and exact cell lineage; numeric precision loss is rejected. The research ZIP includes a dependency-free extraction replay and verifies values and source spans offline.\n- Reusable private mapping templates pin their source dataset/parser versions, survive restart/account transfer and restore column settings for a later source file. Old observations, citations, evidence and approvals are not carried forward. Final datasets record exact template lineage and whether settings were edited. Figure/map captions distinguish copied dates from remote retrieval.\n- Source-linked paper analyses now connect a saved unique quote or an exact assessed operation to approved dataset columns, explicit origins/substitutions, scope notes and a reviewed MethodSpec. Keyless describe/Pearson/Spearman execution, persistent run history and publication packages retain the full paper context. The offline verifier checks actual inputs against the declared columns, quote anchors and unresolved requirements. Generic workbench execution/export preserves paper ownership and context; revocation during asynchronous storage prevents result finalization.\n- Ten capability-filtered goal paths, readable source/variant/parser forms and developer diagnostics. API ownership, source approval and session-bound review apply throughout.\n\n## Requirements reconciliation\nThe September 12 archive synthesis and concept graphic were checked against code in a [24-family completeness review](https://github.com/klb-t/Watchdog-JH16/blob/f61daa0cb00b4395f5905dcdfba53327a1aff419/docs/COMPLETENESS_REVIEW_2026-09-12.md). Six compatible acceptance clarifications cover source-version history, collection comparability, laboratory missingness, batch-alert evidence, cross-view identity and contextual actions. The original two axes are evidence tier and content category; approval and quality flags remain separate. Historical prompts are reference material. Existing decisions and task order remain intact; private correspondence is not included.\n\n## Validation\nCurrent head: **2e1d0fcc17b495ad007bf5000ffc190e3f223f38**.\n\n**349/349 tests passed in [GitHub Actions](https://github.com/klb-t/Watchdog-JH16/actions/runs/34758720915)**, with zero failures or skips. Clean installation, type checking, production build, Chromium and the JH16 demo passed. Local unit/contract/scientific/integration regression passed **332/332**.\n\nFive additional integration cases cover optional-purpose compatibility, frozen scheduled jobs and success/error receipts, migration from a pre-017 database, changed-plan history separation, request-integrity failures and offline rejection of rehashed context edits. The existing Chromium flows now also save a baseline schedule, preserve its purpose while pausing, select separate baseline/research histories, and verify the exported baseline comparison through the CLI. Mobile layout, history reload and the existing responder/research/paper-analysis flows passed.\n\nThe first local full run caught an architecture-boundary violation in the new validation helper; it was moved out of the pure domain layer without relaxing the gate. The final local and CI suites passed.\n\nCI uploaded the browser artifact (ID 10318266565, published SHA-256 `0e5727264cbb624bc20a625d2473bc0c2336dbedf9a9312752964f0b79f292aa`). Downloading it for a separate manual visual inspection returned HTTP 403; independent ZIP checksum verification and manual inspection are not claimed.\n\nNo paid provider account calls were made by the agent. Test research records are explicitly fictional. Earlier public-source development collection retained five substance identities and 572 activity assertions, with 38 request receipts (37 successful, one interrupted/error). The MDMA refresh completed with 44 activities and 25 literature records. The runtime database is not bundled in Git, and coverage remains partial. JH16 fixtures remain a pipeline self-check, not independent replication.\n\n## Remaining work\nCollection intent does not implement named project collections, resolution/retention policies, geographic acquisition filters, materialized series or operational alerts. Matching acquisition signatures do not establish equal cadence, completeness or scientific comparability.\n\nGeneral paper-to-executable-method compilation, arbitrary autonomous replication, confirmation partitions/comparison-family correction, hypothesis prioritization, project evidence graphs and paper drafting remain open. So do HTML/PDF extraction, sandboxed generated modules, automatic direct-provider prices, semantic benchmark execution, live Trends, advanced spatial/causal statistics and route hypotheses. A source import does not establish clinical validity; source/review dimensions stay explicit.\n\nSee docs/COLLECTION_CONTEXT.md, docs/SOURCE_HISTORY.md, docs/PAPER_ANALYSES.md, docs/RESEARCH_WORKSHOP.md, docs/PERSONAL_PROVIDERS.md, docs/AUTOMATION_AND_MEMORY.md, docs/WORKBENCH.md and the updated task ledger for exact scope.\n\nBase remains `claude/ai-studio-last-commit-gjqxy4`, as specified in the handoff."
+    }
+  ],
+  "combined_run": {
+    "id": 36791873648,
+    "head_sha": "ca5645cfa385aa1b9ec5c1eb8512fb863f784153",
+    "conclusion": "success"
+  },
+  "jobs": [
+    {
+      "id": 110146387257,
+      "name": "container",
+      "conclusion": "success"
+    },
+    {
+      "id": 110146387461,
+      "name": "verify",
+      "conclusion": "success"
+    }
+  ],
+  "claude_ci_runs": []
+}

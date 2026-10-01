@@ -1,0 +1,67 @@
+✔ E4.5 browser: an anonymous visitor sees only the sign-in screen (2009.501366ms)
+✔ E4.5 browser: the owner signs in by emailed code and lands where they were going (265.636884ms)
+✔ spec 14 browser: areas, tabs, breadcrumb and the command palette (310.428372ms)
+✔ E4.5 browser: the owner invites someone by address and gets a link to hand over (410.214296ms)
+✔ E4.5 browser: the invited person opens the link, signs in, and is in (557.078844ms)
+✔ E4.5 browser: a stranger who signs in can only apply (610.687839ms)
+✔ E4.5 browser: approval lets the stranger in; revocation takes them straight back out (600.782972ms)
+✔ admission browser: private deep link, real request approval and revocation, and unsent invitation controls (2313.302168ms)
+✖ seven main groups retain paper run deep links, contextual tools and a contained mobile layout (32013.893415ms)
+✔ E4.5: an anonymous caller reaches only the sign-in surface (1347.198642ms)
+✔ E4.5: a verified stranger becomes an applicant, not a member (90.826551ms)
+✔ E4.5: the gate closes routers that only checked "someone is signed in" (16.912088ms)
+✔ E4.5: an applicant can apply once, see the status, and nothing more (13.271065ms)
+✔ E4.5: the operator grant from the environment admits the owner as developer (64.259499ms)
+✔ E4.5: approving an application takes effect on the applicant's very next request (18.899955ms)
+✔ E4.5: an email invitation works only for the invited address, and a forwarded link does not burn it (178.299995ms)
+✔ E4.5: sending an invitation goes through SMTP and only then says "sent" (68.545159ms)
+✔ E4.5: an open link admits any address up to its use limit, and never grants admin (210.89363ms)
+✔ E4.5: an admin can admit people but never create a developer or touch the owner (38.433176ms)
+✔ E4.5: when an inviter loses the right, their outstanding invitations stop working (96.271727ms)
+✔ E4.5: revoking access takes effect on the next request of an existing session (62.277799ms)
+✔ E4.5: a blocked person loses their session at once and cannot sign in again (120.957561ms)
+✔ E4.5: signing out everywhere kills every copy of the session (75.355579ms)
+✔ E4.5: a sign-in code is single-use and dies after five wrong guesses (142.640275ms)
+✔ E4.5: state-changing requests from another site are refused (6.850841ms)
+✔ E4.5: every admission decision is in the hash-chained audit log (2.991235ms)
+✔ E4.7: populated 022 upgrade retains ownership, request-only tokens and live grant overrides (67.12137ms)
+✔ E4.7: existing admin does not silently acquire bounded delegation (0.348664ms)
+✔ E4.5: grantable roles never exceed the granter's own capabilities (4.119301ms)
+✔ E4.5: no open link can confer admitting, principal management or diagnostics (0.484688ms)
+✔ E4.5: an invitation stops working when it expires, without anyone touching it (46.500658ms)
+✔ E4.5: access granted with an end date ends on that date (32.544112ms)
+✔ E4.5: invitation limits are enforced (20.381302ms)
+✔ E4.5: approving twice leaves exactly one grant, not a dangling second one (24.001854ms)
+✔ E4.5: accepting an invitation withdraws a pending application instead of leaving it to be approved twice (34.974575ms)
+✔ E4.5: the operator actor cannot be forged by a lookalike object (26.048198ms)
+✔ E4.5: every change is audited (37.854854ms)
+✔ E4.5: addresses are normalised and masked consistently (0.591629ms)
+✔ E4.5: codes avoid confusable characters and normalise however they are typed (0.393422ms)
+✔ E4.5: stored codes are keyed, so a database copy alone cannot check a guess (23.66706ms)
+✔ E4.5: without mail configured, emailed sign-in is unavailable rather than silently not sent (19.086285ms)
+✔ E4.5: emailed links come only from the configured public URL, and only https (or localhost) (2.549202ms)
+✔ E4.5: message templates fill every placeholder in both languages (14.738531ms)
+✔ E4.5: the UI label file has the same keys in every language (0.321023ms)
+✔ E4.5: the open endpoints are exactly the sign-in and application surface (0.262034ms)
+✔ E4.5: the rate limiter allows a burst up to its limit and then refuses until the window passes (0.210677ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 45
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32837.221854
+
+✖ failing tests:
+
+test at tests/e2e/workspace_navigation.test.ts:1:1805
+✖ seven main groups retain paper run deep links, contextual tools and a contained mobile layout (32013.893415ms)
+  locator.click: Timeout 30000ms exceeded.
+  Call log:
+  [2m  - waiting for getByRole('navigation', { name: 'Section navigation', exact: true }).getByRole('link', { name: 'Uruchomienia i wyniki', exact: true })[22m
+  
+      at TestContext.<anonymous> (<checkout>/tests/e2e/workspace_navigation.test.ts:57:83) {
+    name: 'TimeoutError',
+    log: [ "  - waiting for getByRole('navigation', { name: 'Section navigation', exact: true }).getByRole('link', { name: 'Uruchomienia i wyniki', exact: true })" ]
+  }

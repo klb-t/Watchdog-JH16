@@ -15,18 +15,25 @@ if [[ -n $root ]]; then
     [[ $resolved == "$root/"* ]] || die "Isolated WATCHDOG_ROOT requires $cmd stub beneath that root."
   done
 fi
-archive=''; commit=''
+archive=''; commit=''; public_host=''; owner=''
 while (($#)); do
   case "$1" in
-    --help|-h) printf '%s\n' 'Internal VM bootstrap: sudo bash gcp_vm_bootstrap.sh --archive SOURCE.tar.gz --commit FULL_SHA'; exit 0 ;;
-    --archive|--commit)
+    --help|-h) printf '%s\n' 'Internal VM bootstrap: sudo bash gcp_vm_bootstrap.sh --archive SOURCE.tar.gz --commit FULL_SHA [--public-host HOST] [--owner EMAIL]'; exit 0 ;;
+    --archive|--commit|--public-host|--owner)
       (($# >= 2)) || die "Missing value for $1"
-      case "$1" in --archive) archive=$2;; --commit) commit=$2;; esac; shift 2 ;;
+      case "$1" in --archive) archive=$2;; --commit) commit=$2;; --public-host) public_host=${2,,};; --owner) owner=${2,,};; esac; shift 2 ;;
     *) die "Unknown option: $1" ;;
   esac
 done
 [[ $commit =~ ^[a-f0-9]{40}$ && -f $archive ]] || die 'A source archive and full commit SHA are required.'
+[[ -z $public_host || $public_host =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$ ]] || die 'Invalid public host name.'
+[[ -z $owner || $owner =~ ^[^[:space:]@\"]+@[^[:space:]@\"]+\.[^[:space:]@\"]+$ ]] || die 'Invalid owner email.'
 [[ -n $root ]] || ((EUID == 0)) || die 'Run through sudo.'
+# A public address in front of the shared local user would give the instance to
+# anyone. Checked before anything is built or changed.
+if [[ -n $public_host && -z $owner ]] && ! grep -qsx 'WATCHDOG_AUTH=accounts' "$root/etc/watchdog/app.env"; then
+  die 'Public access needs sign-in: pass --owner YOUR_EMAIL (you become the operator).'
+fi
 # shellcheck source=/dev/null
 . "$root/etc/os-release"
 case "$ID:$VERSION_ID" in ubuntu:22.04|ubuntu:24.04|ubuntu:26.04|debian:12|debian:13) ;; *) die 'Supported: Ubuntu 22.04/24.04/26.04 or Debian 12/13.';; esac
@@ -43,7 +50,7 @@ elif [[ ( -e "$root/etc/watchdog" || -e "$root/var/lib/watchdog" ) && ! -f "$roo
   die 'Existing Watchdog state has no managed service. Inspect it before installing.'
 fi
 if command -v docker >/dev/null; then
-  other=$(docker ps --format '{{.Names}}' | grep -v '^watchdog$' || true)
+  other=$(docker ps --format '{{.Names}}' | grep -Ev '^watchdog(-proxy)?$' || true)
   [[ -z $other ]] || die 'Use a dedicated VM: other containers are running.'
 fi
 [[ ! -e $root/etc/watchdog/recovery-required ]] || die 'Recovery required; inspect /etc/watchdog/recovery-required before another update.'
@@ -178,6 +185,8 @@ install -m 0644 "$release/deploy/watchdog.service" "$root/etc/systemd/system/wat
 install -d -m 0755 "$root/usr/local/sbin" "$root/usr/local/lib/watchdog"
 install -m 0755 "$release/scripts/watchdogctl.sh" "$root/usr/local/sbin/watchdogctl"
 install -m 0755 "$release/scripts/watchdog_backup.py" "$root/usr/local/lib/watchdog/watchdog_backup.py"
+if [[ -f $release/deploy/watchdog-proxy.service ]]; then install -m 0644 "$release/deploy/watchdog-proxy.service" "$root/etc/systemd/system/watchdog-proxy.service"; fi
+if [[ -f $release/scripts/watchdog_access.sh ]]; then install -m 0755 "$release/scripts/watchdog_access.sh" "$root/usr/local/lib/watchdog/watchdog_access.sh"; fi
 systemctl daemon-reload
 systemctl enable --runtime --now watchdog.service
 ready=false
@@ -192,3 +201,8 @@ rm -- "$root/etc/watchdog/recovery-required"
 trap - EXIT INT TERM
 printf '\nWatchdog ready at VM loopback port 8080, commit %s, image %s.\n' "$commit" "$new_image"
 printf '%s\n' 'Commands: sudo watchdogctl status | logs | backup. Re-run the Cloud Shell installer to update.'
+# Each access command takes its own lock; the data update is already accepted.
+flock -u 9; exec 9>&-
+if [[ -n $owner ]]; then "$root/usr/local/sbin/watchdogctl" enable-accounts "$owner" --no-link; fi
+if [[ -n $public_host ]]; then "$root/usr/local/sbin/watchdogctl" enable-public "$public_host"; fi
+if [[ -n $owner ]]; then "$root/usr/local/sbin/watchdogctl" signin-link "$owner"; fi

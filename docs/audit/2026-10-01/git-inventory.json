@@ -1,0 +1,2414 @@
+{
+  "base": "31b813f47455adf58746a272fe1f3e7aecc01383",
+  "branches": [
+    {
+      "name": "astra/watchdog-continuation-20260908",
+      "sha": "c3508c16dac269c8209d145374b457e46ba0b7c8",
+      "main_only": 44,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "astra/watchdog-integration-20260930",
+      "sha": "29b52a1b16130d967c95d83d1b8300330ae3b9a1",
+      "main_only": 30,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "chore/repo-hygiene-2026-09",
+      "sha": "4b3d3332f7f374a3d6fd5d07443220a7a29f4dca",
+      "main_only": 42,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "claude/ai-studio-last-commit-gjqxy4",
+      "sha": "9dea9aab41259770889f2798da49c0f8bb82ecba",
+      "main_only": 36,
+      "branch_only": 9,
+      "ancestor_of_main": false
+    },
+    {
+      "name": "codex/clinical-audit-20260930",
+      "sha": "0b013b5bca7dff536fb7e2965d55bf1483018e9e",
+      "main_only": 15,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "codex/watchdog-integration-20261001",
+      "sha": "ca5645cfa385aa1b9ec5c1eb8512fb863f784153",
+      "main_only": 2,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "codex/watchdog-operations-20260930",
+      "sha": "92ae68b93ed44e3227e94e4f87abae424ad9df68",
+      "main_only": 16,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "codex/watchdog-research-20260930",
+      "sha": "93f98ed2d1bfdc76f9a5233d7c52bf8c498e71c4",
+      "main_only": 14,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "codex/watchdog-wave1-20260930",
+      "sha": "a1449bd5acb8a1a3fb211d849a6f3d179634435f",
+      "main_only": 22,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    },
+    {
+      "name": "main",
+      "sha": "31b813f47455adf58746a272fe1f3e7aecc01383",
+      "main_only": 0,
+      "branch_only": 0,
+      "ancestor_of_main": true
+    }
+  ],
+  "commits": [
+    {
+      "sha": "9dea9aab41259770889f2798da49c0f8bb82ecba",
+      "parents": [
+        "0566d6a8a0e99b6a3f5122d1cc85fddfc9032e71"
+      ],
+      "author_date": "2026-10-01T08:53:39Z",
+      "commit_date": "2026-10-01T08:53:39Z",
+      "subject": "docs: hand over repository lead to GPT/Codex with duplication report and consolidation rules",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "31b813f47455adf58746a272fe1f3e7aecc01383",
+      "parents": [
+        "80a97253f394f28a030c9bead2040e7443fcf7fa"
+      ],
+      "author_date": "2026-10-01T01:41:12+02:00",
+      "commit_date": "2026-10-01T01:41:12+02:00",
+      "subject": "docs: record merged packages and 552-test combined acceptance [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "80a97253f394f28a030c9bead2040e7443fcf7fa",
+      "parents": [
+        "9a8adba8a22671769ecd2b0291e23e1007d8c6fc",
+        "ca5645cfa385aa1b9ec5c1eb8512fb863f784153"
+      ],
+      "author_date": "2026-10-01T01:38:48+02:00",
+      "commit_date": "2026-10-01T01:38:48+02:00",
+      "subject": "Integrate verified Research, Clinical and Operations packages",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "ca5645cfa385aa1b9ec5c1eb8512fb863f784153",
+      "parents": [
+        "c1e1c8967a61f74e5641b592b5bc9cb75a67a232"
+      ],
+      "author_date": "2026-10-01T01:34:56+02:00",
+      "commit_date": "2026-10-01T01:34:56+02:00",
+      "subject": "Fix comparison claims and clinical supersession provenance during integration",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "c1e1c8967a61f74e5641b592b5bc9cb75a67a232",
+      "parents": [
+        "9a8adba8a22671769ecd2b0291e23e1007d8c6fc",
+        "92ae68b93ed44e3227e94e4f87abae424ad9df68",
+        "93f98ed2d1bfdc76f9a5233d7c52bf8c498e71c4",
+        "0b013b5bca7dff536fb7e2965d55bf1483018e9e"
+      ],
+      "author_date": "2026-10-01T01:30:36+02:00",
+      "commit_date": "2026-10-01T01:30:36+02:00",
+      "subject": "Integrate Operations, Research and Clinical packages for combined validation",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "0b013b5bca7dff536fb7e2965d55bf1483018e9e",
+      "parents": [
+        "5f8ab5812d22906ccb5577e9853c4dca1837ee9d"
+      ],
+      "author_date": "2026-10-01T00:52:56+02:00",
+      "commit_date": "2026-10-01T00:52:56+02:00",
+      "subject": "feat(clinical): select fictional missing measurements and demonstrate replay",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "93f98ed2d1bfdc76f9a5233d7c52bf8c498e71c4",
+      "parents": [
+        "21ad029327ea368a0955ab041e82db58fc1f4a67"
+      ],
+      "author_date": "2026-10-01T00:48:54+02:00",
+      "commit_date": "2026-10-01T00:48:54+02:00",
+      "subject": "docs: record E5.7d acceptance and integrator handoff [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "21ad029327ea368a0955ab041e82db58fc1f4a67",
+      "parents": [
+        "bab9ad19ef6dccb894bf492a962d01c3ac852d1d"
+      ],
+      "author_date": "2026-10-01T00:45:29+02:00",
+      "commit_date": "2026-10-01T00:45:29+02:00",
+      "subject": "E5.7d: add contextual claim review workflow and production browser coverage",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "bab9ad19ef6dccb894bf492a962d01c3ac852d1d",
+      "parents": [
+        "17518dd1b21ad00d26259be5e6d5b6114fbe2ec4"
+      ],
+      "author_date": "2026-10-01T00:44:55+02:00",
+      "commit_date": "2026-10-01T00:44:55+02:00",
+      "subject": "E5.7d: expose comparison review and verifiable run-bound research packages",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "5f8ab5812d22906ccb5577e9853c4dca1837ee9d",
+      "parents": [
+        "12ea35996cfe5368c6347c7a779c48bd84f4ae60"
+      ],
+      "author_date": "2026-10-01T00:44:20+02:00",
+      "commit_date": "2026-10-01T00:44:20+02:00",
+      "subject": "E6.4b: execute reviewed synthetic constraints with pinned replay [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "17518dd1b21ad00d26259be5e6d5b6114fbe2ec4",
+      "parents": [
+        "da0b051e08152239a160efb53fe3203f9bacd6ba"
+      ],
+      "author_date": "2026-10-01T00:39:08+02:00",
+      "commit_date": "2026-10-01T00:39:08+02:00",
+      "subject": "E5.7d: bind reviewed scalar claims to immutable fresh-run attempts",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "12ea35996cfe5368c6347c7a779c48bd84f4ae60",
+      "parents": [
+        "d0a228b47465d2beb504d9f3bd59e641b6488f3e"
+      ],
+      "author_date": "2026-10-01T00:36:50+02:00",
+      "commit_date": "2026-10-01T00:36:50+02:00",
+      "subject": "E6.4a: preserve synthetic case missingness and observation history [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "da0b051e08152239a160efb53fe3203f9bacd6ba",
+      "parents": [
+        "9c1aeee6ad8f7db5b1b804ec30087771de490f40"
+      ],
+      "author_date": "2026-10-01T00:28:18+02:00",
+      "commit_date": "2026-10-01T00:28:18+02:00",
+      "subject": "docs: claim assigned E5.7d implementation from integrator 9a8adba [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "d0a228b47465d2beb504d9f3bd59e641b6488f3e",
+      "parents": [
+        "67c10315f2257b5cf432b7fb1d9c6b01d98f2cb5"
+      ],
+      "author_date": "2026-10-01T00:28:01+02:00",
+      "commit_date": "2026-10-01T00:28:01+02:00",
+      "subject": "docs(E6.4): publish integrator-approved Clinical claim [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "9a8adba8a22671769ecd2b0291e23e1007d8c6fc",
+      "parents": [
+        "312ba246f9bdeb035019e2ff4c1a09aaef0a734c"
+      ],
+      "author_date": "2026-10-01T00:22:34+02:00",
+      "commit_date": "2026-10-01T00:22:34+02:00",
+      "subject": "docs: unblock Research and Clinical with exact integrator assignments [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "92ae68b93ed44e3227e94e4f87abae424ad9df68",
+      "parents": [
+        "ef78636a723865433c10ed931ee7d7eb8afb8c6a"
+      ],
+      "author_date": "2026-10-01T00:14:09+02:00",
+      "commit_date": "2026-10-01T00:14:09+02:00",
+      "subject": "docs: record operations recovery contract and 62 passing checks",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "ef78636a723865433c10ed931ee7d7eb8afb8c6a",
+      "parents": [
+        "0e592dd2098706d52f78f1ea5c35c66f67c8cdec"
+      ],
+      "author_date": "2026-10-01T00:12:46+02:00",
+      "commit_date": "2026-10-01T00:12:46+02:00",
+      "subject": "OPERATIONS: pin runtime images and recover explicitly from update failures",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "0e592dd2098706d52f78f1ea5c35c66f67c8cdec",
+      "parents": [
+        "32b4c0d2282da75545500ef10e7afe411a82b225"
+      ],
+      "author_date": "2026-10-01T00:12:01+02:00",
+      "commit_date": "2026-10-01T00:12:01+02:00",
+      "subject": "OPERATIONS: add verified private backups and isolated restore",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "9c1aeee6ad8f7db5b1b804ec30087771de490f40",
+      "parents": [
+        "312ba246f9bdeb035019e2ff4c1a09aaef0a734c"
+      ],
+      "author_date": "2026-10-01T00:11:04+02:00",
+      "commit_date": "2026-10-01T00:11:04+02:00",
+      "subject": "docs: checkpoint RESEARCH audit and proposed frozen comparison contract [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "32b4c0d2282da75545500ef10e7afe411a82b225",
+      "parents": [
+        "312ba246f9bdeb035019e2ff4c1a09aaef0a734c"
+      ],
+      "author_date": "2026-10-01T00:03:34+02:00",
+      "commit_date": "2026-10-01T00:03:34+02:00",
+      "subject": "docs: claim isolated operations package [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "67c10315f2257b5cf432b7fb1d9c6b01d98f2cb5",
+      "parents": [
+        "312ba246f9bdeb035019e2ff4c1a09aaef0a734c"
+      ],
+      "author_date": "2026-09-30T23:50:30+02:00",
+      "commit_date": "2026-09-30T23:50:30+02:00",
+      "subject": "docs(E6.4): audit synthetic case contract and request disjoint assignment [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "312ba246f9bdeb035019e2ff4c1a09aaef0a734c",
+      "parents": [
+        "860c844913ad3b51a653ba30ac78583a3f4e6b0b"
+      ],
+      "author_date": "2026-09-30T21:42:21+02:00",
+      "commit_date": "2026-09-30T21:42:21+02:00",
+      "subject": "docs: record merged parallel wave and final CI evidence [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "860c844913ad3b51a653ba30ac78583a3f4e6b0b",
+      "parents": [
+        "832947e01d5eaf3b0a4608dd8e773cf04b37e524",
+        "a1449bd5acb8a1a3fb211d849a6f3d179634435f"
+      ],
+      "author_date": "2026-09-30T21:41:06+02:00",
+      "commit_date": "2026-09-30T21:41:06+02:00",
+      "subject": "Integrate verified WatchDog parallel continuation",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "a1449bd5acb8a1a3fb211d849a6f3d179634435f",
+      "parents": [
+        "827fa1150fb0e2efbbc13d7979d992197ec09fc0"
+      ],
+      "author_date": "2026-09-30T21:38:29+02:00",
+      "commit_date": "2026-09-30T21:38:29+02:00",
+      "subject": "docs: preserve 434-test container gate and cold-resume instructions [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "827fa1150fb0e2efbbc13d7979d992197ec09fc0",
+      "parents": [
+        "757c1fb3018a9cf56264e55b479c9ac3878041fe"
+      ],
+      "author_date": "2026-09-30T21:31:56+02:00",
+      "commit_date": "2026-09-30T21:31:56+02:00",
+      "subject": "E5.7c: add source-linked exploratory cohorts and continuation packages",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "757c1fb3018a9cf56264e55b479c9ac3878041fe",
+      "parents": [
+        "fe674eb69daf28a431bce37a1f1895fd4cd039f9"
+      ],
+      "author_date": "2026-09-30T21:31:52+02:00",
+      "commit_date": "2026-09-30T21:31:52+02:00",
+      "subject": "E3.14: install current VM code and block unsafe Cloud Run recipe",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "fe674eb69daf28a431bce37a1f1895fd4cd039f9",
+      "parents": [
+        "9c02487190e9ae288c7a19bbf549bbbea0d7a672"
+      ],
+      "author_date": "2026-09-30T21:31:49+02:00",
+      "commit_date": "2026-09-30T21:31:49+02:00",
+      "subject": "E2.1: enforce entity identity and reviewed execution contracts",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "9c02487190e9ae288c7a19bbf549bbbea0d7a672",
+      "parents": [
+        "1a642e91c8a33c3d36e58066963e5cedd695796c"
+      ],
+      "author_date": "2026-09-30T21:28:52+02:00",
+      "commit_date": "2026-09-30T21:28:52+02:00",
+      "subject": "E4.6: enforce shared-data revocation across reads and search",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "1a642e91c8a33c3d36e58066963e5cedd695796c",
+      "parents": [
+        "832947e01d5eaf3b0a4608dd8e773cf04b37e524"
+      ],
+      "author_date": "2026-09-30T21:26:01+02:00",
+      "commit_date": "2026-09-30T21:26:01+02:00",
+      "subject": "docs: checkpoint autonomous WatchDog continuation [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "832947e01d5eaf3b0a4608dd8e773cf04b37e524",
+      "parents": [
+        "ac0c72832a5db4193e0a6d02404ffd7f733bd0dc"
+      ],
+      "author_date": "2026-09-30T20:14:21+02:00",
+      "commit_date": "2026-09-30T20:14:21+02:00",
+      "subject": "docs: record merged WatchDog integration and final CI evidence",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "ac0c72832a5db4193e0a6d02404ffd7f733bd0dc",
+      "parents": [
+        "1c81a367a773ba55a21235c4cbf2bf61063aba71",
+        "29b52a1b16130d967c95d83d1b8300330ae3b9a1"
+      ],
+      "author_date": "2026-09-30T20:12:31+02:00",
+      "commit_date": "2026-09-30T20:12:31+02:00",
+      "subject": "Integrate the private research workspace",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "29b52a1b16130d967c95d83d1b8300330ae3b9a1",
+      "parents": [
+        "7d479385052b1dc300c224a55c3e0819154cccac"
+      ],
+      "author_date": "2026-09-30T20:09:02+02:00",
+      "commit_date": "2026-09-30T20:09:02+02:00",
+      "subject": "test: synchronize paper plan selection with real catalogue refresh",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "7d479385052b1dc300c224a55c3e0819154cccac",
+      "parents": [
+        "f381b1ef68b7fc5ea75ae2e9cfcf45755d3a25b1"
+      ],
+      "author_date": "2026-09-30T19:59:56+02:00",
+      "commit_date": "2026-09-30T19:59:56+02:00",
+      "subject": "docs: record verified integration and container checkpoint",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "f381b1ef68b7fc5ea75ae2e9cfcf45755d3a25b1",
+      "parents": [
+        "1c81a367a773ba55a21235c4cbf2bf61063aba71",
+        "c3508c16dac269c8209d145374b457e46ba0b7c8"
+      ],
+      "author_date": "2026-09-30T19:55:31+02:00",
+      "commit_date": "2026-09-30T19:55:31+02:00",
+      "subject": "Integrate continuation and complete private research workspace",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "1c81a367a773ba55a21235c4cbf2bf61063aba71",
+      "parents": [
+        "b8e22305f9066b53787790aa78fc97082c91865f"
+      ],
+      "author_date": "2026-09-30T14:54:07+02:00",
+      "commit_date": "2026-09-30T14:54:07+02:00",
+      "subject": "docs: record ecosystem concepts and project links [skip ci]",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "0566d6a8a0e99b6a3f5122d1cc85fddfc9032e71",
+      "parents": [
+        "c5275db2cd2143502c6532b824de01fc029c8595"
+      ],
+      "author_date": "2026-09-25T14:49:17Z",
+      "commit_date": "2026-09-25T14:49:17Z",
+      "subject": "E3.14: public HTTPS entry without a domain (Caddy + sslip.io)",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "c5275db2cd2143502c6532b824de01fc029c8595",
+      "parents": [
+        "d25c6211cb27d1518fbc3f745989d60f5948ef5d"
+      ],
+      "author_date": "2026-09-24T22:35:28Z",
+      "commit_date": "2026-09-24T22:35:28Z",
+      "subject": "E7.1: seven navigation areas over unchanged routes (spec 14, D21)",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "d25c6211cb27d1518fbc3f745989d60f5948ef5d",
+      "parents": [
+        "cfb7fc7e48b12b37c8f44dd86c2471c07dd97424"
+      ],
+      "author_date": "2026-09-24T19:43:19Z",
+      "commit_date": "2026-09-24T19:43:19Z",
+      "subject": "docs: E4.5 ticked, D20 recorded, runbooks updated",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "cfb7fc7e48b12b37c8f44dd86c2471c07dd97424",
+      "parents": [
+        "485455e4d9a54f0e564f4690b9330cf16dca8621"
+      ],
+      "author_date": "2026-09-24T13:49:13Z",
+      "commit_date": "2026-09-24T13:49:13Z",
+      "subject": "E4.5 (4/4): admission tests end to end; signed invitations; shared browser resolver",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "485455e4d9a54f0e564f4690b9330cf16dca8621",
+      "parents": [
+        "c1f65d36b34730900ccfdc0767c0264e19502263"
+      ],
+      "author_date": "2026-09-24T13:38:39Z",
+      "commit_date": "2026-09-24T13:38:39Z",
+      "subject": "E4.5 (3/4): login, invitation, application and People & access screens",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "c1f65d36b34730900ccfdc0767c0264e19502263",
+      "parents": [
+        "d448e595d67d740648c390abf4110e8bb5ca2b78"
+      ],
+      "author_date": "2026-09-24T13:30:39Z",
+      "commit_date": "2026-09-24T13:30:39Z",
+      "subject": "E4.5 (2/4): operator CLI and watchdogctl access commands",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "d448e595d67d740648c390abf4110e8bb5ca2b78",
+      "parents": [
+        "6d83202b1304247e5d868232e66aa16dd74a6c91"
+      ],
+      "author_date": "2026-09-24T13:28:14Z",
+      "commit_date": "2026-09-24T13:28:14Z",
+      "subject": "E4.5 (1/4): admission backend — identity separated from access",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "c3508c16dac269c8209d145374b457e46ba0b7c8",
+      "parents": [
+        "ea88d8ac57541e187d8776da521e3e3fb4b42f4b"
+      ],
+      "author_date": "2026-09-23T09:00:30+02:00",
+      "commit_date": "2026-09-23T09:00:30+02:00",
+      "subject": "Wait for source catalog refresh in E3.12",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "ea88d8ac57541e187d8776da521e3e3fb4b42f4b",
+      "parents": [
+        "fb5b29d53044cb9aab7ff57bdac28f9b4ba604e2"
+      ],
+      "author_date": "2026-09-23T09:00:27+02:00",
+      "commit_date": "2026-09-23T09:00:27+02:00",
+      "subject": "Fix bootstrap on pristine UFW ruleset",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "6d83202b1304247e5d868232e66aa16dd74a6c91",
+      "parents": [
+        "fb5b29d53044cb9aab7ff57bdac28f9b4ba604e2",
+        "b8e22305f9066b53787790aa78fc97082c91865f"
+      ],
+      "author_date": "2026-09-23T05:47:47Z",
+      "commit_date": "2026-09-23T05:47:47Z",
+      "subject": "Merge main (licensing, canonical README, hygiene) into the continuation",
+      "branches_containing": [
+        "origin/claude/ai-studio-last-commit-gjqxy4"
+      ]
+    },
+    {
+      "sha": "fb5b29d53044cb9aab7ff57bdac28f9b4ba604e2",
+      "parents": [
+        "92062953e6dc5990ffcd4ae0baf6eb81186037e0"
+      ],
+      "author_date": "2026-09-22T17:47:39+02:00",
+      "commit_date": "2026-09-22T17:47:39+02:00",
+      "subject": "E3.13: stabilize source-access form labels for browser validation",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "92062953e6dc5990ffcd4ae0baf6eb81186037e0",
+      "parents": [
+        "3868f1f1f7727bf4249a1fb812dbfddca0dd33b2"
+      ],
+      "author_date": "2026-09-22T17:43:49+02:00",
+      "commit_date": "2026-09-22T17:43:49+02:00",
+      "subject": "docs: preserve Watchdog handoff and verified continuation state",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "3868f1f1f7727bf4249a1fb812dbfddca0dd33b2",
+      "parents": [
+        "1e583c107cec226063a84dc7d6aee3690f1ce7c9"
+      ],
+      "author_date": "2026-09-21T22:03:09+02:00",
+      "commit_date": "2026-09-21T22:03:09+02:00",
+      "subject": "E3.13: install a private durable GCP VM and verify the runtime image",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "1e583c107cec226063a84dc7d6aee3690f1ce7c9",
+      "parents": [
+        "c9afd37367898e1580150aadce975613d8fe88f2"
+      ],
+      "author_date": "2026-09-21T16:46:29+02:00",
+      "commit_date": "2026-09-21T16:46:29+02:00",
+      "subject": "E3.12: inventory data access, permissions and unsent requests",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "b8e22305f9066b53787790aa78fc97082c91865f",
+      "parents": [
+        "467039675a377e55785b6bfc29dbce906e50838f",
+        "4b3d3332f7f374a3d6fd5d07443220a7a29f4dca"
+      ],
+      "author_date": "2026-09-16T19:20:11+02:00",
+      "commit_date": "2026-09-16T19:20:11+02:00",
+      "subject": "Merge repository hygiene, canonical docs and licensing",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "4b3d3332f7f374a3d6fd5d07443220a7a29f4dca",
+      "parents": [
+        "54e4afdb420380a3e6a9cb1ac8c576da25fbc455"
+      ],
+      "author_date": "2026-09-16T19:18:21+02:00",
+      "commit_date": "2026-09-16T19:18:21+02:00",
+      "subject": "chore: remove unused AI Studio metadata scaffold",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "54e4afdb420380a3e6a9cb1ac8c576da25fbc455",
+      "parents": [
+        "7a991663535ffb5c3cc108370cb7a9d00a1b09b2"
+      ],
+      "author_date": "2026-09-16T19:16:49+02:00",
+      "commit_date": "2026-09-16T19:16:49+02:00",
+      "subject": "docs: make README a clean canonical project front door",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "7a991663535ffb5c3cc108370cb7a9d00a1b09b2",
+      "parents": [
+        "a6e9fed0a48a7303a3125ffb0afc41944e8ff470"
+      ],
+      "author_date": "2026-09-16T19:14:24+02:00",
+      "commit_date": "2026-09-16T19:14:24+02:00",
+      "subject": "chore: remove empty AI Studio scaffold artifact",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "a6e9fed0a48a7303a3125ffb0afc41944e8ff470",
+      "parents": [
+        "2ca982ae8a9b77e4568937caccc966b4dee85b86"
+      ],
+      "author_date": "2026-09-16T19:14:13+02:00",
+      "commit_date": "2026-09-16T19:14:13+02:00",
+      "subject": "chore: remove one-off execution prompt",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "2ca982ae8a9b77e4568937caccc966b4dee85b86",
+      "parents": [
+        "cb766cdcac6a1e674c0b2be2a47d9444a3386d4c"
+      ],
+      "author_date": "2026-09-16T19:14:08+02:00",
+      "commit_date": "2026-09-16T19:14:08+02:00",
+      "subject": "chore: remove legacy handoff from repository root",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "cb766cdcac6a1e674c0b2be2a47d9444a3386d4c",
+      "parents": [
+        "f7816180d81be7e3d83ab51402e46eeeaf33722f"
+      ],
+      "author_date": "2026-09-16T19:14:02+02:00",
+      "commit_date": "2026-09-16T19:14:02+02:00",
+      "subject": "docs: move legacy agent handoff out of repository root",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "f7816180d81be7e3d83ab51402e46eeeaf33722f",
+      "parents": [
+        "e157384538788bae29426b4b7772f0f6d82db5a9"
+      ],
+      "author_date": "2026-09-16T19:11:36+02:00",
+      "commit_date": "2026-09-16T19:11:36+02:00",
+      "subject": "docs: document commercial licensing model",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "e157384538788bae29426b4b7772f0f6d82db5a9",
+      "parents": [
+        "467039675a377e55785b6bfc29dbce906e50838f"
+      ],
+      "author_date": "2026-09-16T19:11:30+02:00",
+      "commit_date": "2026-09-16T19:11:30+02:00",
+      "subject": "docs: add noncommercial source-available license",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "467039675a377e55785b6bfc29dbce906e50838f",
+      "parents": [
+        "172c85b4f79de9ada7f5a4214fdd97fedff02486",
+        "2e1d0fcc17b495ad007bf5000ffc190e3f223f38"
+      ],
+      "author_date": "2026-09-16T19:06:50+02:00",
+      "commit_date": "2026-09-16T19:06:50+02:00",
+      "subject": "Merge Astra execution branch into main",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "c9afd37367898e1580150aadce975613d8fe88f2",
+      "parents": [
+        "2e1d0fcc17b495ad007bf5000ffc190e3f223f38"
+      ],
+      "author_date": "2026-09-14T07:51:46+02:00",
+      "commit_date": "2026-09-14T07:51:46+02:00",
+      "subject": "E3.11: add private watched-source changes and reading cursors",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "2e1d0fcc17b495ad007bf5000ffc190e3f223f38",
+      "parents": [
+        "609fa64b798677365dc2d3876283adac08afdc76"
+      ],
+      "author_date": "2026-09-13T15:02:22+02:00",
+      "commit_date": "2026-09-13T15:02:22+02:00",
+      "subject": "E3.10: preserve collection purpose and acquisition context",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "609fa64b798677365dc2d3876283adac08afdc76",
+      "parents": [
+        "f61daa0cb00b4395f5905dcdfba53327a1aff419"
+      ],
+      "author_date": "2026-09-13T06:44:20+02:00",
+      "commit_date": "2026-09-13T06:44:20+02:00",
+      "subject": "E3.9: preserve source checks and compare immutable reference versions",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "f61daa0cb00b4395f5905dcdfba53327a1aff419",
+      "parents": [
+        "09ab8a38105a8acafe972791dde480b6e14c5c9c"
+      ],
+      "author_date": "2026-09-13T01:33:48+02:00",
+      "commit_date": "2026-09-13T01:33:48+02:00",
+      "subject": "docs: reconcile recovered Watchdog requirements with implemented flows",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "09ab8a38105a8acafe972791dde480b6e14c5c9c",
+      "parents": [
+        "8fdd09df5feb904a452dc1bd797ded9ad9c646d3"
+      ],
+      "author_date": "2026-09-12T19:05:44+02:00",
+      "commit_date": "2026-09-12T19:05:44+02:00",
+      "subject": "Keep paper text field accessible names stable after editing",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "8fdd09df5feb904a452dc1bd797ded9ad9c646d3",
+      "parents": [
+        "57ad9450442ccde1b171c61e83321d3cc1150b88"
+      ],
+      "author_date": "2026-09-12T19:04:10+02:00",
+      "commit_date": "2026-09-12T19:04:10+02:00",
+      "subject": "Fix accessible names for paper analysis selectors and capture browser failures",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "57ad9450442ccde1b171c61e83321d3cc1150b88",
+      "parents": [
+        "e607a3c9eaff1a92ca48298f77d01b9c63580c7e"
+      ],
+      "author_date": "2026-09-12T19:00:41+02:00",
+      "commit_date": "2026-09-12T19:00:41+02:00",
+      "subject": "E5.8e: bind paper quotes and declared inputs to reviewed reproducible analyses",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "e607a3c9eaff1a92ca48298f77d01b9c63580c7e",
+      "parents": [
+        "9f5b38d5b98077e2085f6c4c8f56f8db4c6398c9"
+      ],
+      "author_date": "2026-09-12T08:31:19+02:00",
+      "commit_date": "2026-09-12T08:31:19+02:00",
+      "subject": "E5.8d: reuse immutable extraction mapping templates with source lineage",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "9f5b38d5b98077e2085f6c4c8f56f8db4c6398c9",
+      "parents": [
+        "3ea14e96e50ee92d152329ab735da6514a4f759f"
+      ],
+      "author_date": "2026-09-12T03:01:25+02:00",
+      "commit_date": "2026-09-12T03:01:25+02:00",
+      "subject": "E5.8c: connect exact source extraction to reviewed statistical analysis",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "3ea14e96e50ee92d152329ab735da6514a4f759f",
+      "parents": [
+        "865e478200cfa145f10f8674f28093fdae4ee38c"
+      ],
+      "author_date": "2026-09-11T20:50:39+02:00",
+      "commit_date": "2026-09-11T20:50:39+02:00",
+      "subject": "feat: guide extraction checks and inspect copied source cells",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "865e478200cfa145f10f8674f28093fdae4ee38c",
+      "parents": [
+        "2cad3d402d91f31ca7d51d118c4f6b118bb66110"
+      ],
+      "author_date": "2026-09-11T20:43:11+02:00",
+      "commit_date": "2026-09-11T20:43:11+02:00",
+      "subject": "feat: add source-grounded paper and extraction workshop",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "2cad3d402d91f31ca7d51d118c4f6b118bb66110",
+      "parents": [
+        "b43f063dd8d76da9284914824bcf8807f268ac55"
+      ],
+      "author_date": "2026-09-11T13:35:51+02:00",
+      "commit_date": "2026-09-11T13:35:51+02:00",
+      "subject": "feat: route seven assistant tasks across provider profiles",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "b43f063dd8d76da9284914824bcf8807f268ac55",
+      "parents": [
+        "35deca9cbac438a428ed5deddc8a70ed22b31d08"
+      ],
+      "author_date": "2026-09-11T13:19:42+02:00",
+      "commit_date": "2026-09-11T13:19:42+02:00",
+      "subject": "feat: add personal setup wizard and bounded research launch",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "35deca9cbac438a428ed5deddc8a70ed22b31d08",
+      "parents": [
+        "c8151cc502861267d98470af7267a04ebb9f1d0d"
+      ],
+      "author_date": "2026-09-11T08:06:13+02:00",
+      "commit_date": "2026-09-11T08:06:13+02:00",
+      "subject": "feat: persist acquisition schedules and public substance memory",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "c8151cc502861267d98470af7267a04ebb9f1d0d",
+      "parents": [
+        "304e77bd4795f40dc67c093ffcb91a462fb0ef91"
+      ],
+      "author_date": "2026-09-11T02:16:14+02:00",
+      "commit_date": "2026-09-11T02:16:14+02:00",
+      "subject": "E5.5: constrain mobile fieldsets and capture overflow diagnostics",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "304e77bd4795f40dc67c093ffcb91a462fb0ef91",
+      "parents": [
+        "a3a275af846c9bc151d8ab6bfeed155232bf1c8b"
+      ],
+      "author_date": "2026-09-10T12:39:37+02:00",
+      "commit_date": "2026-09-10T12:39:37+02:00",
+      "subject": "E5.5: keep map evidence badges readable and verify mobile panels",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "a3a275af846c9bc151d8ab6bfeed155232bf1c8b",
+      "parents": [
+        "1ae7ccef25ff58b7ce73e8355c1f12c7bd541179"
+      ],
+      "author_date": "2026-09-10T02:04:23+02:00",
+      "commit_date": "2026-09-10T02:04:23+02:00",
+      "subject": "E5.5: add reviewed regional boundaries and reproducible choropleths",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "1ae7ccef25ff58b7ce73e8355c1f12c7bd541179",
+      "parents": [
+        "ddae00ad8efc3a4feb3a3724f81e60e4386bc4b1"
+      ],
+      "author_date": "2026-09-09T15:36:28+02:00",
+      "commit_date": "2026-09-09T15:36:28+02:00",
+      "subject": "E5.4: preserve research packages, archived profiles and private result access",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "ddae00ad8efc3a4feb3a3724f81e60e4386bc4b1",
+      "parents": [
+        "e2d9d8ac96f62f7b6ecb5425db85849c2bb42a05"
+      ],
+      "author_date": "2026-09-09T09:05:07+02:00",
+      "commit_date": "2026-09-09T09:05:07+02:00",
+      "subject": "E5.3: preserve visual domains through time and verify exported figures",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "e2d9d8ac96f62f7b6ecb5425db85849c2bb42a05",
+      "parents": [
+        "9e8b63f14307689a73fc03a3424fa596a725d9b8"
+      ],
+      "author_date": "2026-09-09T08:59:36+02:00",
+      "commit_date": "2026-09-09T08:59:36+02:00",
+      "subject": "E5.2: correct accessible control names and large-trace inspection",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "9e8b63f14307689a73fc03a3424fa596a725d9b8",
+      "parents": [
+        "d467c0d78f299441cd32949b7e4548297eb8d218"
+      ],
+      "author_date": "2026-09-09T08:53:31+02:00",
+      "commit_date": "2026-09-09T08:53:31+02:00",
+      "subject": "E5.1: add reproducible regional figure workbench and developer diagnostics",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "d467c0d78f299441cd32949b7e4548297eb8d218",
+      "parents": [
+        "4dfd8b0d5417fb87b64ecf988f5e366658a11e77"
+      ],
+      "author_date": "2026-09-08T21:16:58+02:00",
+      "commit_date": "2026-09-08T21:16:58+02:00",
+      "subject": "E6: add reviewed regional responder references and bounded offline lookup",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "4dfd8b0d5417fb87b64ecf988f5e366658a11e77",
+      "parents": [
+        "dcba295985d0e3c87178d616d602f0dc9cd9406b"
+      ],
+      "author_date": "2026-09-08T21:09:27+02:00",
+      "commit_date": "2026-09-08T21:09:27+02:00",
+      "subject": "E4.2: resolve peer role capabilities across API and UI",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "dcba295985d0e3c87178d616d602f0dc9cd9406b",
+      "parents": [
+        "8a5102e6ae72ea1ac9107b18987a5bbe51ad0a7c"
+      ],
+      "author_date": "2026-09-08T21:09:10+02:00",
+      "commit_date": "2026-09-08T21:09:10+02:00",
+      "subject": "E0.6: repair clean installation and portable test entrypoints",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "8a5102e6ae72ea1ac9107b18987a5bbe51ad0a7c",
+      "parents": [
+        "dc3ea3171b3e350376ca530c6803f267397bd242"
+      ],
+      "author_date": "2026-08-20T09:05:44Z",
+      "commit_date": "2026-08-20T09:05:44Z",
+      "subject": "Prove the credentialled path over real HTTP; update README and state document",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "dc3ea3171b3e350376ca530c6803f267397bd242",
+      "parents": [
+        "376c01107c910969829b76632e06c196c926c0f9"
+      ],
+      "author_date": "2026-08-20T09:03:11Z",
+      "commit_date": "2026-08-20T09:03:11Z",
+      "subject": "E3.5: Dockerfile, Cloud Run deploy script, GCP runbook, honest .env.example",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "376c01107c910969829b76632e06c196c926c0f9",
+      "parents": [
+        "faf333bc2ba1b0b235350674f95f8608f5ff009a"
+      ],
+      "author_date": "2026-08-19T15:59:11Z",
+      "commit_date": "2026-08-19T15:59:11Z",
+      "subject": "E3.4: scope the single-instrument invariant to measurement capabilities",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "faf333bc2ba1b0b235350674f95f8608f5ff009a",
+      "parents": [
+        "8a768ffcdaa4fe3029e8a6e8e8de07ea40844eb2"
+      ],
+      "author_date": "2026-08-19T15:57:44Z",
+      "commit_date": "2026-08-19T15:57:44Z",
+      "subject": "E3.4: GCS object store, startup durability gate; Postgres registered as planned",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "8a768ffcdaa4fe3029e8a6e8e8de07ea40844eb2",
+      "parents": [
+        "594a48ddcf6a4717be353dda5fbf1344b0415ecf"
+      ],
+      "author_date": "2026-08-19T15:52:09Z",
+      "commit_date": "2026-08-19T15:52:09Z",
+      "subject": "E3.6: readiness API, live SERP source resolution, provider narrative route, Setup page",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "594a48ddcf6a4717be353dda5fbf1344b0415ecf",
+      "parents": [
+        "7f899c2397276a99debc968fdf6a34070fb97c9a"
+      ],
+      "author_date": "2026-08-19T15:45:41Z",
+      "commit_date": "2026-08-19T15:45:41Z",
+      "subject": "E4.1: Google OIDC, role ladder, RBAC and local-user migration",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "7f899c2397276a99debc968fdf6a34070fb97c9a",
+      "parents": [
+        "801f55e565f3ffae44e3b83c50e97050902e1d96"
+      ],
+      "author_date": "2026-08-19T15:30:08Z",
+      "commit_date": "2026-08-19T15:30:08Z",
+      "subject": "E3.3: provider and query-plan discontinuity detection; content-based WORM semantics",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "801f55e565f3ffae44e3b83c50e97050902e1d96",
+      "parents": [
+        "0612ac100ada3bacdfc38a58d6d00c0866aa288e"
+      ],
+      "author_date": "2026-08-19T15:14:53Z",
+      "commit_date": "2026-08-19T15:14:53Z",
+      "subject": "E3.2: SerpApi as a real search.result_count provider",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "0612ac100ada3bacdfc38a58d6d00c0866aa288e",
+      "parents": [
+        "391724729abef802a087f393596126b2cdbeea28"
+      ],
+      "author_date": "2026-08-19T15:08:11Z",
+      "commit_date": "2026-08-19T15:08:11Z",
+      "subject": "E2.1: OpenRouter and OpenAI-compatible text.generate, with a numeric fabrication guard",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "391724729abef802a087f393596126b2cdbeea28",
+      "parents": [
+        "717851bd05246dfdb0b03ee8c0f3871ed741d323"
+      ],
+      "author_date": "2026-08-19T15:01:57Z",
+      "commit_date": "2026-08-19T15:01:57Z",
+      "subject": "E3.1: secret store with env and GCP Secret Manager backends",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "717851bd05246dfdb0b03ee8c0f3871ed741d323",
+      "parents": [
+        "04c8fbf84343c8c0e829d3cbe091546f75981bb6"
+      ],
+      "author_date": "2026-08-19T14:58:51Z",
+      "commit_date": "2026-08-19T14:58:51Z",
+      "subject": "D17: pull live providers, identity and deployment forward; decompose the slice",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "04c8fbf84343c8c0e829d3cbe091546f75981bb6",
+      "parents": [
+        "879109a409f4c61d7195f4fd57fc013c5091c3a7"
+      ],
+      "author_date": "2026-08-19T14:38:06Z",
+      "commit_date": "2026-08-19T14:38:06Z",
+      "subject": "docs: correct a stale line in the state document",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "879109a409f4c61d7195f4fd57fc013c5091c3a7",
+      "parents": [
+        "0ac193c5c59f0d31030c3f13427fbbe3cfbf30c8"
+      ],
+      "author_date": "2026-08-19T14:36:59Z",
+      "commit_date": "2026-08-19T14:36:59Z",
+      "subject": "E1.20: register JH2016 as replication target #1 and evaluate it",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "0ac193c5c59f0d31030c3f13427fbbe3cfbf30c8",
+      "parents": [
+        "d2b367f71977c4b1f65836717a2f995d04d2cd04"
+      ],
+      "author_date": "2026-08-19T02:08:40Z",
+      "commit_date": "2026-08-19T02:08:40Z",
+      "subject": "docs: record E1 completion in the state document",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "d2b367f71977c4b1f65836717a2f995d04d2cd04",
+      "parents": [
+        "7050aca52e5dfb6acc38b69288bd1a6a47abcdbb"
+      ],
+      "author_date": "2026-08-19T02:07:33Z",
+      "commit_date": "2026-08-19T02:07:33Z",
+      "subject": "E1.21-E1.23: frontend slice with browser E2E",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "7050aca52e5dfb6acc38b69288bd1a6a47abcdbb",
+      "parents": [
+        "c17a33b495ca78ccbb69d449404f73ad6ee39c74"
+      ],
+      "author_date": "2026-08-19T01:54:35Z",
+      "commit_date": "2026-08-19T01:54:35Z",
+      "subject": "E1.24, E1.28: demo:jh16 exit criterion and dependency cleanup",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "c17a33b495ca78ccbb69d449404f73ad6ee39c74",
+      "parents": [
+        "c8ce36e012d0830eb1ff4a53e6e9ad94601cc501"
+      ],
+      "author_date": "2026-08-19T01:40:56Z",
+      "commit_date": "2026-08-19T01:40:56Z",
+      "subject": "E1.16-E1.19, E1.25, E1.27: output chain",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "c8ce36e012d0830eb1ff4a53e6e9ad94601cc501",
+      "parents": [
+        "a785bae42c6974ea58ce63f873d8e1283743922f"
+      ],
+      "author_date": "2026-08-19T01:34:58Z",
+      "commit_date": "2026-08-19T01:34:58Z",
+      "subject": "E1.11-E1.15: method engine — primitives, validation, approval, executor, preset",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "a785bae42c6974ea58ce63f873d8e1283743922f",
+      "parents": [
+        "a4abb014e7b86176a0f61199ffc0e871691be797"
+      ],
+      "author_date": "2026-08-19T01:29:57Z",
+      "commit_date": "2026-08-19T01:29:57Z",
+      "subject": "E1.8-E1.10: acquisition — fixture source, 32-query fixtures, registries",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "a4abb014e7b86176a0f61199ffc0e871691be797",
+      "parents": [
+        "503b9ca233e2bece313c4dbf885f58a5a1d10909"
+      ],
+      "author_date": "2026-08-19T01:23:47Z",
+      "commit_date": "2026-08-19T01:23:47Z",
+      "subject": "E1.4-E1.7: diagnostics spine",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "503b9ca233e2bece313c4dbf885f58a5a1d10909",
+      "parents": [
+        "c98649a77bd1b985d2ef43ddd1d215709c7d9df7"
+      ],
+      "author_date": "2026-08-19T01:19:38Z",
+      "commit_date": "2026-08-19T01:19:38Z",
+      "subject": "spec: merge v12; E1.30 assertion mechanism, E1.31 query-plan identity",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "c98649a77bd1b985d2ef43ddd1d215709c7d9df7",
+      "parents": [
+        "781204be5443177df0292c4231aeb54f5b6d1337"
+      ],
+      "author_date": "2026-08-19T01:12:14Z",
+      "commit_date": "2026-08-19T01:12:14Z",
+      "subject": "E1.3: persistence — full 02_DATA_MODEL.md schema, migrations, repositories",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "781204be5443177df0292c4231aeb54f5b6d1337",
+      "parents": [
+        "2e417c66514b3ac24aef6cc067d435168089f852"
+      ],
+      "author_date": "2026-08-18T06:32:19Z",
+      "commit_date": "2026-08-18T06:32:19Z",
+      "subject": "E1.2: domain types",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "2e417c66514b3ac24aef6cc067d435168089f852",
+      "parents": [
+        "b74838e80dd907577c7dc140fe1ece10522375af"
+      ],
+      "author_date": "2026-08-18T06:26:22Z",
+      "commit_date": "2026-08-18T06:26:22Z",
+      "subject": "E1.20: propose tolerance bands (PROPOSED, not executed)",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "b74838e80dd907577c7dc140fe1ece10522375af",
+      "parents": [
+        "1ae0d9c74f5abdcb28b3c13f0f5b1650e35334d1"
+      ],
+      "author_date": "2026-08-18T06:12:21Z",
+      "commit_date": "2026-08-18T06:12:21Z",
+      "subject": "E1.1: configuration loader",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "1ae0d9c74f5abdcb28b3c13f0f5b1650e35334d1",
+      "parents": [
+        "f5f2ddaa7e8dc66e1f9f138ef84c76102ec6858a"
+      ],
+      "author_date": "2026-08-18T06:07:21Z",
+      "commit_date": "2026-08-18T06:07:21Z",
+      "subject": "spec: merge agent contract v9 (evidence tiers, adapter neutrality)",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "f5f2ddaa7e8dc66e1f9f138ef84c76102ec6858a",
+      "parents": [
+        "c57c09a4225e019ceb07c0e80ab36a128da9ed35"
+      ],
+      "author_date": "2026-08-17T17:26:26Z",
+      "commit_date": "2026-08-17T17:26:26Z",
+      "subject": "E0.5: reconcile the ledger",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "c57c09a4225e019ceb07c0e80ab36a128da9ed35",
+      "parents": [
+        "f50b006cc90b62569af5661d7892a62c10eedf6f"
+      ],
+      "author_date": "2026-08-17T17:22:22Z",
+      "commit_date": "2026-08-17T17:22:22Z",
+      "subject": "E0.4: green baseline",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "f50b006cc90b62569af5661d7892a62c10eedf6f",
+      "parents": [
+        "511f268a1198a2e9bddcb5db5fe31787196ff7b7"
+      ],
+      "author_date": "2026-08-17T11:02:32Z",
+      "commit_date": "2026-08-17T11:02:32Z",
+      "subject": "E0.3: secrets scan — clean",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "511f268a1198a2e9bddcb5db5fe31787196ff7b7",
+      "parents": [
+        "a707088805667b210d89e4c20c2bf874ec983e43"
+      ],
+      "author_date": "2026-08-17T11:01:38Z",
+      "commit_date": "2026-08-17T11:01:38Z",
+      "subject": "E0.2: fabrication sweep",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "a707088805667b210d89e4c20c2bf874ec983e43",
+      "parents": [
+        "e22b2b7bd370fd6e93c3305b3a9122451bc34dbf"
+      ],
+      "author_date": "2026-08-17T10:58:28Z",
+      "commit_date": "2026-08-17T10:58:28Z",
+      "subject": "E0.1: repository inventory",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "e22b2b7bd370fd6e93c3305b3a9122451bc34dbf",
+      "parents": [
+        "8ee46203b46c7e169d45ad35d4a72d8d593b4d1a"
+      ],
+      "author_date": "2026-08-17T10:53:42Z",
+      "commit_date": "2026-08-17T10:53:42Z",
+      "subject": "spec: agent contract v6",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "8ee46203b46c7e169d45ad35d4a72d8d593b4d1a",
+      "parents": [
+        "a69e526847df8986b1e974084e930a03539b9474"
+      ],
+      "author_date": "2026-08-16T16:02:19Z",
+      "commit_date": "2026-08-16T16:02:19Z",
+      "subject": "docs: recover full specification package; feat: add google_trends source",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "a69e526847df8986b1e974084e930a03539b9474",
+      "parents": [
+        "172c85b4f79de9ada7f5a4214fdd97fedff02486"
+      ],
+      "author_date": "2026-08-16T15:56:14Z",
+      "commit_date": "2026-08-16T15:56:14Z",
+      "subject": "fix: repair compile errors and status regressions from last AI Studio commit",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "172c85b4f79de9ada7f5a4214fdd97fedff02486",
+      "parents": [
+        "b28ee25c222aa6cf46edc48983678c7ac86ac3f4"
+      ],
+      "author_date": "2026-08-15T17:48:26+02:00",
+      "commit_date": "2026-08-15T17:48:26+02:00",
+      "subject": "feat: enhance data provenance and analytic robustness",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "b28ee25c222aa6cf46edc48983678c7ac86ac3f4",
+      "parents": [
+        "292403934f5cfa9a3b9fc11cee4811108d8adc9f"
+      ],
+      "author_date": "2026-08-15T17:11:41+02:00",
+      "commit_date": "2026-08-15T17:11:41+02:00",
+      "subject": "feat: initialize project scaffolding",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    },
+    {
+      "sha": "292403934f5cfa9a3b9fc11cee4811108d8adc9f",
+      "parents": [],
+      "author_date": "2026-08-15T17:10:58+02:00",
+      "commit_date": "2026-08-15T17:10:58+02:00",
+      "subject": "Initial commit",
+      "branches_containing": [
+        "origin/HEAD -> origin/main",
+        "  origin/astra/watchdog-continuation-20260908",
+        "  origin/astra/watchdog-integration-20260930",
+        "  origin/chore/repo-hygiene-2026-09",
+        "  origin/claude/ai-studio-last-commit-gjqxy4",
+        "  origin/codex/clinical-audit-20260930",
+        "  origin/codex/watchdog-integration-20261001",
+        "  origin/codex/watchdog-operations-20260930",
+        "  origin/codex/watchdog-research-20260930",
+        "  origin/codex/watchdog-wave1-20260930",
+        "  origin/main"
+      ]
+    }
+  ]
+}

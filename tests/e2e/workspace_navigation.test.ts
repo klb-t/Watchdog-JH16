@@ -79,3 +79,24 @@ test('seven main groups retain paper run deep links, contextual tools and a cont
   assert.ok(bodyWidth.scroll <= bodyWidth.client + 1, JSON.stringify(bodyWidth));
   assert.deepEqual(errors, []);
 });
+
+test('E7.7: language, persistent preset, real projects and keyboard palette preserve focus and routes', async()=>{
+  await page.goto(baseUrl);
+  await page.getByLabel('Język',{exact:true}).selectOption('en');
+  await page.getByLabel('Workspace layout',{exact:true}).selectOption('claude');
+  const trigger=page.getByTestId('open-command-palette');
+  await trigger.focus(); await page.keyboard.press('Control+k');
+  await page.getByTestId('command-input').fill('Research projects');
+  await page.getByTestId('command-input').press('Enter');
+  await page.waitForURL(`${baseUrl}/projects`);
+  await page.getByTestId('research-projects-page').waitFor();
+  await page.reload();
+  assert.equal(await page.getByTestId('workspace-preset').inputValue(),'claude');
+  await trigger.focus();await page.keyboard.press('Control+k');
+  await page.getByTestId('command-input').press('Escape');
+  assert.equal(await trigger.evaluate(el=>el===document.activeElement),true);
+  await page.goto(`${baseUrl}/analysis`);await page.waitForURL(`${baseUrl}/workbench`);
+  await page.goto(`${baseUrl}/search`);await page.getByTestId('unified-search-page').waitFor();
+  const size=await page.locator('body').evaluate(el=>({client:el.clientWidth,scroll:el.scrollWidth}));
+  assert.ok(size.scroll<=size.client+1);
+});

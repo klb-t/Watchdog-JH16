@@ -1,0 +1,22 @@
+# Managed by scripts/gcp_vm_bootstrap.sh. Optional public HTTPS entry, off until
+# `sudo watchdogctl enable-public HOST`. Caddy obtains and renews the certificate
+# itself and forwards to the app, which stays bound to 127.0.0.1:8080.
+[Unit]
+Description=Watchdog public HTTPS proxy (Caddy)
+Requires=docker.service
+After=docker.service network-online.target watchdog.service
+Wants=network-online.target
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+ExecStartPre=-/usr/bin/docker rm -f watchdog-proxy
+ExecStart=/usr/bin/docker run --rm --name watchdog-proxy --network host --read-only --cap-drop ALL --cap-add NET_BIND_SERVICE --security-opt no-new-privileges=true --pids-limit 256 --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 --tmpfs /tmp:rw,nosuid,nodev,size=16m --mount type=bind,src=/etc/watchdog/Caddyfile,dst=/etc/caddy/Caddyfile,readonly --mount type=bind,src=/var/lib/watchdog-proxy/data,dst=/data --mount type=bind,src=/var/lib/watchdog-proxy/config,dst=/config caddy:2.11
+ExecStop=/usr/bin/docker stop --time 15 watchdog-proxy
+TimeoutStartSec=0
+TimeoutStopSec=30
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,58 +1,38 @@
-# Dostęp do prywatnej instalacji
+# Dostęp do instalacji
 
-W instalacji z OIDC osoba bez sesji widzi wyłącznie logowanie. Zweryfikowane konto Google
-bez przyznanych profili może podać cel korzystania i sprawdzić własny wniosek; nie ma dostępu
-do danych warsztatu. Publiczne `/api/auth/config` opisuje konfigurację logowania bez listy
-adresów. Pozostałe API wymaga przyjętego użytkownika oraz uprawnień właściwej funkcji.
+Tożsamość i dopuszczenie są osobne. Zweryfikowany adres bez grantu widzi logowanie i własny wniosek, a nie dane warsztatu. Wszystkie prywatne routery pozostają za globalną bramką, a poszczególne funkcje nadal sprawdzają zdolności i własność.
 
-## Konfiguracja właściciela
+## Tryby i przejście istniejącej instalacji
 
-Skonfiguruj `GOOGLE_OAUTH_CLIENT_ID`, `SESSION_SIGNING_KEY` i `WATCHDOG_GRANTS` zgodnie
-z [runbookiem](DEPLOY_GCP.md). Właściciel zarządzający profilami potrzebuje `developer`
-lub kompatybilnego `dev`, np. wpisu `"owner@example.test":"developer"` w prywatnej
-konfiguracji grantów. `admin` ma uprawnienia operacyjne i `principal.invite`; przypisywanie
-profili wymaga osobnego `principal.manage`. Pierwsze logowanie nie nadaje automatycznie
-uprawnień właściciela. System blokuje usunięcie ostatniego aktywnego zarządzającego dostępem.
+| Konfiguracja | Zachowanie |
+|---|---|
+| `WATCHDOG_AUTH` niewypełnione, bez Google client ID | Historyczny lokalny właściciel; produkcja wymaga jawnego wyjątku. Wyłącznie prywatna instalacja |
+| `WATCHDOG_AUTH` niewypełnione, `GOOGLE_OAUTH_CLIENT_ID` ustawione | Dotychczasowy Google OIDC i wnioski/zaproszenia request-only |
+| `WATCHDOG_AUTH=accounts` | Kod e-mail, opcjonalny Google, nowe zaproszenia i wnioski, panel Ludzie i dostęp, CLI |
 
-Lokalny tryb właściciela pozostaje dostępny do pracy i za prywatnym tunelem instalatora VM.
-Sam [instalator VM](DEPLOY_GCP_VM.md) nie konfiguruje konta Google ani nie publikuje aplikacji.
-Bez OIDC uruchomienie produkcyjne wymaga istniejącego jawnego wyjątku operatora; nie używaj
-takiej konfiguracji jako publicznego mechanizmu przyjmowania użytkowników.
+Accounts wymaga `SESSION_SIGNING_KEY` (minimum 32 znaki). `WATCHDOG_GRANTS` jest mapą dokładny adres lub `@domena` → rola; dokładny adres ma pierwszeństwo. Nie ma domyślnego dostępu ani automatycznego administratora z pierwszego logowania. Bootstrap właściciela używa `developer`. `admin` zachowuje stare zdolności, a nowy `access_admin` pozwala na ograniczoną delegację bez nadawania zdolności, których sam nie posiada.
 
-## Wniosek, zaproszenie i profile
+Przed przełączeniem istniejącej instalacji wykonaj backup według [runbooka](DEPLOY_GCP_VM.md). Migracja 023 jest addytywna; nie zmienia 001–022 ani starych wniosków, tokenów i historii. Zweryfikowany adres łączy istniejący principal Google, zachowując jego własność. Cookies poprzedniego trybu wymagają ponownego zalogowania. Dane `local-user` nie stają się automatycznie własnością nowego konta; istniejący przegląd własności pozostaje oddzielnym narzędziem.
 
-1. Zaloguj się kontem Google. Serwer weryfikuje podpis, odbiorcę, wystawcę, ważność i
-   zweryfikowany email; adres przesłany osobno przez klienta nie ustala tożsamości.
-2. Bez profili opisz cel korzystania. Wniosek zostaje zapisany i widoczny tylko dla jego
-   autora oraz uprawnionej administracji.
-3. Właściciel otwiera **Dostęp** w narzędziach konta, wybiera adres i profile. Profile łączą
-   zdolności, a nie tworzą jednej hierarchii ról.
-4. Przyjęta osoba wybiera **Enter workspace**. Aktywacja wykorzystuje już zweryfikowaną
-   sesję i nie wymaga ponownego podawania adresu ani tokenu Google.
+Trwałe wpisy `installation_grants` zachowują pierwszeństwo przed bootstrapem; odwołanego dostępu nie przywraca ponowne logowanie. Zarządza nimi dotychczasowy ekran `/settings/access` z `principal.manage` i ochroną ostatniego zarządzającego. Nowy panel pokazuje powód braku możliwości edycji; `watchdog-admin grant` przy takim adresie odmawia bez zapisu. Nowe źródła grantów pozostają osobno widoczne w audycie.
 
-Administrator operacyjny może przygotować odnośnik zaproszenia dla konkretnego emaila.
-Zaproszenie jest jednorazowe, wygasa po siedmiu dniach i można je odwołać. Samo przyjęcie
-zaproszenia składa wniosek; nie nadaje profili ani uprawnień. Odnośnik jest pokazywany tylko
-przy tworzeniu, a baza przechowuje skrót tokenu. Aplikacja nie wysyła wiadomości email.
-Po otwarciu odnośnika klient usuwa token z adresu i dalszej historii nawigacji.
+## Accounts: wejście, zaproszenia i odebranie dostępu
 
-## Odebranie dostępu i ślad operacji
+- Kod jest jednorazowy, ma 8 symboli, wygasa po 10 minutach; limity są w walidowanym `config/access/policy.json`. Kod i token są przechowywane jako skróty. Brak SMTP daje jawny błąd, nie fikcyjny sukces.
+- Google używa weryfikowanego tokenu i adresu. Adres podany osobno przez klienta nie nadaje tożsamości. Zmiana adresu przy już połączonej tożsamości jest odrzucana.
+- Nowe zaproszenie adresowe może nadać dopuszczalne role wyłącznie zweryfikowanemu odbiorcy. Przekazanie linku innej osobie nie zużywa go.
+- Link otwarty jest osobnym typem: maksymalnie 50 użyć i 30 dni, atomowe użycie, możliwość odwołania; bez zdolności administracji, delegacji i diagnostyki.
+- Stare zaproszenia nadal tylko składają wniosek. Nie zamieniają się w grant przy aktualizacji.
+- Aktywne role są sprawdzane przy każdym żądaniu. Cofnięcie grantu, blokada konta oraz wylogowanie wszystkich sesji są osobnymi zdarzeniami; generacja sesji unieważnia stare cookies.
 
-Każde żądanie sesji OIDC sprawdza aktualne granty oraz aktywność konta. Zmiana profili
-działa w istniejącej sesji; odwołanie dostępu unieważnia ją przy następnym żądaniu.
-Utrwalone odwołanie ma pierwszeństwo przed grantem startowym z konfiguracji. Ponowne
-logowanie nie przywraca odebranych uprawnień. Odwołanie zaproszenia i odwołanie dostępu
-użytkownika są osobnymi operacjami.
+Panel `/access` wymaga `principal.view`; zmiany wymagają dodatkowych zdolności i kontroli zakresu. Operacyjne granty z konfiguracji nie są edytowane w nowym panelu. Zmiana nazwy profilu nie zmienia tożsamości.
 
-Migration 020 zapisuje wnioski, granty, zaproszenia i niezmienialny dziennik administracji.
-Odpowiedzi auth mają `Cache-Control: no-store`. Mutacje wymagają JSON i przechodzą tę samą
-kontrolę źródła żądania co pozostałe prywatne operacje. Przeglądarkowe dane referencyjne
-offline nadal podlegają własnemu ograniczonemu czasowo kontraktowi; nie są bezterminową
-sesją ani dostępem do pozostałego warsztatu.
+## Mail i operator
 
-## Zakres sprawdzenia
+Ustaw `SMTP_URL`, `MAIL_FROM` i `WATCHDOG_PUBLIC_URL`. Treści PL/EN oraz UI mają wersjonowaną konfigurację w `config/access/`. Status „sent” oznacza przyjęcie przez SMTP, nie potwierdzenie dostarczenia do skrzynki. Mutacje wymagają tego samego origin i JSON; odpowiedzi auth nie są cache’owane.
 
-Testy obejmują rzeczywiste HTTP, podpisane testowe JWT, nieprzyjętych użytkowników,
-powiązanie zaproszenia z adresem, zmiany aktywnych sesji, blokadę obcych źródeł żądań oraz
-przepływ w produkcyjnym kliencie. Nie wymagają zewnętrznego konta Google. Konfiguracja
-konkretnego klienta OAuth i domeny wdrożenia wymaga sprawdzenia na tej instalacji.
+Na VM: `sudo watchdogctl enable-accounts owner@example.test`, `sudo watchdogctl set-mail`, `sudo watchdogctl people`. Na istniejących danych najpierw sprawdź legacy override właściciela. Polecenia `grant`, `invite`, `open-link`, `signin-link` uruchamiają w kontenerze `dist/watchdog-admin.cjs`. `signin-link` daje jednorazowe wejście na 15 minut, lecz samo nie nadaje ról. Traktuj jego wynik jak hasło; nie umieszczaj w logach/publicznych artefaktach. CLI jest uprawnieniem operatora powłoki, nie endpointem HTTP.
+
+## Dowody i granice
+
+Pełny gate 604/604 obejmuje stary OIDC, nowy protokół, test wypełnionej migracji, lokalny rzeczywisty SMTP testowy i przeglądarkę na 390 px. Dodatkowo sprawdzono produkcyjny bundle CLI na izolowanej bazie. Dowody: [katalog replay](history/EXPERIMENTS.md). Nie sprawdzono zewnętrznej poczty, rzeczywistego klienta OAuth ani gotowej publicznej VM. Kontrakt czasowo ograniczonego offline pozostaje osobny; revocation online nie jest zdalnym usunięciem już pobranego archiwum offline.

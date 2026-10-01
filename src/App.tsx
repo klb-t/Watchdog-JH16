@@ -1,3 +1,5 @@
+import { WorkspacePreferencesProvider, WorkspaceLanding } from './lib/workspace_preferences';
+import { workspacePreferences } from '../shared/workspace_preferences';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -25,13 +27,20 @@ import { Research } from './pages/Research';
 import { Search } from './pages/Search';
 import { ResearchProjects } from './pages/ResearchProjects';
 import AccessAdmin from './pages/AccessAdmin';
+import { Login } from './pages/Login';
+import { Join } from './pages/Join';
+import { Apply } from './pages/Apply';
+import { PeopleAccess } from './pages/PeopleAccess';
 import { AdmissionGate } from './components/AdmissionGate';
 import { AccessBoundary, AccessProvider, useAccess } from './lib/access';
 
 export default function App() {
   return (
-    <AccessProvider><AdmissionGate><Routes>
-      <Route path="/" element={<Layout />}>
+    <AccessProvider><WorkspacePreferencesProvider><Routes>
+      <Route path="login" element={<Login />} />
+      <Route path="join" element={<Join />} />
+      <Route path="apply" element={<Apply />} />
+      <Route path="/" element={<AdmissionGate><Layout /></AdmissionGate>}>
         <Route index element={<Dashboard />} />
         <Route path="sources" element={<AccessBoundary capability="run.view"><Sources /></AccessBoundary>} />
         <Route path="source-access" element={<AccessBoundary capability="provider.view"><SourceAccess /></AccessBoundary>} />
@@ -48,15 +57,17 @@ export default function App() {
         <Route path="evidence" element={<AccessBoundary capability="evidence.review"><EvidenceReview /></AccessBoundary>} />
         <Route path="setup" element={<Setup />} />
         <Route path="settings" element={<Setup />} />
+        <Route path="access" element={<AccessBoundary capability="principal.view"><PeopleAccess /></AccessBoundary>} />
         <Route path="settings/access" element={<AccessBoundary capability="principal.invite"><AccessAdmin /></AccessBoundary>} />
         <Route path="automation" element={<AccessBoundary capability="run.create"><Automation /></AccessBoundary>} />
         <Route path="memory" element={<MemoryView />} />
         <Route path="research" element={<AccessBoundary capability="method.propose"><Research /></AccessBoundary>} />
         <Route path="projects" element={<AccessBoundary capability="method.propose"><ResearchProjects /></AccessBoundary>} />
         <Route path="search" element={<Search />} />
+        {Object.entries(workspacePreferences.landings).map(([path,group])=><Route key={path} path={path.slice(1)} element={<WorkspaceLanding group={group}/>} />)}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
-    </Routes></AdmissionGate></AccessProvider>
+    </Routes></WorkspacePreferencesProvider></AccessProvider>
   );
 }
 

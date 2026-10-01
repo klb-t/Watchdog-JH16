@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { useAccess } from '../lib/access';
+import { AdmissionGate as AccountsGate, useAccess } from '../lib/access';
 
 const sessionChanged = () => window.dispatchEvent(new Event('watchdog-session-changed'));
 async function authPost(path: string, body: unknown = {}) {
@@ -25,7 +25,7 @@ export function AdmissionGate({ children }: { children: ReactNode }) {
     const url = new URL(window.location.href);url.searchParams.delete('invite');window.history.replaceState(null,'',url);
   },[invite]);
   useEffect(() => {
-    if (access.loading || access.principalId || access.admission?.verified || !access.googleClientId) return;
+    if (access.loading || access.principalId || access.legacyAdmission?.verified || !access.googleClientId) return;
     let active = true;
     const render = () => {
       const google = (window as any).google;
@@ -48,12 +48,13 @@ export function AdmissionGate({ children }: { children: ReactNode }) {
     const failed = () => setError('Google sign-in could not load. Check your connection and reload this page.');
     script.addEventListener('error',failed); render();
     return () => { active=false;script?.removeEventListener('load',render);script?.removeEventListener('error',failed); };
-  },[access.loading,access.principalId,access.admission?.verified,access.googleClientId]);
+  },[access.loading,access.principalId,access.legacyAdmission?.verified,access.googleClientId]);
 
+  if (access.authMode === 'accounts') return <AccountsGate>{children}</AccountsGate>;
   if (access.loading) return <main className="min-h-screen grid place-items-center"><p role="status">Checking access…</p></main>;
   if (access.principalId && access.capabilities.length) return children;
-  const verified = access.admission?.verified;
-  const status = access.admission?.status;
+  const verified = access.legacyAdmission?.verified;
+  const status = access.legacyAdmission?.status;
   const act = async (operation: () => Promise<unknown>,message: string) => {
     setBusy(true);setError('');setNotice('');
     try { await operation();setNotice(message);sessionChanged(); }
@@ -70,12 +71,12 @@ export function AdmissionGate({ children }: { children: ReactNode }) {
         <div ref={button} aria-label="Google sign-in" />
         {!access.googleClientId && <p role="alert" className="text-sm text-amber-800">Sign-in is unavailable. The installation owner must configure Google authentication.</p>}
       </> : <>
-        <p className="text-sm">Verified account: <strong>{access.admission?.email}</strong></p>
+        <p className="text-sm">Verified account: <strong>{access.legacyAdmission?.email}</strong></p>
         {status === 'approved' ? <button disabled={busy} className="rounded bg-slate-900 text-white px-4 py-2" onClick={() => act(() => authPost('admission/activate'),'Access activated.')}>Enter workspace</button> : <>
           {status === 'pending' && <p role="status" className="text-sm">Your request is awaiting the owner's approval.</p>}
           {status === 'revoked' && <p className="text-sm">Access has been revoked. You can submit a new explanation for review.</p>}
           {status === 'rejected' && <p className="text-sm">The previous request was declined. You can update your explanation.</p>}
-          {access.admission?.request && <p className="text-sm text-slate-600">Submitted explanation: {access.admission.request.reason}</p>}
+          {access.legacyAdmission?.request && <p className="text-sm text-slate-600">Submitted explanation: {access.legacyAdmission.request.reason}</p>}
           {invite && <button disabled={busy} className="rounded border px-4 py-2" onClick={() => act(async () => {
             await authPost('admission/invitations/accept',{ token:invite });
             const url = new URL(window.location.href);url.searchParams.delete('invite');window.history.replaceState(null,'',url);

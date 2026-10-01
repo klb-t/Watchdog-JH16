@@ -41,13 +41,14 @@ BLOCK = 1024**2
 DIRECTORIES = ('etc/watchdog', 'var/lib/watchdog')
 FIXED_FILES = ('etc/systemd/system/watchdog.service', 'usr/local/sbin/watchdogctl')
 OPTIONAL = 'usr/local/lib/watchdog/watchdog_backup.py'
+OPTIONAL_FILES = (OPTIONAL, 'usr/local/lib/watchdog/watchdog_access.sh', 'etc/systemd/system/watchdog-proxy.service')
 REQUIRED = ('etc/watchdog/app.env', 'etc/watchdog/release.env',
             'etc/watchdog/installer-v1', 'var/lib/watchdog/watchdog.sqlite') + FIXED_FILES
 DB = 'var/lib/watchdog/watchdog.sqlite'
 KEY = 'var/lib/watchdog/secrets/master.key'
 IMAGE_RE = re.compile(r'sha256:[0-9a-f]{64}\Z')
 HASH_RE = re.compile(r'[0-9a-f]{64}\Z')
-SCAFFOLDS = {str(p) for name in DIRECTORIES + FIXED_FILES + (OPTIONAL,)
+SCAFFOLDS = {str(p) for name in DIRECTORIES + FIXED_FILES + OPTIONAL_FILES
              for p in PurePosixPath(name).parents if str(p) != '.'}
 
 
@@ -71,7 +72,7 @@ def safe_name(name):
 
 
 def allowed(name):
-    return name in SCAFFOLDS or name in FIXED_FILES or name == OPTIONAL or any(
+    return name in SCAFFOLDS or name in FIXED_FILES or name in OPTIONAL_FILES or any(
         name == d or name.startswith(d + '/') for d in DIRECTORIES)
 
 
@@ -252,8 +253,9 @@ def stage_source(root, stage):
 
     for name in DIRECTORIES + FIXED_FILES:
         copy(name)
-    if os.path.lexists(root / OPTIONAL):
-        copy(OPTIONAL)
+    for optional in OPTIONAL_FILES:
+        if os.path.lexists(root / optional):
+            copy(optional)
     entries = []
     for path in sorted(stage.rglob('*')):
         name = path.relative_to(stage).as_posix()

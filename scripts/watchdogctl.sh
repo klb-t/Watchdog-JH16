@@ -35,6 +35,11 @@ image_id() {
   printf '%s\n' "$value"
 }
 case "${1:-help}" in
+  people|grant|invite|open-link|signin-link|enable-accounts|enable-public|disable-public|proxy-logs|set-public-url|set-mail)
+    module="$root/usr/local/lib/watchdog/watchdog_access.sh"
+    [[ -f $module ]] || die 'Access administration module missing; update the installation.'
+    . "$module"
+    access_command "$@" ;;
   status)
     require_commands systemctl
     code=0; systemctl --no-pager status watchdog.service || code=$?
@@ -88,5 +93,5 @@ case "${1:-help}" in
     (($# == 3)) || die 'Usage: watchdogctl restore ARCHIVE NEW_ABSOLUTE_DIRECTORY'
     # Staging only: never touches the active installation or invokes Docker/systemd.
     python3 "$helper" restore --archive "$2" --destination "$3" ;;
-  *) printf '%s\n' 'Usage: watchdogctl status | logs | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY'; [[ ${1:-help} == help ]] ;;
+  *) printf '%s\n' 'Usage: watchdogctl status | logs | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY | people | grant | invite | open-link | signin-link | enable-accounts EMAIL | enable-public HOST | disable-public | proxy-logs | set-public-url URL | set-mail'; [[ ${1:-help} == help ]] ;;
 esac

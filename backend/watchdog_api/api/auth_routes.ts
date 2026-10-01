@@ -6,6 +6,7 @@ import {
 } from '../identity';
 import { PrincipalRepository } from '../db/repositories/principals';
 import { Principal } from '../domain/principal';
+import type { AdmissionService } from '../identity/admission';
 import type { AdmissionStatus } from '../../../shared/admission';
 import { sameOriginMutation } from './request_security';
 
@@ -34,6 +35,7 @@ export interface AuthDeps {
   principals: PrincipalRepository;
   secureCookies: boolean;
   now?: () => Date;
+  admission?: AdmissionService;
 }
 
 /**
@@ -61,12 +63,14 @@ export function principalMiddleware(deps: AuthDeps) {
 }
 
 /** Mount after /api/auth. An admission identity is not an application user. */
-export function requireInstallationAccess(req: Request, _res: Response, next: NextFunction) {
+export function requireInstallationAccess(req: Request, res: Response, next: NextFunction) {
   if (!req.principal) return next(new UnauthenticatedError());
+  if (!req.principal.roles.length) return res.status(403).json({error:{code:'not_admitted',message:'This verified identity has no installation access.'}});
   next();
 }
 
 function sessionIdentity(req: Request, deps: AuthDeps): SessionPayload | null {
+  if (deps.identity.mode === 'accounts' && req.principal?.email) return { sub:req.principal.id,email:req.principal.email,role:null,exp:Date.now()+60000 };
   const cookie = req.headers.cookie?.split(';').map(p => p.trim()).find(p => p.startsWith(`${SESSION_COOKIE_NAME}=`));
   return deps.identity.codec?.verify(cookie?.slice(SESSION_COOKIE_NAME.length+1)) ?? null;
 }
@@ -88,11 +92,12 @@ export function buildAuthRouter(deps: AuthDeps): Router {
   router.use((_req,res,next) => { res.setHeader('Cache-Control','no-store');next(); });
   router.use(sameOriginMutation);
   const now = deps.now ?? (() => new Date());
-  const rolesFor = (email: string) => deps.principals.effectiveRoles(email,deps.identity.verifier?.roleFor(email) ?? null);
+  const rolesFor = (email: string) => deps.admission?.effective(email).roles ?? deps.principals.effectiveRoles(email,deps.identity.verifier?.roleFor(email) ?? null);
+  const sessionId = (identity: SessionPayload) => deps.identity.mode === 'accounts' ? identity.sub : principalIdFor(identity.sub);
   const admissionStatus = (req: Request): AdmissionStatus => {
     const identity = sessionIdentity(req,deps);
     if (!identity) return { verified:false,email:null,status:'anonymous',request:null };
-    const request = deps.principals.requestFor(principalIdFor(identity.sub));
+    const request = deps.principals.requestFor(sessionId(identity));
     const grant = deps.principals.grant(identity.email);
     const status = rolesFor(identity.email).length ? 'approved' : grant?.active === false ? 'revoked' : request?.status ?? 'unrequested';
     return { verified:true,email:identity.email,status,request };
@@ -193,14 +198,15 @@ export function buildAuthRouter(deps: AuthDeps): Router {
       return res.status(400).json({ error:{ code:'validation_error',message:'Explain your intended use in 10–4000 characters.' } });
     }
     if (rolesFor(identity.email).length) return res.status(409).json({ error:{ code:'already_admitted' } });
-    res.json({ request:deps.principals.submitRequest(principalIdFor(identity.sub),identity.email,reason.trim(),now().toISOString()) });
+    res.json({ request:deps.principals.submitRequest(sessionId(identity),identity.email,reason.trim(),now().toISOString()) });
   });
 
   router.post('/admission/activate',(req,res) => {
     const identity = sessionIdentity(req,deps);
+    if (identity && deps.identity.mode === 'accounts') return rolesFor(identity.email).length ? res.json({activated:true}) : res.status(403).json({error:{code:'access_pending'}});
     if (!identity || !deps.identity.codec) return res.status(401).json({ error:{ code:'unauthenticated' } });
     const roles = rolesFor(identity.email);
-    const principal = deps.principals.get(principalIdFor(identity.sub));
+    const principal = deps.principals.get(sessionId(identity));
     if (!roles.length || !principal?.active) return res.status(403).json({ error:{ code:'access_pending' } });
     const cookie = deps.identity.codec.sign({ sub:identity.sub,email:identity.email,role:roles[0],exp:identity.exp });
     res.setHeader('Set-Cookie',sessionCookieHeader(cookie,Math.floor((identity.exp-now().getTime())/1000),deps.secureCookies));
@@ -221,7 +227,7 @@ export function buildAuthRouter(deps: AuthDeps): Router {
       return res.status(400).json({ error:{ code:'validation_error',message:'A valid email, explicit role profiles and active state are required.' } });
     }
     const removingManager = can(rolesFor(email),'principal.manage') && (!active || !can(roles,'principal.manage'));
-    if (deps.identity.mode === 'oidc' && removingManager && !deps.principals.list().some(p => p.active && p.email && p.email !== email && can(rolesFor(p.email),'principal.manage'))) {
+    if (deps.identity.mode !== 'local' && removingManager && !deps.principals.list().some(p => p.active && p.email && p.email !== email && can(rolesFor(p.email),'principal.manage'))) {
       return res.status(409).json({ error:{ code:'last_access_manager',message:'Keep another active developer before removing the last access manager.' } });
     }
     res.json({ grant:deps.principals.setGrant(email,roles,active,req.principal!.id,now().toISOString()) });
@@ -247,7 +253,7 @@ export function buildAuthRouter(deps: AuthDeps): Router {
     if (!identity) return res.status(401).json({ error:{ code:'unauthenticated' } });
     if (typeof token !== 'string' || token.length > 200) return res.status(400).json({ error:{ code:'validation_error' } });
     try {
-      const request = deps.principals.acceptInvitation(token,principalIdFor(identity.sub),identity.email,now().toISOString());
+      const request = deps.principals.acceptInvitation(token,sessionId(identity),identity.email,now().toISOString());
       res.json({ request });
     } catch {
       res.status(404).json({ error:{ code:'invitation_unavailable',message:'Invitation unavailable for this verified identity.' } });

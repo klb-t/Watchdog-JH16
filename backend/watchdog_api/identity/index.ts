@@ -1,3 +1,5 @@
+import type { AccountSessionCodec } from './account_sessions';
+import type { AdmissionWiring } from './accounts_identity';
 import {
   GoogleOidcVerifier, JwksCache, JwksTransport, OidcIdentityProvider, SessionCodec,
   OidcConfig, TokenRejectedError,
@@ -26,7 +28,7 @@ export * from './oidc';
  * describes is an open instance.
  */
 
-export type AuthMode = 'local' | 'oidc';
+export type AuthMode = 'local' | 'oidc' | 'accounts';
 
 export interface AuthConfig {
   readonly mode: AuthMode;
@@ -91,7 +93,10 @@ export function readAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig
   const audience = env.GOOGLE_OAUTH_CLIENT_ID?.trim() || null;
   const grants = parseGrants(env.WATCHDOG_GRANTS);
 
-  if (!audience) {
+  const requested = env.WATCHDOG_AUTH?.trim().toLowerCase();
+  if (requested && !['accounts','local','oidc'].includes(requested)) throw new AuthConfigError('WATCHDOG_AUTH must be local, oidc or accounts.');
+  if (requested === 'accounts') return { mode: 'accounts', audience, grants, reason: 'Closed accounts: email codes and optional Google; identity alone grants no access.' };
+  if (requested === 'local' || !audience) {
     return { mode: 'local', grants: {}, audience: null,
       reason: 'GOOGLE_OAUTH_CLIENT_ID is not set, so no sign-in is possible and every request is the local user.' };
   }
@@ -119,7 +124,7 @@ export function assertAuthSafeForEnvironment(
   env: NodeJS.ProcessEnv = process.env,
 ): void {
   const isProduction = env.NODE_ENV === 'production';
-  if (!isProduction || config.mode === 'oidc') return;
+  if (!isProduction || config.mode !== 'local') return;
   if (env.WATCHDOG_ALLOW_OPEN_INSTANCE === 'true') return;
 
   throw new AuthConfigError(
@@ -137,6 +142,7 @@ export interface Identity {
   /** Present only in oidc mode. */
   readonly verifier: GoogleOidcVerifier | null;
   readonly codec: SessionCodec | null;
+  readonly accountCodec?: AccountSessionCodec;
   resolve(request: unknown): Promise<Principal | null>;
 }
 
@@ -147,8 +153,10 @@ export async function buildIdentity(
   env: NodeJS.ProcessEnv = process.env,
   secrets: SecretStore = defaultSecretStore,
   jwksTransport: JwksTransport = defaultJwksTransport,
+  admission?: AdmissionWiring,
 ): Promise<Identity> {
   const config = readAuthConfig(env);
+  if (config.mode === 'accounts') return (await import('./accounts_identity')).buildAccountsIdentity(env,secrets,jwksTransport,admission);
 
   if (config.mode === 'local') {
     const local = new LocalUserIdentityProvider();

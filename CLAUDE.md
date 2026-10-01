@@ -9,6 +9,16 @@ Its first scientific benchmark is a replication of Jankowski & Hoffmann 2016
 Optimise for **an agent that can be left alone for hours and still produce inspectable,
 correct, non-fabricated work.**
 
+### Current handoff — 2026-10-01
+
+Claude is the receiving integrator. Read `docs/HANDOFF_2026-10-01_TO_CLAUDE.md`,
+`docs/REPORT_GPT_2026-10.md` and the single open queue before continuing.
+The earlier handoff pointing to GPT remains historical; it is not the start instruction.
+Fetch and compare **all** remote branches before implementing a supposedly missing feature.
+Email/open-link, navigation and HTTPS are now consolidated with later main features.
+The matrices in `docs/consolidation/` preserve source contracts and acceptance boundaries.
+Read `docs/HISTORY_POLICY.md`: retain old history; new accepted main commits have one parent.
+
 ### Current work authority — 2026-09-30
 
 The maintainer has authorized autonomous continuation of the current product work. The

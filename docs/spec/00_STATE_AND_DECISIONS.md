@@ -1,13 +1,19 @@
 # State and binding decisions
 
-Last updated: 2026-10-01, three-package integration. Update this file whenever a
+Last updated: 2026-10-01, completed code consolidation and handoff to Claude. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
 
-**Latest completed checkpoint — 2026-10-01, PR #9 merged:** main includes
+**Current coordination:** Claude receives leadership after GPT completes E4.7/E7.7/E3.17. Start with [handoff](../HANDOFF_2026-10-01_TO_CLAUDE.md), [audit](../REPORT_GPT_2026-10.md), [history policy](../HISTORY_POLICY.md) and the canonical queue. Combined clean local gate: **604/604**, typecheck/build, existing 552 tests retained. Accounts are opt-in; migration 023 preserves 001–022, legacy request-only invitations and ownership. Two navigation profiles preserve projects/search. HTTPS code preserves OPERATIONS; real VM acceptance is still unverified. Exact inputs and receipts: [experiments](../history/EXPERIMENTS.md).
+
+**D23 — Consolidation and accepted linear progress (2026-10-01).** Keep source history and experiment evidence; never rewrite existing main to make its past appear linear. New accepted increments have one parent. A side branch is integrated as a reviewed coherent delta with source SHA and test receipt, not by importing unrelated experiments. Preserve negative/unfinished results off the front page. Claude owns main; GPT's G1–G3 remain proposed independent protocols.
+
+D20–D22 below remain verbatim historical decisions. Current adaptations: explicit accounts alongside legacy OIDC; new `access_admin` rather than silently expanding `admin`; `workspace-preferences.json` alongside the canonical route registry; `/projects` stays a real page. Legacy durable overrides remain managed through the original access UI. HTTPS implementation does not prove a certificate or installation exists.
+
+**Previous completed checkpoint — 2026-10-01, PR #9 merged:** main includes
 `80a97253f394f28a030c9bead2040e7443fcf7fa`, integrating worker PRs #6/#7/#8 with
 their histories. Corrected code head `ca5645cfa385aa1b9ec5c1eb8512fb863f784153`
 passed Actions `36791873648`: **552/552 tests in each of verify and container**,
@@ -25,7 +31,7 @@ The following entries retain historical evidence, not outstanding merge requests
 `860c844913ad3b51a653ba30ac78583a3f4e6b0b`. Actions `36766360252` passed both
 `verify` and `container`: **434/434 tests each**, zero failures/skips/cancellations,
 JH16 demo and real-container start/persistence. Code was verified at `827fa11`;
-later changes and the final checkpoint update only documentation. E2.1, E4.6,
+later changes and the final checkpoint update only documentation. E2.2 (historical alias E2.1), E4.6,
 E3.14 and E5.7c are complete in their recorded scopes. E3.5 remains reopened for
 unsupported Cloud Run storage; E5.7b/E5.8b and E6.4/E6.5 remain open. The following
 paragraphs preserve this wave's checkpoints, including its resolved pending statuses.
@@ -38,7 +44,7 @@ and [coordination](../WORK_COORDINATION.md). E4.6 fixes revoked shared-data acce
 and metadata/count leaks during asynchronous search; 17/17 focused tests pass.
 The previous 419/419 gate below belongs to the merged integration, not the new wave.
 Full wave validation, further changes and publication hashes are recorded in its handoff.
-E2.1 additionally corrects entity alignment and enforces graph/input/approval integrity;
+E2.2 (historically E2.1) additionally corrects entity alignment and enforces graph/input/approval integrity;
 22/22 focused scientific and 9/9 related integration tests, typecheck and JH16 demo pass.
 Executor/ratio are 1.0.1; frozen method files are unchanged. This is a contract repair,
 not scientific approval or a new methodology.
@@ -67,7 +73,7 @@ appearance context. Implementation and validation are tracked in the ledger; inc
 tasks are not claimed complete. See [reconciliation](../SPEC_RECONCILIATION_2026-09-30.md)
 and [design rules](../DESIGN_RULES.md) for historical conflicts and reversible defaults.
 
-**Current local gate:** after a clean build, `npm run test:all` passes **419/419**, with
+**Historical local gate (30 September, #4):** after a clean build, `npm run test:all` passes **419/419**, with
 zero skipped/cancelled/failing tests, including production-browser flows. TypeScript and
 production build pass. `npm run demo:jh16` preserves 32 observations, 16 Pi and 16 Hi and
 the `pipeline_self_check` meaning. E4.5, E5.9, E5.10 and E6.3 are complete within their
@@ -603,6 +609,57 @@ verified distribution-route engine is claimed. Imported annotations preserve the
 
 Developer diagnostics expose redacted request metadata, persisted trace events/errors and ZIP
 bundles. Concurrent spans now share one trace sequence. Changes to recorder mode are audited.
+
+## Recovered D20–D22 — historical source decisions
+
+Source: Claude branch `9dea9aa`; decisions authored 24–25 September. Wording below is retained verbatim. E4.7/E7.7/E3.17 are now implemented with the explicit compatibility adaptations in D23 above; historical filenames and role choices below are not the current contract.
+
+### D20 — Identity is not admission; open links allowed but bounded (2026-09-24)
+
+Sign-in proves an address (Google `email_verified`, or a one-time code sent to it; the
+operator's shell link is stronger). Admission is separate: grants bound to the exact
+verified address, re-read on every request. One session cookie suffices for both states
+because it carries no rights — an applicant's session resolves to zero capabilities and
+the global `/api` gate admits it only to the sign-in/application endpoints. This meets the
+handoff's intent (separate candidate state) without a second cookie type.
+
+Owner request 2026-09-23 adds links *not* bound to an address. They are transferable by
+design, so they are bounded: 1–50 uses, ≤30 days, revocable, per-use audit of who joined,
+and can never confer `access.admit`, `principal.*` or diagnostics. Email-bound invitations
+keep the original rule: a forwarded link neither works nor is consumed.
+
+Delegation: admin gains `access.admit`, limited to roles whose capabilities they hold;
+nobody changes their own access; only someone holding all of a person's capabilities can
+change that person. Operator grants (`WATCHDOG_GRANTS`) are not editable from the UI.
+Nothing is reported as "sent" unless an SMTP server accepted it; server-sent links come only
+from `WATCHDOG_PUBLIC_URL`. People & access shows full addresses to `principal.view`
+holders (admission needs them); the older ownership listing stays fingerprinted.
+
+### D21 — Seven areas over unchanged routes (2026-09-24)
+
+The flat sidebar (16 entries mixing goals, workflow stages, tools and diagnostics) is
+replaced by seven areas plus Settings, per `docs/spec/14_INFORMATION_ARCHITECTURE.md`.
+This is a navigation and composition change only: every page, path, API and capability is
+kept; the navigation is data (`config/ui/navigation.json`, schema in
+`shared/navigation.ts`) and hides nothing that its route does not already guard. Area
+addresses (`/data`, `/analysis`, `/projects`, `/knowledge`) open the first view the viewer
+may see. Run history and Diagnostics sit in Analysis marked "advanced". A unit test fails if
+a routed page has no place in the navigation or a navigation entry points at no page.
+Larger moves the note proposes (project container, reviewer projection, Knowledge Base
+explorer) are ledger items E7.2–E7.6, not done here.
+
+### D22 — Public entry: Caddy in front, sslip.io when there is no domain (2026-09-25)
+
+Invited testers cannot use the IAP tunnel, and a bare `http://IP` is not acceptable: session
+cookies are `Secure` in production and sign-in codes must not travel in clear text. The
+owner has no domain. Default: the host name `<ip-with-dashes>.sslip.io`, which resolves to
+the IP written in it, with a Let's Encrypt certificate obtained by Caddy; `--domain` takes an
+owned name instead. Caddy is the only public listener (80/443); the app stays on
+127.0.0.1:8080 and trusts forwarded headers only from loopback/private addresses, which
+only Caddy can reach. Opening the address is refused unless sign-in is on, so a public
+instance can never be the shared local user. The external IP is made static so links sent
+to people keep working. Owner-facing trade-off: the address contains the VM's IP and looks
+technical; a custom domain later changes only the host name (`enable-public NEWHOST`).
 
 ## 4. Open questions for the maintainer
 

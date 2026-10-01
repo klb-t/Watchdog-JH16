@@ -2,11 +2,10 @@
 
 Ten instalator uruchamia zintegrowaną gałąź `main` na jednej, przeznaczonej dla Watchdoga
 maszynie Compute Engine. Wykonujesz go w **Cloud Shell**, nie w terminalu SSH samej VM.
-Instalacja nie wymaga klucza LLM. To prywatna instalacja właściciela: dostęp przez IAP/SSH,
-w aplikacji wspólna tożsamość `local-user` z pełnymi możliwościami deweloperskimi.
-Repozytorium zawiera logowanie, formularz prośby o dostęp i zaproszenia powiązane z adresem
-e-mail, ale ten instalator nie konfiguruje Google OAuth i pozostawia tryb właściciela.
-Nie udostępniaj tego tunelu innym użytkownikom jako gotowego systemu kont.
+Instalacja nie wymaga klucza LLM. Domyślnie pozostaje prywatna przez IAP/SSH. Opcja
+`--public --owner EMAIL` włącza konta i Caddy HTTPS; bez domeny używa adresu sslip.io,
+a `--domain HOST` wybiera własną domenę. To opis działającego kodu i lokalnych testów;
+nie jest protokołem odbioru rzeczywistej VM. Trybu local-user nie udostępniaj innym.
 
 ## Przygotuj VM
 
@@ -17,7 +16,7 @@ Nie udostępniaj tego tunelu innym użytkownikom jako gotowego systemu kont.
   VM, zostawiając SSH z IAP; użyj maszyny przeznaczonej dla Watchdoga.
 - Wyjście do internetu do pobrania pakietów, obrazu Node, npm i Chromium. VM może mieć
   zewnętrzny IP z zamkniętym ruchem przychodzącym; bez zewnętrznego IP potrzebuje np. Cloud NAT.
-- Nie trzeba otwierać HTTP/HTTPS ani portu 8080 w konsoli GCP.
+- W trybie prywatnym nie otwierasz HTTP/HTTPS. `--public` dodaje scoped reguły 80/443 i zachowuje aplikację na loopback; 8080 nie jest publiczny.
 
 Konto uruchamiające skrypt musi móc opisać VM, dodać tag, zmienić reguły firewalla i retencję
 dysku, włączyć Compute/IAP oraz połączyć się przez IAP i SSH z `sudo`. W zależności od
@@ -93,6 +92,47 @@ Po zamknięciu Cloud Shell tunel znika, ale system i harmonogramy dalej działaj
 Kolejne wejście wymaga ponownego uruchomienia tunelu. Z komputera z `gcloud` ta sama
 komenda udostępnia interfejs pod `http://127.0.0.1:8080`. Tunel nasłuchuje tylko na localhost.
 Możesz zmienić lewy port 8080 na inny, jeśli jest już zajęty.
+
+## Publiczne wejście z kontami
+
+W Cloud Shell, z aktualnym checkoutem:
+
+```bash
+bash scripts/deploy_gcp_vm.sh --project TWOJ_PROJEKT --zone TWOJA_STREFA --instance TWOJA_VM --public --owner owner@example.test
+```
+
+Zastąp adres własnym. Opcjonalnie dodaj `--domain TWOJA_DOMENA` i skieruj DNS na VM.
+Tryb publiczny wymaga zewnętrznego IP; skrypt rezerwuje go jako statyczny i otwiera
+80/443 tylko dla tagu tej VM. To może generować koszty chmury. `--plan` pokazuje zakres.
+Domyślnie host ma postać `IP-Z-MYSLNIKAMI.sslip.io`; dostępność DNS/ACME trzeba potwierdzić.
+
+Na już zaktualizowanej VM przez SSH:
+
+```bash
+sudo watchdogctl enable-accounts owner@example.test
+sudo watchdogctl enable-public TWOJ_HOST
+sudo watchdogctl set-mail
+sudo watchdogctl people
+sudo watchdogctl proxy-logs
+```
+
+`enable-public` na samej VM konfiguruje host i UFW, ale nie zastępuje reguł GCP/DNS
+ustanawianych przez instalator Cloud Shell. `enable-accounts` zachowuje pozostałe granty,
+nie przenosi własności `local-user`, usuwa wyjątek otwartego trybu i wypisuje jednorazowy
+link operatora. Jeżeli stary trwały override odwołał temu adresowi dostęp, napraw go
+w istniejącym panelu zarządzania przed przełączeniem. `set-mail` pyta interaktywnie;
+sekret SMTP nie jest argumentem procesu. Bez maila działa link operatora, nie kody e-mail.
+
+`sudo watchdogctl disable-public` zatrzymuje proxy i zamyka UFW; pozostawia konta.
+Reguły GCP i statyczny adres nie są automatycznie kasowane. Caddyfile/public-host oraz
+app.env są w `/etc/watchdog`; certyfikaty w `/var/lib/watchdog-proxy`. Backup zawiera
+konfigurację, moduł dostępu i jednostkę proxy, **nie cache certyfikatów**. Po izolowanym
+restore aktywacja HTTPS wymaga ponownego uzyskania certyfikatu i odbioru instalacji.
+
+Odbiór na realnej VM: HTTPS bez ostrzeżeń → logowanie → adresowe zaproszenie i poprawna
+rola → cofnięcie w istniejącej sesji → restart z danymi → weryfikacja backupu i izolowane
+odtworzenie → osobno kontrolowana aktywacja. Lokalny test skryptów nie zamyka tych punktów.
+Nie używaj szerokiego wyjątku produkcyjnego local-user do ominięcia awarii logowania.
 
 ## Utrzymanie i dane
 

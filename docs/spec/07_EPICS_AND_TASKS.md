@@ -3,13 +3,35 @@
 **This is the working document.** Tick a box only when its test passes. Commit the tick with
 the work. If the repository contradicts a tick, the repository wins — untick it and say so.
 
-Task IDs are stable. Do not renumber. Add new tasks with new numbers.
+Task IDs are stable after collision resolution. See [TASK_ID_ALIASES](../TASK_ID_ALIASES.md). Historical labels remain aliases; new work uses unique canonical IDs.
 
 ---
 
+## Open — canonical queue, 2026-10-01
+
+Claude owns integration and the global ledger. Completed historical task paragraphs below do not close these remaining scopes.
+
+- [ ] **E5.7b — General executable replication and hypothesis studies.** Detailed scope remains below.
+- [ ] **E5.8b — General extension execution and adaptive navigation.** Detailed scope remains below.
+- [ ] **E3.5 — Container and Cloud Run.** Detailed scope remains below.
+- [ ] **E5.11 — Remaining workbench methods.** Detailed scope remains below.
+- [ ] **E6.4 — Case hypotheses and reviewed constraints.** Detailed scope remains below.
+- [ ] **E6.5 — Profile-bound measurement suggestions.** Detailed scope remains below.
+- [ ] **E6.6 — Remaining field integrations.** Detailed scope remains below.
+
+E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a separate gate. Existing RESEARCH/CLINICAL/OPERATIONS packages are integrated, not awaiting claims.
+
+## Completed consolidation — 2026-10-01
+
+- [x] **E4.7 — Accounts consolidation:** Google/email code, bounded addressed/open invitations, local SMTP proof, block/unblock, session generations and bundled CLI. Additive migration 023 preserves 001–022 and populated legacy history/ownership. Legacy overrides remain authoritative; original admin does not gain delegation.
+- [x] **E7.7 — Navigation consolidation:** main/Claude grouping profiles, PL/EN, palette and breadcrumb, all existing routes/capabilities retained, real projects/search. Unit equivalence and mobile browser replay pass.
+- [x] **E3.17 — Public HTTPS code:** Caddy and optional sslip.io; accounts required; operator commands retain locking, grant configuration, backup/update/isolated restore. Script acceptance uses isolated system-command fixtures, not a live VM.
+
+Combined clean gate: **604/604**, typecheck and production build; no failures, skips or cancellations. See `../history/evidence/2026-10-01/receipt.json`, matrices in `../consolidation/` and `../HISTORY_POLICY.md`.
+
 ## Continuation checkpoints — 2026-09-11
 
-- [x] **E3.6 — Public acquisition schedules and substance memory.** Durable owned jobs,
+- [x] **E3.16 — Public acquisition schedules and substance memory.** Durable owned jobs,
   daily/interval schedules, restart recovery, bounded public source adapters and immutable
   raw receipts. Published at `35deca9`; CI `34568553854`: 286/286, including Chromium.
 - [x] **E3.7 — Personal settings and keys.** Owner-scoped encrypted vault, immutable settings
@@ -58,7 +80,7 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
   discovery receipt lineage, source-anchored methodology and required inputs, explicit
   reanalysis/proxy/simulation meaning, owned bounded reviews and interrupted-attempt recovery.
   See RESEARCH_WORKSHOP.md for the supported text/abstract scope and validation evidence.
-- [ ] **E5.7b — General executable replication and hypothesis studies.** Connect reviewed
+- **OPEN — E5.7b — General executable replication and hypothesis studies.** Connect reviewed
   assessments to frozen MethodSpecs and actual acquired inputs; confirmation partitions,
   comparison families, hypothesis prioritization and project/draft evidence graphs remain open.
 - [x] **E5.7c — Source-linked exploratory cohorts.** Implemented explicit nonempty row
@@ -79,7 +101,7 @@ Task IDs are stable. Do not renumber. Add new tasks with new numbers.
 - [x] **E5.8a — Deterministic JSON/CSV extraction and goal navigation.** Form-based or LLM-
   proposed copy profiles, exact-output tests, hash-bound activation, lexical provenance,
   persistent test/execution history and exports; ten capability-filtered goal paths.
-- [ ] **E5.8b — General extension execution and adaptive navigation.** HTML/PDF parsing,
+- **OPEN — E5.8b — General extension execution and adaptive navigation.** HTML/PDF parsing,
   sandboxed generated modules, full compatibility contracts, saved workflow favourites
   and an autonomous natural-language goal planner remain open.
 - [x] **E5.8c — Source extraction to reviewed statistical data.** Explicit field types,
@@ -412,7 +434,7 @@ start any of them breadth-first. Tasks keep their home epic's number.
   uncredentialled live run fails and its failure names the variable; an unconfigured narrative
   provider returns 409 and never template prose.
 
-- [ ] **E3.5 — Container and Cloud Run**
+- **OPEN — E3.5 — Container and Cloud Run**
   Container build/start and local-volume persistence have passed. The Cloud Run half is
   reopened on 2026-09-30: the old recipe places SQLite on GCS FUSE, whose filesystem
   semantics do not satisfy the database contract. A configured path or single instance
@@ -436,7 +458,7 @@ start any of them breadth-first. Tasks keep their home epic's number.
 
 ## E2 — Compiler and validation
 
-- [x] **E2.1 — Entity-aligned execution and runtime contract integrity.** Ratios join
+- [x] **E2.2 — Entity-aligned execution and runtime contract integrity.** Ratios join
   matching distinct entity IDs rather than positions, rejecting undeclared/ambiguous joins.
   Method validation rejects self-edges, symbol collisions and incompatible shapes; runtime
   inputs enforce units, semantics, identities and finite numbers. Supplied approval must bind
@@ -462,8 +484,7 @@ condition; PostgreSQL and S3 migration; a real worker process.
   researcher/admin/developer, including through an owned method or an in-flight blob read.
   Unified search resolves provider I/O before permission-filtered enumeration so concurrent
   revocation removes both metadata and counts. Three new HTTP regressions and the existing
-  workbench/search suites pass: 17/17 focused tests on 2026-09-30. Full integration pending
-  the current parallel wave; see HANDOFF_2026-09-30_WAVE1.md.
+  workbench/search suites pass: 17/17 focused tests on 2026-09-30. Full integration passed in #5 and #9; see HANDOFF_2026-10-01_INTEGRATION.md.
 
 - [x] **E4.5 — Closed installation admission and invitations.** Sign-in-only anonymous
   UI; verified unknown email can submit a reason and inspect application status only.
@@ -472,7 +493,7 @@ condition; PostgreSQL and S3 migration; a real worker process.
   including current-role checks in existing sessions and last-manager protection. Local
   development and operator bootstrap grants are preserved. Migration 020, real HTTP and
   production-browser coverage pass in the 419-test clean gate on 2026-09-30.
-  See ADMISSION.md; a live OAuth account/domain remains an installation check.
+  See ADMISSION.md; this closes only the Google/addressed-request scope. Email/SMTP/open-link integration is E4.7 and remains open; a live OAuth account/domain remains an installation check.
 
 - [x] **E4.2 — Peer capability profiles.** One shared resolver, `/auth/me` union, UI navigation
   and route gates, additive role migration, full principal role sets. Matrix + real HTTP tests
@@ -522,7 +543,7 @@ requests and admin approval; per-source permissions; developer diagnostics surfa
   retain geometry/source/approval and per-panel joins, independently checked by the verifier.
   Real DB/HTTP and render tests cover joins, hash pins, WORM, access and revocation. Production
   Chromium import → review → map → save/reload → SVG/ZIP verification is a CI gate.
-- [ ] **E5 remainder.** Transform DAG, advanced reviewed methods, Python sidecar, uncertainty
+- **OPEN — E5.11 — Remaining workbench methods.** Transform DAG, advanced reviewed methods, Python sidecar, uncertainty
   bands, graph layers, route-hypothesis workflow, and the full paper pipeline.
   Their presence in the following inventory is not an implementation claim.
 
@@ -553,11 +574,11 @@ a drug-specific concept into the generic method registry.
   reference links enforce principal/expiry and persist offline inspection receipts before
   display. Offline worker generation verifies current HTML and assets. Full browser flows,
   expiry, receipts and shell regressions pass in the 419-test clean gate. See FIELD_REFERENCE.md.
-- [ ] **E6.4 — Case hypotheses and reviewed constraints.** Fictional non-identifying
+- **OPEN — E6.4 — Case hypotheses and reviewed constraints.** Fictional non-identifying
   case schema; temporal observations, known/possible exposures, PK/PD, mixtures,
   comorbidity and non-toxicological alternatives; required-input checks and exact traces.
   No invented probability or missing-edge exclusion.
-- [ ] **E6.5 — Profile-bound measurement suggestions.** Reviewed dependencies and an
+- **OPEN — E6.5 — Profile-bound measurement suggestions.** Reviewed dependencies and an
   institution's available-test dictionary; explicit gaps, information assumptions and
   reasons. Device adapters and validated quantitative PK are later sub-slices.
   Acceptance detail: CONVERSATION_DELTA_2026-09-20.md.
@@ -581,7 +602,7 @@ a drug-specific concept into the generic method registry.
 - [x] **E6.2 — Bounded offline reference access.** Hash-checked principal snapshots, TTL,
   static production shell, cached-source age and offline audit outbox with idempotent sync.
   Backend/render/client tests pass; production browser reload is an explicit CI gate.
-- [ ] **E6 remainder.** Automated alert classification/queues, additional reviewed source
+- **OPEN — E6.6 — Remaining field integrations.** Automated alert classification/queues, additional reviewed source
   coverage, public-health policy timelines and the public harm-reduction surface.
 
 Contents: the substance-centric knowledge graph and assertion mechanism per
@@ -655,68 +676,10 @@ just because the schema for all three already exists.
   anchors and unresolved scope are retained. See `docs/PAPER_ANALYSES.md` and
   `docs/ASTRA_PROGRESS.md`. This does not mark the general paper compiler complete.
 
-## Blocked
+## Blocked — current evidence only
 
-### Historical E3.13 publication block — resolved 2026-09-30
+- **Actual owner VM deployment and restore activation:** no validated VM session, SMTP/OAuth installation configuration or real HTTPS acceptance is recorded. Code integration and local tests can proceed. No live resources were changed by this audit.
+- **E3.5 / PostgreSQL:** a validated transactional database arrangement is required before Cloud Run support. GCS blob storage does not validate SQLite on GCS FUSE. PostgreSQL remains planned; build and test the adapter before provisioning.
+Browser runtime recovery is complete: initial 525/552 + 27 launch failures became 552/552 on the original base, then 604/604 on the combined implementation. No test was disabled. The failed attempt remains recorded in the experiment history.
 
-The block below describes September 22 only. Published `c3508c1` passed both jobs
-of Actions `35829482923` on September 23, including the Chromium suite and the
-production container persistence check. It no longer blocks development. The owner
-authorized autonomous continuation on September 30; current work uses a separate
-integration branch, preserving PR #1 and its base.
-
-The owner requested publication from `HANDOFF_2026-09-22.md`. The recovery checksums,
-bundle ancestry and clean local `c473993` checkout were verified. GitHub PR #1 and its
-branch still point at `1e583c1`; Actions `35614465513` failed, and the new container job
-has not run. The GitHub connector returns HTTP 400 `Invalid MCP request metadata`.
-Direct Git lacks credentials. Local typecheck/build and 356 tests pass; 17 browser
-tests cannot launch without Chromium, whose download failed. No Docker is installed.
-
-**Unblock:** restore an authenticated publication channel for the existing repository
-and branch, then push without force and verify both `verify` and `container` on the
-published head. A browser fallback requires user approval under `control-browser`.
-Historical instruction: do not merge PR #1 or change its base; E4.5 had not started then.
-
-### Continuation checkpoint (2026-09-08)
-
-- [x] **E0.6 — Portable clean install and test entrypoints.** Repair missing optional-platform
-  lock entries; use Node's tsx loader without a CLI IPC server. Lockfile consistency,
-  production build and offline JH16 demo checked. Baseline 227/231 passed; four browser tests
-  blocked by absent Chromium/download timeout, not by a reported application assertion.
-  See `docs/ASTRA_PROGRESS.md` for exact environment limits.
-
-*Nothing. E1.20's tolerance bands, the one item that was blocked, were proposed against the
-primary source and then registered under authority the maintainer delegated explicitly. The
-pre-registration property is preserved and checkable: the bands and their full rationale were
-committed in `2e417c66514b3ac24aef6cc067d435168089f852` before any verdict existed anywhere in
-this repository, and `config/replication/jh2016.json` names that commit. Widening a band after
-seeing a verdict requires a new version of that file and is visible in git history.*
-
-### PostgreSQL backend for `storage.relational`
-
-**What is missing.** The database is still SQLite. GCS object storage is separately
-implemented; the startup durability gate checks configured paths rather than filesystem
-locking/transaction semantics. It does not establish that bucket-mounted SQLite is safe.
-
-**Why it was not written.** A Postgres backend needs (a) a driver dependency — `pg` plus
-`drizzle-orm/node-postgres` — and (b) a dialect port of the four migrations, which use SQLite
-integer booleans, `PRAGMA table_info` introspection in the ownership-transfer path, and
-`INSERT OR IGNORE`. None of that is hard, but **none of it can be verified from this
-environment**: there is no Postgres server to run the repository suite against. Shipping an
-adapter that has never executed a statement, registered as `implemented`, is the fabricated
-implementation rule 1 forbids. It is registered `planned` and throws instead.
-
-**Correction, 2026-09-30.** The former claim that a single Cloud Run instance with SQLite
-on a mounted GCS bucket is durable and correct is withdrawn. Google documents missing
-locking/patching and advises against database storage on Cloud Storage FUSE; see
-[the corrected runbook](../DEPLOY_GCP.md). The old deploy recipe now fails before cloud
-mutations. The private VM uses a disk bind mount and remains a separate path. No live
-Cloud Run deployment or data-loss finding is claimed by this audit.
-
-**Unblock:** implement and validate a supported database arrangement locally first, including
-migrations, ownership/approval invariants, transactions and backup/restore. Production
-provisioning and any paid resources remain a separate decision. The former one-day estimate
-was not established by execution evidence.
-
-*Add entries here with enough detail that the maintainer can unblock in one action, then
-continue with the next unblocked task rather than waiting.*
+[Historical resolved publication blockers](../history/LEDGER_BLOCKERS_BEFORE_2026-10-01.md) are retained for provenance. They do not block a new claim or imply current push failure.

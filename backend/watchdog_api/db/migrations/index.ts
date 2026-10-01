@@ -1,3 +1,4 @@
+import { MIGRATION_023_ACCOUNTS } from './023_accounts';
 import type { Database } from 'better-sqlite3';
 import { MIGRATION_001_INITIAL_SCHEMA } from './001_initial_schema';
 import { MIGRATION_002_ASSERTIONS } from './002_assertions';
@@ -54,7 +55,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '019_source_access', sql: MIGRATION_019_SOURCE_ACCESS },
   { id: '020_admission', sql: MIGRATION_020_ADMISSION },
   { id: '021_research_projects', sql: MIGRATION_021_RESEARCH_PROJECTS },
-  { id: '022_paper_comparisons', sql: MIGRATION_022_PAPER_COMPARISONS }
+  { id: '022_paper_comparisons', sql: MIGRATION_022_PAPER_COMPARISONS },
+  { id: '023_accounts', sql: MIGRATION_023_ACCOUNTS }
 ];
 
 const MIGRATIONS_TABLE = `

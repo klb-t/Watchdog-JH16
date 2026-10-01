@@ -1,118 +1,24 @@
 # WatchDog
 
-Reproducible-research platform for monitoring psychoactive-substance signals, with explicit provenance, deterministic analysis and human-reviewed scientific interpretation.
+Odtwarzalny warsztat pozyskiwania danych, analizy i badań z jawnym pochodzeniem. JH16 i substancje psychoaktywne są pierwszym zastosowaniem ogólnego silnika.
 
-The first benchmark is a replication pipeline for Jankowski & Hoffmann (2016), JMIR 18(2):e38.
+**Stan:** połączono RESEARCH/CLINICAL/OPERATIONS oraz wcześniej pominięte konta/mail, nawigację PL/EN i HTTPS. Wspólny lokalny odbiór: **604/604 testy**, typecheck i produkcyjny build. Historyczne CI `ca5645c`: 552/552 w obu bramkach oraz start i trwałość kontenera. Fikcyjny rdzeń kliniczny ma CLI; nie ma produkcyjnego przypadku/API/UI. Brak potwierdzonej instalacji na rzeczywistej VM.
 
-**Status:** the resumed September 30 wave is merged into `main` through
-[PR #5](https://github.com/klb-t/Watchdog-JH16/pull/5). Both verify and real-container CI
-passed **434/434 tests**, including browser flows and production persistence. This wave
-repairs entity pairing, approval/input validation, revoked shared-data access and deployment
-defaults, and adds source-linked exploratory paper cohorts with verifiable exports.
-The earlier [PR #4](https://github.com/klb-t/Watchdog-JH16/pull/4) established the integrated
-private workspace.
-Implemented workflows include the offline JH16 fixture benchmark, responder reference lookup,
-scientific figures and maps, durable public acquisition, substance memory, personal provider
-profiles and the paper/extraction workshop. Planned capabilities remain explicitly separate.
-Current checkpoint: [resumed September 30 handoff](docs/HANDOFF_2026-09-30_WAVE1.md).
-Start after a reset with [AGENTS.md](AGENTS.md); independent-thread instructions are in
-[work packages](docs/work_packages/README.md). The
-[earlier September 30 handoff](docs/HANDOFF_2026-09-30.md) remains historical evidence.
-The [September 22 handoff](docs/HANDOFF_2026-09-22.md) remains as historical evidence.
-
-## Quick start
-
-**Existing GCP virtual machine:** use the [Cloud Shell installer](docs/DEPLOY_GCP_VM.md).
-It configures a private IAP tunnel, dependencies, persistent storage and restart/update handling.
+**Przekazanie:** [GPT → Claude](docs/HANDOFF_2026-10-01_TO_CLAUDE.md). Claude przejmuje główny workflow po domkniętej konsolidacji. [Raport](docs/REPORT_GPT_2026-10.md) wskazuje dokładne SHA, konflikty i granice.
 
 ```bash
-npm install
-npm run demo:jh16     # end-to-end JH16 fixture slice; no credentials required
-npm run test:all      # typecheck, tests and production build
-npm run dev           # local application
+npm ci
+npx playwright install --with-deps chromium
+npm run demo:jh16
+npm run clean && npm run test:all
+npm run dev
 ```
 
-The offline benchmark does not require an API key, Google account or cloud project.
+Demo JH16 nie potrzebuje klucza. To self-check na liczbach z publikacji, nie niezależna replikacja. Testy przeglądarkowe wymagają Chromium z Playwright.
 
-A demo run writes a reproducible artifact set under `runs/<run-id>/`, including the manifest, normalized observations, deterministic analysis, replication verdicts, chart specifications, exports, content-addressed raw responses and diagnostic trace.
+Działające zakresy: dane/wykresy/mapy, przegląd i aprobaty metod, pamięć źródeł, harmonogramy, projekty, wyszukiwanie, ekstrakcja JSON/CSV, wybrane operacje publikacji i zamrożone porównania skalarne. Nie oznacza to dowolnej autonomicznej replikacji, żywych Trends ani walidacji klinicznej.
 
-The fixture attempt is a **pipeline self-check using the paper's published input counts**.
-Its reproduced verdicts verify the calculations on those same inputs; they do not demonstrate
-independent replication on newly collected data.
-
-## What is implemented
-
-- JH16 fixture benchmark through a declarative `MethodSpec` and deterministic executor;
-- immutable run manifests and content-addressed raw artifacts;
-- explicit missingness and source/provider provenance;
-- research-method review and hash-bound approval;
-- publication-oriented charts, maps and exports;
-- public acquisition and registered source adapters;
-- substance/reference memory and responder lookup;
-- personal provider profiles and bounded text-generation integrations;
-- paper/extraction workshop paths that keep model-generated prose outside the numerical computation path;
-- local SQLite/file persistence and deployment support for durable cloud storage;
-- tests covering scientific invariants, import boundaries and live-provider integration paths.
-
-The integration workspace groups these paths into seven sections, with contextual tools
-and separate settings. Its additional workflows are documented in
-[unified search](docs/UNIFIED_SEARCH.md), [installation access](docs/ADMISSION.md) and
-[research projects](docs/RESEARCH_PROJECTS.md). Historical conflicts and currently reversible
-choices are recorded in [specification reconciliation](docs/SPEC_RECONCILIATION_2026-09-30.md).
-Google Trends transport remains planned and cannot return a placeholder measurement.
-
-## Scientific guardrails
-
-The repository is built around a few rules that matter more than framework choice:
-
-1. **No fabricated implementations.** Planned functionality must fail explicitly rather than return a plausible result.
-2. **No LLM in the numerical path.** Models may propose methods or prose; deterministic code computes scientific values.
-3. **No hardcoded science.** Queries, formulas, thresholds and reference values live in versioned configuration.
-4. **No silent substitution.** Different source dimensions are represented as different data, not treated as interchangeable.
-5. **Missing is not zero.** This is enforced from persistence through analysis, export and visualisation.
-6. **Immutable provenance.** Finalised runs and their manifests are not silently rewritten.
-7. **Human approval is content-bound.** Approval records the hash of what was approved.
-
-The binding details live under `docs/spec/`.
-
-## Repository layout
-
-```text
-backend/watchdog_api/
-  domain/       types and invariants
-  analysis/     primitives, method validation and deterministic execution
-  sources/      source adapters and provider registries
-  services/     orchestration, manifests, charts, narrative and export
-  db/           schema, migrations and repositories
-  api/          HTTP routes
-  diag/         diagnostic bundle support
-
-src/             React UI
-config/          versioned scientific/configuration inputs
-fixtures/jh2016/ frozen benchmark inputs
-docs/spec/       binding specification and work ledger
-tests/           unit, integration and scientific-invariant tests
-```
-
-## Where to look first
-
-- `docs/spec/07_EPICS_AND_TASKS.md` — current implementation ledger.
-- `docs/spec/00_STATE_AND_DECISIONS.md` — binding decisions and checkpoints.
-- `docs/ASTRA_PROGRESS.md` — observed implementation/test evidence from the Astra continuation.
-- `docs/spec/03_JH2016_CONTRACT.md` — locked JH16 scientific invariants.
-- `docs/PAPER_ANALYSES.md` — source-linked paper-analysis workflow.
-- `docs/PRODUCT_PRINCIPLES_AND_NEXT.md` — product constraints and next work.
-- `docs/internal/LEGACY_AGENT_HANDOFF_2026-08-16.md` — historical development handoff retained for provenance, not current instructions.
-
-## Live integrations
-
-Live providers are optional. Depending on configuration, the project supports Google sign-in/capability grants, personal model providers, OpenRouter/OpenAI-compatible generation, SerpApi result counts and GCS object storage. The current private deployment path is the [Compute Engine VM installer](docs/DEPLOY_GCP_VM.md). The [legacy Cloud Run recipe](docs/DEPLOY_GCP.md) is blocked because its bucket-mounted SQLite storage does not satisfy the database contract.
-
-Provider support means the protocol path exists; it does not imply every vendor/account combination has been integration-tested.
-
-## Not built yet
-
-The project does not yet claim autonomous arbitrary-paper replication, general paper-to-executable-method compilation, advanced spatial/causal statistics, exhaustive live Trends integration, generated-adapter sandboxing or a complete evidence-backed drafting system. The current research workshop is deliberately narrower than those goals.
+[Historia i odtwarzanie](docs/history/EXPERIMENTS.md) · [liniowy rozwój main](docs/HISTORY_POLICY.md) · [Indeks dokumentacji](docs/README.md) · [rejestr zadań](docs/spec/07_EPICS_AND_TASKS.md) · [prywatna VM](docs/DEPLOY_GCP_VM.md) · [dostęp](docs/ADMISSION.md). Cloud Run pozostaje zablokowany do poprawnego rozwiązania trwałej bazy. Aktualne instrukcje agentów: [AGENTS](AGENTS.md), [CLAUDE](CLAUDE.md).
 
 ## Licensing
 

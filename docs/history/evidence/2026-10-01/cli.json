@@ -1,0 +1,21 @@
+{
+  "environment": "isolated temporary database, synthetic address, no mail sent",
+  "records": [
+    {
+      "command": "node dist/watchdog-admin.cjs grant fixture@example.test researcher",
+      "exitCode": 0,
+      "assertion": true
+    },
+    {
+      "command": "node dist/watchdog-admin.cjs people",
+      "exitCode": 0,
+      "assertion": true
+    },
+    {
+      "command": "node dist/watchdog-admin.cjs signin-link fixture@example.test",
+      "exitCode": 0,
+      "assertion": true
+    }
+  ],
+  "tokenOutput": "not retained; one-time secret"
+}

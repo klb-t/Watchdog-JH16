@@ -1,9 +1,9 @@
 /** MVP role bundles, not an ordinal hierarchy. See decision D18. */
-export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-4';
+export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-5';
 export const CAPABILITIES = [
   'run.view', 'run.create', 'method.propose', 'method.approve',
   'narrative.approve', 'export.download', 'provider.view', 'provider.approve',
-  'diagnostics.view', 'diagnostics.bundle', 'principal.view', 'principal.manage', 'principal.invite',
+  'diagnostics.view', 'diagnostics.bundle', 'principal.view', 'principal.manage', 'principal.invite', 'access.admit',
   'workbench.view', 'workbench.analyze', 'dataset.import', 'dataset.review', 'dataset.approve', 'figure.manage',
   'responder.lookup', 'evidence.review', 'evidence.import', 'evidence.approve',
 ] as const;
@@ -29,6 +29,8 @@ export const RBAC = Object.freeze({
   institutional: Object.freeze([...responder, 'provider.view', 'workbench.view', 'workbench.analyze', 'figure.manage'] as Capability[]),
   law_enforcement: Object.freeze([...responder, 'provider.view', 'workbench.view', 'workbench.analyze', 'figure.manage'] as Capability[]),
   admin: Object.freeze(admin),
+  // Explicit opt-in delegation; existing admin grants retain their capabilities.
+  access_admin: Object.freeze([...admin, 'access.admit'] as Capability[]),
   developer: CAPABILITIES,
   // Compatibility for existing OIDC grants and signed sessions. No migration
   // may strand a maintainer whose deployment still names the original role.
@@ -49,4 +51,31 @@ export function capabilitiesFor(roles: readonly string[]): Capability[] {
 /** Fail closed, including unknown role/capability strings at runtime. */
 export function can(roles: readonly string[], capability: Capability): boolean {
   return capabilitiesFor(roles).includes(capability);
+}
+
+/**
+ * Roles this granter may hand out: exactly those whose every capability the
+ * granter already holds. Delegation without escalation (E4.5): an admin can
+ * admit researchers, responders and other admins, never a developer, because
+ * `developer` carries diagnostics and principal management an admin lacks.
+ */
+export function grantableRoles(granterRoles: readonly string[]): Role[] {
+  if (!can(granterRoles, 'access.admit')) return [];
+  const held = new Set(capabilitiesFor(granterRoles));
+  return ROLES.filter(role => RBAC[role].every(capability => held.has(capability)));
+}
+
+/**
+ * Capabilities a bearer link can never confer, whoever creates it.
+ *
+ * An open link is transferable by design — whoever holds it can join — so it
+ * must never be able to create someone who can admit further people, manage
+ * principals or read diagnostics. A leaked link then costs one bounded seat,
+ * not control of the installation.
+ */
+export const OPEN_LINK_FORBIDDEN_CAPABILITIES: readonly Capability[] =
+  ['access.admit', 'principal.invite', 'principal.manage', 'principal.view', 'diagnostics.view', 'diagnostics.bundle'];
+
+export function openLinkAllowsRole(role: string): boolean {
+  return isRole(role) && !RBAC[role].some(c => OPEN_LINK_FORBIDDEN_CAPABILITIES.includes(c));
 }

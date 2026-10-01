@@ -1,0 +1,1561 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> react-example@0.0.0 test:all
+> npm run lint && npm run build && npm run test
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> react-example@0.0.0 lint
+> tsc --noEmit
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> react-example@0.0.0 build
+> vite build && node scripts/build_field_shell.mjs && node scripts/build_extraction_verifier.mjs && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs
+
+vite v6.4.3 building for production...
+transforming...
+✓ 1845 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.78 kB │ gzip:   0.39 kB
+dist/assets/index-B-62pD-h.css   34.06 kB │ gzip:   7.38 kB
+dist/assets/index-1IzBcaam.js   923.49 kB │ gzip: 279.30 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 3.91s
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server.ts:158:25:
+      158 │ const isESMMain = typeof import.meta !== 'undefined' && 
+          ╵                          ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server.ts:159:18:
+      159 │                   import.meta.url?.startsWith('file:') && 
+          ╵                   ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+▲ [WARNING] "import.meta" is not available with the "cjs" output format and will be empty [empty-import-meta]
+
+    server.ts:160:56:
+      160 │ ...          process.argv[1] === url.fileURLToPath(import.meta.url);
+          ╵                                                    ~~~~~~~~~~~
+
+  You need to set the output format to "esm" for "import.meta" to work correctly.
+
+3 warnings
+
+  dist/server.cjs      963.6kb
+  dist/server.cjs.map    1.7mb
+
+⚡ Done in 51ms
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> react-example@0.0.0 test
+> node --import tsx --test tests/**/*.test.ts
+
+✔ E1.10: the fixture provider is the only executable instrument; the seed list is planned (11.360596ms)
+✔ E1.10: storage providers are implemented, and that is not a measurement claim (0.199129ms)
+✔ E1.10: a planned provider cannot be selected for a run (0.636356ms)
+✔ E1.10: the UI never renders a provider as an available source (0.504338ms)
+✔ E1.10: non-executable sources are marked so the UI can refuse to offer them (0.503377ms)
+✔ E1.10: trends.interest declares in the registry that it is not a result count (0.307092ms)
+✔ E1.10: a discovered provider is unusable until a human approves it (0.402685ms)
+✔ E1.10: credentials are stored as references, never as keys (0.231548ms)
+✔ SourceRegistry - Retrieves executable adapters and blocks planned (1.309548ms)
+✔ OfflineFixtureAdapter - normalizes to a domain observation (0.782617ms)
+✔ SerpAdapter - validation and normalization (0.664579ms)
+✔ GoogleTrendsAdapter - unimplemented transport never invents a measurement (3.492179ms)
+✔ Adapter neutrality: dimension comes from the request, never from query text (2.070222ms)
+✔ Adapter neutrality: a missing dimension fails validation, never falls back to text (0.579431ms)
+✔ Query-plan identity: language and expansion mode are required, never defaulted (D15) (0.704269ms)
+✔ admission browser: private deep link, real request approval and revocation, and unsent invitation controls (6542.669527ms)
+✔ E1.24: two demo runs produce byte-identical directories apart from run id and timestamps (3253.658455ms)
+✔ E1.24: the demo produces the published JH2016 values, offline (4092.861161ms)
+✔ E5.7d browser: human review, frozen fresh run, reload, portable export and immutable null revision (7545.915555ms)
+✔ E5.7d browser: executor failure stays visible as a durable attempt after reload (2334.960832ms)
+✔ research project UI creates, reloads, revises and exports exact frozen paper snapshots with standalone verification (8221.22652ms)
+✔ project source deep links restore exact saved figures and method selections (1232.597858ms)
+✔ E3 automation: daily schedule, one-click all-discipline scope, pause and mobile layout (6824.00435ms)
+✔ E3.9: source history compares preserved values, exports a verifiable snapshot and survives mobile reload (3723.322154ms)
+✔ E3.11: watched changes preserve unread arrivals, compare and export exact versions, and resume after reload (3725.462499ms)
+✔ E3.12: source catalog filters forums, persists access history and exports unsent requests without enabling adapters (2741.543196ms)
+✔ E1.21: the Study page drives a full fixture run from the UI (564.453837ms)
+✔ E1.22: a proposal renders red step by step and cannot execute until approved (1338.768588ms)
+✔ E1.22: approval refuses a client-supplied actor and a missing review hash (15.085059ms)
+✔ E1.23: results, charts, approval state and export are reachable and correct (948.364898ms)
+✔ personal wizard: saved modes, independent scope, explicit method review and real keyless JH16 run on mobile (4887.08147ms)
+✔ research workshop: goal navigation, source intake, keyless parser form, exact test, persistent execution and mobile export (5714.139051ms)
+✔ source-copy browser: explicit column form to reviewed statistics and portable replay package (5982.199599ms)
+✔ E5.8e: a paper quote binds real source columns to an approved operation, survives reload and exports a verifiable context (3332.109718ms)
+✔ E5.7c: a quoted paper cohort freezes selected rows, requires review and survives result reload and portable export (3230.747648ms)
+✔ unified browser search opens exact owned paper/dataset versions and excludes other owners (5892.306867ms)
+✔ unified browser search keeps filters, source-memory target links and mobile results usable (1852.044463ms)
+✔ E6 browser: individual source review, live lookup, offline reload and audit synchronization (7472.002448ms)
+✔ E6 browser: global appearance alternatives and exact assertion links preserve source context online and offline (3184.458026ms)
+✔ E5 browser: regional figures, 3D camera, context tools, statistics, favourites and publication export (5732.978322ms)
+✔ E5 browser: portable figure imports restore archived profiles after a reload (1857.26415ms)
+✔ E5 browser: reviewed regional boundaries, exact joins, time panels and portable map publication (11324.480054ms)
+✔ E4 browser: developer can inspect a persisted trace and download diagnostic evidence (1015.882904ms)
+✔ seven main groups retain paper run deep links, contextual tools and a contained mobile layout (5994.558461ms)
+✔ admission: verified applicants never receive application capabilities before owner approval (482.670513ms)
+✔ admission: revocation and profile changes affect already signed sessions and override environment grants (159.576567ms)
+✔ admission: invitations are single-use email-bound requests, operational admin cannot assign roles (264.59232ms)
+✔ admission: unverified or misaddressed tokens fail before identity storage and unsigned sessions fail closed (78.315877ms)
+✔ admission: origin and JSON mutation checks protect sign-in, sign-out, grants and invitations (100.49051ms)
+✔ API GET /api/sources - Lists sources (95.032628ms)
+✔ API GET /api/analyzers - Lists analyzers (14.589672ms)
+✔ API POST /api/runs - Schema Validation Failure (64.726865ms)
+✔ API POST /api/runs - Submits PIPELINE job and retrieves results (138.735733ms)
+✔ Readiness reports every provider with the one thing that would fix it (41.174096ms)
+✔ The live SERP source is blocked rather than planned, and says why (24.223755ms)
+✔ Generating a narrative with an unconfigured provider is a 409, not a 500 (11.004764ms)
+✔ A run against the live source fails closed when no credential is configured (61.425366ms)
+[SPAN_START] automation:paper_scan - ""
+[SPAN_END] automation:paper_scan - ""
+[SPAN_START] automation:catalog_refresh - ""
+[SPAN_END] automation:catalog_refresh - ""
+[SPAN_START] automation:paper_scan - ""
+[SPAN_END] automation:paper_scan - ""
+[SPAN_START] automation:paper_scan - ""
+[SPAN_END] automation:paper_scan - ""
+[SPAN_START] automation:paper_scan - ""
+[SPAN_END] automation:paper_scan - ""
+✔ scheduler calendar: UTC daily, leap day, anchored intervals and coalesced missed slots (13.814529ms)
+✔ persistent scheduler: one overdue job, no overlap, owner isolation, pause and stale edits (173.965058ms)
+✔ worker leases: atomic claims, interrupted work is not automatically replayed, revoked owners stop (124.813628ms)
+✔ job/profile integrity failures do not jam later jobs; one source connection across workers (151.360489ms)
+✔ a public-only worker leaves assistant jobs for a worker with the registered handler (243.073763ms)
+✔ arXiv parser handles namespaces, entities, versions and CDATA; rejects DTDs and malformed feeds (1.180255ms)
+✔ paper discovery persists revisions and receipts; hints never approve replication or equate language with geography (101.987716ms)
+✔ public HTTP records errors, enforces origin/size/budget, and never follows source redirects (117.712197ms)
+✔ substance memory preserves exact identities, censored Ki/IC50, units, organisms, raw files and contrary versions (100.418736ms)
+✔ API owner gates, explicit plan consent, cross-origin writes and responder reference access (297.404601ms)
+✔ E4.2: /me exposes the union of peer profiles and the HTTP gates enforce it (315.753461ms)
+✔ E4.2: persistence retains peer profiles without inventing a highest role (48.422497ms)
+✔ Cloud Run legacy deployment fails before any cloud command, even with a configured project (18.425531ms)
+✔ Cloud Run help explains the blocker without cloud access; flags cannot bypass it (29.501804ms)
+✔ collection purposes stay optional and request signatures distinguish actual acquisition changes from intent (50.980754ms)
+✔ a scheduled collection retains intent and frozen request context through dispatch, pause and success/error receipts (174.713127ms)
+✔ baseline, research and changed acquisition plans cannot silently merge histories while identical plans share exact content (193.068331ms)
+✔ migration 017 preserves old context hashes and leaves old jobs, receipts and comparison exports unclassified (165.249927ms)
+✔ queued work cannot change its declared collection after snapshot creation even if the request checksum is rewritten (60.045187ms)
+✔ E3.5: the image carries the data the running system reads (7.939305ms)
+✔ E3.5: the build fails before an image exists if the checks fail (0.35882ms)
+✔ E3.5: the container never bakes in a credential (0.413461ms)
+✔ E3.5: disabled historical recipe retains its source for inspection, not deployment evidence (0.176095ms)
+✔ E3.5: no secret value is ever an argument to the deploy script (0.311267ms)
+✔ E3.5: .env.example lists names only, and matches what the code reads (0.421734ms)
+✔ E3.5: every environment variable the code reads is documented (7.499994ms)
+✔ E3.5: the production build actually produces the entrypoint the image runs (0.21312ms)
+✔ E3.5: the runbook documents both refuse-to-start checks and their waivers (4.405043ms)
+✔ E3.5: a production start with ephemeral storage exits non-zero (2724.022993ms)
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+✔ source-copy handoff preserves raw lexemes, provenance, distinct missingness and review gates through actual statistics (331.703242ms)
+✔ numeric source mapping refuses rounded decimals, unsafe integers, underflow and guessed locale; text retains them (75.10807ms)
+✔ CSV empty-text policy and generated row metadata stay explicit and cannot create empirical values (77.638025ms)
+✔ extraction references require owned execution and exact hashes; generic dataset import cannot forge lineage (49.906695ms)
+✔ source-copy publication replays offline without installed dependencies and detects rehashed false source spans (1140.191037ms)
+✔ source-copy API enforces capabilities, origins, stale review and numeric validation status (430.390274ms)
+✔ mapping templates reuse settings with new source values, never old observations, citations, evidence or approval (106.408685ms)
+✔ mapping templates reject foreign/stale/parser-changed references and still enforce source precision (152.848408ms)
+✔ mapping templates persist across repository restart and supported account transfer without changing hashes (161.27799ms)
+[SPAN_START] http_request:POST /field/references - ""
+[SPAN_START] field_reference:import - ""
+[SPAN_END] field_reference:import - ""
+[SPAN_END] http_request:POST /field/references - ""
+[SPAN_START] http_request:POST /field/lookup - ""
+[SPAN_START] field_reference:lookup_request - ""
+[SPAN_START] field_reference:lookup - ""
+[SPAN_END] field_reference:lookup - ""
+[SPAN_END] field_reference:lookup_request - ""
+[SPAN_END] http_request:POST /field/lookup - ""
+[SPAN_START] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[SPAN_START] field_reference:approve - ""
+[ERROR] field_reference:approve The displayed hash is stale. Review the current reference.
+[SPAN_END] field_reference:approve - ""
+[SPAN_END] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[SPAN_START] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[SPAN_START] field_reference:approve - ""
+[ERROR] field_reference:approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "approvedBy"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"approvedBy\""
+  }
+]
+[SPAN_END] field_reference:approve - ""
+[ERROR] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "approvedBy"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"approvedBy\""
+  }
+]
+[SPAN_END] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[SPAN_START] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[SPAN_START] field_reference:approve - ""
+[SPAN_END] field_reference:approve - ""
+[SPAN_END] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[SPAN_START] http_request:GET /field/references - ""
+[SPAN_END] http_request:GET /field/references - ""
+[ERROR] http_request:GET /field/references Role(s) [responder] may not 'evidence.review'.
+[SPAN_START] http_request:POST /field/lookup - ""
+[SPAN_START] field_reference:lookup_request - ""
+[SPAN_START] field_reference:lookup - ""
+[SPAN_END] field_reference:lookup - ""
+[SPAN_END] field_reference:lookup_request - ""
+[SPAN_END] http_request:POST /field/lookup - ""
+[SPAN_START] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[ERROR] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve Role(s) [responder] may not 'evidence.approve'.
+[SPAN_END] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/approve - ""
+[SPAN_START] http_request:POST /field/lookup - ""
+[ERROR] http_request:POST /field/lookup Role(s) [researcher] may not 'responder.lookup'.
+[SPAN_END] http_request:POST /field/lookup - ""
+[SPAN_START] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/revoke - ""
+[SPAN_START] field_reference:revoke - ""
+[SPAN_END] field_reference:revoke - ""
+[SPAN_END] http_request:POST /field/references/field-5298a973099023508cfd10a96bc0673419c03fe3711ab9ae2c841a0c1fa42f80/revoke - ""
+✔ E6: real HTTP import → individual exact-hash approval → scoped responder lookup → revoke (425.324158ms)
+✔ E6: canonical graph roundtrip sorts unordered components, repeated imports retain every acquisition event (36.243395ms)
+✔ E6: missing values, explicit target type and evidence ceilings fail closed (2.939439ms)
+✔ E6: identical appearance retains different specimens, regions, missing composition and denominators (43.801236ms)
+✔ E6: localized market groups stay distinct from substance synonyms; ambiguous labels disclose all groups (73.538221ms)
+✔ E6: assertions retain contradictions, fixed category order, source validity and clinical evidence constraints (64.342517ms)
+✔ E6: symptom search uses cited curated associations and never promotes a raw report from another category (43.062266ms)
+✔ E6: snapshots bind principal, expiry, current content hashes and source retrieval dates (92.879666ms)
+[SPAN_START] http_request:POST /field/offline-events - ""
+[SPAN_START] field_reference:offline_audit - ""
+[SPAN_END] field_reference:offline_audit - ""
+[SPAN_END] http_request:POST /field/offline-events - ""
+[SPAN_START] http_request:POST /field/offline-events - ""
+[SPAN_START] field_reference:offline_audit - ""
+[SPAN_END] field_reference:offline_audit - ""
+[SPAN_END] http_request:POST /field/offline-events - ""
+[SPAN_START] http_request:POST /field/offline-events - ""
+[SPAN_START] field_reference:offline_audit - ""
+[SPAN_END] field_reference:offline_audit - ""
+[ERROR] field_reference:offline_audit Offline event ID already has different content or owner.
+[SPAN_END] http_request:POST /field/offline-events - ""
+✔ E6: offline audit upload is idempotent, rejects ID conflicts and records client claims explicitly (62.361288ms)
+✔ E6: failure recorder has the public trace ID and does not log query values (41.616081ms)
+✔ E6: versioned real catalog validates as source-derived proposals, with no invented specimen measurements (6.660383ms)
+[SPAN_START] http_request:POST /field/lookup - ""
+[SPAN_START] field_reference:lookup_request - ""
+[SPAN_START] field_reference:lookup - ""
+[SPAN_END] field_reference:lookup - ""
+[SPAN_END] field_reference:lookup_request - ""
+[SPAN_END] http_request:POST /field/lookup - ""
+✔ E6 global context: other regions remain visible without changing local specimen denominators or approval (138.179161ms)
+✔ E6 global context: matching foreign dates and source assertions keep their own regional context (77.644924ms)
+✔ E6 global context: foreign market labels discover alternatives while regional mappings and languages stay distinct (54.866411ms)
+✔ E6 evidence profiles: full kinds are the default; incomplete compact mapping fails validation (1.707216ms)
+[SPAN_START] http_request:POST /field/offline-events - ""
+[SPAN_START] field_reference:offline_audit - ""
+[SPAN_END] field_reference:offline_audit - ""
+[SPAN_END] http_request:POST /field/offline-events - ""
+[SPAN_START] http_request:POST /field/offline-events - ""
+[SPAN_START] field_reference:offline_audit - ""
+[SPAN_END] field_reference:offline_audit - ""
+[SPAN_END] http_request:POST /field/offline-events - ""
+[SPAN_START] http_request:POST /field/offline-events - ""
+[SPAN_START] field_reference:offline_audit - ""
+[SPAN_END] field_reference:offline_audit - ""
+[ERROR] field_reference:offline_audit [
+  {
+    "code": "custom",
+    "path": [
+      "events",
+      0
+    ],
+    "message": "Reference inspection must identify its one displayed mapping."
+  }
+]
+[ERROR] http_request:POST /field/offline-events [
+  {
+    "code": "custom",
+    "path": [
+      "events",
+      0
+    ],
+    "message": "Reference inspection must identify its one displayed mapping."
+  }
+]
+[SPAN_END] http_request:POST /field/offline-events - ""
+✔ E6 exact offline inspection receipts remain distinct from query execution and reject mismatched reference IDs (67.440173ms)
+✔ E6 offline build: current production shell caches its index assets and matches the index version (8.869453ms)
+✔ E6 offline build: changed HTML or an omitted current module is refused instead of producing a blank offline app (42.061431ms)
+✔ E3.13: all installer entrypoints have valid bash syntax (30.660533ms)
+✔ E3.13: plan and malformed arguments do not mutate cloud or fetch code (39.208843ms)
+✔ E3.13: IAP is proved before deny rules; deployment is pinned and credentials stay local (1800.545878ms)
+✔ E3.13: deployment follows integrated main by default and preserves explicit revision selection (5420.526311ms)
+✔ E3.13: failed IAP leaves previous SSH paths and boot-disk settings intact (1420.28821ms)
+✔ E3.13: rerun updates only matching rules and rejects a name collision (3505.543987ms)
+✔ E3.13: runtime unit enforces durable single-writer private deployment (0.440221ms)
+[SPAN_START] http_request:GET /geometry-layers - ""
+[SPAN_START] workbench:geometry_list - ""
+[SPAN_END] workbench:geometry_list - ""
+[SPAN_END] http_request:GET /geometry-layers - ""
+[SPAN_START] http_request:POST /geometry-layers - ""
+[SPAN_START] workbench:geometry_import - ""
+[SPAN_END] workbench:geometry_import - ""
+[SPAN_END] http_request:POST /geometry-layers - ""
+[SPAN_START] http_request:POST /geometry-layers - ""
+[SPAN_START] workbench:geometry_import - ""
+[SPAN_END] workbench:geometry_import - ""
+[SPAN_END] http_request:POST /geometry-layers - ""
+[SPAN_START] http_request:POST /geometry-layers - ""
+[SPAN_START] workbench:geometry_import - ""
+[SPAN_END] workbench:geometry_import - ""
+[SPAN_END] http_request:POST /geometry-layers - ""
+[SPAN_START] http_request:POST /geometry-layers - ""
+[ERROR] http_request:POST /geometry-layers Role(s) [law_enforcement] may not 'dataset.import'.
+[SPAN_END] http_request:POST /geometry-layers - ""
+[SPAN_START] http_request:GET /geometry-layers - ""
+[SPAN_START] workbench:geometry_list - ""
+[SPAN_END] workbench:geometry_list - ""
+[SPAN_END] http_request:GET /geometry-layers - ""
+[SPAN_START] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] workbench:geometry_approve - ""
+[ERROR] workbench:geometry_approve Geometry is unavailable or its review hash changed.
+[SPAN_END] workbench:geometry_approve - ""
+[SPAN_END] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] workbench:geometry_approve - ""
+[ERROR] workbench:geometry_approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "actor"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"actor\""
+  }
+]
+[SPAN_END] workbench:geometry_approve - ""
+[ERROR] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "actor"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"actor\""
+  }
+]
+[SPAN_END] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] workbench:geometry_approve - ""
+[SPAN_END] workbench:geometry_approve - ""
+[SPAN_END] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] http_request:GET /geometry-layers - ""
+[SPAN_START] workbench:geometry_list - ""
+[SPAN_END] workbench:geometry_list - ""
+[SPAN_END] http_request:GET /geometry-layers - ""
+[SPAN_START] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/revoke - ""
+[ERROR] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/revoke Role(s) [law_enforcement] may not 'dataset.approve'.
+[SPAN_END] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/revoke - ""
+[SPAN_START] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] workbench:geometry_approve - ""
+[ERROR] workbench:geometry_approve Only the geometry owner can change its approval or sharing.
+[SPAN_END] workbench:geometry_approve - ""
+[SPAN_END] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/approve - ""
+[SPAN_START] http_request:POST /geometry-layers - ""
+[SPAN_START] workbench:geometry_import - ""
+[SPAN_END] workbench:geometry_import - ""
+[SPAN_END] http_request:POST /geometry-layers - ""
+[SPAN_START] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/revoke - ""
+[SPAN_START] workbench:geometry_revoke - ""
+[SPAN_END] workbench:geometry_revoke - ""
+[SPAN_END] http_request:POST /geometry-layers/geometry-bccb12b117c8d2351fb214e23fd28666b3842519c344a31f175aaa0c84a6aeb7-622f06cbcd/revoke - ""
+[SPAN_START] http_request:GET /geometry-layers - ""
+[SPAN_START] workbench:geometry_list - ""
+[SPAN_END] workbench:geometry_list - ""
+[SPAN_END] http_request:GET /geometry-layers - ""
+✔ E5 geography: source deduplication preserves separate ownership, explicit approval, sharing and WORM versions (564.638044ms)
+[SPAN_START] http_request:POST /figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save An accessible, currently approved geometry layer is required.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /figures - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export The map requires the exact, currently approved geometry layer.
+[ERROR] http_request:POST /export The map requires the exact, currently approved geometry layer.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save Unknown mapped geometry feature 'unknown-feature'.
+[ERROR] http_request:POST /figures Unknown mapped geometry feature 'unknown-feature'.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /figures - ""
+[SPAN_START] http_request:POST /figures - ""
+[SPAN_START] workbench:figure_save - ""
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /figures - ""
+[SPAN_START] http_request:GET /figures - ""
+[SPAN_START] workbench:figures - ""
+[SPAN_END] workbench:figures - ""
+[SPAN_END] http_request:GET /figures - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /figures/restore - ""
+[SPAN_START] workbench:figure_restore - ""
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_END] http_request:POST /figures/restore - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved geometry layer is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved geometry layer is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved geometry layer is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+[SPAN_START] http_request:POST /figures/restore - ""
+[SPAN_START] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore An accessible, currently approved geometry layer is required.
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_END] http_request:POST /figures/restore - ""
+[SPAN_START] http_request:POST /export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved geometry layer is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /export - ""
+✔ E5 geography: exact boundary pins survive restore/export, independent verification rejects false joins and revocation blocks reuse (1389.456024ms)
+✔ E5 geography: access is checked again after source storage I/O (105.10756ms)
+✔ Live path: with a key present, acquisition flips to ready and collects real counts (144.614926ms)
+✔ Live path: the key reaches the provider and nothing else (24.53227ms)
+✔ Live path: a wrong key is reported as a credential problem, not as data (5.615512ms)
+✔ Live path: an unanswerable query is missing, and the rest of the run survives it (16.004309ms)
+✔ Live path: two providers in one series raise a discontinuity on live data (24.118878ms)
+✔ Live path: a real HTTP language model produces a PROPOSED narrative and invents no number (24.069694ms)
+✔ Live path: a model that invents a figure is rejected over real HTTP too (22.733906ms)
+✔ operations: cold backup restores real schema, record, object bytes and encrypted UserVault with image identity (874.609331ms)
+✔ operations: truncated bytes and missing checksum fail without creating a destination (1122.13548ms)
+✔ operations: reject missing archive even with a matching outer checksum (952.634517ms)
+✔ operations: reject payload archive even with a matching outer checksum (1466.225749ms)
+✔ operations: reject traversal archive even with a matching outer checksum (1182.298884ms)
+✔ operations: reject absolute archive even with a matching outer checksum (1682.571873ms)
+✔ operations: reject symlink archive even with a matching outer checksum (1770.951208ms)
+✔ operations: reject hardlink archive even with a matching outer checksum (961.718601ms)
+✔ operations: reject duplicate archive even with a matching outer checksum (1575.807464ms)
+✔ operations: reject mode archive even with a matching outer checksum (1597.268535ms)
+✔ operations: restore refuses existing directories, files and symlink destinations without altering them (1359.381826ms)
+✔ operations: incomplete source, mutable image tag and linked source data cannot produce a published backup (556.05383ms)
+✔ operations: committed WAL-only data survives backup without modifying the source SQLite files (716.544223ms)
+✔ operations: environment vault key takes precedence and remains decryptable after isolated restore (495.520664ms)
+✔ operations: a never-used vault needs no generated key, but malformed environment keys are rejected (857.068159ms)
+✔ operations: public key permissions, external storage and special source files fail closed (814.705851ms)
+✔ operations: a hot rollback journal is refused without blessing uncommitted pages or mutating source (437.381588ms)
+✔ operations: a declared immutable release image must agree with the captured runtime image (327.704359ms)
+✔ OPERATIONS update: failed build leaves previous service and release unchanged (1241.478839ms)
+✔ OPERATIONS update: failed backup restarts previous service without changing release (2548.674781ms)
+✔ OPERATIONS update: start failure stops new runtime and records recovery without downgrade (3389.912181ms)
+✔ OPERATIONS update: health failure stops new runtime and records recovery without downgrade (14598.996341ms)
+✔ OPERATIONS update: successful update uses immutable image and verified old-image backup (2294.210288ms)
+✔ OPERATIONS backup: failure restores activity and preserves existing release (794.746681ms)
+✔ OPERATIONS update: partial stop failure is covered by restart trap (1323.977422ms)
+✔ OPERATIONS update: legacy installation without helper can create pre-update backup (2379.331114ms)
+✔ OPERATIONS recovery marker blocks retry, backup and restart before host mutation (469.279759ms)
+✔ Orchestrator - end-to-end PIPELINE run (205.12407ms)
+✔ Orchestrator - graceful failure retains evidence and records state (104.471242ms)
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Frozen comparison review was revoked or replaced.
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Method or dataset approval receipt was revoked or replaced.
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Method or dataset approval receipt was revoked or replaced.
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+✔ paper comparison: separate exact review gates a fresh run; foreign/stale identities and old-run injection are rejected (983.315013ms)
+✔ paper comparison: revisions preserve prior runs and old claim bytes; successor requires its own review (556.865952ms)
+✔ paper comparison: repeated execution separates deterministic core from distinct event and run identities (641.770418ms)
+✔ paper comparison: executor failure is retained across real database close/reopen; retry appends an attempt (570.251546ms)
+✔ paper comparison: explicit cohort retains null input, population scope and simulation labels (408.667825ms)
+✔ paper comparison: revocation blocks historical reads and reapproval creates a distinct review receipt (738.929797ms)
+✔ paper comparison: comparison revoke/reapprove during manifest I/O invalidates the exact in-flight receipt (302.7711ms)
+✔ paper comparison: dataset revoke/reapprove during manifest I/O invalidates the exact in-flight receipt (790.080085ms)
+✔ paper comparison: method revoke/reapprove during manifest I/O invalidates the exact in-flight receipt (532.366065ms)
+✔ paper comparison: interrupted reservation is atomic, visible after restart and ordered without clock resolution (964.01661ms)
+✔ paper comparison: loss of a second owner shared dataset blocks access after I/O (445.69911ms)
+✔ paper comparison: late dataset revoke/reapprove during the final read cannot expose stale approved output (591.142852ms)
+✔ paper comparison: server prior exposure enumerates more than the legacy 100-run summary (6966.106842ms)
+✔ paper comparison: local-account adoption preserves archived bytes and grants the new owner access (1441.86397ms)
+✔ paper comparison export: portable verifier rejects changed bytes and internally rehashed false verdicts; legacy remains readable (2955.228941ms)
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Primitive 'pearson' failed: missing value for 'row-5'
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Dataset or method approval changed before result finalization.
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[ERROR] workbench:analysis Dataset or method approval changed before result finalization.
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+✔ paper operation: keyless quote -> exact method approval -> real statistics -> history -> portable verification and recalculation (1167.196646ms)
+✔ paper operation: ownership, stale documents, ambiguous quotes and unapproved data block preparation (98.067263ms)
+✔ paper operation: assessment operation stays exact; unresolved requirements, ambiguities and substitutions remain visible (135.938292ms)
+✔ paper operation: original-data reuse is reanalysis; current access gates generic execution and export (153.726113ms)
+✔ paper operation: explicit missing failure records a failed run; description retains valid and missing counts (282.16407ms)
+✔ workbench finalization: dataset revocation during asynchronous manifest write leaves no finalized result (249.30664ms)
+✔ workbench finalization: method revocation during asynchronous manifest write leaves no finalized result (177.248266ms)
+✔ paper operation: a quote unique inside the assessed excerpt remains anchored there even when repeated later (677.066275ms)
+✔ paper operation: revocation during result loading blocks historical output (189.632133ms)
+✔ paper cohort: source-linked rows are frozen, computed in dataset order and independently verified with the full source retained (1154.718506ms)
+✔ paper cohort: empty, duplicate, foreign and unsupported source selections fail without creating a plan (193.631014ms)
+✔ Migration runs clean on an empty file and is idempotent (321.636392ms)
+✔ Schema contains every table 02_DATA_MODEL.md specifies (81.417131ms)
+✔ Every E6 field-reference table exists and is empty (D12) (94.880806ms)
+✔ reference_scores carries an evidence_tier column (D12) (92.416471ms)
+✔ Observations cannot store a missing value that also has a number (96.859681ms)
+✔ Replication verdict vocabulary is closed and contains no "failed" (68.369701ms)
+✔ Persistence: deduplicate physical blobs but maintain fetch history (87.287866ms)
+✔ Persistence: a blob round-trips by hash (118.945202ms)
+✔ Persistence: WORM constraint on manifests (74.225996ms)
+✔ Persistence: the object store refuses to overwrite a key with different bytes (65.297733ms)
+✔ Persistence: re-putting identical bytes succeeds, because it changes nothing (57.461062ms)
+✔ No SQL outside the repository layer (D13) (89.862211ms)
+✔ D14: assertion tables exist and are empty; the superseded edge table is gone (52.641006ms)
+✔ D14: the predicate vocabulary is closed (82.773615ms)
+✔ D14: two contradicting assertions are both retained, neither silently wins (67.37765ms)
+✔ D14: geographic regions form a real hierarchy, not a flat string (74.631295ms)
+✔ Private installation: real server isolates applicants and immediately enforces changed grants (5219.74462ms)
+[SPAN_START] automation:paper_review - ""
+[SPAN_END] automation:paper_review - ""
+[SPAN_START] automation:paper_review - ""
+[SPAN_END] automation:paper_review - ""
+[SPAN_START] automation:paper_review - ""
+[SPAN_END] automation:paper_review - ""
+[SPAN_START] automation:paper_review - ""
+[SPAN_END] automation:paper_review - ""
+[SPAN_START] automation:paper_review - ""
+[ERROR] automation:paper_review CANCELED_OR_AUTHORIZATION_REVOKED
+[SPAN_END] automation:paper_review - ""
+✔ paper intake preserves arbitrary text versions, source coverage and owner isolation (178.182471ms)
+✔ paper assessment runs the owned LLM, verifies each source span, records missing inputs and never declares replication (225.036852ms)
+✔ hallucinated/ambiguous quotations fail closed; failed attempts persist and only explicit retries call again (101.69514ms)
+✔ JSON copying preserves large numeric lexemes, explicit null, absent fields, exact spans and escaped pointers (8.551997ms)
+✔ CSV copying preserves blank records, quoted multiline content and explicit missing columns (0.955366ms)
+✔ extractor proposal sends structure without cell values, needs exact-output validation and executes without LLM (88.990621ms)
+✔ scheduled methodology review is bounded, skips attempted documents and abstracts by default, and records actual outcomes (208.426511ms)
+✔ discovered abstract revisions at the same URL retain source receipt lineage and deduplicate unchanged content (133.110568ms)
+✔ canceling a paid methodology attempt stops the batch and preserves the interrupted record and reservation (97.874987ms)
+✔ lost worker lease recovers the linked assessment; only explicit retry may create another attempt (48.664899ms)
+✔ research API gates owners and mutation origins, retains readable trial history and rejects oversized input (404.354213ms)
+✔ recorded research survives supported local-to-account ownership transfer without modifying source or trial hashes (203.081826ms)
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] workbench:figure_save - ""
+[SPAN_END] workbench:figure_save - ""
+[SPAN_START] workbench:profile - ""
+[SPAN_END] workbench:profile - ""
+[SPAN_START] workbench:profile_restore - ""
+[SPAN_END] workbench:profile_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export The figure requires an owned result from this currently approved method and dataset.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore The figure requires an owned result from this currently approved method and dataset.
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_restore - ""
+✔ E5 publication: historical profiles restore, archives are deterministic, independently verifiable and reproducible (1582.529083ms)
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export The pinned visualization profile is unavailable. Restore its verified configuration snapshot before opening this figure.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore Visualization profile integrity mismatch.
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_restore - ""
+[SPAN_END] workbench:figure_restore - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_START] workbench:figure_restore - ""
+[SPAN_END] workbench:figure_restore - ""
+[ERROR] workbench:figure_restore Renderer implementation 'not-implemented' is unavailable in this release.
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[ERROR] workbench:figure_export SVG export supports up to 12 panels. Narrow the facet filter, or export the complete JSON/CSV.
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+✔ E5 publication: absent profiles can be restored only with a matching, executable snapshot and accessible data (345.520757ms)
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+✔ research projects preserve immutable revision lineage, actual WORM triggers and owner isolation (186.220918ms)
+✔ projects pin exact owned paper, data, method, run, figure and job provenance; schedules remain explicit live pointers (249.105359ms)
+✔ schedule effective pause and reviewed data revocation are visible without rewriting pinned definitions or historical bytes (113.811114ms)
+✔ project archives survive process restart, verify independently and reject file or manifest tampering (1530.384331ms)
+✔ owner migration preserves revision hashes and archived bytes; no other owner or shared dataset is imported implicitly (179.177574ms)
+✔ ownership changes during asynchronous save/export win; changed source bytes never become a pinned archive (134.659849ms)
+[SPAN_START] workbench:method_read - ""
+[ERROR] workbench:method_read Owned method not found.
+[SPAN_END] workbench:method_read - ""
+[SPAN_START] workbench:method_read - ""
+[SPAN_END] workbench:method_read - ""
+✔ project API enforces profile, CSRF origin, pagination, hash-pinned revision export and current owner checks (417.022895ms)
+✔ archive limit covers Unicode metadata, source bytes, verifier, manifest and ZIP overhead before persistence (134.987371ms)
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] orchestrator:executeRun:480bd5bb-c9f5-42eb-8443-94704f3c95ea - ""
+[SPAN_END] orchestrator:executeRun:480bd5bb-c9f5-42eb-8443-94704f3c95ea - ""
+[SPAN_START] orchestrator:executeRun:faa31086-763f-47b1-b0ba-4a82d7a9c69d - ""
+[SPAN_END] orchestrator:executeRun:faa31086-763f-47b1-b0ba-4a82d7a9c69d - ""
+✔ E4/E5: legacy API cannot bypass workbench ownership, raw-blob provenance or method review (755.753561ms)
+✔ all 16 personal provider profiles execute their real protocol adapter with isolated credentials and bounded requests (226.424787ms)
+✔ direct provider catalogs require their own reviewed prices, remain owner-scoped and route different tasks to different keys (165.086801ms)
+✔ task routing uses comparable benchmark evidence and operational statistics without treating unknown quality or another suite as measured (154.533385ms)
+✔ personal settings persist per owner, detect stale edits and keep language/geography and interface mode independent (105.413021ms)
+✔ personal vault: AES-GCM, separate protected key, no plaintext DB/status/logs, owner isolation, tamper and key rotation (109.610547ms)
+✔ dynamic routing: task-specific cost preference, conservative tier prices, pins, stale catalogs and context ceilings (86.271991ms)
+✔ assistant actually routes requests and archives provenance; budget/credentials prevent calls and failures keep reservations (143.586088ms)
+✔ concurrent budget reservations cannot overspend the configured daily allowance (100.502198ms)
+[SPAN_START] orchestrator:executeRun:ab570a4b-9515-46c1-b39b-e82c41952dd9 - ""
+[SPAN_END] orchestrator:executeRun:ab570a4b-9515-46c1-b39b-e82c41952dd9 - ""
+✔ wizard launches one owned JH16 fixture run through the approved MethodSpec executor and preserves independent dimensions (386.477731ms)
+✔ personal SERP uses only the owner key and a separate daily request counter (11312.685608ms)
+[SPAN_START] http_request:POST /api/settings/credentials - ""
+[SPAN_END] http_request:POST /api/settings/credentials - ""
+[SPAN_START] http_request:POST /api/settings/credentials - ""
+[SPAN_END] http_request:POST /api/settings/credentials - ""
+[SPAN_START] http_request:GET /api/settings - ""
+[SPAN_END] http_request:GET /api/settings - ""
+[SPAN_START] http_request:POST /api/settings/credentials - ""
+[ERROR] http_request:POST /api/settings/credentials Role(s) [responder] may not 'provider.view'.
+[SPAN_END] http_request:POST /api/settings/credentials - ""
+✔ credential API requires owner authorization, rejects cross-origin writes and never echoes malformed JSON key fragments (129.501795ms)
+[SPAN_START] automation:paper_scan - ""
+[ERROR] automation:paper_scan SOURCE_ACCESS_HELD:arxiv:expired
+[SPAN_END] automation:paper_scan - ""
+✔ source inventory derives implementations, keeps terms and access independent, and reports owner-scoped HTTP receipts without implied scientific data (259.404852ms)
+✔ access assessments pin exact source scope, expire, detect stale tabs and profile changes, and remain append-only through ownership transfer (198.969828ms)
+✔ permission request drafts copy supplied context, remain unsent and cannot mark a source permitted or requested (112.678995ms)
+✔ private candidates do not create network adapters or executable code and survive transfer (158.686309ms)
+✔ public acquisition respects holds before network access and rechecks after source pacing without creating fake HTTP receipts (136.612876ms)
+✔ scheduled public work fails explicitly on a source hold rather than collecting under an expired assessment (125.220558ms)
+✔ migrations after 018 preserve previous jobs and create no source assessments, candidates or drafts automatically (160.541543ms)
+✔ catalog HTTP surface enforces capability, private history, strict input, no-store and same-origin mutation (425.932148ms)
+[SPAN_START] automation:substance_refresh - ""
+[SPAN_END] automation:substance_refresh - ""
+[SPAN_START] automation:substance_refresh - ""
+[SPAN_END] automation:substance_refresh - ""
+[SPAN_START] automation:substance_refresh - ""
+[SPAN_END] automation:substance_refresh - ""
+✔ source history retains repeated receipts, detects reversions, and paginates with whole-version ages across restart (237.75538ms)
+✔ source history separates changed URL, adapter, source profile, kind, provider and substance even when content deduplicates (159.724024ms)
+✔ source-history migration backfills only proven first receipts and never guesses earlier unchanged checks (135.304028ms)
+✔ reference association is atomic, immutable and rejects forged, failed or conflicting receipts (125.456434ms)
+✔ comparison export preserves exact values, replays offline and rejects rehashed edits or source-context substitution (890.770802ms)
+✔ public PubChem adapter records repeat checks and changed source properties through the real acquisition worker (266.252246ms)
+✔ memory history API keeps existing capability gates, bounded parameters, public-source scope and no-store responses (306.630975ms)
+[SPAN_START] automation:substance_refresh - ""
+[SPAN_END] automation:substance_refresh - ""
+[SPAN_START] automation:substance_refresh - ""
+[SPAN_END] automation:substance_refresh - ""
+[SPAN_START] automation:substance_refresh - ""
+[SPAN_END] automation:substance_refresh - ""
+✔ source watches start at subscription time, remain private and idempotent, and detect changes and reversions without duplicate-content alerts (284.283343ms)
+✔ bounded read batches cannot swallow later arrivals, reject stale tabs and retain backlog through pause and resume (209.125401ms)
+✔ watched context excludes other purpose and acquisition plans, and append order retains late-linked older receipts (94.466615ms)
+✔ watch state survives restart and ownership transfer while source snapshots and scientific review remain unchanged (64.795509ms)
+✔ migration 018 creates no subscriptions or retroactive notifications for existing public records (114.802747ms)
+✔ real acquisition feeds a watch without a second collector or model path (194.082571ms)
+✔ watch HTTP routes preserve memory access gates, private ownership, mutation origin checks and read-only GET behavior (482.082046ms)
+✔ unified search indexes authorized reference entities and preserves evidence, approval and literal query semantics (861.25809ms)
+✔ unified search separates private ownership, reviewer proposals and explicitly approved shared aggregates (266.774156ms)
+✔ public target name results retain unapproved measurement provenance and link to actual source memory (75.868761ms)
+✔ unified search rejects anonymous/unknown role access and malformed filters before reading private metadata (183.844681ms)
+✔ unified search paginates the complete owned catalogue beyond legacy 200-paper windows with stable deterministic ordering (305.138666ms)
+✔ unified search finds only owned schedules and refuses tampered schedule provenance (115.462408ms)
+✔ configured pagination boundary remains explicit instead of silently presenting a partial catalogue as complete (62.64096ms)
+✔ unified search observes shared-data revocation while provider status resolution is pending (286.153094ms)
+[SPAN_START] http_request:POST /wb/datasets - ""
+[SPAN_START] workbench:dataset_import - ""
+[SPAN_END] workbench:dataset_import - ""
+[SPAN_END] http_request:POST /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:GET /wb/datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_END] http_request:GET /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/datasets - ""
+[ERROR] http_request:POST /wb/datasets Role(s) [law_enforcement] may not 'dataset.import'.
+[SPAN_END] http_request:POST /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] workbench:dataset_approve - ""
+[ERROR] workbench:dataset_approve Dataset is unavailable or the review hash is stale.
+[SPAN_END] workbench:dataset_approve - ""
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] workbench:dataset_approve - ""
+[ERROR] workbench:dataset_approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "actor"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"actor\""
+  }
+]
+[SPAN_END] workbench:dataset_approve - ""
+[ERROR] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve [
+  {
+    "code": "unrecognized_keys",
+    "keys": [
+      "actor"
+    ],
+    "path": [],
+    "message": "Unrecognized key: \"actor\""
+  }
+]
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] workbench:dataset_approve - ""
+[SPAN_END] workbench:dataset_approve - ""
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/approve - ""
+[SPAN_START] http_request:GET /wb/datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_END] http_request:GET /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:GET /wb/figures - ""
+[SPAN_START] workbench:figures - ""
+[SPAN_END] workbench:figures - ""
+[SPAN_END] http_request:GET /wb/figures - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[ERROR] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke Role(s) [institutional] may not 'dataset.approve'.
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[SPAN_START] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[SPAN_START] workbench:dataset_revoke - ""
+[SPAN_END] workbench:dataset_revoke - ""
+[SPAN_END] http_request:POST /wb/datasets/dataset-463326eea7cbc50d62dd4b5b81250e881a144b462128a5a97c99a7a95cc21c91-abc9fadd54/revoke - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+✔ E5: private/proposed data never reaches institutional users; explicit reviewed aggregate sharing does (516.808321ms)
+✔ E5: raw blobs deduplicate while imports and per-owner approval contexts remain separate (102.780103ms)
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save Renderer implementation 'unregistered-renderer' is unavailable in this release.
+[ERROR] http_request:POST /wb/figures Renderer implementation 'unregistered-renderer' is unavailable in this release.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+✔ E5: exact figure settings, camera, extra dimensions and favourites persist across repository instances (140.631156ms)
+[SPAN_START] http_request:POST /wb/methods - ""
+[SPAN_START] workbench:method_prepare - ""
+[SPAN_END] workbench:method_prepare - ""
+[SPAN_END] http_request:POST /wb/methods - ""
+[SPAN_START] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] workbench:method_execute - ""
+[ERROR] workbench:method_execute An individually approved method is required.
+[SPAN_END] workbench:method_execute - ""
+[SPAN_END] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/approve - ""
+[SPAN_START] workbench:method_approve - ""
+[SPAN_END] workbench:method_approve - ""
+[SPAN_END] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/approve - ""
+[SPAN_START] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] workbench:method_execute - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_END] workbench:method_execute - ""
+[SPAN_END] http_request:POST /wb/methods/wb-method-747f98fbeae61b63d214634d06bf065ebf6c2f2a2cbd9fd3f8d9bf2156d060fa/execute - ""
+[SPAN_START] workbench:analysis - ""
+[SPAN_END] workbench:analysis - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save The figure requires an owned result from this currently approved method and dataset.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save Analysis result does not match the figure inputs and selection.
+[SPAN_END] workbench:figure_save - ""
+[SPAN_END] http_request:POST /wb/figures - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export The figure requires an owned result from this currently approved method and dataset.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+[SPAN_START] http_request:POST /wb/export - ""
+[SPAN_START] workbench:figure_export - ""
+[ERROR] workbench:figure_export An accessible, currently approved dataset with the exact figure hash is required.
+[SPAN_END] workbench:figure_export - ""
+[SPAN_END] http_request:POST /wb/export - ""
+✔ E5: approved statistical selection executes existing primitives, retains missingness, flags and reproducibility inputs (259.722055ms)
+[SPAN_START] http_request:POST /wb/datasets - ""
+[SPAN_START] workbench:dataset_import - ""
+[ERROR] workbench:dataset_import Dataset semantics do not satisfy the selected provider profile.
+[ERROR] http_request:POST /wb/datasets Dataset semantics do not satisfy the selected provider profile.
+[SPAN_END] workbench:dataset_import - ""
+[SPAN_END] http_request:POST /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/datasets - ""
+[SPAN_START] workbench:dataset_import - ""
+[SPAN_END] workbench:dataset_import - ""
+[SPAN_END] http_request:POST /wb/datasets - ""
+[SPAN_START] http_request:POST /wb/figures - ""
+[SPAN_START] workbench:figure_save - ""
+[ERROR] workbench:figure_save Unknown figure column 'missing-column'.
+[SPAN_END] workbench:figure_save - ""
+[ERROR] http_request:POST /wb/figures Unknown figure column 'missing-column'.
+[SPAN_END] http_request:POST /wb/figures - ""
+✔ E5: provider/profile and data-shape validation preserves missingness and rejects silent context changes (124.15693ms)
+✔ E5: CSV export retains signed numbers, selected rows, missing reasons, provenance and spreadsheet safety (76.152723ms)
+[ERROR] http_request:GET /diag/state Role(s) [researcher] may not 'diagnostics.view'.
+[SPAN_START] http_request:GET /diag/state - ""
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [responder] may not 'diagnostics.view'.
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [institutional] may not 'diagnostics.view'.
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:GET /diag/state - ""
+[SPAN_END] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [law_enforcement] may not 'diagnostics.view'.
+[SPAN_START] http_request:GET /diag/state - ""
+[ERROR] http_request:GET /diag/state Role(s) [admin] may not 'diagnostics.view'.
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:GET /diag/state - ""
+[SPAN_END] http_request:GET /diag/state - ""
+[SPAN_START] http_request:POST /diag/mode - ""
+✔ E4/E5: diagnostics are developer-only, trace IDs are path-safe, mode changes are audited (123.137076ms)
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:method_read - ""
+[SPAN_END] workbench:method_read - ""
+[SPAN_START] workbench:dataset_revoke - ""
+[SPAN_END] workbench:dataset_revoke - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:method_read - ""
+[ERROR] workbench:method_read Owned method not found.
+[SPAN_END] workbench:method_read - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:dataset_approve - ""
+[SPAN_END] workbench:dataset_approve - ""
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+[SPAN_START] workbench:method_read - ""
+[SPAN_END] workbench:method_read - ""
+✔ dataset review capability cannot reveal another owner’s revoked shared data through the API (538.018748ms)
+[SPAN_START] workbench:datasets - ""
+[SPAN_END] workbench:datasets - ""
+✔ revoking shared approval during source I/O blocks an in-flight researcher API read (93.790108ms)
+✔ E1.9: the faithful set has all 32 queries — 16 substances x 2 dimensions (43.721378ms)
+✔ E1.9: exact-query golden — all 32 rendered strings match the paper byte for byte (3.016214ms)
+✔ E1.9: every faithful fixture normalizes to the count the paper published (13.312403ms)
+✔ E1.9 edge case: a missing count arrives as missing, never as zero (0.54538ms)
+✔ E1.9 edge case: a genuine zero Ni is a measurement, not missingness (4.440325ms)
+✔ E1.9 edge case: an unparseable count is missing and flagged, never guessed (0.336916ms)
+✔ E1.9 edge case: grouped digits parse to the exact integer (0.975928ms)
+✔ Count parsing: grouped digits, about-prefixes, zero, and refusals (0.246921ms)
+✔ Generic Stats: normalizeMax (1.553295ms)
+✔ Generic Stats: calculateRatio (0.202915ms)
+✔ Generic Stats: Pearson and Spearman Correlation (0.449165ms)
+✔ JH16 Analyzer execution (5.201249ms)
+✔ JH16: a missing count stays missing and never becomes zero (0.419561ms)
+✔ JH16: zero Ni leaves Hi undefined and does not crash (0.369436ms)
+✔ JH2016 published data: Hi reproduces from the paper Ni and Ni_harm (0.564989ms)
+✔ JH2016 published data: the reported 81.6% is Pearson, not Spearman (13.482149ms)
+✔ E1.11: the seven primitives are registered with declared contracts (7.690221ms)
+✔ E1.11 max: hand-computed, and fails explicitly with no valid value (0.656617ms)
+✔ E1.11 ratio: denominator <= 0 is undefined, never zero and never an epsilon (0.309976ms)
+✔ E1.11 scale: multiplies and keeps missing missing (0.176235ms)
+✔ E1.11 pearson/spearman: hand-computed, and undefined on zero variance (0.622346ms)
+✔ E1.11 align and describe: report what was dropped rather than dropping it silently (0.526401ms)
+✔ E1.12: a valid spec passes and each invalid case is rejected precisely (1.467516ms)
+✔ E1.12: semantically equal specs hash equally regardless of key order (0.580572ms)
+✔ E1.13: a PROPOSED spec reaching the executor throws (1.18417ms)
+✔ E1.13: an ambiguous step blocks execution until a human chooses (0.294062ms)
+✔ E1.14: two executions of the same spec on the same inputs are byte-identical (0.486542ms)
+✔ E1.15: the locked preset is exactly the sixteen substances with the exact queries (0.277878ms)
+✔ E1.15: the preset MethodSpec is valid and computes Pi and Hi over primitives (0.635335ms)
+✔ E1.15 golden: the MethodSpec reproduces every Pi and Hi the paper published (0.654524ms)
+✔ E1.15: zero Ni yields an undefined Hi and the run does not crash (9.301293ms)
+✔ E1.15: a missing count propagates as missing through Pi and Hi (1.29044ms)
+✔ Method integrity: graph references must resolve to earlier distinct symbols of the accepted shape (8.037854ms)
+✔ Method integrity: JH16 ratios follow entity identity when input series have different orders (19.698534ms)
+✔ Method integrity: ratio refuses unreviewed joins and ambiguous entity identity (0.961195ms)
+✔ Method integrity: runtime inputs cannot substitute units, semantics, identities or malformed values (8.31455ms)
+✔ Method integrity: a supplied approval authorizes only its exact MethodSpec (1.918033ms)
+✔ Method integrity: numerical overflow fails before JSON can disguise it as missing (0.249625ms)
+✔ paper comparison core: inclusive absolute and relative arithmetic retains exact scalar and unit (2.884266ms)
+✔ paper comparison core: missing scalar and absent expected value are explicit, never zero (0.568405ms)
+✔ paper comparison core: declared tolerances never assert preregistration after prior exposure (0.556316ms)
+✔ paper comparison core: exact metric, cardinality and scalar shape block ambiguous selection (0.243606ms)
+✔ paper comparison core: units are required and never silently converted (0.283967ms)
+✔ paper comparison core: nonfinite input and unsupported/count selectors reject before canonical hashing (6.441784ms)
+✔ paper comparison core: ambiguity takes precedence consistently and evaluation is deterministic (0.448584ms)
+✔ E1.20: every verdict uses the four-value vocabulary and none is "failed" (2.448791ms)
+✔ E1.20: insufficient data is not_computable, never a quiet pass (8.664765ms)
+✔ E1.20: each tolerance kind decides on its own terms (0.446411ms)
+✔ E1.20: JH2016 is registered with pre-registered bands and a checkable record (0.668875ms)
+✔ E1.20: the registered Pearson claim matches what the paper actually reports (34.560747ms)
+✔ E1.20: a missing Hi reduces n rather than being scored as zero (0.459992ms)
+✔ E1.20: the ranking claim compares against the published Pi ordering (0.503286ms)
+✔ E1.20: a self-check states plainly that it is not evidence the finding holds today (0.257306ms)
+✔ Anti-fabrication: every non-executable source throws NotImplementedError, not a value (3.616356ms)
+✔ Anti-fabrication: pearson/spearman depend on their inputs, never a constant (1.934529ms)
+✔ Anti-fabrication: calculateRatio never divides by a non-positive denominator (0.238278ms)
+✔ Rule 2: nothing in the numerical path can import a language model (5.6274ms)
+✔ E6.4a fixture keeps mixtures, unknown composition and non-toxicological alternatives without patient data (15.11333ms)
+✔ E6.4a a known value with missing unit and clocks is valid, incomplete and lossless (3.819983ms)
+✔ E6.4a missing reasons and measured/reported provenance remain distinct in content hashes (13.285242ms)
+✔ E6.4a every required missingness field must be explicit; null, undefined and omissions are rejected (14.84013ms)
+✔ E6.4a strict objects reject imported patient fields, unknown missing reasons and mixed union states (5.040919ms)
+✔ E6.4a rejects nonfinite/coerced values and malformed known timestamps without inventing replacements (8.772548ms)
+✔ E6.4a preserves concurrent contradictions and superseded history without latest-wins rewriting (19.058682ms)
+✔ E6.4a a measured correction can supersede a reported observation while retaining both evidence modes (0.589156ms)
+✔ E6.4a a mixture can retain a known component and an unknown remainder without inventing its identity (2.772238ms)
+✔ E6.4a rejects dangling observation, source, exposure and hypothesis links (5.702543ms)
+✔ E6.4a rejects duplicate IDs and self links instead of aliasing evidence (4.109058ms)
+✔ E6.4a case source pins bind exact content into the case hash and reject omitted, malformed or duplicate pins (8.633309ms)
+✔ E6.4a later revisions require a prior content hash and arbitrary fixture imports remain closed (2.937707ms)
+✔ E6.4a rejects supersession cycles and superseding a different quantity (1.339654ms)
+✔ E6.4a sample appearance is separate evidence and cannot silently establish exposure or composition (5.192025ms)
+✔ E6.4b deterministic canonical bytes, exact replay, and explicit software-only scope (61.991213ms)
+✔ E6.4b manifest hashes actual declared source bytes and rejects missing/tampered identity (5.744807ms)
+✔ E6.4b case, rule, source and executor changes independently change pinned hashes (54.636607ms)
+✔ E6.4b missing value stays undetermined with explicit cause (7.319454ms)
+✔ E6.4b missing unit stays undetermined with explicit cause (10.473184ms)
+✔ E6.4b missing eventTime stays undetermined with explicit cause (1.803672ms)
+✔ E6.4b missing measurementTime stays undetermined with explicit cause (5.315441ms)
+✔ E6.4b all missing dependencies are retained together, including reference clock (2.620589ms)
+✔ E6.4b an unknown unit is never silently converted (1.574557ms)
+✔ E6.4b reference time is required for a bounded event window (1.573155ms)
+✔ E6.4b time bounds and mode constraints are explicit dependencies (5.245256ms)
+✔ E6.4b mismatched or missing species never contradicts a hypothesis (6.064146ms)
+✔ E6.4b mismatched or missing population never contradicts a hypothesis (5.690746ms)
+✔ E6.4b mismatched or missing setting never contradicts a hypothesis (21.408369ms)
+✔ E6.4b every declared dependency must be resolved, even when not the predicate operand (1.639444ms)
+✔ E6.4b active conflicts remain explicit even for an ID-pinned observation (2.372437ms)
+✔ E6.4b multiple active unpinned observations never use an implicit latest-wins rule (3.577028ms)
+✔ E6.4b superseded input is rejected while both original and replacement survive archive/replay (13.681077ms)
+✔ E6.4b false comparison preserves every hypothesis and all mixture/unknown/alternative records (3.180912ms)
+✔ E6.4b supersession cannot hide a pinned observation conflict using invalid source provenance (69.997048ms)
+✔ E6.4b every relevant supersession chain link needs current provenance but unrelated chains do not (39.988166ms)
+✔ E6.4b approved source cannot substitute for a separate exact-hash rule review (3.93061ms)
+✔ E6.4b revoked rule or reference blocks new execution without rewriting history (5.238165ms)
+✔ E6.4b unreviewed rule or reference blocks new execution without rewriting history (16.491612ms)
+✔ E6.4b changed, missing, unapproved or unreadable reference blocks new execution (11.264184ms)
+✔ E6.4b observation provenance remains a readable intact source even outside rule citations (4.980398ms)
+✔ E6.4b reapproved observation source cannot silently replace the case-time source pin (2.41438ms)
+✔ E6.4b observation-only source revocation or missing exact approval blocks dependent computation (17.466768ms)
+✔ E6.4b revoked observation provenance makes the whole rule ineligible despite unrelated missing inputs (3.57193ms)
+✔ E6.4b historical read and replay require current case/source/rule rights (11.096431ms)
+✔ E6.4b corrupted archives and mismatched replay manifests are rejected (8.748662ms)
+✔ E6.4b missing rules/edges and appearance never infer absent interaction or confirmed exposure (1.625874ms)
+✔ E6.4b rejects arbitrary case IDs, executable predicates and nonfinite inputs at its boundary (11.595132ms)
+✔ E6.5a exact missing-value dependency yields a source-linked synthetic proposal while retaining the original gap (66.32605ms)
+✔ E6.5a absent observations can yield proposals only for explicitly declared missing dependencies (13.528237ms)
+✔ E6.5a changing test availability changes only profile/proposals, without changing case, trace or approvals (8.199256ms)
+✔ E6.5a exact quantity, unit, mode, availability, applicability and prospective timing constrain candidate tests (52.681067ms)
+✔ E6.5a a satisfied dependency or contradicted predicate creates no measurement request (8.539488ms)
+✔ E6.5a explicit not-applicable missingness is not treated as an unmeasured value (14.290954ms)
+✔ E6.5a missing metadata, mismatched units and historical clocks never become fresh measurements (58.65641ms)
+✔ E6.5a historical-only windows and fixed observation identities cannot be repaired by a future test (44.21522ms)
+✔ E6.5a unresolved conflicts and ambiguity block other otherwise missing inputs for the whole rule (16.831173ms)
+✔ E6.5a superseded observations remain gaps and cannot be silently replaced (7.406344ms)
+✔ E6.5a rule and source changes, revocation and unreadability are rechecked before selection (78.110156ms)
+✔ E6.5a observation-only provenance blocks selection even when unrelated input is missing (26.322301ms)
+✔ E6.5a stale traces are not accepted as authority and every original trace gap is retained with rule identity (42.57896ms)
+✔ E6.5a deterministic selection neither mutates inputs nor creates observations, orders or permissions (2.924507ms)
+✔ E6.5a strict profiles reject nonfinite, unsafe, negative or reversed prospective timing and unbounded data (378.796027ms)
+✔ E6.5a unrepresentable future instants and impossible case dates never yield a proposal (24.571359ms)
+✔ E6.5a prospective times preserve schema precision and year bounds rather than rounding or overflowing (2.974722ms)
+✔ E6.5a source-run CLI completes fixture to trace to gaps/profile, deterministic export and revocation replay (2499.075744ms)
+✔ E6.5a CLI refuses case paths, arbitrary JSON, extra arguments and unknown profiles (1268.329394ms)
+✔ Config canonicalization and stable hash (5.370304ms)
+✔ Config precedence and lock enforcement (8.11565ms)
+✔ Config schema validation fails fast (0.930028ms)
+✔ Config validation reports the failing path and the schema rule (0.490417ms)
+✔ Config rejects a missing required field rather than defaulting it (15.792992ms)
+✔ E4 diagnostics: large traces retain a bounded preview and a complete downloadable ZIP (179.73716ms)
+✔ E1.4: a traced chain has one trace_id and a strictly monotonic sequence_no (29.554109ms)
+✔ E1.4: DECISION records the branch and the value that determined it (2.706148ms)
+✔ E1.4: the four modes are switchable without touching instrumentation (0.695726ms)
+✔ E1.5: the canary is absent from every sink (32.326783ms)
+✔ E1.5: redaction survives cycles and buffers rather than hanging (0.927174ms)
+✔ E1.6: an error four layers down arrives with its whole chain (3.137026ms)
+✔ E1.7: zip round-trips and is byte-deterministic (1.021206ms)
+✔ E1.7: the direct cause of a failed run is identifiable from the bundle alone (12.842726ms)
+✔ E3.3: a provider change mid-series is flagged, with both sides named (22.631743ms)
+✔ E3.3: a single-provider series raises nothing (9.544889ms)
+✔ E3.3: an adapter version change is an instrument change even with one vendor (0.381503ms)
+✔ E3.3: language and expansion-mode changes flag separately from a vendor change (0.348574ms)
+✔ E3.3: unknown plan data is excluded from the check and reported as reduced coverage (0.268143ms)
+✔ E3.3: a one-point series is fully covered, not zero-covered (0.207442ms)
+✔ E3.3: a vendor swap during an outage is still detected (0.196365ms)
+✔ E3.3: two series with different providers are not a discontinuity (0.240712ms)
+✔ E3.3: observations without a series id fall back to entity and role (0.211147ms)
+✔ E3.3: both sides of a transition are annotated, not only the new one (1.69612ms)
+✔ E3.3: annotation does not duplicate a flag that is already present (2.116461ms)
+✔ E3.3: the report is deterministic under input reordering and timestamp collision (0.251398ms)
+✔ Domain: the module imports cleanly and exports its full surface (8.995554ms)
+✔ Domain: no I/O-capable dependency anywhere in the layer (1.049177ms)
+✔ Domain: run state machine advances one stage at a time (0.75845ms)
+✔ Domain: a missing observation never reads as zero (0.376596ms)
+✔ Domain: a missing observation carries a reason (0.208633ms)
+✔ Domain: an unapproved artifact cannot reach the executor (0.37245ms)
+✔ Domain: approving then editing reverts to PROPOSED with no explicit action (0.63197ms)
+✔ Domain: approval is hash-bound and order-insensitive (0.264007ms)
+✔ Domain: approval requires an identified human actor (0.254132ms)
+✔ Domain: error taxonomy is the closed set from 01_ARCHITECTURE.md (15.915937ms)
+✔ Domain: the E1 principal is the local-user constant (1.354777ms)
+✔ Domain: evidence tier ordering and the visual-match ceiling (0.378349ms)
+✔ Domain: evidence tier and approval state are independent axes (0.380022ms)
+✔ Domain: canonical hashing is stable under key reordering (0.374803ms)
+✔ E6: trust labels and approval survive removal of every color; safety is never collapsible (50.138595ms)
+✔ E6: offline queue persists before results, synchronizes once, and HTTP denial erases cached access (80.120477ms)
+✔ E6 evidence profiles: compact colors retain every source kind, approval and fixed category order (14.861231ms)
+✔ E6 global context rendering: additional sample provenance and local/archive denominators remain distinct (368.46036ms)
+✔ E6 search deep links prefill a supported query without treating reference IDs as descriptors (14.386167ms)
+✔ E6 exact search reference inspection: approved assertion links expose citations while clinical exclusions remain intact (10.349589ms)
+✔ E6 exact offline inspection: expiry, principal and persisted receipt gate every newly exposed mapping (30.755972ms)
+✔ E6 global audit synchronization: bounded requests retain complete IDs and unacknowledged receipts after failure (58.415759ms)
+✔ E5 geography: explicit 2D GeoJSON mapping retains holes, islands and raw source; malformed or changed mappings fail (120.384288ms)
+✔ E5 geography: exact joins distinguish zero, missing, absent, duplicate and unmatched rows; selections never aggregate (17.579187ms)
+✔ E5 geography: color classes remain stable through time, manual thresholds use upper intervals, extreme values stay finite (1.134796ms)
+✔ E5 geography: publication renderer preserves hole paths, pattern states, evidence and complete pinned provenance (31.951574ms)
+✔ goal navigation: shipped profile accepts internal hyphenated routes but rejects external targets (13.560766ms)
+✔ E4.2: every role has an explicit capability bundle; researcher and responder are peers (1.813136ms)
+✔ E4.1: the specific separations the ladder exists for (1.203048ms)
+✔ E4.1: authorisation fails closed on unknown or absent roles (0.659441ms)
+✔ E4.1: a well-formed Google token verifies and lands on its granted role (2.819128ms)
+✔ E4.1: the classic JWT bypasses are refused (15.148182ms)
+✔ E4.1: claims that would widen access are each checked (11.711526ms)
+✔ E4.1: a domain grant applies, and an exact grant wins over it (6.561434ms)
+✔ E4.1: an unknown kid refreshes the key set once, then rejects (0.714734ms)
+✔ E4.1: a session cookie round-trips and rejects every tampering (0.787033ms)
+✔ E4.1: a short signing key is refused outright (0.258098ms)
+✔ E4.1: the cookie is HttpOnly and SameSite, and Secure in production (0.33981ms)
+✔ E4.1: an unauthenticated request resolves to null, never to a guest principal (0.301433ms)
+✔ E4.1: grants are validated, and there is no wildcard (0.340331ms)
+✔ E4.1: an OAuth client with no grants is refused rather than defaulted (0.168453ms)
+✔ E4.1: production refuses to start without authentication unless it is stated on purpose (0.298088ms)
+✔ E4.1: oidc mode without a signing key fails with the command that fixes it (0.35921ms)
+✔ E4.1: local mode keeps E1 behaviour — one principal, full capability (0.188824ms)
+✔ E4.1: local-user exists as a principal so no E1 row is left dangling (40.346109ms)
+✔ E4.1: local-user rows migrate to a real principal, atomically and idempotently (162.754244ms)
+✔ E4.1: migration refuses an unknown target (28.956852ms)
+✔ E4.1: signing in again preserves created_at and refreshes the role (59.000412ms)
+✔ E2.1: with no key OpenRouter is blocked, and the reason names the fix (7.253024ms)
+✔ E2.1: adding the key flips it to implemented with no invalidation step (4.65636ms)
+✔ E2.1: derived status publishes into the one gate every run passes through (2.169071ms)
+✔ E2.1: the manual OpenAI-compatible provider needs endpoint and model too (1.100955ms)
+✔ E2.1: the provider config holds pointers, never credentials (6.632972ms)
+✔ E2.1: each upstream failure maps to its own actionable kind (1.733656ms)
+✔ E2.1: a model outside allowed_models is refused rather than substituted (0.403777ms)
+✔ E2.1: the served model is recorded, not the requested one (0.367783ms)
+✔ E2.1: the API key never appears in the request body or an error (0.416726ms)
+✔ E2.1: a number absent from the source is rejected, including a rounded one (0.841345ms)
+✔ E2.1: a provider narrative is PROPOSED, marked generated and marked nondeterministic (0.839893ms)
+✔ E2.1: a fabricating provider is rejected outright, not footnoted (0.350728ms)
+✔ E2.1: a provider failure throws rather than silently serving template prose (7.917162ms)
+✔ E1.19: a golden run manifest contains every required field (2.930235ms)
+✔ E1.19: every quality flag and every missing observation reaches the manifest (1.367626ms)
+✔ E1.19: an incomplete manifest fails loudly rather than shipping (0.502486ms)
+✔ E1.19: manifests are deterministic — same input, same bytes (0.920885ms)
+✔ E1.17: the narrative service cannot alter a numeric value (0.418559ms)
+✔ E1.17: a payload that changed under its hash is refused (0.3125ms)
+✔ E1.17: the narrative uses precise status language, never "successful replication" (0.500402ms)
+✔ E1.18: exported values equal stored values, and missing is never zero (9.432971ms)
+✔ E1.18: an unapproved narrative cannot reach an export (0.777188ms)
+✔ E1.18: generated prose is distinguishable from computed results in JSON too (0.81162ms)
+✔ E1.16: a missing value renders as visibly missing, never as zero or a gap (0.54514ms)
+✔ E1.16: a series carrying PROVIDER_DISCONTINUITY shows it in the legend (0.158879ms)
+✔ E1.16: the Hi-versus-reference scatter marks incomparable points as missing (0.998701ms)
+✔ E3.1: an unset variable is absent, and absent never yields a usable value (1.814127ms)
+✔ E3.1: a set-but-empty variable is invalid, not absent (2.111404ms)
+✔ E3.1: a present credential is reachable only inside use() (0.264127ms)
+✔ E3.1: a handle cannot leak its value through serialisation or enumeration (1.227896ms)
+✔ E3.1: resolving registers the value with the redactor, so it is scrubbed by value (18.325009ms)
+✔ E3.1: an absent credential registers nothing (0.242665ms)
+✔ E3.1: a malformed or unknown secret_ref throws rather than resolving to absent (0.545881ms)
+✔ E3.1: the handle constructor refuses an inconsistent state (0.221864ms)
+✔ E3.1: a Secret Manager version resolves and its value is registered, not exposed (1.11076ms)
+✔ E3.1: Secret Manager failures map to distinguishable states, never to a value (6.56531ms)
+✔ E3.1: resolution is cached, so one run does not re-read a secret per query (0.778601ms)
+✔ E3.2: a successful fetch yields a present observation stamped with the provider (30.588405ms)
+✔ E3.2: the key is sent but never recorded, because the blob store is write-once (1.393385ms)
+✔ E3.2: a provider that echoes the key back has it scrubbed before archiving (7.319664ms)
+✔ E3.2: throttle, quota, bad key and server error stay distinguishable (15.905001ms)
+✔ E3.2: an exhausted quota body reported with 401 is quota, not a bad key (0.779091ms)
+✔ E3.2: with no credential the run still produces an honest record, not a crash (0.703628ms)
+✔ E3.2: a throttle is retried a bounded number of times; a bad key is not retried at all (1.572013ms)
+✔ E3.2: an unparseable count is PARSE_FAILED, never zero (4.704613ms)
+✔ E3.2: a provider-reported zero follows the configured policy and says so (0.911571ms)
+✔ E3.2: availability is derived from the credential, and the config holds no key (1.119243ms)
+✔ E3.2: the language from the query plan is sent, not left to provider geolocation (5.397964ms)
+✔ source comparison distinguishes missing, null, zero, exact decimal text and escaped JSON paths (7.078472ms)
+✔ source comparison is key-order invariant but treats arrays positionally and preserves hostile-looking keys as data (0.724139ms)
+✔ bounded source comparison reports partial traversal without manufacturing unchanged or zero values (4.037799ms)
+✔ source-history presentation uses a complete validated profile with bounded tools (25.767627ms)
+✔ E3.4: a blob round-trips through GCS and its URI is a gs:// address (2.014529ms)
+✔ E3.4: WORM behaves exactly as it does locally — content, not key existence (0.867815ms)
+✔ E3.4: a lost race on an identical object is not a violation; on a different one it is (0.388534ms)
+✔ E3.4: a prefix scopes objects without leaking into the key (0.426081ms)
+✔ E3.4: the access token is fetched once and reused across writes (0.942616ms)
+✔ E3.4: off GCP the failure names the fix instead of hanging (0.373531ms)
+✔ E3.4: a missing object is an error, never an empty buffer (8.439878ms)
+✔ E3.4: production with container-local storage refuses to start, and says what is lost (0.772171ms)
+✔ E3.4: GCS plus a mounted database path passes (0.406061ms)
+✔ E3.4: /tmp is not durable by default, and is worse than it looks (0.436025ms)
+✔ E3.4: an explicit declaration beats the /tmp heuristic (0.683037ms)
+✔ E3.4: development is never blocked, and a throwaway instance stays possible (0.315705ms)
+✔ E3.4: Postgres is registered planned and throws rather than pretending (0.306311ms)
+✔ Flight Recorder - Context propagation and events (12.379621ms)
+✔ Flight Recorder - Error Causal Chain (7.843121ms)
+✔ Flight Recorder - concurrent sibling spans retain a unique ordered trace sequence (13.281967ms)
+✔ E5 CSV: quoted delimiters, escaped quotes, multiline cells, BOM and syntax errors (19.826721ms)
+✔ E5 figures: physical map units and numeric channels prevent silent reinterpretation (64.967198ms)
+✔ E5 SVG: source tiers, approval, missingness, labels and camera survive vector rendering (97.816911ms)
+✔ E5 SVG: missing log values and provider discontinuities break lines without zero substitution (11.722803ms)
+✔ E5 projection: rotations preserve depth identity and deterministic wrapping preserves all words (0.308233ms)
+✔ E5 animation: a record keeps its color, size and alpha when the time frame narrows (15.407062ms)
+✔ workspace navigation preserves seven coherent groups while capabilities determine available views (1.978955ms)
+✔ nested existing deep links stay in their workspace and unrelated route prefixes do not match (0.273752ms)
+✔ navigation configuration rejects external paths, duplicate sections, duplicate routes and unknown capabilities (4.152082ms)
+✔ rendered main navigation separates utility links and marks nested run/results context (34.480266ms)
+✔ source cards cannot offer runnable planned or credential-blocked entries, or acquisition to viewers (5.054919ms)
+ℹ tests 552
+ℹ suites 0
+ℹ pass 552
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51115.240061

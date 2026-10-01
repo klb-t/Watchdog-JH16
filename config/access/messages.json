@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "_note": "Texts people receive from this installation. Placeholders in {{double_braces}} are filled by backend/watchdog_api/mail. Nothing here is sent without an explicit action: an administrator pressing Send, or a person asking for their own sign-in code.",
+  "instance_name": "WatchDog",
+  "default_language": "pl",
+  "languages": {
+    "pl": {
+      "role_labels": {
+        "viewer": "podgląd wyników",
+        "researcher": "badacz",
+        "responder": "ratownik / reakcja w terenie",
+        "institutional": "dostęp instytucjonalny",
+        "law_enforcement": "organy ścigania",
+        "admin": "administrator",
+        "developer": "deweloper",
+        "dev": "deweloper"
+      },
+      "invitation": {
+        "subject": "{{inviter}} zaprasza Cię do {{instance}}",
+        "body": "Dzień dobry,\n\n{{inviter}} zaprasza Cię do {{instance}} z uprawnieniami: {{roles}}.\n{{note_block}}\nAby przyjąć zaproszenie, otwórz link i zaloguj się adresem {{email}}:\n\n{{link}}\n\nLink jest ważny do {{expires}}. Zaproszenie działa tylko dla tego adresu — przesłanie linku komuś innemu nie da mu dostępu.\n\nJeśli nie spodziewasz się tej wiadomości, zignoruj ją."
+      },
+      "open_link": {
+        "subject": "Zaproszenie do {{instance}}",
+        "body": "{{inviter}} zaprasza do {{instance}} ({{roles}}).\n{{note_block}}\nOtwórz link i zaloguj się dowolnym swoim adresem e-mail:\n\n{{link}}\n\nLink jest ważny do {{expires}}{{uses_block}}."
+      },
+      "sign_in_code": {
+        "subject": "Kod logowania do {{instance}}: {{code}}",
+        "body": "Twój kod logowania do {{instance}}:\n\n    {{code}}\n\nKod jest ważny przez {{minutes}} minut i działa jeden raz.\n{{link_block}}\nJeśli to nie Ty próbujesz się zalogować, zignoruj tę wiadomość — bez kodu nikt nie wejdzie na Twoje konto."
+      },
+      "fragments": {
+        "note": "\nWiadomość od zapraszającego:\n{{note}}\n",
+        "uses": " i można go użyć {{max_uses}} raz(y)",
+        "link": "\nMożesz też kliknąć: {{link}}\n"
+      }
+    },
+    "en": {
+      "role_labels": {
+        "viewer": "results viewer",
+        "researcher": "researcher",
+        "responder": "field responder",
+        "institutional": "institutional access",
+        "law_enforcement": "law enforcement",
+        "admin": "administrator",
+        "developer": "developer",
+        "dev": "developer"
+      },
+      "invitation": {
+        "subject": "{{inviter}} invites you to {{instance}}",
+        "body": "Hello,\n\n{{inviter}} invites you to {{instance}} as: {{roles}}.\n{{note_block}}\nTo accept, open the link and sign in with {{email}}:\n\n{{link}}\n\nThe link is valid until {{expires}}. It works only for this address — forwarding it does not give anyone else access.\n\nIf you were not expecting this, you can ignore it."
+      },
+      "open_link": {
+        "subject": "Invitation to {{instance}}",
+        "body": "{{inviter}} invites you to {{instance}} ({{roles}}).\n{{note_block}}\nOpen the link and sign in with any email address of yours:\n\n{{link}}\n\nThe link is valid until {{expires}}{{uses_block}}."
+      },
+      "sign_in_code": {
+        "subject": "Your {{instance}} sign-in code: {{code}}",
+        "body": "Your sign-in code for {{instance}}:\n\n    {{code}}\n\nIt is valid for {{minutes}} minutes and works once.\n{{link_block}}\nIf you did not try to sign in, ignore this message — nobody can get into your account without the code."
+      },
+      "fragments": {
+        "note": "\nA note from the person inviting you:\n{{note}}\n",
+        "uses": " and can be used {{max_uses}} time(s)",
+        "link": "\nOr click: {{link}}\n"
+      }
+    }
+  }
+}

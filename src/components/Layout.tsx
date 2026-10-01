@@ -1,3 +1,4 @@
+import { WorkspaceControls } from '../lib/workspace_preferences';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Activity } from 'lucide-react';
 import { useAccess } from '../lib/access';
@@ -22,6 +23,7 @@ export function Layout() {
         </div>
         
         <div className="md:flex-1"><WorkspaceMenu capabilities={access.capabilities} pathname={location.pathname} density={density} /></div>
+        <WorkspaceControls />
         <WorkspaceUtilities capabilities={access.capabilities} pathname={location.pathname} />
       </aside>
 
