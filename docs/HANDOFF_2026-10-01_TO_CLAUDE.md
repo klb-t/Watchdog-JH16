@@ -2,6 +2,8 @@
 
 **Claude przejmuje główny workflow po domkniętej konsolidacji.** GPT odpowiada za poniższy audyt, naprawy, dokumentację i odbiór. Dawny dokument TO_GPT jest zachowany w historii; nie wyznacza aktualnego kierunku.
 
+Opublikowany odebrany commit: `00a5b789fb8b35ada8ef7e73b1fcb7290258841d` (jeden rodzic; tree zgodne z lokalnym odbiorem). [Protokół publikacji](history/evidence/2026-10-01/publication.json) potwierdza oba archiwalne refy, 120 zachowanych commitów i zamknięcie przestarzałego draftu #1. Późniejsze commity dokumentacji nie zmieniają tego przypięcia testów.
+
 ## Co odbierasz
 
 - **E4.7:** email-code i Google, adresowe/otwarte zaproszenia, SMTP, blokowanie, generacje sesji i CLI. Jawny tryb accounts; stare OIDC, request-only tokeny, trwałe override i ochrona zarządzającego pozostają. Nowa migracja 023; bajty 001–022 niezmienione. Nowy `access_admin` zamiast rozszerzenia starego `admin`.

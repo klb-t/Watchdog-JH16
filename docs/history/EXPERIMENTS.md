@@ -17,7 +17,7 @@ Ten katalog rozdziela badanie naukowe, demonstrację programu i test integracji.
 
 ## Odtworzenie obecnego checkpointu
 
-Zachowaj checkout i wybierz commit zawierający receipt. Nie uruchamiaj starego eksperymentu z przypadkowym nowszym lockfile.
+Odebrany kod: `00a5b789fb8b35ada8ef7e73b1fcb7290258841d`; [protokół publikacji](evidence/2026-10-01/publication.json). Zachowaj checkout i wybierz commit zawierający receipt. Nie uruchamiaj starego eksperymentu z przypadkowym nowszym lockfile.
 
 ```bash
 npm ci
@@ -52,3 +52,5 @@ Clinical report powinien odtworzyć się bajtowo dla tej samej recipe. JH16 zapi
 `navigation-intermediate.txt` zawiera błąd starego dokładnego selektora nazwy po dodaniu znacznika advanced; naprawą jest jawna dostępna nazwa, nie usunięcie asercji. `operations-intermediate.txt` zachowuje dwie nieaktualne asercje z bocznej gałęzi: domyślny ref i lokalizację wydzielonego modułu. Odbiór końcowy testuje zachowane main i rzeczywistą komendę. Jedna wcześniejsza budowa zostawiła stary index z poprzednim assetem; clean build rozwiązał problem, a końcowa komenda zawiera clean. Zdarzenia odróżniamy od awarii wdrożonej instalacji, której nie obserwowano.
 
 Nie zachowano pełnych surowych artefaktów wszystkich dawnych 120 commitów ani kompletnych transkryptów; źródłowy kod i datowane deklaracje pozostają dostępne. Usunięty lub nigdy niezapisany plik nie staje się odtwarzalny przez sam opis. Nowe prace obowiązuje [kontrakt historii](../HISTORY_POLICY.md).
+
+Dawny PR #1 deklaruje również publiczną akwizycję (572 activity assertions/38 receipts i odświeżenie MDMA). Runtime database nie była dołączona do Git; surowej bazy nie odzyskano w tym odbiorze. To zachowana historyczna deklaracja, nie samowystarczalny dataset ani powtórzony pomiar. Ponowna akwizycja dziś byłaby nowym runem, nie odtworzeniem dawnych odpowiedzi.
