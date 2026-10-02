@@ -36,3 +36,5 @@ Na VM: `sudo watchdogctl enable-accounts owner@example.test`, `sudo watchdogctl 
 ## Dowody i granice
 
 Pełny gate 604/604 obejmuje stary OIDC, nowy protokół, test wypełnionej migracji, lokalny rzeczywisty SMTP testowy i przeglądarkę na 390 px. Dodatkowo sprawdzono produkcyjny bundle CLI na izolowanej bazie. Dowody: [katalog replay](history/EXPERIMENTS.md). Nie sprawdzono zewnętrznej poczty, rzeczywistego klienta OAuth ani gotowej publicznej VM. Kontrakt czasowo ograniczonego offline pozostaje osobny; revocation online nie jest zdalnym usunięciem już pobranego archiwum offline.
+
+Uzupełnienie 2026-10-02: jawny tryb `WATCHDOG_AUTH=oidc` wymaga niepustego `GOOGLE_OAUTH_CLIENT_ID`; brak konfiguracji kończy się błędem, także przy wyjątku open-instance. Nowe zaproszenia i akceptacja wniosków odmawiają dla adresów z legacy override, zachowując token/wniosek bez zmian. Kontrola odbywa się także wewnątrz transakcji, aby uwzględnić równoległą zmianę administratora. Pełny odbiór tej poprawki: 613/613.

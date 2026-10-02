@@ -1,0 +1,73 @@
+{
+  "version": 1,
+  "date": "2026-10-02",
+  "base": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "status": "completed",
+  "gate": {
+    "command": "PLAYWRIGHT_BROWSERS_PATH=/tmp/watchdog-chromium/pw npm run clean && PLAYWRIGHT_BROWSERS_PATH=/tmp/watchdog-chromium/pw npm run test:all",
+    "tests": 613,
+    "pass": 613,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "typecheck": "pass",
+    "production_build": "pass",
+    "duration_test_ms": 99293.232716
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "npm": "11.9.0",
+    "python": "3.12.14",
+    "chromium": "Chrome Headless Shell 151.0.7922.34, Playwright build 1234",
+    "runner": "normal test isolation; local processes run outside restricted sandbox after opaque isolated-child failure; official browser archive recovered after installer failure"
+  },
+  "regressions": {
+    "explicit_oidc_and_legacy_paths": "5 failing-before cases",
+    "concurrent_legacy_override": "3 failing-before cases",
+    "recovery_marker": "1 failing-before parameterized regression; all 5 database-backed commands blocked",
+    "affected_auth_suites": "49/49",
+    "operations_targeted": "2/2"
+  },
+  "not_claimed": [
+    "new GitHub Actions run",
+    "live deployment or SMTP/OAuth/certificate acceptance",
+    "scientific approval of pilot results"
+  ],
+  "evidence": [
+    {
+      "path": "auth-final-green.txt",
+      "sha256": "8641d17089829c69daddd4f888e6ff8d441ab1f6e7b5d8d3044e4168cc9e6058",
+      "bytes": 4389
+    },
+    {
+      "path": "auth-red.txt",
+      "sha256": "9c981ffd9eb76e640892645a73e462fe21ab495d98e718a6dd94a0c1f8db84b3",
+      "bytes": 4950
+    },
+    {
+      "path": "full-gate.txt",
+      "sha256": "40cca33ef8aaff330464222e94cd8c702a7a18fb1fef11dccb5bc42b40b3f424",
+      "bytes": 112985
+    },
+    {
+      "path": "interleaving-red.txt",
+      "sha256": "9a75f6d513cdb0f9333e207dccf84668158b49baf1bca2d53c9ba146f18bed1b",
+      "bytes": 2967
+    },
+    {
+      "path": "operations-green.txt",
+      "sha256": "834398d216e2b63294d7aca7cd669d5542fd0f5c772bb8d7ac92d076c874b424",
+      "bytes": 329
+    },
+    {
+      "path": "operations-red.txt",
+      "sha256": "8f4988cfd9d8ceb6f78f306bd86779b9ec933b40df317af429137f232ac3d49b",
+      "bytes": 1236
+    },
+    {
+      "path": "source-sha256.json",
+      "sha256": "003ede08b5abc1c816d5730513c4ead6d7c25a284b069f85890f7b9924a74457",
+      "bytes": 57039
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+✔ E3.17/E4.7: isolated operator commands preserve grants and refuse public access before accounts (609.259677ms)
+✖ E3.17 recovery marker blocks every database-backed access command before Docker (41.409455ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 659.854482
+
+✖ failing tests:
+
+test at tests/integration/access_operations.test.ts:4:1715
+✖ E3.17 recovery marker blocks every database-backed access command before Docker (41.409455ms)
+  AssertionError [ERR_ASSERTION]: people must not start the CLI while recovery is required
+      at TestContext.<anonymous> (<checkout>/tests/integration/access_operations.test.ts:52:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 0,
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }

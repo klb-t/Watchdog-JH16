@@ -28,6 +28,8 @@ access_command() {
     proxy-logs) require_commands journalctl; journalctl -u watchdog-proxy.service -n 150 --no-pager; return ;;
     people|grant|invite|open-link|signin-link)
       require_commands docker; lock
+      # Even read-only CLI commands initialize the database and may run migrations.
+      [[ ! -e $root/etc/watchdog/recovery-required ]] || die 'Recover the installation before using access administration.'
       docker exec watchdog node dist/watchdog-admin.cjs "$@"; return ;;
   esac
   require_commands systemctl curl; lock

@@ -254,6 +254,14 @@ export class AdmissionService {
     return null;
   }
 
+  /** All new grant paths respect the explicit legacy administration boundary. */
+  private requireNoLegacyOverride(email: string): void {
+    if (this.repo.legacyGrant(email)) {
+      throw new AdmissionError('legacy_override', 409,
+        'This address has a legacy installation override; manage it through Account and access (legacy) with principal.manage. No grant was changed.');
+    }
+  }
+
   // ------------------------------------------------------------------ sign-in
 
   /**
@@ -419,6 +427,10 @@ export class AdmissionService {
     if (!actor.email) throw new AdmissionError('unauthenticated', 401, 'Sign in first.');
     const i = this.byToken(token);
     if (!i) throw new AdmissionError('invitation_invalid', 404, 'This invitation link is not valid.');
+    // Refuse before consuming a use, creating a grant or withdrawing an
+    // application. Otherwise a denial looks like success, or an active legacy
+    // assignment is silently expanded through a different management surface.
+    this.requireNoLegacyOverride(actor.email);
 
     const previous = this.repo.redemption(i.id, actor.principalId);
     if (previous) return { grantId: previous.grant_id, roles: parseRoles(i.roles_json), alreadyRedeemed: true };
@@ -445,6 +457,7 @@ export class AdmissionService {
     const at = this.now().toISOString();
     const grantId = randomUUID();
     this.repo.transaction(() => {
+      this.requireNoLegacyOverride(actor.email!);
       if (!this.repo.consumeInvitationUse(i.id, at)) {
         throw new AdmissionError('invitation_used_up', 410, 'This invitation has already been used.');
       }
@@ -568,11 +581,13 @@ export class AdmissionService {
     const application = this.repo.application(id);
     if (!application) throw new AdmissionError('not_found', 404, 'No such application.');
     if (application.email === actor.email) throw new AdmissionError('forbidden', 403, 'You cannot approve your own application.');
+    this.requireNoLegacyOverride(application.email);
 
     const at = this.now().toISOString();
     const grantId = randomUUID();
     const note = boundedText(input.note, INVITATION_LIMITS.noteMax, 'The note');
     this.repo.transaction(() => {
+      this.requireNoLegacyOverride(application.email);
       // The grant first, because the application row references it. If the
       // application was already decided, the throw below rolls the grant back
       // with it — the "only a pending application" guard still holds.
@@ -727,11 +742,12 @@ export class AdmissionService {
    */
   operatorGrant(rawEmail: unknown, rawRoles: unknown, note: string | null): string {
     const email = normalizeEmail(rawEmail);
-    if (this.repo.legacyGrant(email)) throw new AdmissionError('legacy_override', 409, 'This address has a legacy installation override; manage it through Account and access (legacy) with principal.manage. No grant was changed.');
+    this.requireNoLegacyOverride(email);
     const roles = requireRoles(rawRoles);
     const at = this.now().toISOString();
     const grantId = randomUUID();
     this.repo.transaction(() => {
+      this.requireNoLegacyOverride(email);
       this.repo.revokeActiveGrants(email, OPERATOR, 'replaced by operator grant', at);
       this.repo.insertGrant({ id: grantId, email, roles_json: JSON.stringify(roles), source: 'admin', source_id: null,
         granted_by: OPERATOR, granted_at: at, expires_at: null, note });

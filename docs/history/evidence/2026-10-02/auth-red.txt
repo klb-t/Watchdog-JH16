@@ -1,0 +1,105 @@
+✖ E4.7: revoked legacy override refuses redeem without consuming evidence (47.332452ms)
+✖ E4.7: revoked legacy override refuses approve without consuming evidence (29.455708ms)
+✖ E4.7: active legacy override refuses redeem without consuming evidence (27.988468ms)
+✖ E4.7: active legacy override refuses approve without consuming evidence (26.23414ms)
+✖ E4.7: explicitly requested OIDC never falls back to the local full-rights user (1.808752ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 0
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 443.174989
+
+✖ failing tests:
+
+test at tests/integration/accounts_upgrade.test.ts:1:4637
+✖ E4.7: revoked legacy override refuses redeem without consuming evidence (47.332452ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception (legacyConflict).
+      at TestContext.<anonymous> (<checkout>/tests/integration/accounts_upgrade.test.ts:96:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [Function: legacyConflict],
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests/integration/accounts_upgrade.test.ts:1:4637
+✖ E4.7: revoked legacy override refuses approve without consuming evidence (29.455708ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception (legacyConflict).
+      at TestContext.<anonymous> (<checkout>/tests/integration/accounts_upgrade.test.ts:98:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [Function: legacyConflict],
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests/integration/accounts_upgrade.test.ts:1:4637
+✖ E4.7: active legacy override refuses redeem without consuming evidence (27.988468ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception (legacyConflict).
+      at TestContext.<anonymous> (<checkout>/tests/integration/accounts_upgrade.test.ts:96:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [Function: legacyConflict],
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests/integration/accounts_upgrade.test.ts:1:4637
+✖ E4.7: active legacy override refuses approve without consuming evidence (26.23414ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception (legacyConflict).
+      at TestContext.<anonymous> (<checkout>/tests/integration/accounts_upgrade.test.ts:98:16)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [Function: legacyConflict],
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests/unit/identity.test.ts:1:9614
+✖ E4.7: explicitly requested OIDC never falls back to the local full-rights user (1.808752ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (<checkout>/tests/unit/identity.test.ts:234:14)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at node:internal/test_runner/test:1285:31
+      at node:internal/process/task_queues:151:7
+      at AsyncResource.runInAsyncScope (node:async_hooks:227:14)
+      at AsyncResource.runMicrotask (node:internal/process/task_queues:148:8) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: [Function (anonymous)],
+    operator: 'throws',
+    diff: 'simple'
+  }

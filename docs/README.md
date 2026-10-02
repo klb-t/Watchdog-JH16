@@ -2,7 +2,7 @@
 
 ## Bieżący stan i przekazanie
 
-- [GPT → Claude: punkt startowy](HANDOFF_2026-10-01_TO_CLAUDE.md)
+- [GPT → Claude: punkt startowy](HANDOFF_2026-10-01_TO_CLAUDE.md), [dokończenie odbioru 2.10](RESUME_2026-10-02.md)
 - [Raport: gałęzie, PR-y, testy i pominięcia](REPORT_GPT_2026-10.md)
 - [Stan i decyzje](spec/00_STATE_AND_DECISIONS.md)
 - [Jedna kolejka otwartych zadań](spec/07_EPICS_AND_TASKS.md), [aliasy dawnych numerów](TASK_ID_ALIASES.md)

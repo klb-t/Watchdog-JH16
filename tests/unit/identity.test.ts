@@ -228,6 +228,25 @@ test('E4.1: an OAuth client with no grants is refused rather than defaulted', ()
   } as any).mode, 'oidc');
 });
 
+test('E4.7: explicitly requested OIDC never falls back to the local full-rights user', () => {
+  for (const audience of [undefined, '', '   ']) {
+    for (const openInstance of [undefined, 'true']) {
+      assert.throws(() => readAuthConfig({
+        WATCHDOG_AUTH: 'oidc', GOOGLE_OAUTH_CLIENT_ID: audience,
+        WATCHDOG_GRANTS: '{"a@b.example":"admin"}',
+        WATCHDOG_ALLOW_OPEN_INSTANCE: openInstance,
+      }), (error: unknown) => error instanceof AuthConfigError &&
+        /WATCHDOG_AUTH=oidc.*GOOGLE_OAUTH_CLIENT_ID/.test(error.message));
+    }
+  }
+  assert.strictEqual(readAuthConfig({ WATCHDOG_AUTH: 'oidc',
+    GOOGLE_OAUTH_CLIENT_ID: AUD, WATCHDOG_GRANTS: '{"a@b.example":"admin"}' }).mode, 'oidc');
+  assert.strictEqual(readAuthConfig({}).mode, 'local', 'implicit development mode remains supported');
+  assert.strictEqual(readAuthConfig({ WATCHDOG_AUTH: 'local' }).mode, 'local');
+  assert.strictEqual(readAuthConfig({ WATCHDOG_AUTH: 'accounts' }).mode, 'accounts',
+    'email accounts do not require an optional Google client');
+});
+
 test('E4.1: production refuses to start without authentication unless it is stated on purpose', () => {
   const local = readAuthConfig({} as any);
 

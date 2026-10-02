@@ -2,7 +2,7 @@
 
 Odtwarzalny warsztat pozyskiwania danych, analizy i badań z jawnym pochodzeniem. JH16 i substancje psychoaktywne są pierwszym zastosowaniem ogólnego silnika.
 
-**Stan:** połączono RESEARCH/CLINICAL/OPERATIONS oraz wcześniej pominięte konta/mail, nawigację PL/EN i HTTPS. Wspólny lokalny odbiór: **604/604 testy**, typecheck i produkcyjny build. Historyczne CI `ca5645c`: 552/552 w obu bramkach oraz start i trwałość kontenera. Fikcyjny rdzeń kliniczny ma CLI; nie ma produkcyjnego przypadku/API/UI. Brak potwierdzonej instalacji na rzeczywistej VM.
+**Stan:** połączono RESEARCH/CLINICAL/OPERATIONS oraz wcześniej pominięte konta/mail, nawigację PL/EN i HTTPS. Wspólny lokalny odbiór: **613/613 testów**, typecheck i produkcyjny build. Historyczne CI `ca5645c`: 552/552 w obu bramkach oraz start i trwałość kontenera. Fikcyjny rdzeń kliniczny ma CLI; nie ma produkcyjnego przypadku/API/UI. Brak potwierdzonej instalacji na rzeczywistej VM.
 
 **Przekazanie:** [GPT → Claude](docs/HANDOFF_2026-10-01_TO_CLAUDE.md). Claude przejmuje główny workflow po domkniętej konsolidacji. [Raport](docs/REPORT_GPT_2026-10.md) wskazuje dokładne SHA, konflikty i granice.
 

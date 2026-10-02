@@ -1,0 +1,10 @@
+✔ E3.17/E4.7: isolated operator commands preserve grants and refuse public access before accounts (568.729848ms)
+✔ E3.17 recovery marker blocks every database-backed access command before Docker (100.929605ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 678.916281

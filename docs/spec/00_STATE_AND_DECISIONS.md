@@ -1,11 +1,13 @@
 # State and binding decisions
 
-Last updated: 2026-10-01, completed code consolidation and handoff to Claude. Update this file whenever a
+Last updated: 2026-10-02, resumed acceptance and auth/recovery completion. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**Latest acceptance — 2026-10-02:** resumed review fixed explicit-OIDC fallback, access CLI recovery-marker bypass and legacy grant decision races. Clean local typecheck/build and **613/613** pass; [completion record](../RESUME_2026-10-02.md), [receipt](../history/evidence/2026-10-02/receipt.json). Prior receipts below remain tied to their original code. Research pilots are tracked separately; the product backlog and live VM gate remain open.
 
 **Current coordination:** Claude receives leadership after GPT completes E4.7/E7.7/E3.17. Start with [handoff](../HANDOFF_2026-10-01_TO_CLAUDE.md), [audit](../REPORT_GPT_2026-10.md), [history policy](../HISTORY_POLICY.md) and the canonical queue. Combined clean local gate: **604/604**, typecheck/build, existing 552 tests retained. Accounts are opt-in; migration 023 preserves 001–022, legacy request-only invitations and ownership. Two navigation profiles preserve projects/search. HTTPS code preserves OPERATIONS; real VM acceptance is still unverified. Exact inputs and receipts: [experiments](../history/EXPERIMENTS.md).
 

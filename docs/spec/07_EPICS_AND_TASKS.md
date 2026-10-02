@@ -21,6 +21,13 @@ Claude owns integration and the global ledger. Completed historical task paragra
 
 E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a separate gate. Existing RESEARCH/CLINICAL/OPERATIONS packages are integrated, not awaiting claims.
 
+## Completed resumed acceptance — 2026-10-02
+
+- [x] **E4.7 follow-up:** explicit OIDC fails closed without its audience; legacy-managed addresses cannot receive conflicting new grants through invitations/applications. Recheck inside all three grant transactions rejects intervening legacy writes without consuming evidence.
+- [x] **E3.17 follow-up:** every database-backed operator command respects recovery-required under the installation lock, including people which can initialize migrations.
+
+Nine new regressions, full clean **613/613**, typecheck/build. Before/after evidence and source hashes: `../history/evidence/2026-10-02/receipt.json`. Details: `../RESUME_2026-10-02.md`.
+
 ## Completed consolidation — 2026-10-01
 
 - [x] **E4.7 — Accounts consolidation:** Google/email code, bounded addressed/open invitations, local SMTP proof, block/unblock, session generations and bundled CLI. Additive migration 023 preserves 001–022 and populated legacy history/ownership. Legacy overrides remain authoritative; original admin does not gain delegation.

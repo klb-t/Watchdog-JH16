@@ -96,6 +96,9 @@ export function readAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig
   const requested = env.WATCHDOG_AUTH?.trim().toLowerCase();
   if (requested && !['accounts','local','oidc'].includes(requested)) throw new AuthConfigError('WATCHDOG_AUTH must be local, oidc or accounts.');
   if (requested === 'accounts') return { mode: 'accounts', audience, grants, reason: 'Closed accounts: email codes and optional Google; identity alone grants no access.' };
+  if (requested === 'oidc' && !audience) {
+    throw new AuthConfigError('WATCHDOG_AUTH=oidc requires GOOGLE_OAUTH_CLIENT_ID; refusing to fall back to the local user.');
+  }
   if (requested === 'local' || !audience) {
     return { mode: 'local', grants: {}, audience: null,
       reason: 'GOOGLE_OAUTH_CLIENT_ID is not set, so no sign-in is possible and every request is the local user.' };

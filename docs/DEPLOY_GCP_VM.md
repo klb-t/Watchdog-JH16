@@ -268,3 +268,5 @@ Walidacja automatyczna obejmuje kolejność operacji GCP z atrapą CLI, odmowę 
 IAP/kolizjach, składnię Bash oraz w CI prawdziwe budowanie i restart kontenera z zapisem API.
 Nie zastępuje to pierwszej instalacji w konkretnym projekcie GCP. Agent nie uruchamiał
 provisioningu ani nie zmieniał ustawień Twojego konta GCP.
+
+Uzupełnienie 2026-10-02: `recovery-required` blokuje również people/grant/invite/open-link/signin-link przed uruchomieniem kontenera CLI. Nawet people ładuje bazę i może wykonać migracje, więc diagnostykę awarii prowadź przez status/logs i zachowany marker. Nie usuwaj markera tylko po to, aby ominąć odmowę komendy.
