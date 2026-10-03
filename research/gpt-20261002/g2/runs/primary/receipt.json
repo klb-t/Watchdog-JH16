@@ -1,0 +1,19 @@
+{
+  "artifact_commit": "Assigned by integrator after creation; resolve Git history for this package path.",
+  "base_commit": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "finished_at_utc": "2026-10-02T10:00:12.774626+00:00",
+  "frozen_protocol_sha256": "d186782c8d13f8de920e715cd9f61e7ca7e3c554c6aa0e7d1dd3e2fc249ffba8",
+  "network_calls": 0,
+  "paid_api_cost": 0,
+  "platform": "Linux-6.18.44-x86_64-with-glibc2.39",
+  "python": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "python_dependencies": "standard library only",
+  "result_sha256": "e92b5b40645a301ad16a880ce529616b12b116a7c43bdb95f4b5731b1610be8c",
+  "runner_sha256": "00e108173155944fe100567dd29732a792c4857145eba5947357dfde91bfa0b9",
+  "runtime_seconds": 0.03137223299972902,
+  "started_command": [
+    "research/gpt-20261002/g2/run.py",
+    "--output",
+    "research/gpt-20261002/g2/runs/primary"
+  ]
+}

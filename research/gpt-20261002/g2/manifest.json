@@ -1,0 +1,26 @@
+{
+  "base_commit": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "files": {
+    ".gitignore": "e657225b46c90197ba9721fe0cde068c7662aca9840eac44dc2bb71496a7c8d5",
+    "CHRONOLOGY.md": "9e57af18b3108f9a35c968e38b64c32c6007819cd9545ebac452e4614c90bc8b",
+    "RESULT.md": "c786f7acefbacbe01fc92daa242a51b2aca2269a475c9c7f8568f2a3a69a130d",
+    "freeze.json": "3704f64bfada65de6fa2bab09acd6c347a7fedbbc8e97679e4a090dfcff77155",
+    "inputs.json": "f0b3655cdad6dbd8071a296bee18a4255ec191dca91e167018e399a868acf7fb",
+    "prepare_inputs.py": "78d80b610cb346c3388f417eaf9b65113201115c382741b7fc43ae7d50787593",
+    "protocol.json": "d186782c8d13f8de920e715cd9f61e7ca7e3c554c6aa0e7d1dd3e2fc249ffba8",
+    "replay_initial.py": "6196d94f361e7d760b0a7c99b36424518571c4b5d0e16afa7566fd84e104f33a",
+    "run.py": "00e108173155944fe100567dd29732a792c4857145eba5947357dfde91bfa0b9",
+    "runs/initial/receipt.json": "5f72a64b4e1eaf0bcdf5b66eb83a34b012e0cea400c01331a56ae8a414f604f7",
+    "runs/initial/results.json": "b24f6b7f1902f9b8bd08ffa67197715cbe8c2ae1222939736871ab9370e319a6",
+    "runs/initial/run.py.txt": "9d89bb2ce084823d0d87fb5bc857dfbb45d7c84f2355494ba6d11b5459fd9e29",
+    "runs/primary/receipt.json": "ed23975105c68768544c0866fe35115aaf2c121473242fd1f4326c7e36928693",
+    "runs/primary/results.json": "e92b5b40645a301ad16a880ce529616b12b116a7c43bdb95f4b5731b1610be8c",
+    "snapshot-packaging.json": "c509122ce17f1301a536a777ac5ae775532de4ecc7af8398b49ed2c2a353c291",
+    "source/docs/history/evidence/2026-10-01/clinical-case-a.json": "a1e4e0853a1922f75f8866256bf394f631c401d41b04815c14f55de5f678dc29",
+    "source/shared/clinical_demo.ts.txt": "76dbc2e2044b7d99e8a24f60643d27f95f0c94bb34b7d2aa2d55e1a52d312d91",
+    "source/shared/clinical_demo_profile.ts.txt": "516f1ee0d36f67c98b14c0893f23151337f9b103f2a018634b786465dc591565",
+    "source/shared/clinical_demo_selector.ts.txt": "c63528c8170dbd88b1abde636274c94d125a1f634420ef2bfda80dc3ed7c5e07",
+    "verification.json": "ffbb8f4a7d9d71a1c61d074f9e1cc1d9c3c09c92c516b7263b27cd5748766154"
+  },
+  "version": "g2-artifact-manifest-1"
+}

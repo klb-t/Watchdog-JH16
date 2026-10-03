@@ -1,0 +1,5 @@
+{
+  "source/shared/clinical_demo.ts": "source/shared/clinical_demo.ts.txt",
+  "source/shared/clinical_demo_profile.ts": "source/shared/clinical_demo_profile.ts.txt",
+  "source/shared/clinical_demo_selector.ts": "source/shared/clinical_demo_selector.ts.txt"
+}

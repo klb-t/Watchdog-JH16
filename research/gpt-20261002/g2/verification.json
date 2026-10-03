@@ -1,0 +1,36 @@
+{
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "research/gpt-20261002/g2/run.py",
+        "--verify",
+        "research/gpt-20261002/g2/runs/primary/results.json"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"replay\": \"byte_identical\", \"runtime_seconds\": 0.27170786200031216, \"sha256\": \"e92b5b40645a301ad16a880ce529616b12b116a7c43bdb95f4b5731b1610be8c\"}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "research/gpt-20261002/g2/run.py",
+        "--verify",
+        "research/gpt-20261002/g2/runs/primary/results.json"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"replay\": \"byte_identical\", \"runtime_seconds\": 0.018638674000158062, \"sha256\": \"e92b5b40645a301ad16a880ce529616b12b116a7c43bdb95f4b5731b1610be8c\"}\n"
+    },
+    {
+      "command": [
+        "python3",
+        "research/gpt-20261002/g2/replay_initial.py"
+      ],
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "{\"replay\": \"byte_identical\", \"runtime_seconds\": 0.0157378119997702, \"sha256\": \"b24f6b7f1902f9b8bd08ffa67197715cbe8c2ae1222939736871ab9370e319a6\"}\n"
+    }
+  ],
+  "verified_at_utc": "2026-10-02T10:01:09.631612+00:00"
+}

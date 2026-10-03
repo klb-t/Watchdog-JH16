@@ -1,0 +1,142 @@
+{
+  "experiment": "Watchdog G3 selection and held-out evaluation",
+  "version": 1,
+  "base_commit": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "status_at_freeze": "protocol frozen before this pilot was executed; no claim of retrospective preregistration",
+  "frozen_at_utc": "2026-10-02T09:58:42.756439+00:00",
+  "question": "Does selecting the largest absolute cohort statistic inflate nominal rejection when evaluation reuses the search observations, compared with independent held-out evaluation?",
+  "generator": {
+    "version": "g3-normal-sufficient-statistics-v1",
+    "description": "Independent cohorts of iid Normal(mu,1) observations. Generate exact Gaussian sufficient statistics for three independent blocks A, B, C of n observations; individual observations are not materialized. The raw data are the block z statistics, not patient data.",
+    "normal_algorithm": "Box-Muller, two math functions and two uniform draws per generated pair",
+    "uniform_algorithm": "Python random.Random.random using per-trial integer seed SHA256 of g3-v1|root_seed|scenario|trial interpreted as big-endian",
+    "root_seed": 2026100203,
+    "cohort_count_max": 20,
+    "block_sample_size": 100,
+    "scenarios": {
+      "null": {
+        "mu_all": 0.0
+      },
+      "one_signal": {
+        "mu_cohort_0": 0.3,
+        "mu_other_cohorts": 0.0
+      }
+    }
+  },
+  "design": {
+    "trials_per_scenario": 5000,
+    "search_budgets": [
+      1,
+      5,
+      20
+    ],
+    "cohorts": "disjoint and independent; budgets use prefixes of the same 20 cohorts",
+    "selection": "largest absolute z; lowest index wins exact ties",
+    "alpha": 0.05,
+    "tails": "two-sided",
+    "test": "known population sigma=1; z=sqrt(n)*mean; p=erfc(abs(z)/sqrt(2))",
+    "multiplicity": "Nominal methods apply alpha to one selected p value. Bonferroni methods apply alpha/m to selected search p. Held-out evaluation tests exactly one frozen cohort once at alpha; no selection among held-out results.",
+    "methods": {
+      "explore_100": {
+        "selection": "A",
+        "evaluation": "A",
+        "evaluation_n": 100,
+        "sample_cost_per_cohort": 100,
+        "threshold": "alpha"
+      },
+      "explore_100_bonferroni": {
+        "selection": "A",
+        "evaluation": "A",
+        "evaluation_n": 100,
+        "sample_cost_per_cohort": 100,
+        "threshold": "alpha/m"
+      },
+      "confirm_100": {
+        "selection": "A",
+        "evaluation": "B",
+        "evaluation_n": 100,
+        "sample_cost_per_cohort": 200,
+        "threshold": "alpha"
+      },
+      "confirm_200": {
+        "selection": "A",
+        "evaluation": "(B+C)/sqrt(2)",
+        "evaluation_n": 200,
+        "sample_cost_per_cohort": 300,
+        "threshold": "alpha"
+      },
+      "explore_200": {
+        "selection": "(A+B)/sqrt(2)",
+        "evaluation": "(A+B)/sqrt(2)",
+        "evaluation_n": 200,
+        "sample_cost_per_cohort": 200,
+        "threshold": "alpha"
+      },
+      "explore_200_bonferroni": {
+        "selection": "(A+B)/sqrt(2)",
+        "evaluation": "(A+B)/sqrt(2)",
+        "evaluation_n": 200,
+        "sample_cost_per_cohort": 200,
+        "threshold": "alpha/m"
+      },
+      "no_search_100": {
+        "selection": "cohort 0 fixed before data",
+        "evaluation": "B",
+        "evaluation_n": 100,
+        "sample_cost_per_cohort": 100,
+        "threshold": "alpha"
+      },
+      "no_search_200": {
+        "selection": "cohort 0 fixed before data",
+        "evaluation": "(B+C)/sqrt(2)",
+        "evaluation_n": 200,
+        "sample_cost_per_cohort": 200,
+        "threshold": "alpha"
+      }
+    },
+    "comparisons": [
+      "Fixed total observations and search budget: explore_200 vs confirm_100 (2*n*m observations each).",
+      "Equal evaluation sample size: explore_100 vs confirm_100 (different total observations).",
+      "Equal evaluation sample size sensitivity: explore_200 vs confirm_200 (2*n*m versus 3*n*m).",
+      "No-search cohort 0 is preselected; in one_signal it is an oracle/favorable fixed target, not blind discovery.",
+      "All cohorts are generated for comparability; sample_cost is the observation budget logically consumed by the method, not Python runtime."
+    ]
+  },
+  "metrics": {
+    "unit": "one independent trial; never individual cohort tests as the denominator",
+    "denominator": "5000 trials per scenario, budget and method; budgets and methods share draws and are paired",
+    "null": "any rejection = type-I error; no claim that nominal alpha controls family error after reuse",
+    "one_signal": [
+      "any rejection (not automatically power)",
+      "true discovery = selected cohort 0 and rejection",
+      "false discovery = selected null cohort and rejection",
+      "selected signal fraction"
+    ],
+    "intervals": "Marginal 95% Wilson score intervals for Bernoulli rates; Monte Carlo uncertainty, not scientific population intervals; no simultaneous coverage or significance claim across tables. Seed is fixed, intervals describe hypothetical repetitions.",
+    "comparisons": "paired rejection-rate differences, standard error from within-trial {-1,0,1} differences and normal 95% interval; descriptive, not independent-arm intervals",
+    "effect_bias": "mean selected estimated effect; report interpretation because two-sided selection can choose either sign"
+  },
+  "checks": {
+    "analytic_null_nominal": "1-(1-alpha)^m for independent cohorts",
+    "analytic_null_bonferroni": "1-(1-alpha/m)^m",
+    "analytic_null_heldout": "alpha regardless of search budget",
+    "analytic_fixed_signal_power": "P(|N(mu*sqrt(n),1)| > Phi^-1(1-alpha/2)) via erfc and statistics.NormalDist",
+    "monte_carlo_tolerance": "abs(observed-expected) <= 5*sqrt(expected*(1-expected)/trials); diagnostic only, all discrepancies retained",
+    "determinism": "rerun into a new output directory, compare raw and summary artifact SHA256 byte for byte"
+  },
+  "artifacts": [
+    "protocol.json",
+    "protocol.sha256",
+    "run.py",
+    "RESULT.md",
+    "results/raw_trials.csv.gz",
+    "results/summary.json",
+    "results/receipt.json"
+  ],
+  "limitations": [
+    "Synthetic independent Gaussian disjoint cohorts only. Overlapping subgroup searches, unknown variance, adaptive stopping and general replication are out of scope.",
+    "Confirmation depends on real isolation of holdout data, one frozen selection and no repeated reuse.",
+    "This pilot does not change locked JH16 or constitute clinical evidence.",
+    "Protocol timestamp and hash are a local pre-run record, not an external registration."
+  ]
+}

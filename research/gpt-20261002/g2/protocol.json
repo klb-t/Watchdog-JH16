@@ -1,0 +1,50 @@
+{
+  "acceptance_checks": [
+    "Every selected set meets budget and prerequisite availability.",
+    "Coverage counts each dependency once.",
+    "All actual missing dependencies and unresolved hypotheses are unchanged after proposal.",
+    "No candidate repairs a pinned, nonapplicable, nonmeasurement, conflicted or ineligible dependency.",
+    "Set-union implementation agrees with independent oracle for every feasible subset.",
+    "Prespecified ratio trap has positive heuristic gap at budget 6.",
+    "Replay deterministic output bytes identical."
+  ],
+  "algorithms": {
+    "coverage_per_cost": "Iteratively choose the feasible closure with largest NEW unique dependency count / incremental cost, using exact rational arithmetic. Ties: more gain, lower incremental cost, lexicographic target ID. Stop when no positive gain fits.",
+    "oracle": "Enumerate all subsets. Reject unavailable or prerequisite-incomplete sets. Compute coverage independently by per-dependency predicate scan. For each budget maximize coverage, then minimize cost, then lexicographic IDs. Pareto frontier retains every nondominated cost/coverage pair and all tied sets.",
+    "profile_order": "Scan tests in saved profile order. Add feasible prerequisite closure if it fits remaining budget and target has any eligible missing dependency, even when already covered by an earlier test. Do not buy standalone no-target prerequisites."
+  },
+  "base_commit": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "chronology": "Freeze protocol and inputs with hashes before executing run.py. Fixes to implementation after failed checks are logged; protocol alterations require a new version.",
+  "id": "Watchdog-G2-v1",
+  "interpretation": "Descriptive synthetic algorithm pilot. Heuristic dominance is not presumed; report losses and ties. Counts are not entropy, information gain, independent evidence, urgency, clinical usefulness or treatment recommendations.",
+  "metrics": [
+    "planned_unique_dependency_coverage",
+    "fictional_cost_units",
+    "cost_of_redundant_target_tests",
+    "oracle_coverage_gap",
+    "actual_missing_dependencies_retained",
+    "unresolved_hypothesis_ids_retained"
+  ],
+  "purpose": "software-demonstration",
+  "question": "Compare explicit unique dependency coverage and fictional cost without assigning clinical probabilities.",
+  "sampling": "No sampling; complete predetermined fixture battery and integer budget grids.",
+  "scenario_ids": [
+    "archived_satisfied_control",
+    "single_missing",
+    "unavailable",
+    "redundant_profile",
+    "shared_prerequisite",
+    "unavailable_prerequisite",
+    "ratio_counterexample",
+    "gates_and_preserved_unknowns"
+  ],
+  "scope_exclusions": [
+    "No product changes",
+    "No scientific or medical approval",
+    "No measurement or test order",
+    "No external APIs or patient data",
+    "No live authorization inferred from a historical archive"
+  ],
+  "seed": null,
+  "status_at_freeze": "frozen-before-outcomes"
+}

@@ -1,0 +1,61 @@
+{
+  "base_commit": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "excluded": [
+    "manifest.json (self-reference)",
+    "__pycache__/ (untracked interpreter cache)"
+  ],
+  "files": {
+    ".gitignore": {
+      "bytes": 13,
+      "sha256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b"
+    },
+    "RESULT.md": {
+      "bytes": 6882,
+      "sha256": "2ff8661f01089030aff76dd8368e8ab493911bde32ba9d0ddaaecc57e813db23"
+    },
+    "protocol.json": {
+      "bytes": 4935,
+      "sha256": "62d09d35ea5b9d66a8bb40f9d364a30d9e0f9fd2a5fa26863b859fc1a0f08f00"
+    },
+    "raw/datasets.jsonl": {
+      "bytes": 483914,
+      "sha256": "6064b693aa92c8f5d4347aa04a6f5fbd6d14b50432994290a6389a86c907a81a"
+    },
+    "raw/receipt.json": {
+      "bytes": 1907,
+      "sha256": "48ea37f1a895553ac944c4b5e6efde89afc1aad798d56b6fa5a3c7cde39f7e2a"
+    },
+    "raw/results.jsonl": {
+      "bytes": 455617,
+      "sha256": "ea6724fadb07dd208238563102930cac2fa9b9ad90dad2f47c3b10b876858de3"
+    },
+    "raw/summary.json": {
+      "bytes": 14657,
+      "sha256": "f233afd3910422c18057d4afe408f24e13ff81dcebbc4fcbee4e2e305bc377a1"
+    },
+    "replay.txt": {
+      "bytes": 446,
+      "sha256": "a2e0ec644012f27b39b12d1db7e51b01c44cf3ef67451d6b6d26d5817d4cbd6f"
+    },
+    "run.py": {
+      "bytes": 10044,
+      "sha256": "537e0a4472080032e6b8ca91a846a7f408f81dce0a56245d9bb0f92cab53aa62"
+    },
+    "run.txt": {
+      "bytes": 437,
+      "sha256": "8fc97705ba1980a2450674ab688c310bcc761cd9354436f801a3d780b1ca56e1"
+    },
+    "test_replay.py": {
+      "bytes": 4636,
+      "sha256": "313c1f0eeff0f6d036b8899855ff21ba1507b2a3124753ef10e3ca159223685c"
+    },
+    "test_replay.txt": {
+      "bytes": 986,
+      "sha256": "bd1cea5f97dce9536e8c1cee1a63dfa52e532d43f85c81bb9c39f9f63eb6ed8f"
+    }
+  },
+  "hash_algorithm": "sha256",
+  "publication_commit": "See enclosing published research commit and coordinator publication receipt; not self-embedded",
+  "schema": 1,
+  "scope": "G1 package only"
+}

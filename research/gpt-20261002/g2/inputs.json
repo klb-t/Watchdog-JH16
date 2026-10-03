@@ -1,0 +1,1782 @@
+{
+  "base_commit": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "extension_boundary": "Costs and acquisition prerequisites are research-only sidecars. The source profile has one test and no costs, rankings, or acquisition graph. Multiple fictional quantities/dependencies are controlled extensions, not approved product rules or clinical knowledge.",
+  "scenarios": [
+    {
+      "budgetGrid": [
+        0,
+        1
+      ],
+      "construction": "Original archive already has alpha; no additional coverage is possible.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "satisfied"
+        }
+      ],
+      "id": "archived_satisfied_control",
+      "illustrativeBudget": 1,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-alpha",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    },
+    {
+      "budgetGrid": [
+        0,
+        1
+      ],
+      "construction": "Counterfactual missing alpha, preserving fictional profile contract.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "missing"
+        }
+      ],
+      "id": "single_missing",
+      "illustrativeBudget": 1,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-alpha",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    },
+    {
+      "budgetGrid": [
+        0,
+        1
+      ],
+      "construction": "No candidate can cover the missing dependency.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "missing"
+        }
+      ],
+      "id": "unavailable",
+      "illustrativeBudget": 1,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": false,
+            "id": "fixture:test-alpha",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    },
+    {
+      "budgetGrid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "construction": "Two alpha tests are redundant coverage, not independent confirmations. Gamma remains unavailable.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-1",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-2",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-2",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-gamma-1",
+            "observationId": null,
+            "quantityId": "fixture:q-gamma",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-gamma"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-gamma-1",
+          "state": "missing"
+        }
+      ],
+      "id": "redundant_profile",
+      "illustrativeBudget": 3,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-a-alpha",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-b-alpha-copy",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        },
+        {
+          "experimentalCost": 2,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-c-beta",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-beta",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-beta"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": false,
+            "id": "fixture:test-d-gamma",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-gamma",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-gamma"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    },
+    {
+      "budgetGrid": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "construction": "Fictional acquisition prerequisite cost is paid once; it is not a clinical causal edge.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-2",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-2",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-1",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-2",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-2",
+          "state": "missing"
+        }
+      ],
+      "id": "shared_prerequisite",
+      "illustrativeBudget": 4,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [
+            "fixture:test-z-prep"
+          ],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-a-alpha",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [
+            "fixture:test-z-prep"
+          ],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-b-beta",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-beta",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-beta"
+          }
+        },
+        {
+          "experimentalCost": 2,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-z-prep",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-prep",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-prep"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    },
+    {
+      "budgetGrid": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "construction": "An unavailable prerequisite prevents the dependent candidate even when that candidate itself is available.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-1",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-1",
+          "state": "missing"
+        }
+      ],
+      "id": "unavailable_prerequisite",
+      "illustrativeBudget": 3,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [
+            "fixture:test-z-prep"
+          ],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-a-alpha",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        },
+        {
+          "experimentalCost": 2,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-b-beta",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-beta",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-beta"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": false,
+            "id": "fixture:test-z-prep",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-prep",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-prep"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    },
+    {
+      "budgetGrid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "construction": "Prespecified knapsack ratio trap: alpha ratio 3/2, beta and gamma 4/3. Exact enumeration must expose a gap at budget 6.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-2",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-2",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-3",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-3",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-1",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-2",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-2",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-3",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-3",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-4",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-4",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-gamma-1",
+            "observationId": null,
+            "quantityId": "fixture:q-gamma",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-gamma"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-gamma-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-gamma-2",
+            "observationId": null,
+            "quantityId": "fixture:q-gamma",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-gamma"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-gamma-2",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-gamma-3",
+            "observationId": null,
+            "quantityId": "fixture:q-gamma",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-gamma"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-gamma-3",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-gamma-4",
+            "observationId": null,
+            "quantityId": "fixture:q-gamma",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-gamma"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-gamma-4",
+          "state": "missing"
+        }
+      ],
+      "id": "ratio_counterexample",
+      "illustrativeBudget": 6,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 2,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-a-alpha",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        },
+        {
+          "experimentalCost": 3,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-b-beta",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-beta",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-beta"
+          }
+        },
+        {
+          "experimentalCost": 3,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-c-gamma",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-gamma",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-gamma"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    },
+    {
+      "budgetGrid": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "construction": "Nothing may erase nonrepairable, ineligible, conflicted, pinned or unavailable observations; no historical backfill.",
+      "context": {
+        "population": {
+          "state": "known",
+          "value": "fixture:population-a"
+        },
+        "setting": {
+          "state": "known",
+          "value": "fixture:setting-a"
+        },
+        "species": {
+          "state": "known",
+          "value": "fixture:species-a"
+        }
+      },
+      "dependencies": [
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-alpha-1",
+            "observationId": null,
+            "quantityId": "fixture:q-alpha",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-alpha"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-alpha-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-beta-1",
+            "observationId": null,
+            "quantityId": "fixture:q-beta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-beta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-beta-1",
+          "state": "not_applicable"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-gamma-1",
+            "observationId": null,
+            "quantityId": "fixture:q-gamma",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-gamma"
+          },
+          "ruleConflict": false,
+          "ruleEligible": false,
+          "ruleId": "fixture:rule-gamma-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-delta-1",
+            "observationId": null,
+            "quantityId": "fixture:q-delta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-delta"
+          },
+          "ruleConflict": true,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-delta-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-epsilon-1",
+            "observationId": "fixture:old-pinned-observation",
+            "quantityId": "fixture:q-epsilon",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-epsilon"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-epsilon-1",
+          "state": "missing"
+        },
+        {
+          "dependency": {
+            "allowedModes": [
+              "measured"
+            ],
+            "eventWindow": {
+              "maxOffsetMs": 1000,
+              "minOffsetMs": -1000
+            },
+            "id": "fixture:dependency-zeta-1",
+            "observationId": null,
+            "quantityId": "fixture:q-zeta",
+            "requireEventTime": true,
+            "requireMeasurementTime": true,
+            "unit": "fixture:u-zeta"
+          },
+          "ruleConflict": false,
+          "ruleEligible": true,
+          "ruleId": "fixture:rule-zeta-1",
+          "state": "source_unapproved"
+        }
+      ],
+      "id": "gates_and_preserved_unknowns",
+      "illustrativeBudget": 7,
+      "purpose": "software-demonstration",
+      "referenceTime": {
+        "state": "known",
+        "value": "2026-01-01T00:00:00Z"
+      },
+      "tests": [
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-a-alpha-bad-unit",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:wrong-unit"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-b-alpha-late",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-alpha",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 2000,
+              "measurementOffsetMs": 3000
+            },
+            "unit": "fixture:u-alpha"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-c-beta",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-beta",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-beta"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-d-gamma",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-gamma",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-gamma"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-e-delta",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-delta",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-delta"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-f-epsilon",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-epsilon",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-epsilon"
+          }
+        },
+        {
+          "experimentalCost": 1,
+          "experimentalRequires": [],
+          "profileTest": {
+            "allowedModes": [
+              "measured"
+            ],
+            "applicability": {
+              "population": [
+                "fixture:population-a"
+              ],
+              "setting": [
+                "fixture:setting-a"
+              ],
+              "species": [
+                "fixture:species-a"
+              ]
+            },
+            "available": true,
+            "id": "fixture:test-g-zeta",
+            "limitations": [
+              "Invented availability declaration for a software demonstration; no actual test or clinical content."
+            ],
+            "quantityId": "fixture:q-zeta",
+            "sourceIds": [
+              "fixture:availability-source-a"
+            ],
+            "timing": {
+              "eventOffsetMs": 0,
+              "measurementOffsetMs": 1000
+            },
+            "unit": "fixture:u-zeta"
+          }
+        }
+      ],
+      "unresolvedHypothesisIds": [
+        "fixture:hypothesis-alternative",
+        "fixture:hypothesis-class",
+        "fixture:hypothesis-comorbidity",
+        "fixture:hypothesis-mixture",
+        "fixture:hypothesis-unknown"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "repository_path": "shared/clinical_demo_profile.ts",
+      "sha256": "516f1ee0d36f67c98b14c0893f23151337f9b103f2a018634b786465dc591565",
+      "snapshot_path": "source/shared/clinical_demo_profile.ts"
+    },
+    {
+      "repository_path": "shared/clinical_demo_selector.ts",
+      "sha256": "c63528c8170dbd88b1abde636274c94d125a1f634420ef2bfda80dc3ed7c5e07",
+      "snapshot_path": "source/shared/clinical_demo_selector.ts"
+    },
+    {
+      "repository_path": "shared/clinical_demo.ts",
+      "sha256": "76dbc2e2044b7d99e8a24f60643d27f95f0c94bb34b7d2aa2d55e1a52d312d91",
+      "snapshot_path": "source/shared/clinical_demo.ts"
+    },
+    {
+      "repository_path": "docs/history/evidence/2026-10-01/clinical-case-a.json",
+      "sha256": "a1e4e0853a1922f75f8866256bf394f631c401d41b04815c14f55de5f678dc29",
+      "snapshot_path": "source/docs/history/evidence/2026-10-01/clinical-case-a.json"
+    }
+  ],
+  "version": "g2-synthetic-input-1"
+}

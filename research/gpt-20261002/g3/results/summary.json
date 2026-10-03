@@ -1,0 +1,2802 @@
+{
+  "all_analytic_checks_within_frozen_tolerance": true,
+  "analytic_checks": [
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "confirm_100",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "confirm_200",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0030000000000000443,
+      "expected": 0.050000000000000044,
+      "method": "explore_100",
+      "observed": 0.047,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422448,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0030000000000000443,
+      "expected": 0.050000000000000044,
+      "method": "explore_100_bonferroni",
+      "observed": 0.047,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422448,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.003400000000000042,
+      "expected": 0.050000000000000044,
+      "method": "explore_200",
+      "observed": 0.0466,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422448,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.003400000000000042,
+      "expected": 0.050000000000000044,
+      "method": "explore_200_bonferroni",
+      "observed": 0.0466,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422448,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "no_search_100",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "no_search_200",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0040000000000000036,
+      "expected": 0.05,
+      "method": "confirm_100",
+      "observed": 0.046,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.005600000000000001,
+      "expected": 0.05,
+      "method": "confirm_200",
+      "observed": 0.0444,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.011019062500000232,
+      "expected": 0.22621906250000023,
+      "method": "explore_100",
+      "observed": 0.2152,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.02958411721360139,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0006099501000000895,
+      "expected": 0.04900995010000009,
+      "method": "explore_100_bonferroni",
+      "observed": 0.0484,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.015265643597830324,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.004219062500000231,
+      "expected": 0.22621906250000023,
+      "method": "explore_200",
+      "observed": 0.222,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.02958411721360139,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.001209950100000086,
+      "expected": 0.04900995010000009,
+      "method": "explore_200_bonferroni",
+      "observed": 0.0478,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.015265643597830324,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "no_search_100",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "no_search_200",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0032000000000000015,
+      "expected": 0.05,
+      "method": "confirm_100",
+      "observed": 0.0468,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0006000000000000033,
+      "expected": 0.05,
+      "method": "confirm_200",
+      "observed": 0.0494,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.006514077591458056,
+      "expected": 0.6415140775914581,
+      "method": "explore_100",
+      "observed": 0.635,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.03390971585279349,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0008301247468332357,
+      "expected": 0.04883012474683324,
+      "method": "explore_100_bonferroni",
+      "observed": 0.048,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.01523905240886748,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.009114077591458103,
+      "expected": 0.6415140775914581,
+      "method": "explore_200",
+      "observed": 0.6324,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.03390971585279349,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0036301247468332395,
+      "expected": 0.04883012474683324,
+      "method": "explore_200_bonferroni",
+      "observed": 0.0452,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.01523905240886748,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "no_search_100",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0005999999999999964,
+      "expected": 0.05,
+      "method": "no_search_200",
+      "observed": 0.0506,
+      "scenario": "null",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.015411035007422441,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0017612316729437305,
+      "expected": 0.8508387683270563,
+      "method": "confirm_100",
+      "observed": 0.8526,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.02519049013405199,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0015752907277906125,
+      "expected": 0.9887752907277906,
+      "method": "confirm_200",
+      "observed": 0.9872,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.007449401041011217,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.007761231672943736,
+      "expected": 0.8508387683270563,
+      "method": "explore_100",
+      "observed": 0.8586,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.02519049013405199,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.007761231672943736,
+      "expected": 0.8508387683270563,
+      "method": "explore_100_bonferroni",
+      "observed": 0.8586,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.02519049013405199,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.002424709272209391,
+      "expected": 0.9887752907277906,
+      "method": "explore_200",
+      "observed": 0.9912,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.007449401041011217,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.002424709272209391,
+      "expected": 0.9887752907277906,
+      "method": "explore_200_bonferroni",
+      "observed": 0.9912,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.007449401041011217,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0017612316729437305,
+      "expected": 0.8508387683270563,
+      "method": "no_search_100",
+      "observed": 0.8526,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.02519049013405199,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0015752907277906125,
+      "expected": 0.9887752907277906,
+      "method": "no_search_200",
+      "observed": 0.9872,
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "tolerance_5_mc_se": 0.007449401041011217,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0017612316729437305,
+      "expected": 0.8508387683270563,
+      "method": "no_search_100",
+      "observed": 0.8526,
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.02519049013405199,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0015752907277906125,
+      "expected": 0.9887752907277906,
+      "method": "no_search_200",
+      "observed": 0.9872,
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "tolerance_5_mc_se": 0.007449401041011217,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0017612316729437305,
+      "expected": 0.8508387683270563,
+      "method": "no_search_100",
+      "observed": 0.8526,
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.02519049013405199,
+      "within_frozen_tolerance": true
+    },
+    {
+      "absolute_error": 0.0015752907277906125,
+      "expected": 0.9887752907277906,
+      "method": "no_search_200",
+      "observed": 0.9872,
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "tolerance_5_mc_se": 0.007449401041011217,
+      "within_frozen_tolerance": true
+    }
+  ],
+  "paired_comparisons": [
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_100",
+      "mc_normal_95": [
+        -0.012062219400837633,
+        0.004862219400837632
+      ],
+      "mc_se": 0.004317538213756243,
+      "rejection_rate_difference": -0.0036,
+      "right": "confirm_100",
+      "scenario": "null",
+      "search_budget": 1
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        -0.011120751700901625,
+        0.0031207517009016247
+      ],
+      "mc_se": 0.0036331033412191284,
+      "rejection_rate_difference": -0.004,
+      "right": "confirm_100",
+      "scenario": "null",
+      "search_budget": 1
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        -0.01195660795935408,
+        0.00395660795935408
+      ],
+      "mc_se": 0.004059568452336263,
+      "rejection_rate_difference": -0.004,
+      "right": "confirm_200",
+      "scenario": "null",
+      "search_budget": 1
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_100",
+      "mc_normal_95": [
+        0.15647944167214559,
+        0.1819205583278544
+      ],
+      "mc_se": 0.0064902000384662924,
+      "rejection_rate_difference": 0.1692,
+      "right": "confirm_100",
+      "scenario": "null",
+      "search_budget": 5
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.16405028837582625,
+        0.18794971162417373
+      ],
+      "mc_se": 0.00609690367702241,
+      "rejection_rate_difference": 0.176,
+      "right": "confirm_100",
+      "scenario": "null",
+      "search_budget": 5
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.16521345622347386,
+        0.18998654377652616
+      ],
+      "mc_se": 0.006319781319569961,
+      "rejection_rate_difference": 0.1776,
+      "right": "confirm_200",
+      "scenario": "null",
+      "search_budget": 5
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_100",
+      "mc_normal_95": [
+        0.5735886995844053,
+        0.6028113004155946
+      ],
+      "mc_se": 0.007454882095205175,
+      "rejection_rate_difference": 0.5882,
+      "right": "confirm_100",
+      "scenario": "null",
+      "search_budget": 20
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.5712741228579192,
+        0.5999258771420808
+      ],
+      "mc_se": 0.007309255300138894,
+      "rejection_rate_difference": 0.5856,
+      "right": "confirm_100",
+      "scenario": "null",
+      "search_budget": 20
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.5685343112913912,
+        0.5974656887086087
+      ],
+      "mc_se": 0.0073805890428152,
+      "rejection_rate_difference": 0.583,
+      "right": "confirm_200",
+      "scenario": "null",
+      "search_budget": 20
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_100",
+      "mc_normal_95": [
+        -0.0078038693258300745,
+        0.019803869325830073
+      ],
+      "mc_se": 0.007042919887667956,
+      "rejection_rate_difference": 0.006,
+      "right": "confirm_100",
+      "scenario": "one_signal",
+      "search_budget": 1
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.12897363682677826,
+        0.14822636317322174
+      ],
+      "mc_se": 0.004911500032221653,
+      "rejection_rate_difference": 0.1386,
+      "right": "confirm_100",
+      "scenario": "one_signal",
+      "search_budget": 1
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.0003240858484470817,
+        0.0076759141515529185
+      ],
+      "mc_se": 0.0018755008666220712,
+      "rejection_rate_difference": 0.004,
+      "right": "confirm_200",
+      "scenario": "one_signal",
+      "search_budget": 1
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_100",
+      "mc_normal_95": [
+        0.08975213128429588,
+        0.11624786871570411
+      ],
+      "mc_se": 0.006759240894323378,
+      "rejection_rate_difference": 0.103,
+      "right": "confirm_100",
+      "scenario": "one_signal",
+      "search_budget": 5
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.20027762167868404,
+        0.22292237832131598
+      ],
+      "mc_se": 0.005776829783927383,
+      "rejection_rate_difference": 0.2116,
+      "right": "confirm_100",
+      "scenario": "one_signal",
+      "search_budget": 5
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.08028079860323138,
+        0.09651920139676863
+      ],
+      "mc_se": 0.004142525812112798,
+      "rejection_rate_difference": 0.0884,
+      "right": "confirm_200",
+      "scenario": "one_signal",
+      "search_budget": 5
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_100",
+      "mc_normal_95": [
+        0.24696205331927432,
+        0.27383794668072575
+      ],
+      "mc_se": 0.0068562212299422476,
+      "rejection_rate_difference": 0.2604,
+      "right": "confirm_100",
+      "scenario": "one_signal",
+      "search_budget": 20
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.30054097862425305,
+        0.32625902137574697
+      ],
+      "mc_se": 0.006560845748787871,
+      "rejection_rate_difference": 0.3134,
+      "right": "confirm_100",
+      "scenario": "one_signal",
+      "search_budget": 20
+    },
+    {
+      "denominator_paired_trials": 5000,
+      "left": "explore_200",
+      "mc_normal_95": [
+        0.1969311166455757,
+        0.2194688833544243
+      ],
+      "mc_se": 0.005749535931941511,
+      "rejection_rate_difference": 0.2082,
+      "right": "confirm_200",
+      "scenario": "one_signal",
+      "search_budget": 20
+    }
+  ],
+  "protocol_sha256": "24fbe9963cd014879b5291709cdee323d84ce64fb18e88644e87b9772445b647",
+  "raw_rows": 10000,
+  "raw_schema": "One row per independent scenario/trial; A0..A19 B0..B19 C0..C19 are full precision z sufficient statistics. All method results derive from these bytes via evaluate().",
+  "rows": [
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.08075222357650357,
+      "mean_selected_effect": -6.887177664873255e-05,
+      "method": "confirm_100",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 300,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.056782466501339585,
+      "mean_selected_effect": -0.0009989916093587807,
+      "method": "confirm_200",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.050000000000000044,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 235,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04147349616779377,
+          0.053222041794428
+        ],
+        "rate": 0.047
+      },
+      "mean_absolute_selected_effect_descriptive": 0.07893389156187759,
+      "mean_selected_effect": 0.00044238341559343306,
+      "method": "explore_100",
+      "rejections": {
+        "count": 235,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04147349616779377,
+          0.053222041794428
+        ],
+        "rate": 0.047
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.050000000000000044,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 235,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04147349616779377,
+          0.053222041794428
+        ],
+        "rate": 0.047
+      },
+      "mean_absolute_selected_effect_descriptive": 0.07893389156187759,
+      "mean_selected_effect": 0.00044238341559343306,
+      "method": "explore_100_bonferroni",
+      "rejections": {
+        "count": 235,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04147349616779377,
+          0.053222041794428
+        ],
+        "rate": 0.047
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.050000000000000044,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 233,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04109752422905179,
+          0.05279862789472603
+        ],
+        "rate": 0.0466
+      },
+      "mean_absolute_selected_effect_descriptive": 0.05650703860065872,
+      "mean_selected_effect": 0.00018675581947235159,
+      "method": "explore_200",
+      "rejections": {
+        "count": 233,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04109752422905179,
+          0.05279862789472603
+        ],
+        "rate": 0.0466
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.050000000000000044,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 233,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04109752422905179,
+          0.05279862789472603
+        ],
+        "rate": 0.0466
+      },
+      "mean_absolute_selected_effect_descriptive": 0.05650703860065872,
+      "mean_selected_effect": 0.00018675581947235159,
+      "method": "explore_200_bonferroni",
+      "rejections": {
+        "count": 233,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04109752422905179,
+          0.05279862789472603
+        ],
+        "rate": 0.0466
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.08075222357650357,
+      "mean_selected_effect": -6.887177664873255e-05,
+      "method": "no_search_100",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.056782466501339585,
+      "mean_selected_effect": -0.0009989916093587807,
+      "method": "no_search_200",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 1000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 230,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04053378733537788,
+          0.052163286030734
+        ],
+        "rate": 0.046
+      },
+      "mean_absolute_selected_effect_descriptive": 0.07919129874725027,
+      "mean_selected_effect": -0.00022368559363084164,
+      "method": "confirm_100",
+      "rejections": {
+        "count": 230,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04053378733537788,
+          0.052163286030734
+        ],
+        "rate": 0.046
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 1500,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 222,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.03903182088142633,
+          0.05046770913090974
+        ],
+        "rate": 0.0444
+      },
+      "mean_absolute_selected_effect_descriptive": 0.055418534366109815,
+      "mean_selected_effect": 0.0003610063150890201,
+      "method": "confirm_200",
+      "rejections": {
+        "count": 222,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.03903182088142633,
+          0.05046770913090974
+        ],
+        "rate": 0.0444
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.22621906250000023,
+      "consumed_observations": 500,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 1076,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.20402986690022418,
+          0.2268074161276804
+        ],
+        "rate": 0.2152
+      },
+      "mean_absolute_selected_effect_descriptive": 0.15519035240174844,
+      "mean_selected_effect": 0.0008202756552761121,
+      "method": "explore_100",
+      "rejections": {
+        "count": 1076,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.20402986690022418,
+          0.2268074161276804
+        ],
+        "rate": 0.2152
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.04900995010000009,
+      "consumed_observations": 500,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 242,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04279030408863613,
+          0.05470308430813947
+        ],
+        "rate": 0.0484
+      },
+      "mean_absolute_selected_effect_descriptive": 0.15519035240174844,
+      "mean_selected_effect": 0.0008202756552761121,
+      "method": "explore_100_bonferroni",
+      "rejections": {
+        "count": 242,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04279030408863613,
+          0.05470308430813947
+        ],
+        "rate": 0.0484
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.22621906250000023,
+      "consumed_observations": 1000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 1110,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.21069647893692048,
+          0.23373036334453137
+        ],
+        "rate": 0.222
+      },
+      "mean_absolute_selected_effect_descriptive": 0.11062872229069262,
+      "mean_selected_effect": 0.0028472142519642136,
+      "method": "explore_200",
+      "rejections": {
+        "count": 1110,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.21069647893692048,
+          0.23373036334453137
+        ],
+        "rate": 0.222
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.04900995010000009,
+      "consumed_observations": 1000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 239,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.042225787297577644,
+          0.05406852234153203
+        ],
+        "rate": 0.0478
+      },
+      "mean_absolute_selected_effect_descriptive": 0.11062872229069262,
+      "mean_selected_effect": 0.0028472142519642136,
+      "method": "explore_200_bonferroni",
+      "rejections": {
+        "count": 239,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.042225787297577644,
+          0.05406852234153203
+        ],
+        "rate": 0.0478
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.08075222357650357,
+      "mean_selected_effect": -6.887177664873255e-05,
+      "method": "no_search_100",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.056782466501339585,
+      "mean_selected_effect": -0.0009989916093587807,
+      "method": "no_search_200",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 4000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 234,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04128549558366107,
+          0.05301034945933872
+        ],
+        "rate": 0.0468
+      },
+      "mean_absolute_selected_effect_descriptive": 0.07899473264776569,
+      "mean_selected_effect": -0.00011667229990488268,
+      "method": "confirm_100",
+      "rejections": {
+        "count": 234,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04128549558366107,
+          0.05301034945933872
+        ],
+        "rate": 0.0468
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 6000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 247,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04373172063796704,
+          0.055760132354918446
+        ],
+        "rate": 0.0494
+      },
+      "mean_absolute_selected_effect_descriptive": 0.05659500557689966,
+      "mean_selected_effect": 0.0015960280496413368,
+      "method": "confirm_200",
+      "rejections": {
+        "count": 247,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.04373172063796704,
+          0.055760132354918446
+        ],
+        "rate": 0.0494
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.6415140775914581,
+      "consumed_observations": 2000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 3175,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.6215567628103582,
+          0.6482359576644765
+        ],
+        "rate": 0.635
+      },
+      "mean_absolute_selected_effect_descriptive": 0.21612695170573856,
+      "mean_selected_effect": 0.0005485272760179859,
+      "method": "explore_100",
+      "rejections": {
+        "count": 3175,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.6215567628103582,
+          0.6482359576644765
+        ],
+        "rate": 0.635
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.04883012474683324,
+      "consumed_observations": 2000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 240,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.042413931418707994,
+          0.05428007113962365
+        ],
+        "rate": 0.048
+      },
+      "mean_absolute_selected_effect_descriptive": 0.21612695170573856,
+      "mean_selected_effect": 0.0005485272760179859,
+      "method": "explore_100_bonferroni",
+      "rejections": {
+        "count": 240,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.042413931418707994,
+          0.05428007113962365
+        ],
+        "rate": 0.048
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.6415140775914581,
+      "consumed_observations": 4000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 3162,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.6189387834075785,
+          0.6456579291173704
+        ],
+        "rate": 0.6324
+      },
+      "mean_absolute_selected_effect_descriptive": 0.15231690268404088,
+      "mean_selected_effect": -0.0009016125266260701,
+      "method": "explore_200",
+      "rejections": {
+        "count": 3162,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.6189387834075785,
+          0.6456579291173704
+        ],
+        "rate": 0.6324
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.04883012474683324,
+      "consumed_observations": 4000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 226,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.03978255839785057,
+          0.051315743291373395
+        ],
+        "rate": 0.0452
+      },
+      "mean_absolute_selected_effect_descriptive": 0.15231690268404088,
+      "mean_selected_effect": -0.0009016125266260701,
+      "method": "explore_200_bonferroni",
+      "rejections": {
+        "count": 226,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.03978255839785057,
+          0.051315743291373395
+        ],
+        "rate": 0.0452
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.08075222357650357,
+      "mean_selected_effect": -6.887177664873255e-05,
+      "method": "no_search_100",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.05,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "mean_absolute_selected_effect_descriptive": 0.056782466501339585,
+      "mean_selected_effect": -0.0009989916093587807,
+      "method": "no_search_200",
+      "rejections": {
+        "count": 253,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.044862312290198145,
+          0.0570276982180192
+        ],
+        "rate": 0.0506
+      },
+      "scenario": "null",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "true_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.8508387683270563,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.3008131608047515,
+      "mean_selected_effect": 0.3006953872002919,
+      "method": "confirm_100",
+      "rejections": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.9887752907277906,
+      "consumed_observations": 300,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30023024704784124,
+      "mean_selected_effect": 0.30023024704784124,
+      "method": "confirm_200",
+      "rejections": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.8508387683270563,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30066496522963637,
+      "mean_selected_effect": 0.3005773482522033,
+      "method": "explore_100",
+      "rejections": {
+        "count": 4293,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8486665737962836,
+          0.8679828303687215
+        ],
+        "rate": 0.8586
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4293,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8486665737962836,
+          0.8679828303687215
+        ],
+        "rate": 0.8586
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.8508387683270563,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30066496522963637,
+      "mean_selected_effect": 0.3005773482522033,
+      "method": "explore_100_bonferroni",
+      "rejections": {
+        "count": 4293,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8486665737962836,
+          0.8679828303687215
+        ],
+        "rate": 0.8586
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4293,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8486665737962836,
+          0.8679828303687215
+        ],
+        "rate": 0.8586
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.9887752907277906,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30063880054998254,
+      "mean_selected_effect": 0.30063636772624736,
+      "method": "explore_200",
+      "rejections": {
+        "count": 4956,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9882078470491492,
+          0.9934379625600268
+        ],
+        "rate": 0.9912
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4956,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9882078470491492,
+          0.9934379625600268
+        ],
+        "rate": 0.9912
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.9887752907277906,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30063880054998254,
+      "mean_selected_effect": 0.30063636772624736,
+      "method": "explore_200_bonferroni",
+      "rejections": {
+        "count": 4956,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9882078470491492,
+          0.9934379625600268
+        ],
+        "rate": 0.9912
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4956,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9882078470491492,
+          0.9934379625600268
+        ],
+        "rate": 0.9912
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.8508387683270563,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.3008131608047515,
+      "mean_selected_effect": 0.3006953872002919,
+      "method": "no_search_100",
+      "rejections": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.9887752907277906,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30023024704784124,
+      "mean_selected_effect": 0.30023024704784124,
+      "method": "no_search_200",
+      "rejections": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      },
+      "scenario": "one_signal",
+      "search_budget": 1,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      }
+    },
+    {
+      "consumed_observations": 1000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 15,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0018189297776376758,
+          0.004944165955749106
+        ],
+        "rate": 0.003
+      },
+      "mean_absolute_selected_effect_descriptive": 0.2812044154331926,
+      "mean_selected_effect": 0.2740371776882078,
+      "method": "confirm_100",
+      "rejections": {
+        "count": 3905,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7693233198626251,
+          0.7922452316442529
+        ],
+        "rate": 0.781
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 4562,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9042437718154798,
+          0.9199230276202371
+        ],
+        "rate": 0.9124
+      },
+      "true_discoveries": {
+        "count": 3890,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7662696366554688,
+          0.7893035210630795
+        ],
+        "rate": 0.778
+      }
+    },
+    {
+      "consumed_observations": 1500,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 19,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.002434138850885676,
+          0.005927728559389015
+        ],
+        "rate": 0.0038
+      },
+      "mean_absolute_selected_effect_descriptive": 0.2789966096807659,
+      "mean_selected_effect": 0.2744151050725258,
+      "method": "confirm_200",
+      "rejections": {
+        "count": 4521,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8957290304689461,
+          0.9120503592786698
+        ],
+        "rate": 0.9042
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 4562,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9042437718154798,
+          0.9199230276202371
+        ],
+        "rate": 0.9124
+      },
+      "true_discoveries": {
+        "count": 4502,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8917894877355221,
+          0.9083957365468762
+        ],
+        "rate": 0.9004
+      }
+    },
+    {
+      "consumed_observations": 500,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 244,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.043166788231898734,
+          0.05512598600332083
+        ],
+        "rate": 0.0488
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30547482717880264,
+      "mean_selected_effect": 0.2864274577665175,
+      "method": "explore_100",
+      "rejections": {
+        "count": 4420,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8748276952665284,
+          0.8925827096396679
+        ],
+        "rate": 0.884
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 4562,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9042437718154798,
+          0.9199230276202371
+        ],
+        "rate": 0.9124
+      },
+      "true_discoveries": {
+        "count": 4176,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8246599889650017,
+          0.8452253436510322
+        ],
+        "rate": 0.8352
+      }
+    },
+    {
+      "consumed_observations": 500,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 91,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.014847689638538625,
+          0.022292067955718423
+        ],
+        "rate": 0.0182
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30547482717880264,
+      "mean_selected_effect": 0.2864274577665175,
+      "method": "explore_100_bonferroni",
+      "rejections": {
+        "count": 3410,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.668956183965317,
+          0.6947643725266824
+        ],
+        "rate": 0.682
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 4562,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9042437718154798,
+          0.9199230276202371
+        ],
+        "rate": 0.9124
+      },
+      "true_discoveries": {
+        "count": 3319,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.6505844254322692,
+          0.67676407541053
+        ],
+        "rate": 0.6638
+      }
+    },
+    {
+      "consumed_observations": 1000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 29,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.004041457970253664,
+          0.008317338632240797
+        ],
+        "rate": 0.0058
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30085702501849637,
+      "mean_selected_effect": 0.29941564340087673,
+      "method": "explore_200",
+      "rejections": {
+        "count": 4963,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.989817257800601,
+          0.9946264022431288
+        ],
+        "rate": 0.9926
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 4961,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9893555304144359,
+          0.9942887437908499
+        ],
+        "rate": 0.9922
+      },
+      "true_discoveries": {
+        "count": 4934,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9832420141879336,
+          0.989610551198359
+        ],
+        "rate": 0.9868
+      }
+    },
+    {
+      "consumed_observations": 1000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 18,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.002278440754413016,
+          0.005683733736639697
+        ],
+        "rate": 0.0036
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30085702501849637,
+      "mean_selected_effect": 0.29941564340087673,
+      "method": "explore_200_bonferroni",
+      "rejections": {
+        "count": 4779,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9497443776640049,
+          0.9611557852428811
+        ],
+        "rate": 0.9558
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 4961,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9893555304144359,
+          0.9942887437908499
+        ],
+        "rate": 0.9922
+      },
+      "true_discoveries": {
+        "count": 4761,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9459314776584681,
+          0.9577742127024224
+        ],
+        "rate": 0.9522
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.8508387683270563,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.3008131608047515,
+      "mean_selected_effect": 0.3006953872002919,
+      "method": "no_search_100",
+      "rejections": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.9887752907277906,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30023024704784124,
+      "mean_selected_effect": 0.30023024704784124,
+      "method": "no_search_200",
+      "rejections": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      },
+      "scenario": "one_signal",
+      "search_budget": 5,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      }
+    },
+    {
+      "consumed_observations": 4000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 58,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.00898452345001099,
+          0.01496536780992081
+        ],
+        "rate": 0.0116
+      },
+      "mean_absolute_selected_effect_descriptive": 0.25405193420883354,
+      "mean_selected_effect": 0.23753896543974662,
+      "method": "confirm_100",
+      "rejections": {
+        "count": 3415,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.669966269946226,
+          0.6957527511418832
+        ],
+        "rate": 0.683
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 3937,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7758408026548868,
+          0.7985179222670945
+        ],
+        "rate": 0.7874
+      },
+      "true_discoveries": {
+        "count": 3357,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.65825345205227,
+          0.6842833797209644
+        ],
+        "rate": 0.6714
+      }
+    },
+    {
+      "consumed_observations": 6000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 55,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.008461172335733189,
+          0.014289640166532681
+        ],
+        "rate": 0.011
+      },
+      "mean_absolute_selected_effect_descriptive": 0.24866587059171244,
+      "mean_selected_effect": 0.23729204366944012,
+      "method": "confirm_200",
+      "rejections": {
+        "count": 3941,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.776655776142076,
+          0.7993017204567932
+        ],
+        "rate": 0.7882
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 3937,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7758408026548868,
+          0.7985179222670945
+        ],
+        "rate": 0.7874
+      },
+      "true_discoveries": {
+        "count": 3886,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7654554681520698,
+          0.7885189178895906
+        ],
+        "rate": 0.7772
+      }
+    },
+    {
+      "consumed_observations": 2000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 886,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.16686516431680914,
+          0.18803046405891977
+        ],
+        "rate": 0.1772
+      },
+      "mean_absolute_selected_effect_descriptive": 0.3141715670166106,
+      "mean_selected_effect": 0.25867068929103293,
+      "method": "explore_100",
+      "rejections": {
+        "count": 4717,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9366480159464105,
+          0.9494711859687129
+        ],
+        "rate": 0.9434
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 3937,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7758408026548868,
+          0.7985179222670945
+        ],
+        "rate": 0.7874
+      },
+      "true_discoveries": {
+        "count": 3831,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7542667836985781,
+          0.7777244917858734
+        ],
+        "rate": 0.7662
+      }
+    },
+    {
+      "consumed_observations": 2000,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 155,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.026544386492613793,
+          0.036175717931849795
+        ],
+        "rate": 0.031
+      },
+      "mean_absolute_selected_effect_descriptive": 0.3141715670166106,
+      "mean_selected_effect": 0.25867068929103293,
+      "method": "explore_100_bonferroni",
+      "rejections": {
+        "count": 2567,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.499540967597001,
+          0.5272384579908713
+        ],
+        "rate": 0.5134
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 3937,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.7758408026548868,
+          0.7985179222670945
+        ],
+        "rate": 0.7874
+      },
+      "true_discoveries": {
+        "count": 2412,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.46856837285966313,
+          0.496258650248803
+        ],
+        "rate": 0.4824
+      }
+    },
+    {
+      "consumed_observations": 4000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 131,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.022123116236859242,
+          0.031004358126276898
+        ],
+        "rate": 0.0262
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30153981286213094,
+      "mean_selected_effect": 0.29584080958098846,
+      "method": "explore_200",
+      "rejections": {
+        "count": 4982,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9943162662633602,
+          0.997721559245587
+        ],
+        "rate": 0.9964
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 4856,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9661902582001316,
+          0.9754862594868465
+        ],
+        "rate": 0.9712
+      },
+      "true_discoveries": {
+        "count": 4851,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9651139794808733,
+          0.9745640736099951
+        ],
+        "rate": 0.9702
+      }
+    },
+    {
+      "consumed_observations": 4000,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 47,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0070765572156887115,
+          0.012476711932801345
+        ],
+        "rate": 0.0094
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30153981286213094,
+      "mean_selected_effect": 0.29584080958098846,
+      "method": "explore_200_bonferroni",
+      "rejections": {
+        "count": 4483,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8878536604181212,
+          0.9047373983990595
+        ],
+        "rate": 0.8966
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 4856,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9661902582001316,
+          0.9754862594868465
+        ],
+        "rate": 0.9712
+      },
+      "true_discoveries": {
+        "count": 4436,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8781325107620659,
+          0.8956729808516819
+        ],
+        "rate": 0.8872
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.8508387683270563,
+      "consumed_observations": 100,
+      "evaluation_n_per_cohort": 100,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.3008131608047515,
+      "mean_selected_effect": 0.3006953872002919,
+      "method": "no_search_100",
+      "rejections": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4263,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.8425031765634646,
+          0.8621554400248813
+        ],
+        "rate": 0.8526
+      }
+    },
+    {
+      "analytic_rejection_probability": 0.9887752907277906,
+      "consumed_observations": 200,
+      "evaluation_n_per_cohort": 200,
+      "false_discoveries": {
+        "count": 0,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.0,
+          0.0007677019450571241
+        ],
+        "rate": 0.0
+      },
+      "mean_absolute_selected_effect_descriptive": 0.30023024704784124,
+      "mean_selected_effect": 0.30023024704784124,
+      "method": "no_search_200",
+      "rejections": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      },
+      "scenario": "one_signal",
+      "search_budget": 20,
+      "selected_signal": {
+        "count": 5000,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.9992322980549431,
+          1.0
+        ],
+        "rate": 1.0
+      },
+      "true_discoveries": {
+        "count": 4936,
+        "denominator": 5000,
+        "mc_wilson_95": [
+          0.983688986793039,
+          0.9899629644316974
+        ],
+        "rate": 0.9872
+      }
+    }
+  ]
+}

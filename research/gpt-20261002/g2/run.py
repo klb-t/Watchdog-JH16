@@ -1,0 +1,238 @@
+#!/usr/bin/env python3
+"""Offline G2 fixture pilot; Python standard library only. No clinical execution."""
+from __future__ import annotations
+import argparse
+import datetime
+from fractions import Fraction
+import hashlib
+import json
+from pathlib import Path
+import platform
+import sys
+import time
+
+ROOT = Path(__file__).resolve().parent
+
+
+def encode(value):
+    return (json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + '\n').encode()
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def load_verified():
+    frozen = json.loads((ROOT / 'freeze.json').read_bytes())
+    for path, expected in frozen['files'].items():
+        if sha(ROOT / path) != expected:
+            raise ValueError(f'Frozen input changed: {path}')
+    inputs = json.loads((ROOT / 'inputs.json').read_bytes())
+    packaging = json.loads((ROOT / 'snapshot-packaging.json').read_bytes())
+    for source in inputs['sources']:
+        stored_path = packaging.get(source['snapshot_path'], source['snapshot_path'])
+        if sha(ROOT / stored_path) != source['sha256']:
+            raise ValueError(f'Source snapshot changed: {source["snapshot_path"]}')
+    return inputs
+
+
+def matching_reasons(scenario, item, test):
+    """Narrow prospective-matching contract, not a port of the full clinical executor."""
+    dep = item['dependency']
+    reasons = []
+    if item['state'] != 'missing':
+        reasons.append('not_prospectively_missing')
+    if not item['ruleEligible']:
+        reasons.append('rule_ineligible')
+    if item['ruleConflict']:
+        reasons.append('rule_conflict')
+    if dep['observationId'] is not None:
+        reasons.append('pinned_observation_not_replaceable')
+    if scenario['referenceTime']['state'] != 'known':
+        reasons.append('missing_decision_time')
+    if not test['available']:
+        reasons.append('test_unavailable')
+    if test['quantityId'] != dep['quantityId']:
+        reasons.append('quantity_mismatch')
+    if test['unit'] != dep['unit']:
+        reasons.append('unit_mismatch')
+    if not set(test['allowedModes']).intersection(dep['allowedModes']):
+        reasons.append('mode_mismatch')
+    for key in ('species', 'population', 'setting'):
+        context = scenario['context'][key]
+        if context['state'] != 'known' or context['value'] not in test['applicability'][key]:
+            reasons.append('context_mismatch:' + key)
+    window = dep['eventWindow']
+    event = test['timing']['eventOffsetMs']
+    measurement = test['timing']['measurementOffsetMs']
+    if window and not window['minOffsetMs'] <= event <= window['maxOffsetMs']:
+        reasons.append('event_outside_window')
+    if measurement < event or event < 0 or event % 1000 or measurement % 1000:
+        reasons.append('invalid_prospective_timing')
+    return reasons
+
+
+class Experiment:
+    def __init__(self, scenario):
+        self.s = scenario
+        self.tests = {x['profileTest']['id']: x for x in scenario['tests']}
+        self.order = [x['profileTest']['id'] for x in scenario['tests']]
+        assert len(self.tests) == len(self.order), 'Duplicate test IDs'
+        self.deps = {x['dependency']['id']: x for x in scenario['dependencies']}
+        assert len(self.deps) == len(scenario['dependencies']), 'Duplicate dependency IDs'
+        assert all(type(x['experimentalCost']) is int and x['experimentalCost'] > 0 for x in self.tests.values())
+        assert all(set(x['experimentalRequires']) <= self.tests.keys() for x in self.tests.values())
+        self.edges = {test_id: {dep_id for dep_id, dep in self.deps.items()
+                              if not matching_reasons(self.s, dep, item['profileTest'])}
+                      for test_id, item in self.tests.items()}
+        self.closures = {test_id: self.closure(test_id, set()) for test_id in self.tests}
+        self.oracle_sets = self.enumerate_oracle()
+
+    def closure(self, test_id, stack):
+        if test_id in stack:
+            raise ValueError('Cyclic acquisition prerequisite')
+        result = {test_id}
+        for prior in self.tests[test_id]['experimentalRequires']:
+            result |= self.closure(prior, stack | {test_id})
+        return result
+
+    def cost(self, selected):
+        return sum(self.tests[x]['experimentalCost'] for x in selected)
+
+    def covered(self, selected):
+        return set().union(*(self.edges[x] for x in selected)) if selected else set()
+
+    def oracle_covered(self, selected):
+        # Independent per-dependency scan, not set-union over cached edge sets.
+        return {dep_id for dep_id, dep in self.deps.items()
+                if any(not matching_reasons(self.s, dep, self.tests[x]['profileTest']) for x in selected)}
+
+    def available(self, selected):
+        return all(self.tests[x]['profileTest']['available'] for x in selected)
+
+    def enumerate_oracle(self):
+        rows = []
+        ordered = sorted(self.tests)
+        for mask in range(1 << len(ordered)):
+            selected = {name for i, name in enumerate(ordered) if mask & (1 << i)}
+            if not self.available(selected):
+                continue
+            if any(not set(self.tests[name]['experimentalRequires']) <= selected for name in selected):
+                continue
+            independent = self.oracle_covered(selected)
+            assert independent == self.covered(selected), 'Coverage implementation disagrees with oracle'
+            rows.append({'test_ids': sorted(selected), 'cost': self.cost(selected), 'coverage': len(independent), 'covered_dependency_ids': sorted(independent)})
+        return rows
+
+    def select(self, budget, method):
+        selected, history = set(), []
+        if method == 'profile_order':
+            for target in self.order:
+                closure = self.closures[target]
+                incremental = closure - selected
+                if target in selected or not self.edges[target] or not self.available(closure):
+                    continue
+                if self.cost(selected | closure) <= budget:
+                    gain = self.covered(closure) - self.covered(selected)
+                    history.append({'target': target, 'added_test_ids': sorted(incremental), 'incremental_cost': self.cost(incremental), 'new_dependency_ids': sorted(gain)})
+                    selected |= closure
+        else:
+            while True:
+                candidates = []
+                for target in sorted(self.tests):
+                    closure = self.closures[target]
+                    incremental = closure - selected
+                    if target in selected or not self.edges[target] or not self.available(closure):
+                        continue
+                    cost = self.cost(incremental)
+                    gain = self.covered(closure) - self.covered(selected)
+                    if gain and self.cost(selected) + cost <= budget:
+                        candidates.append((-Fraction(len(gain), cost), -len(gain), cost, target, closure, gain))
+                if not candidates:
+                    break
+                _, _, cost, target, closure, gain = min(candidates, key=lambda x: x[:4])
+                history.append({'target': target, 'added_test_ids': sorted(closure - selected), 'incremental_cost': cost, 'new_dependency_ids': sorted(gain)})
+                selected |= closure
+        assert self.cost(selected) <= budget
+        assert self.available(selected)
+        assert all(set(self.tests[x]['experimentalRequires']) <= selected for x in selected)
+        assert self.covered(selected) == self.oracle_covered(selected)
+        unresolved = sorted(dep_id for dep_id, dep in self.deps.items() if dep['state'] != 'satisfied')
+        return {'test_ids': sorted(selected), 'cost': self.cost(selected), 'coverage': len(self.covered(selected)),
+                'covered_dependency_ids': sorted(self.covered(selected)), 'choices': history,
+                'redundant_target_cost': sum(x['incremental_cost'] for x in history if not x['new_dependency_ids']),
+                'actual_missing_dependency_ids_before': unresolved, 'actual_missing_dependency_ids_after': unresolved.copy(),
+                'unresolved_hypothesis_ids_before': list(self.s['unresolvedHypothesisIds']), 'unresolved_hypothesis_ids_after': list(self.s['unresolvedHypothesisIds']),
+                'planned_uncovered_dependency_ids': sorted(set(unresolved) - self.covered(selected))}
+
+    def run(self):
+        rows = []
+        for budget in self.s['budgetGrid']:
+            oracle = min((r for r in self.oracle_sets if r['cost'] <= budget), key=lambda r: (-r['coverage'], r['cost'], r['test_ids']))
+            methods = {method: self.select(budget, method) for method in ('profile_order', 'coverage_per_cost')}
+            for item in methods.values():
+                item['oracle_coverage_gap'] = oracle['coverage'] - item['coverage']
+                assert item['oracle_coverage_gap'] >= 0
+                assert item['actual_missing_dependency_ids_before'] == item['actual_missing_dependency_ids_after']
+                assert item['unresolved_hypothesis_ids_before'] == item['unresolved_hypothesis_ids_after']
+            rows.append({'budget': budget, 'methods': methods, 'oracle': oracle})
+        frontier = [r for r in self.oracle_sets if not any(q['cost'] <= r['cost'] and q['coverage'] >= r['coverage']
+                    and (q['cost'] < r['cost'] or q['coverage'] > r['coverage']) for q in self.oracle_sets)]
+        pairs = sorted({(r['cost'], r['coverage']) for r in frontier})
+        rejected = [{'test_id': test_id, 'dependency_id': dep_id, 'reasons': reasons}
+                    for test_id, item in sorted(self.tests.items()) for dep_id, dep in sorted(self.deps.items())
+                    if (reasons := matching_reasons(self.s, dep, item['profileTest']))]
+        return {'id': self.s['id'], 'illustrative_budget': self.s['illustrativeBudget'], 'budgets': rows,
+                'all_feasible_sets': self.oracle_sets, 'enumerated_subsets': 1 << len(self.tests), 'feasible_subsets': len(self.oracle_sets),
+                'pareto_frontier': frontier, 'pareto_cost_coverage_pairs': [{'cost': x, 'coverage': y} for x, y in pairs], 'rejected_edges': rejected}
+
+
+def calculate(inputs):
+    scenarios = [Experiment(s).run() for s in inputs['scenarios']]
+    all_rows = [row for s in scenarios for row in s['budgets']]
+    comparisons = {'heuristic_higher_coverage': 0, 'equal_coverage': 0, 'profile_order_higher_coverage': 0}
+    for row in all_rows:
+        diff = row['methods']['coverage_per_cost']['coverage'] - row['methods']['profile_order']['coverage']
+        comparisons['heuristic_higher_coverage' if diff > 0 else 'profile_order_higher_coverage' if diff < 0 else 'equal_coverage'] += 1
+    ratio = next(x for x in scenarios if x['id'] == 'ratio_counterexample')
+    witness = next(x for x in ratio['budgets'] if x['budget'] == 6)
+    assert witness['methods']['coverage_per_cost']['oracle_coverage_gap'] > 0, 'Known ratio counterexample lost'
+    assert next(x for x in scenarios if x['id'] == 'gates_and_preserved_unknowns')['pareto_cost_coverage_pairs'] == [{'cost': 0, 'coverage': 0}]
+    assert next(x for x in scenarios if x['id'] == 'unavailable')['pareto_cost_coverage_pairs'] == [{'cost': 0, 'coverage': 0}]
+    return {'version': 'g2-results-1', 'base_commit': inputs['base_commit'], 'protocol_sha256': sha(ROOT / 'protocol.json'),
+            'inputs_sha256': sha(ROOT / 'inputs.json'), 'runner_sha256': sha(ROOT / 'run.py'), 'purpose': 'software-demonstration',
+            'summary': {'scenario_count': len(scenarios), 'budget_case_count': len(all_rows), 'comparisons': comparisons,
+                        'oracle_gap_cases': {method: sum(row['methods'][method]['oracle_coverage_gap'] > 0 for row in all_rows) for method in ('profile_order', 'coverage_per_cost')},
+                        'enumerated_subsets': sum(x['enumerated_subsets'] for x in scenarios), 'feasible_subsets': sum(x['feasible_subsets'] for x in scenarios),
+                        'acceptance_checks': 'passed', 'all_actual_missingness_and_unresolved_hypotheses_retained': True},
+            'scenarios': scenarios}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--output', type=Path, help='New output directory; existing files are not overwritten.')
+    parser.add_argument('--verify', type=Path, help='Compare deterministic bytes with a saved results.json.')
+    args = parser.parse_args()
+    if bool(args.output) == bool(args.verify):
+        parser.error('Choose exactly one of --output and --verify')
+    start = time.perf_counter()
+    inputs = load_verified()
+    result = calculate(inputs)
+    output = encode(result)
+    if args.verify:
+        assert args.verify.read_bytes() == output, 'Replay differs from saved deterministic result'
+        print(json.dumps({'replay': 'byte_identical', 'sha256': hashlib.sha256(output).hexdigest(), 'runtime_seconds': time.perf_counter() - start}, sort_keys=True))
+    else:
+        args.output.mkdir(parents=True, exist_ok=False)
+        (args.output / 'results.json').write_bytes(output)
+        receipt = {'started_command': sys.argv, 'finished_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                   'runtime_seconds': time.perf_counter() - start, 'python': sys.version, 'platform': platform.platform(),
+                   'network_calls': 0, 'paid_api_cost': 0, 'python_dependencies': 'standard library only', 'result_sha256': hashlib.sha256(output).hexdigest(),
+                   'base_commit': inputs['base_commit'], 'frozen_protocol_sha256': sha(ROOT / 'protocol.json'), 'runner_sha256': sha(ROOT / 'run.py'),
+                   'artifact_commit': 'Assigned by integrator after creation; resolve Git history for this package path.'}
+        (args.output / 'receipt.json').write_bytes(encode(receipt))
+        print(json.dumps(result['summary'], indent=2))
+
+
+if __name__ == '__main__':
+    main()

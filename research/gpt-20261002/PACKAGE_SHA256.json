@@ -1,0 +1,217 @@
+[
+  {
+    "path": "README.md",
+    "bytes": 2342,
+    "sha256": "530f34022c4cad748decbea05633cdf8327531ad3fb266e9af305c6ae4d578f8"
+  },
+  {
+    "path": "g1/.gitignore",
+    "bytes": 13,
+    "sha256": "32dae3052f331ee34d628ef535709b301259a45df7c7522c4d35dcf49873f00b"
+  },
+  {
+    "path": "g1/RESULT.md",
+    "bytes": 6882,
+    "sha256": "2ff8661f01089030aff76dd8368e8ab493911bde32ba9d0ddaaecc57e813db23"
+  },
+  {
+    "path": "g1/manifest.json",
+    "bytes": 1990,
+    "sha256": "c227b0e1062220e18902fb26bea751b3a1f824f0ade2d194354908d5e4d12d13"
+  },
+  {
+    "path": "g1/protocol.json",
+    "bytes": 4935,
+    "sha256": "62d09d35ea5b9d66a8bb40f9d364a30d9e0f9fd2a5fa26863b859fc1a0f08f00"
+  },
+  {
+    "path": "g1/raw/datasets.jsonl",
+    "bytes": 483914,
+    "sha256": "6064b693aa92c8f5d4347aa04a6f5fbd6d14b50432994290a6389a86c907a81a"
+  },
+  {
+    "path": "g1/raw/receipt.json",
+    "bytes": 1907,
+    "sha256": "48ea37f1a895553ac944c4b5e6efde89afc1aad798d56b6fa5a3c7cde39f7e2a"
+  },
+  {
+    "path": "g1/raw/results.jsonl",
+    "bytes": 455617,
+    "sha256": "ea6724fadb07dd208238563102930cac2fa9b9ad90dad2f47c3b10b876858de3"
+  },
+  {
+    "path": "g1/raw/summary.json",
+    "bytes": 14657,
+    "sha256": "f233afd3910422c18057d4afe408f24e13ff81dcebbc4fcbee4e2e305bc377a1"
+  },
+  {
+    "path": "g1/replay.txt",
+    "bytes": 446,
+    "sha256": "a2e0ec644012f27b39b12d1db7e51b01c44cf3ef67451d6b6d26d5817d4cbd6f"
+  },
+  {
+    "path": "g1/run.py",
+    "bytes": 10044,
+    "sha256": "537e0a4472080032e6b8ca91a846a7f408f81dce0a56245d9bb0f92cab53aa62"
+  },
+  {
+    "path": "g1/run.txt",
+    "bytes": 437,
+    "sha256": "8fc97705ba1980a2450674ab688c310bcc761cd9354436f801a3d780b1ca56e1"
+  },
+  {
+    "path": "g1/test_replay.py",
+    "bytes": 4636,
+    "sha256": "313c1f0eeff0f6d036b8899855ff21ba1507b2a3124753ef10e3ca159223685c"
+  },
+  {
+    "path": "g1/test_replay.txt",
+    "bytes": 986,
+    "sha256": "bd1cea5f97dce9536e8c1cee1a63dfa52e532d43f85c81bb9c39f9f63eb6ed8f"
+  },
+  {
+    "path": "g2/.gitignore",
+    "bytes": 112,
+    "sha256": "e657225b46c90197ba9721fe0cde068c7662aca9840eac44dc2bb71496a7c8d5"
+  },
+  {
+    "path": "g2/CHRONOLOGY.md",
+    "bytes": 1801,
+    "sha256": "9e57af18b3108f9a35c968e38b64c32c6007819cd9545ebac452e4614c90bc8b"
+  },
+  {
+    "path": "g2/RESULT.md",
+    "bytes": 8020,
+    "sha256": "c786f7acefbacbe01fc92daa242a51b2aca2269a475c9c7f8568f2a3a69a130d"
+  },
+  {
+    "path": "g2/freeze.json",
+    "bytes": 463,
+    "sha256": "3704f64bfada65de6fa2bab09acd6c347a7fedbbc8e97679e4a090dfcff77155"
+  },
+  {
+    "path": "g2/inputs.json",
+    "bytes": 52017,
+    "sha256": "f0b3655cdad6dbd8071a296bee18a4255ec191dca91e167018e399a868acf7fb"
+  },
+  {
+    "path": "g2/manifest.json",
+    "bytes": 2089,
+    "sha256": "d4a4dc222c0e850d0e426f9907f6938d8372687356f32262edba5dd124058f08"
+  },
+  {
+    "path": "g2/prepare_inputs.py",
+    "bytes": 9178,
+    "sha256": "78d80b610cb346c3388f417eaf9b65113201115c382741b7fc43ae7d50787593"
+  },
+  {
+    "path": "g2/protocol.json",
+    "bytes": 2981,
+    "sha256": "d186782c8d13f8de920e715cd9f61e7ca7e3c554c6aa0e7d1dd3e2fc249ffba8"
+  },
+  {
+    "path": "g2/replay_initial.py",
+    "bytes": 1053,
+    "sha256": "6196d94f361e7d760b0a7c99b36424518571c4b5d0e16afa7566fd84e104f33a"
+  },
+  {
+    "path": "g2/run.py",
+    "bytes": 13914,
+    "sha256": "00e108173155944fe100567dd29732a792c4857145eba5947357dfde91bfa0b9"
+  },
+  {
+    "path": "g2/runs/initial/receipt.json",
+    "bytes": 883,
+    "sha256": "5f72a64b4e1eaf0bcdf5b66eb83a34b012e0cea400c01331a56ae8a414f604f7"
+  },
+  {
+    "path": "g2/runs/initial/results.json",
+    "bytes": 258797,
+    "sha256": "b24f6b7f1902f9b8bd08ffa67197715cbe8c2ae1222939736871ab9370e319a6"
+  },
+  {
+    "path": "g2/runs/initial/run.py.txt",
+    "bytes": 13764,
+    "sha256": "9d89bb2ce084823d0d87fb5bc857dfbb45d7c84f2355494ba6d11b5459fd9e29"
+  },
+  {
+    "path": "g2/runs/primary/receipt.json",
+    "bytes": 882,
+    "sha256": "ed23975105c68768544c0866fe35115aaf2c121473242fd1f4326c7e36928693"
+  },
+  {
+    "path": "g2/runs/primary/results.json",
+    "bytes": 258797,
+    "sha256": "e92b5b40645a301ad16a880ce529616b12b116a7c43bdb95f4b5731b1610be8c"
+  },
+  {
+    "path": "g2/snapshot-packaging.json",
+    "bytes": 259,
+    "sha256": "c509122ce17f1301a536a777ac5ae775532de4ecc7af8398b49ed2c2a353c291"
+  },
+  {
+    "path": "g2/source/docs/history/evidence/2026-10-01/clinical-case-a.json",
+    "bytes": 25339,
+    "sha256": "a1e4e0853a1922f75f8866256bf394f631c401d41b04815c14f55de5f678dc29"
+  },
+  {
+    "path": "g2/source/shared/clinical_demo.ts.txt",
+    "bytes": 4659,
+    "sha256": "76dbc2e2044b7d99e8a24f60643d27f95f0c94bb34b7d2aa2d55e1a52d312d91"
+  },
+  {
+    "path": "g2/source/shared/clinical_demo_profile.ts.txt",
+    "bytes": 2988,
+    "sha256": "516f1ee0d36f67c98b14c0893f23151337f9b103f2a018634b786465dc591565"
+  },
+  {
+    "path": "g2/source/shared/clinical_demo_selector.ts.txt",
+    "bytes": 9108,
+    "sha256": "c63528c8170dbd88b1abde636274c94d125a1f634420ef2bfda80dc3ed7c5e07"
+  },
+  {
+    "path": "g2/verification.json",
+    "bytes": 1216,
+    "sha256": "ffbb8f4a7d9d71a1c61d074f9e1cc1d9c3c09c92c516b7263b27cd5748766154"
+  },
+  {
+    "path": "g3/RESULT.md",
+    "bytes": 9389,
+    "sha256": "3d339b6082068e83be787aae9b74362caabd506f3ea534938e086a3d7e0eb4cd"
+  },
+  {
+    "path": "g3/protocol.json",
+    "bytes": 6568,
+    "sha256": "24fbe9963cd014879b5291709cdee323d84ce64fb18e88644e87b9772445b647"
+  },
+  {
+    "path": "g3/protocol.sha256",
+    "bytes": 80,
+    "sha256": "45a012c1ed02afe413e9a42c81e8725cd4fe6049d563fdb67da7d073c282ba33"
+  },
+  {
+    "path": "g3/replay.txt",
+    "bytes": 235,
+    "sha256": "54b9b1c5aeba527a9ce2ab77e025dd0be57e5277cf9793d77eb8952358ff0507"
+  },
+  {
+    "path": "g3/results/raw_trials.csv.gz",
+    "bytes": 5629833,
+    "sha256": "1e3c8072009c67acb689e0211c085e0172bf273ecdcd42476cd5aaf4b0fabdd2"
+  },
+  {
+    "path": "g3/results/receipt.json",
+    "bytes": 1107,
+    "sha256": "5c87341c9cea74a6e0f8ae726de282357ec8f48883d5243fc66666052d810d6b"
+  },
+  {
+    "path": "g3/results/summary.json",
+    "bytes": 71888,
+    "sha256": "678bbd3c344eaeb32619697fef30112af6e268f33441a38ed1279bac6cf0e8c8"
+  },
+  {
+    "path": "g3/run.py",
+    "bytes": 12987,
+    "sha256": "f5c51859774612a09538721de0e79e64dd8bc7b75ffc01aef4d74f687ff00c86"
+  }
+]

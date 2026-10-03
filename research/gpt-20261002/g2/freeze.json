@@ -1,0 +1,10 @@
+{
+  "files": {
+    "inputs.json": "f0b3655cdad6dbd8071a296bee18a4255ec191dca91e167018e399a868acf7fb",
+    "prepare_inputs.py": "78d80b610cb346c3388f417eaf9b65113201115c382741b7fc43ae7d50787593",
+    "protocol.json": "d186782c8d13f8de920e715cd9f61e7ca7e3c554c6aa0e7d1dd3e2fc249ffba8"
+  },
+  "frozen_at_utc": "2026-10-02T09:58:31.580699+00:00",
+  "note": "Local chronological freeze, not an independently timestamped preregistration.",
+  "version": "g2-freeze-1"
+}

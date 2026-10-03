@@ -1,0 +1,61 @@
+{
+  "id": "watchdog-g1-lineage-pilot",
+  "version": 1,
+  "status_at_freeze": "frozen_before_generation_and_results",
+  "frozen_at_utc": "2026-10-02T09:57:06Z",
+  "base_commit": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "source_proposal": "docs/PARALLEL_RESEARCH_GPT.md:G1",
+  "question": "How do document counting, exact-byte deduplication and declared-lineage grouping count independent synthetic origins, including wrong or missing lineage?",
+  "scope": "Synthetic accounting and failure-mode demonstration only; no inferred real-world independence, production adapter, JH16 change or scientific approval.",
+  "seeds": [1049, 2053, 4099, 8191, 10103, 12007, 14009, 16001, 18013, 20011, 22003, 24001],
+  "parameters": {
+    "independent_origins": 12,
+    "documents_per_copied_origin": 5,
+    "identical_independent_pairs": 3,
+    "mixed_copied_origins": 6,
+    "missing_lineage_probability": 0.5,
+    "false_merge_pairs": 3,
+    "false_split_origins": 3,
+    "templates": ["Synthetic signal {token} recorded.", "An observation of synthetic signal {token} was recorded.", "Record: synthetic signal {token}."]
+  },
+  "scenarios": [
+    {"id": "independent_unique", "family": "independent", "lineage": "correct"},
+    {"id": "shared_exact", "family": "exact_copies", "lineage": "correct"},
+    {"id": "shared_paraphrase", "family": "paraphrases", "lineage": "correct"},
+    {"id": "independent_identical", "family": "identical_independent", "lineage": "correct"},
+    {"id": "mixed", "family": "mixed", "lineage": "correct"},
+    {"id": "mixed_missing_lineage", "family": "mixed", "lineage": "missing"},
+    {"id": "mixed_false_merge", "family": "mixed", "lineage": "false_merge"},
+    {"id": "mixed_false_split", "family": "mixed", "lineage": "false_split"}
+  ],
+  "methods": {
+    "document_count": "Each document is a distinct support group.",
+    "exact_hash": "Group by SHA-256 of exact UTF-8 text bytes; no semantic inference or text normalization.",
+    "declared_lineage": "Group by observed_lineage when present. Each missing lineage is its own document group; never group all null values together. This method cannot access truth_origin."
+  },
+  "truth": "Generator-assigned independent origins are synthetic labels, not measured independence. Truth is used only by evaluation. Equal text does not imply equal origin.",
+  "metrics": {
+    "support_groups": "Number of groups reported by a method.",
+    "signed_count_error": "support_groups minus number of generator origins; negative means net undercount.",
+    "double_count_excess": "Sum over truth origins of max(0, number of reported groups containing that origin minus 1).",
+    "collapse_excess": "Sum over reported groups of max(0, number of distinct truth origins in that group minus 1). This is excess collapsed memberships, not a count of wholly lost documents.",
+    "merged_independent_pairs": "Number of distinct unordered truth-origin pairs placed in any one reported group.",
+    "cost": "Deterministic documents visited, UTF-8 bytes hashed and number of retained group keys; execution wall/CPU time measured separately, not treated as scalable benchmarks."
+  },
+  "aggregation": "Retain all per-seed/scenario/method values; report mean and min/max per scenario/method. No significance tests, optimized threshold, seed dropping or rankings pooled across scenarios.",
+  "expectations_and_falsifiers": [
+    "Exact-hash deduplication removes exact copies but misses paraphrases and collapses independent identical text; report both error directions separately.",
+    "Declared lineage is exact when supplied with exact generator truth. This is an oracle-assisted contract control, not evidence that lineage can be discovered.",
+    "Missing or false-split lineage can overcount; false-merged lineage can undercount. A failure to expose either direction fails this pilot's acceptance.",
+    "The identity signed_count_error == double_count_excess - collapse_excess must hold for every result."
+  ],
+  "acceptance": [
+    "Generate and retain every stated seed/scenario with raw document text, truth_origin and observed_lineage.",
+    "Replay generates byte-identical datasets, results and aggregate summary without network or third-party packages.",
+    "Independently check fixtures for identical independent texts and paraphrased shared origin, missing metadata, false merges and false splits.",
+    "Retain any failed run log and explain implementation repairs without editing this frozen protocol."
+  ],
+  "budget": {"paid_api_calls": 0, "external_requests": 0, "private_data": false},
+  "environment_contract": "CPython 3.12 standard library; deterministic core JSON excludes timestamps and measured durations. Capture interpreter/platform and hashes in a separate receipt.",
+  "chronology_limit": "Locally recorded protocol-before-run chronology with hash and file creation; no claim of independent timestamp attestation or external preregistration."
+}

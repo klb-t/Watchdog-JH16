@@ -1,0 +1,5 @@
+# These are frozen public synthetic receipts, not application runtime state.
+!runs/
+!runs/**
+__pycache__/
+*.pyc
