@@ -1,5 +1,8 @@
 # State and binding decisions
 
+**Publikacja sprawdzona 3.10.2026:** poprawki produktu są na main w `a0e061f78dfd46fab3c13381e24f5aa5299ccfd1` (drzewo źródłowego `2c0e013`), pilotaże na osobnej gałęzi w `9c562d8d20ea2e129b44062080c138cb2adb1ceb` (drzewo źródłowego `7346f0a`), a oryginalne commity w archiwum `a683082c`. Aktualny punkt startowy: [handoff](../HANDOFF_2026-10-02_TO_CLAUDE.md). Starsze SHA poniżej są źródłowymi checkpointami; nie są automatycznie zdalnymi refami.
+
+
 Last updated: 2026-10-02, resumed acceptance and auth/recovery completion. Update this file whenever a
 decision changes or an epic completes.
 
@@ -9,9 +12,9 @@ decision changes or an epic completes.
 
 **Latest acceptance — 2026-10-02:** resumed review fixed explicit-OIDC fallback, access CLI recovery-marker bypass and legacy grant decision races. Clean local typecheck/build and **613/613** pass; [completion record](../RESUME_2026-10-02.md), [receipt](../history/evidence/2026-10-02/receipt.json). Prior receipts below remain tied to their original code. Research pilots are tracked separately; the product backlog and live VM gate remain open.
 
-**Current coordination:** Claude receives leadership after GPT completes E4.7/E7.7/E3.17. Start with [handoff](../HANDOFF_2026-10-01_TO_CLAUDE.md), [audit](../REPORT_GPT_2026-10.md), [history policy](../HISTORY_POLICY.md) and the canonical queue. Combined clean local gate: **604/604**, typecheck/build, existing 552 tests retained. Accounts are opt-in; migration 023 preserves 001–022, legacy request-only invitations and ownership. Two navigation profiles preserve projects/search. HTTPS code preserves OPERATIONS; real VM acceptance is still unverified. Exact inputs and receipts: [experiments](../history/EXPERIMENTS.md).
+**Current coordination:** Claude receives leadership after completed consolidation and the October 2 resumed acceptance. Start with [current handoff](../HANDOFF_2026-10-02_TO_CLAUDE.md), [audit](../REPORT_GPT_2026-10.md), [history policy](../HISTORY_POLICY.md) and the canonical queue. Original consolidation gate: **604/604**; resumed product gate: **613/613**, with prior tests retained. Accounts are opt-in; migration 023 preserves 001–022, legacy request-only invitations and ownership. Two navigation profiles preserve projects/search. HTTPS code preserves OPERATIONS; real VM acceptance is still unverified. G1–G3 are completed synthetic pilots at `7346f0a`, kept off main with exact replay. They do not complete the product backlog. Exact inputs and receipts: [experiments](../history/EXPERIMENTS.md).
 
-**D23 — Consolidation and accepted linear progress (2026-10-01).** Keep source history and experiment evidence; never rewrite existing main to make its past appear linear. New accepted increments have one parent. A side branch is integrated as a reviewed coherent delta with source SHA and test receipt, not by importing unrelated experiments. Preserve negative/unfinished results off the front page. Claude owns main; GPT's G1–G3 remain proposed independent protocols.
+**D23 — Consolidation and accepted linear progress (2026-10-01).** Keep source history and experiment evidence; never rewrite existing main to make its past appear linear. New accepted increments have one parent. A side branch is integrated as a reviewed coherent delta with source SHA and test receipt, not by importing unrelated experiments. Preserve negative/unfinished results off the front page. Claude receives main; GPT's G1–G3 are now completed independent synthetic pilots on a separate branch (October 2 status update).
 
 D20–D22 below remain verbatim historical decisions. Current adaptations: explicit accounts alongside legacy OIDC; new `access_admin` rather than silently expanding `admin`; `workspace-preferences.json` alongside the canonical route registry; `/projects` stays a real page. Legacy durable overrides remain managed through the original access UI. HTTPS implementation does not prove a certificate or installation exists.
 

@@ -1,8 +1,13 @@
-# Rozliczenie pracy GPT i przekazanie Claude’owi — 1 października 2026
+# Rozliczenie pracy GPT i przekazanie Claude’owi — 1–2 października 2026
+
+**Publikacja sprawdzona 3.10.2026:** poprawki produktu są na main w `a0e061f78dfd46fab3c13381e24f5aa5299ccfd1` (drzewo źródłowego `2c0e013`), pilotaże na osobnej gałęzi w `9c562d8d20ea2e129b44062080c138cb2adb1ceb` (drzewo źródłowego `7346f0a`), a oryginalne commity w archiwum `a683082c`. Aktualny punkt startowy: [handoff](HANDOFF_2026-10-02_TO_CLAUDE.md). Starsze SHA poniżej są źródłowymi checkpointami; nie są automatycznie zdalnymi refami.
+
 
 **Pakiet przekazania GPT → Claude.** Dokument rozlicza publiczny stan repozytorium, pierwotne pominięcia i ukończoną naprawę. Nie zawiera eksportów rozmów, danych prywatnych ani wyników innych projektów.
 
 ## Wynik końcowy
+
+**Uzupełnienie 2.10:** poprawki odmowy OIDC, blokady odzyskiwania operatora i przeplotów legacy grantów zapisano w `2c0e013`, z pełnym odbiorem **613/613**. W przerwanym wątku ten commit i pilotaże `7346f0a` pozostały lokalne; wznowienie domknęło ich publikację oraz aktualizację indeksów. [Aktualne przekazanie](HANDOFF_2026-10-02_TO_CLAUDE.md), [przyrosty](PROGRESS.md), [wyniki G1–G3](PARALLEL_RESEARCH_GPT.md) i nowe dowody w `history/evidence/2026-10-02-completion/` uzupełniają pierwotny audyt poniżej. Historyczne receipts pozostają bez zmian.
 
 GPT ukończył E4.7/E7.7/E3.17 przed przekazaniem Claude’owi. Nowe konta i mail, oba profile nawigacji oraz kod HTTPS działają razem z nowszym main. Migracje 001–022 pozostały bez zmian; 023 i test wypełnionej bazy chronią historię i własność. Zachowano stare zaproszenia request-only, jawne granty i natychmiastowe cofnięcie, projekty/search oraz OPERATIONS. Po dodatkowym sprawdzeniu naprawiono również opis kont na Setup i odmowę CLI przy legacy override.
 

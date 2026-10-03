@@ -13,11 +13,13 @@ Ten katalog rozdziela badanie naukowe, demonstrację programu i test integracji.
 | Wspólna konsolidacja E4.7/E7.7/E3.17 | [receipt](evidence/2026-10-01/receipt.json), `source-sha256.json`, `consolidated-gate.txt` | 604/604 + typecheck/build. Oryginalne 552 i 52 nowe. Nowy odbiór lokalny; bez przypisywania historycznego CI do nowego kodu |
 | JH16 self-check | `jh16.txt`, pełny `jh16-run.tar.gz`, fixture `faithful_2014-06-20` | 32 obserwacje, 16 Pi/Hi, Pearson 0.8162 i Spearman 0.9993. Dane publikacji; nie niezależna replikacja |
 | Bundle operatora | `cli.json` | grant/people/signin-link na jednorazowej bazie i adresie fixture. Wynik sekretnego linku celowo nie zachowany; bez wysyłki maila |
-| GPT G1–G3 | [protokóły](../PARALLEL_RESEARCH_GPT.md) | PROPOSED / NOT RUN; nie dopisano wyników ani procesów w tle |
+| Domknięcie dostępu i recovery 2.10 | `2c0e013`; [receipt](evidence/2026-10-02/receipt.json) i zachowane red/green | 613/613 + typecheck/build; dziewięć nowych regresji, lokalnie, bez wyłączania poprzednich testów |
+| Ponowny odbiór i porządek repo 2.10 | [nowy receipt](evidence/2026-10-02-completion/receipt.json), [manifest historii](evidence/2026-10-02-completion/history.json) | Pełny lokalny gate, źródłowe hashe i replay pakietów przypięte osobno; publikację potwierdza późniejszy receipt |
+| GPT G1–G3 | `7346f0a` na `research/gpt-pilots-20261002`; [wyniki i protokoły](../PARALLEL_RESEARCH_GPT.md), [ponowny replay](evidence/2026-10-02-completion/replay.json) | COMPLETED; 96 korpusów G1, 39 budżetów G2, 10 000 prób G3. Wszystkie raw i kontrprzykłady poza main; nie walidacja kliniczna ani zmiana metod produktu |
 
 ## Odtworzenie obecnego checkpointu
 
-Odebrany kod: `00a5b789fb8b35ada8ef7e73b1fcb7290258841d`; [protokół publikacji](evidence/2026-10-01/publication.json). Zachowaj checkout i wybierz commit zawierający receipt. Nie uruchamiaj starego eksperymentu z przypadkowym nowszym lockfile.
+Najnowszy odbiór i sposób weryfikacji źródeł opisuje [receipt domknięcia](evidence/2026-10-02-completion/receipt.json) i [handoff 2.10](../HANDOFF_2026-10-02_TO_CLAUDE.md). Poniższe polecenia dotyczą **pierwotnej konsolidacji**: odebrany kod `00a5b789fb8b35ada8ef7e73b1fcb7290258841d`; [protokół publikacji](evidence/2026-10-01/publication.json). Odtwarzając ten odbiór, najpierw wybierz ten dokładny commit. Nie porównuj jego source manifest z nowszym kodem ani nie uruchamiaj starego eksperymentu z przypadkowym nowszym lockfile.
 
 ```bash
 npm ci

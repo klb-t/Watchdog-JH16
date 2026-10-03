@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "audit_date": "2026-10-03",
+  "status": "recovered_verified_acceptance",
+  "original_product_commit": "2c0e0135cb80105c400fe1ec1a9953aeb8eaf0a4",
+  "published_product_commit": "a0e061f78dfd46fab3c13381e24f5aa5299ccfd1",
+  "product_tree": "8d0068c699cb6f7ea80d04c4af65975adf0da1e3",
+  "execution_date": "2026-10-02",
+  "gate": {
+    "command": "npm run clean && npm run test:all",
+    "tests": 613,
+    "pass": 613,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0,
+    "typecheck": "pass",
+    "production_build": "pass",
+    "duration_test_ms": 60805.637635
+  },
+  "source_audit": {
+    "files": 402,
+    "unchanged_against_original_product": 400,
+    "changed_files": [
+      "package-lock.json",
+      "package.json"
+    ],
+    "changes": "Only package-name fields: package.json.name, package-lock.json.name and packages[empty].name. Dependencies, scripts and source are unchanged.",
+    "manifest": "source-sha256.json",
+    "manifest_created_retrospectively": true
+  },
+  "evidence_basis": "Preserved 2026-10-02 full-gate log for watchdog-jh16. Source and log hashes verified during recovery; this is not a new 2026-10-03 execution. Original receipts remain unchanged.",
+  "not_claimed": [
+    "new GitHub Actions acceptance",
+    "current live VM or external SMTP/OAuth/HTTPS acceptance",
+    "recovery of deleted transient artifacts",
+    "clinical or scientific approval"
+  ],
+  "evidence": [
+    {
+      "path": "full-gate.txt",
+      "bytes": 113082,
+      "sha256": "4da5c6752489ff8a65924feb3e822dc45fa61bfee9b43ecd6df0f2787c632e8e"
+    },
+    {
+      "path": "source-sha256.json",
+      "bytes": 57039,
+      "sha256": "2743d286673d636bb931ab603ce6eab2998f37e7e6966f65a1e42421218fe080"
+    }
+  ]
+}

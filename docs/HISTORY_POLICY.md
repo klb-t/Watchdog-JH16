@@ -4,6 +4,8 @@
 
 Historia źródeł pozostaje w refs `archive/2026-10-01/main-before-consolidation` (`31b813f47455adf58746a272fe1f3e7aecc01383`) i `archive/2026-10-01/claude-before-consolidation` (`9dea9aab41259770889f2798da49c0f8bb82ecba`). Są to gałęzie archiwalne: umownie niezmienne, nie technicznie chronione tagi. Nie przesuwaj ani nie usuwaj ich. Razem zachowują wszystkie 120 commitów z [manifestu](audit/2026-10-01/git-inventory.json). Dawne gałęzie robocze pozostają do porównania.
 
+Domknięcie publikacji zachowuje pakiet G1–G3 na `research/gpt-pilots-20261002` (`9c562d8d20ea2e129b44062080c138cb2adb1ceb`) oraz dokładne oryginalne commity w [archiwum checkpointów](https://github.com/klb-t/Watchdog-JH16/tree/a683082ca630e1c6e1e2eb09a7e3ca10e7b4dfb3). [Manifest historii](history/evidence/2026-10-02-completion/history.json) przypina heads, wszystkie 120 wcześniejszych commitów i hash bundle. Nie utworzono anotowanych tagów; gałęzie archiwalne są niezmienne z konwencji. Publikacja przez API nadała nowe SHA przy identycznych drzewach; oryginały są odtwarzalne. Algorytmy i duże raw pilotaży nie są częścią drzewa main.
+
 ## Jeden przyrost
 
 1. Fetch, porównanie wszystkich nowych refs i czysty, odizolowany zakres. Zapisz base i listę źródeł.
@@ -20,4 +22,4 @@ Dla każdego eksperymentu zachowaj: status (proposed/running/completed/failed/bl
 
 Indeks i niewielkie publiczne fixtures/receipts są w `docs/history/`. Duże samowystarczalne pakiety na gałęzi `research/*` lub w trwałym magazynie muszą mieć manifest i hash; sam efemeryczny CI artifact lub plik w `/tmp` nie stanowi archiwum. Dane prywatne i sekrety nie trafiają do publicznego repo. Brakujące dane oznacz jako brak, a nie rekonstruowaną obserwację.
 
-Historyczne dokumenty zachowują oryginalne twierdzenia i ścieżki; nie są aktywną kolejką. Bieżący punkt wejścia to [handoff](HANDOFF_2026-10-01_TO_CLAUDE.md), a katalog dowodów to [EXPERIMENTS](history/EXPERIMENTS.md).
+Historyczne dokumenty zachowują oryginalne twierdzenia i ścieżki; nie są aktywną kolejką. Bieżący punkt wejścia to [handoff](HANDOFF_2026-10-02_TO_CLAUDE.md), a katalog dowodów to [EXPERIMENTS](history/EXPERIMENTS.md).

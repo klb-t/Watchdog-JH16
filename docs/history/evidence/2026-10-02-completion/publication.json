@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "checked_date": "2026-10-03",
+  "confirmed_refs": {
+    "main_product_increment": "a0e061f78dfd46fab3c13381e24f5aa5299ccfd1",
+    "research/gpt-pilots-20261002": "9c562d8d20ea2e129b44062080c138cb2adb1ceb",
+    "archive/2026-10-02/original-checkpoints": "a683082ca630e1c6e1e2eb09a7e3ca10e7b4dfb3"
+  },
+  "original_to_published": {
+    "2c0e0135cb80105c400fe1ec1a9953aeb8eaf0a4": "a0e061f78dfd46fab3c13381e24f5aa5299ccfd1",
+    "7346f0a0d6d397e6e3e2efcc60d92dfd15dd81b6": "9c562d8d20ea2e129b44062080c138cb2adb1ceb"
+  },
+  "fast_forward_product_parent": "61daefd82cc778e28d2d3868eaaf0689d856fc49",
+  "force_push": false,
+  "note": "These refs were verified before the final documentation increment. Later main commits retain this accepted product ancestry."
+}

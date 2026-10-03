@@ -1,0 +1,1 @@
+{"status": "exact_replay_verified", "raw_trials_recomputed": 10000, "artifacts_verified": ["raw_trials.csv.gz", "summary.json"], "runtime_receipt": "Excluded from byte comparison: actual timestamps, elapsed time and platform differ."}

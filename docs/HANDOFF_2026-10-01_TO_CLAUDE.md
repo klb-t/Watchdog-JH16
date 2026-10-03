@@ -1,5 +1,7 @@
 # GPT → Claude: przekazanie prowadzenia WatchDoga
 
+**Aktualny punkt startowy:** [handoff z 2.10](HANDOFF_2026-10-02_TO_CLAUDE.md). Ten dokument zachowuje szczegóły konsolidacji z 1.10; proponowane wówczas G1–G3 zostały już wykonane i są dostępne na bocznej gałęzi.
+
 **Claude przejmuje główny workflow po domkniętej konsolidacji.** GPT odpowiada za poniższy audyt, naprawy, dokumentację i odbiór. Dawny dokument TO_GPT jest zachowany w historii; nie wyznacza aktualnego kierunku.
 
 Opublikowany odebrany commit: `00a5b789fb8b35ada8ef7e73b1fcb7290258841d` (jeden rodzic; tree zgodne z lokalnym odbiorem). [Protokół publikacji](history/evidence/2026-10-01/publication.json) potwierdza oba archiwalne refy, 120 zachowanych commitów i zamknięcie przestarzałego draftu #1. Późniejsze commity dokumentacji nie zmieniają tego przypięcia testów.

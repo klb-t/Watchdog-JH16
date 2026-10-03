@@ -1,0 +1,12 @@
+test_corrupted_metadata_controls_keep_document_material (__main__.LineagePilotTests.test_corrupted_metadata_controls_keep_document_material) ... ok
+test_full_recorded_replay_and_receipt_hashes (__main__.LineagePilotTests.test_full_recorded_replay_and_receipt_hashes) ... ok
+test_incorrect_lineage_can_fail_both_directions (__main__.LineagePilotTests.test_incorrect_lineage_can_fail_both_directions) ... ok
+test_independent_identical_text_is_not_one_origin (__main__.LineagePilotTests.test_independent_identical_text_is_not_one_origin) ... ok
+test_missing_lineages_are_not_collapsed_into_null (__main__.LineagePilotTests.test_missing_lineages_are_not_collapsed_into_null) ... ok
+test_paraphrases_retain_common_origin (__main__.LineagePilotTests.test_paraphrases_retain_common_origin) ... ok
+test_truth_cannot_enter_method (__main__.LineagePilotTests.test_truth_cannot_enter_method) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.209s
+
+OK

@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "audit_date": "2026-10-03",
+  "replay_date": "2026-10-02",
+  "source_commit": "7346f0a0d6d397e6e3e2efcc60d92dfd15dd81b6",
+  "published_commit": "9c562d8d20ea2e129b44062080c138cb2adb1ceb",
+  "tree": "35e8a22ad71083f4a8500b98ed7f9d3d8b003f6e",
+  "package_manifest_verified_files": 43,
+  "status": "preserved_successful_replay_logs",
+  "checks": {
+    "G1": "7/7 controls and byte-identical deterministic artifacts",
+    "G2": "primary and initial byte-identical",
+    "G3": "10000 trials; raw and summary byte-identical"
+  },
+  "limitation": "Recovery verifies preserved package and logs; no new run was executed on 2026-10-03. Exact G3 replay can depend on Python/libm/compression versions.",
+  "evidence": [
+    {
+      "path": "g1-replay.txt",
+      "bytes": 986,
+      "sha256": "9fe1e46a1a71af7b0f8105f9926461e77944b3f5481dc40b71fc54006153505f"
+    },
+    {
+      "path": "g2-replay.txt",
+      "bytes": 295,
+      "sha256": "277f558d72f6c185c4c2062ab560d0600464a66f35b1e0552c91bf8492d3f863"
+    },
+    {
+      "path": "g3-replay.txt",
+      "bytes": 235,
+      "sha256": "54b9b1c5aeba527a9ce2ab77e025dd0be57e5277cf9793d77eb8952358ff0507"
+    }
+  ]
+}

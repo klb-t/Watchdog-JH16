@@ -1,6 +1,6 @@
 # Zachowane materiały historyczne
 
-Aktualny punkt wejścia: [GPT → Claude](../HANDOFF_2026-10-01_TO_CLAUDE.md).
+Aktualny punkt wejścia: [GPT → Claude](../HANDOFF_2026-10-02_TO_CLAUDE.md).
 
 | Materiał | Znaczenie |
 |---|---|

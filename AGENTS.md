@@ -3,7 +3,7 @@
 Read `CLAUDE.md` (shared agent contract), then:
 
 1. `docs/spec/00_STATE_AND_DECISIONS.md` and `docs/spec/07_EPICS_AND_TASKS.md`;
-2. `docs/HANDOFF_2026-10-01_TO_CLAUDE.md` (Claude is the receiving integrator);
+2. `docs/HANDOFF_2026-10-02_TO_CLAUDE.md` (Claude is the receiving integrator);
    `docs/REPORT_GPT_2026-10.md` separates integrated code from omitted branch work;
 3. `docs/WORK_COORDINATION.md` and any assigned `docs/work_packages/` file;
 4. `docs/DESIGN_RULES.md` and `docs/SPEC_RECONCILIATION_2026-09-30.md` when
