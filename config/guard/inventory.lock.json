@@ -44,6 +44,8 @@
     "GET /artifacts/:id (routes.ts)",
     "GET /catalog (field_routes.ts)",
     "GET /collection-profile (automation_routes.ts)",
+    "GET /comparison-families (research_routes.ts)",
+    "GET /comparison-families/:id (research_routes.ts)",
     "GET /comparisons (research_routes.ts)",
     "GET /comparisons/:id (research_routes.ts)",
     "GET /comparisons/:id/runs/:runId (research_routes.ts)",
@@ -128,6 +130,8 @@
     "POST /benchmarks (settings_routes.ts)",
     "POST /candidates (source_access_routes.ts)",
     "POST /catalog/refresh (settings_routes.ts)",
+    "POST /comparison-families (research_routes.ts)",
+    "POST /comparison-families/:id/execute (research_routes.ts)",
     "POST /comparisons (research_routes.ts)",
     "POST /comparisons/:id/approve (research_routes.ts)",
     "POST /comparisons/:id/execute (research_routes.ts)",
@@ -254,6 +258,7 @@
     "020_admission.ts": "9b380662a04cf93cbd8e2470634fc26ba48f816208eacb8f00726743039227cb",
     "021_research_projects.ts": "704b9c7e37bc05f9a3b304e87191f7e2684332052b5b3fb241ec8de44b9b890e",
     "022_paper_comparisons.ts": "f2deb86fea91f87ead44bf6d93aef39ec8882089b51190b5271cb05328c68ab2",
-    "023_accounts.ts": "4bec9b5863047467277e3cb22b14dc446b184d3d4328a065bdf56b92c48645d7"
+    "023_accounts.ts": "4bec9b5863047467277e3cb22b14dc446b184d3d4328a065bdf56b92c48645d7",
+    "024_comparison_families.ts": "b6f25d52e4540638e8a516b6895726337c2e6c520916adb94d5e986741da93d8"
   }
 }

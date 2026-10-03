@@ -22,7 +22,7 @@ export function loadPaperOperationProfile() {
 export class PaperOperationService {
   constructor(readonly repo: PaperOperationsRepository, readonly research: ResearchRepository, readonly workbench: WorkbenchService) {}
   list(owner: string) {
-    return this.repo.list(owner).map(r => ({ id: r.id, hash: r.hash, title: r.body.document.body.title,
+    return this.repo.list(owner).map(r => ({ id: r.id, hash: r.hash, title: r.body.document.body.title, documentId: r.body.document.id,
       method: r.body.method, meaning: r.body.meaning, createdAt: r.createdAt,
       approvalState: this.workbench.repo.method(r.methodId)?.approvalState, runs: this.repo.runs(owner, r.methodId) }));
   }

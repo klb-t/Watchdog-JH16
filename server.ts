@@ -10,6 +10,8 @@ import { secretStore } from './backend/watchdog_api/secrets';
 import { PaperOperationService } from './backend/watchdog_api/services/paper_operations';
 import { PaperComparisonService } from './backend/watchdog_api/services/paper_comparisons';
 import { PaperComparisonsRepository } from './backend/watchdog_api/db/repositories/paper_comparisons';
+import { PaperComparisonFamilyService } from './backend/watchdog_api/services/paper_comparison_families';
+import { PaperComparisonFamiliesRepository } from './backend/watchdog_api/db/repositories/paper_comparison_families';
 import { PaperOperationsRepository } from './backend/watchdog_api/db/repositories/paper_operations';
 import express from 'express';
 import { buildDiagnosticRouter } from './backend/watchdog_api/api/diagnostic_routes';
@@ -136,7 +138,7 @@ export async function configureApp() {
   automation.handlers.set('paper_review', (job, checkpoint) => papers.reviewJob(job,checkpoint));
   const paperOperations = new PaperOperationService(new PaperOperationsRepository(sqlite),research,workbenchService);
   const paperComparisons = new PaperComparisonService(new PaperComparisonsRepository(sqlite),paperOperations);
-  app.use('/api/research', buildResearchRouter(research, papers, extraction, automationRepository, automation,new ExtractionDatasetService(research,workbench),paperOperations,paperComparisons));
+  app.use('/api/research', buildResearchRouter(research, papers, extraction, automationRepository, automation,new ExtractionDatasetService(research,workbench),paperOperations,paperComparisons,new PaperComparisonFamilyService(new PaperComparisonFamiliesRepository(sqlite),paperComparisons)));
   app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans));
   app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
   app.use('/api/memory', buildMemoryRouter(automationRepository));

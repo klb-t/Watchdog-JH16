@@ -170,3 +170,38 @@ ani starego runu. Obowiązują istniejące uprawnienia method.propose,
 workbench.analyze i method.approve oraz kontrola pochodzenia żądań.
 
 E5.7d nie zamyka ogólnego kompilatora publikacji i replikacji E5.7b.
+
+## Zamrożone rodziny porównań (E5.7b.1)
+
+Rodzina to uporządkowana lista **zatwierdzonych** porównań E5.7d z jednej wersji
+jednej pracy, zamrożona przed uruchomieniem. Utworzenie rodziny wymaga dokładnej
+recenzji każdego członka; członek może wystąpić raz. Zapis rodziny i jej zdarzeń
+jest niezmienny (wyzwalacze WORM w migracji 024).
+
+Wynik zawsze pokazuje **wszystkich** członków względem zamrożonego mianownika:
+zgodne w tolerancji, poza tolerancją, nie do policzenia, metoda niejasna, próba
+nieudana, odrzucone przed uruchomieniem (np. cofnięta recenzja — z powodem),
+w toku, jeszcze nieuruchomione. Liczby zawsze sumują się do mianownika. Nie
+istnieje werdykt dla całej rodziny, test istotności ani korekta wielokrotności:
+tolerancja każdego członka była recenzowana osobno, a to, ile zgodności
+„wystarcza”, jest oceną człowieka. Uzasadnienie: pilotaże G1–G3
+([PARALLEL_RESEARCH_GPT.md](PARALLEL_RESEARCH_GPT.md)) — wybór raportowanych
+porównań po obejrzeniu wyników zawyża zgodność.
+
+Próby wykonane przed zamrożeniem rodziny są ujawnione w `priorExposure`, ale nie
+liczą się jako wynik rodziny. Ekspozycja poza systemem pozostaje `UNKNOWN`;
+zamrożenie nie jest prerejestracją. Zmiana składu tworzy nową rodzinę z
+`supersedes`; stara pozostaje czytelna z pełnym mianownikiem i wynikami, a widok
+pokazuje „zastąpiona przez”. Ponowne wykonanie dopisuje próby; liczy się
+ostatnia, wszystkie pozostają w historii. Werdykty są odczytywane przez
+zweryfikowaną ścieżkę wyników E5.7d; jeśli nie da się ich potwierdzić (np. po
+cofnięciu recenzji), członek ma stan „metoda niejasna” z powodem, nigdy „zgodne”.
+
+API `/api/research/comparison-families`: lista dla `documentId`, POST utworzenia
+(`documentId`, `title`, `rationale`, `members[{comparisonId, hash}]`,
+`supersedes`), odczyt `/:id`, POST `/:id/execute` z `expectedHash`. Widok jest
+kontekstowy w „Analizach prac”, pod porównaniem wybranego planu.
+
+Poza zakresem tego wycinka: osobny pakiet eksportu całej rodziny (wyniki członków
+mają już weryfikowalne pakiety E5.7d), partycje potwierdzające (E5.7b.2) i zapis
+replikacji całej pracy (E5.7b.3).

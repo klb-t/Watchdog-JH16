@@ -31,7 +31,9 @@
       "backend/watchdog_api/services/replication.ts",
       "shared/paper_comparison.ts",
       "shared/paper_operation.ts",
-      "shared/workbench.ts"
+      "shared/workbench.ts",
+      "backend/watchdog_api/services/paper_comparison_families.ts",
+      "shared/paper_comparison_family.ts"
     ],
     "forbidden_targets": [
       "backend/watchdog_api/llm",

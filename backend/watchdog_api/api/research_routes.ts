@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { tracer } from '../utils/tracer';
 import { PaperOperationService, loadPaperOperationProfile } from '../services/paper_operations';
 import { PaperComparisonService } from '../services/paper_comparisons';
+import { PaperComparisonFamilyService } from '../services/paper_comparison_families';
 import { researchPackage } from '../workbench/publication';
 import { Router, type Request, type Response, type NextFunction } from 'express';
 import { z } from 'zod';
@@ -20,7 +21,7 @@ import { loadExtractionDatasetProfile } from '../config/extraction_dataset';
 const route = (fn: (req: Request,res: Response) => unknown) => (req: Request,res: Response,next: NextFunction) => {
   Promise.resolve().then(() => fn(req,res)).catch(e => e instanceof AutomationError || e instanceof WorkbenchError ? res.status(e.status).json({ error: e.code, message: e.message }) : next(e));
 };
-export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntakeService, extraction: ExtractionWorkshop, automation: AutomationRepository, worker: AutomationService, datasets?:ExtractionDatasetService, operations?:PaperOperationService, comparisons?:PaperComparisonService) {
+export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntakeService, extraction: ExtractionWorkshop, automation: AutomationRepository, worker: AutomationService, datasets?:ExtractionDatasetService, operations?:PaperOperationService, comparisons?:PaperComparisonService, families?:PaperComparisonFamilyService) {
   const router = Router(); router.use(requireCapability('method.propose')); router.use(sameOriginMutation);
   router.use((_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
   router.get('/', route((req,res) => res.json({ datasetProfile: loadExtractionDatasetProfile(), documents: repo.documents(req.principal!.id).map(d=>({ ...d, body:{...d.body,text:undefined}, characterCount:d.body.text.length })), assessments: repo.assessments(req.principal!.id),
@@ -29,6 +30,19 @@ export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntake
   const comparison = () => { if (!comparisons) throw new WorkbenchError('Paper comparisons are not configured.', 503); return comparisons; };
   const comparisonReview = z.object({ expectedHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict();
   const comparisonRequest = () => tracer.getContext()?.request_id ?? randomUUID();
+  const family = () => { if (!families) throw new WorkbenchError('Comparison families are not configured.', 503); return families; };
+  // E5.7b.1: frozen families of reviewed comparisons for one document.
+  router.get('/comparison-families', route(async(req,res)=> {
+    const query = z.object({ documentId: z.string().min(1) }).parse(req.query);
+    res.json({ families: await family().list(req.principal!.id, query.documentId) });
+  }));
+  router.post('/comparison-families', requireCapability('workbench.analyze'), route(async(req,res)=>
+    res.status(201).json({ family: await family().create(req.principal!.id, req.body, comparisonRequest()) })));
+  router.get('/comparison-families/:id', route(async(req,res)=>res.json({ family: await family().get(req.principal!.id, req.params.id) })));
+  router.post('/comparison-families/:id/execute', requireCapability('workbench.analyze'), route(async(req,res)=> {
+    const b = comparisonReview.parse(req.body);
+    res.json({ family: await family().execute(req.principal!.id, req.params.id, b.expectedHash, comparisonRequest()) });
+  }));
   router.get('/comparisons', route(async(req,res)=> {
     const query = z.object({ operationId: z.string().min(1) }).strict().parse(req.query);
     res.json({ comparisons: await comparison().list(req.principal!.id, query.operationId) });

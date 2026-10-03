@@ -12,7 +12,7 @@ Task IDs are stable after collision resolution. See [TASK_ID_ALIASES](../TASK_ID
 Claude owns integration and the global ledger. Completed historical task paragraphs below do not close these remaining scopes.
 
 - [ ] **E5.7b — General executable replication and hypothesis studies.** Detailed scope remains below.
-  - [ ] **E5.7b.1 — Frozen comparison families (next).** A family is the ordered set of reviewed
+  - [x] **E5.7b.1 — Frozen comparison families.** A family is the ordered set of reviewed
     E5.7d claim hashes for one paper, frozen and hashed *before* any member attempt runs. Results
     report every member — matched, not matched, missing input, failed attempt — with explicit
     denominators ("k of n frozen claims"); members cannot be added or dropped after freeze; a
@@ -23,6 +23,14 @@ Claude owns integration and the global ledger. Completed historical task paragra
     API, contextual UI, export v-next with old readers, principles guard green. Test: integration
     (freeze-before-run, no post-hoc drop, revision chain, denominators incl. missing/failed),
     browser at 390 px, export verifier.
+    **Done 2026-10-03:** migration 024 (WORM), `shared/paper_comparison_family.ts` (pure summary),
+    service/repository, 4 API routes, contextual UI in paper analyses (labels in profile v4).
+    Tests: `tests/integration/comparison_families.test.ts` 5/5 (exact-review freeze, k-of-n with
+    match/failure/refusal, re-run, restart, WORM, prior exposure, revision chain),
+    `tests/e2e/comparison_families.test.ts` at 390 px. Docs: PAPER_ANALYSES.md. Not in this slice:
+    a family-level export package (members keep their verifiable E5.7d packages) → E5.7b.1a.
+  - [ ] **E5.7b.1a — Family export package** with standalone verifier recomputing the summary
+    from member packages; old package readers retained.
   - [ ] **E5.7b.2 — Data roles and confirmation partitions** (exploratory vs held-out rows declared
     and frozen before use; G3 shows neither holdout nor correction is universally better, so both
     stay available as declared options).
