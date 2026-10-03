@@ -2,6 +2,8 @@ import { ComparisonFamilyInputSchema, summarizeFamily, type FamilyMemberEvent } 
 import { PaperComparisonFamiliesRepository } from '../db/repositories/paper_comparison_families';
 import { WorkbenchError } from '../db/repositories/workbench_error';
 import type { PaperComparisonService } from './paper_comparisons';
+import { researchPackage } from '../workbench/publication';
+import { familyPackage, type FamilyPackageMember } from '../workbench/family_package';
 
 /**
  * E5.7b.1 — frozen comparison families over existing E5.7d comparisons.
@@ -77,6 +79,29 @@ export class PaperComparisonFamilyService {
 
   async list(owner: string, documentId: string) {
     return Promise.all(this.repo.list(owner, documentId).map(f => this.get(owner, f.id)));
+  }
+
+  /** E5.7b.1a: the family with each member's latest completed family attempt as a verifiable package. */
+  async export(owner: string, id: string) {
+    const family = await this.get(owner, id);
+    const members: FamilyPackageMember[] = [];
+    for (const row of family.summary.members) {
+      const latest = family.events.filter(e => e.comparisonId === row.comparisonId).at(-1);
+      if (!latest || latest.kind !== 'ATTEMPT' || latest.runStatus !== 'COMPLETED' || !latest.runId) {
+        members.push({ position: row.position, comparisonId: row.comparisonId, bundle: null, reason: `No completed family attempt (outcome: ${row.outcome}).` });
+        continue;
+      }
+      try {
+        const v = await this.comparisons.result(owner, row.comparisonId, latest.runId);
+        const bundle = researchPackage(v.record, v.spec, v.profile, v.result, v.geometry);
+        members.push({ position: row.position, comparisonId: row.comparisonId, bundle: { bytes: bundle.bytes, manifestHash: bundle.manifestHash }, reason: null });
+      } catch (error) {
+        members.push({ position: row.position, comparisonId: row.comparisonId, bundle: null, reason: `Result could not be verified for export: ${(error as Error).message}` });
+      }
+    }
+    const pkg = familyPackage(family, members);
+    this.comparisons.operations.research.audit(owner, 'paper.comparison_family.export', id, { hash: family.hash, manifestHash: pkg.manifestHash });
+    return pkg;
   }
 
   /** Runs every member once, in the frozen order. A refusal is recorded, never skipped. */

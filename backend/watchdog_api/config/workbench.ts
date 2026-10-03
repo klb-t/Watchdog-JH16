@@ -32,4 +32,5 @@ export function checkProviderProfile(document: DatasetDocument, profile: Workben
 }
 
 export function loadResearchVerifier(): string { return readFileSync('config/workbench/export/verify.mjs', 'utf8'); }
+export function loadFamilyVerifier(): string { return readFileSync('config/workbench/export/verify-family.mjs', 'utf8'); }
 export function loadExtractionVerifier(): string { return readFileSync('dist/extraction-replay.cjs','utf8'); }

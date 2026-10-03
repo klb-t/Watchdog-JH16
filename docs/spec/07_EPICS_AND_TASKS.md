@@ -29,8 +29,14 @@ Claude owns integration and the global ledger. Completed historical task paragra
     match/failure/refusal, re-run, restart, WORM, prior exposure, revision chain),
     `tests/e2e/comparison_families.test.ts` at 390 px. Docs: PAPER_ANALYSES.md. Not in this slice:
     a family-level export package (members keep their verifiable E5.7d packages) → E5.7b.1a.
-  - [ ] **E5.7b.1a — Family export package** with standalone verifier recomputing the summary
-    from member packages; old package readers retained.
+  - [x] **E5.7b.1a — Family export package** with standalone verifier recomputing the summary
+    from member packages; old package readers retained. **Done 2026-10-03:** new format
+    `watchdog-comparison-family-package-1` (research packages v1/v2 unchanged): family record,
+    every event, summary, each member's latest completed family attempt as its full E5.7d package
+    under `members/N/`, explicit reasons for members without one. `verify-family.mjs` (Node
+    built-ins, offline) checks every byte, runs each member verifier pinned to its manifest hash
+    and recomputes the summary; a forged summary with all hashes recomputed is rejected. Export is
+    deterministic. Tests: integration 7/7 (incl. verifier/product rule parity), browser download.
   - [ ] **E5.7b.2 — Data roles and confirmation partitions** (exploratory vs held-out rows declared
     and frozen before use; G3 shows neither holdout nor correction is universally better, so both
     stay available as declared options).

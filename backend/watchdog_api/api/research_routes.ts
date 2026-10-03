@@ -43,6 +43,11 @@ export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntake
     const b = comparisonReview.parse(req.body);
     res.json({ family: await family().execute(req.principal!.id, req.params.id, b.expectedHash, comparisonRequest()) });
   }));
+  router.get('/comparison-families/:id/export', route(async(req,res)=> {
+    const bundle = await family().export(req.principal!.id, req.params.id);
+    res.setHeader('X-Package-Manifest-SHA256', bundle.manifestHash); res.setHeader('X-Package-SHA256', bundle.sha256);
+    res.attachment('watchdog-comparison-family.zip').type('application/zip').send(bundle.bytes);
+  }));
   router.get('/comparisons', route(async(req,res)=> {
     const query = z.object({ operationId: z.string().min(1) }).strict().parse(req.query);
     res.json({ comparisons: await comparison().list(req.principal!.id, query.operationId) });

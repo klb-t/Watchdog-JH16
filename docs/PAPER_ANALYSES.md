@@ -202,6 +202,18 @@ API `/api/research/comparison-families`: lista dla `documentId`, POST utworzenia
 `supersedes`), odczyt `/:id`, POST `/:id/execute` z `expectedHash`. Widok jest
 kontekstowy w „Analizach prac”, pod porównaniem wybranego planu.
 
-Poza zakresem tego wycinka: osobny pakiet eksportu całej rodziny (wyniki członków
-mają już weryfikowalne pakiety E5.7d), partycje potwierdzające (E5.7b.2) i zapis
-replikacji całej pracy (E5.7b.3).
+### Pakiet rodziny (E5.7b.1a)
+
+GET `/api/research/comparison-families/:id/export` zwraca
+`watchdog-comparison-family.zip` (format `watchdog-comparison-family-package-1`;
+pakiety badawcze v1/v2 bez zmian): `family.json`, `events.json`, `summary.json`,
+pełny pakiet E5.7d ostatniej ukończonej próby każdego członka w `members/N/`
+oraz jawny powód dla członków bez pakietu (nieudane, odrzucone, nieuruchomione).
+`node verify-family.mjs . [hash-manifestu]` działa offline, sprawdza wszystkie
+bajty, uruchamia weryfikator każdego członka przypięty do jego hasha i od nowa
+przelicza podsumowanie — sfałszowane podsumowanie odrzuca nawet przy poprawnie
+przeliczonych hashach. Statystyk członków nie przelicza ponownie; zamrożenie nie
+jest prerejestracją.
+
+Poza zakresem: partycje potwierdzające (E5.7b.2) i zapis replikacji całej pracy
+(E5.7b.3).

@@ -84,6 +84,13 @@ export function PaperComparisonFamilies({ documentId, operationIds, profile, par
           <button className={buttonClass} data-testid="family-execute" disabled={disabled || !canAnalyze}
             onClick={() => void act(async () => { await api(`/api/research/comparison-families/${f.id}/execute`, { expectedHash: f.hash }); })}>{profile.executeLabel}</button>
           <button className="underline text-sm" disabled={disabled || !canAnalyze} onClick={() => revise(f)}>{profile.reviseLabel}</button>
+          <button className="underline text-sm" data-testid="family-export" disabled={disabled} onClick={() => void act(async () => {
+            const response = await fetch(`/api/research/comparison-families/${f.id}/export`, { cache: 'no-store' });
+            if (!response.ok) { const e = await response.json(); throw new Error(e.message ?? e.error?.message ?? `HTTP ${response.status}`); }
+            const url = URL.createObjectURL(await response.blob()), a = document.createElement('a');
+            a.href = url; a.download = 'watchdog-comparison-family.zip'; a.click(); setTimeout(() => URL.revokeObjectURL(url), 0);
+            setNotice(`${profile.exportNotice} ${response.headers.get('X-Package-Manifest-SHA256')}`);
+          })}>{profile.exportLabel}</button>
         </div>
         <details><summary className="text-sm">{profile.exposureLabel}</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-64 overflow-auto">{JSON.stringify(f.body.priorExposure, null, 2)}</pre></details>
         <details><summary className="text-sm">{profile.eventsLabel} ({f.events.length})</summary><pre className="text-xs whitespace-pre-wrap break-all max-h-64 overflow-auto">{JSON.stringify(f.events, null, 2)}</pre></details>

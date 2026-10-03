@@ -46,6 +46,7 @@
     "GET /collection-profile (automation_routes.ts)",
     "GET /comparison-families (research_routes.ts)",
     "GET /comparison-families/:id (research_routes.ts)",
+    "GET /comparison-families/:id/export (research_routes.ts)",
     "GET /comparisons (research_routes.ts)",
     "GET /comparisons/:id (research_routes.ts)",
     "GET /comparisons/:id/runs/:runId (research_routes.ts)",

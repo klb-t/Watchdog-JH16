@@ -77,6 +77,9 @@ test('E5.7b.1 browser: a family is frozen from reviewed comparisons and reports 
   assert.equal(await card.getByTestId('family-outcome').getAttribute('data-outcome'), 'reproduced');
   const width = await page.evaluate(() => ({ client: document.documentElement.clientWidth, scroll: document.documentElement.scrollWidth }));
   assert.ok(width.scroll <= width.client + 1, `no sideways scrolling on a phone: ${JSON.stringify(width)}`);
+  const download = page.waitForEvent('download'); await card.getByTestId('family-export').click();
+  const zip = await (await download).path(); assert.ok(zip && fs.statSync(zip).size > 0);
+  await section.getByRole('status').filter({ hasText: /SHA-256/ }).waitFor();
   fs.mkdirSync('test-artifacts', { recursive: true });
   await card.screenshot({ path: 'test-artifacts/comparison-family-phone.png' });
   const stored = await call(`/api/research/comparison-families?documentId=${encodeURIComponent(operation.body.document.id)}`);

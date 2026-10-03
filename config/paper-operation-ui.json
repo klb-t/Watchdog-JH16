@@ -188,6 +188,8 @@
       "refused": "odrzucone przed uruchomieniem",
       "pending": "w toku",
       "not_run": "jeszcze nie uruchomione"
-    }
+    },
+    "exportLabel": "Pobierz pakiet całej rodziny",
+    "exportNotice": "Pobrano pakiet rodziny. Sprawdź go offline: node verify-family.mjs . — i zachowaj osobno SHA-256 manifestu:"
   }
 }

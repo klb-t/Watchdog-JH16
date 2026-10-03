@@ -77,6 +77,7 @@ const familyProfile = z.object({
   title: text, notice: text, titleLabel: text, rationaleLabel: text, membersLabel: text, noMembersLabel: text,
   createLabel: text, executeLabel: text, listLabel: text, denominatorLabel: text, supersedesLabel: text,
   supersededByLabel: text, reviseLabel: text, exposureLabel: text, eventsLabel: text, createdNotice: text,
+  exportLabel: text, exportNotice: text,
   outcomes: z.record(familyOutcome, text).refine(v => familyOutcome.options.every(o => o in v), 'Every outcome needs a label'),
 }).strict();
 export const PaperOperationProfileSchema = z.object({
