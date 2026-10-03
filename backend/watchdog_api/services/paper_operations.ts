@@ -8,7 +8,7 @@ import { WorkbenchService } from '../workbench/service';
 import { WorkbenchError } from '../db/repositories/workbench';
 import { PaperOperationsRepository } from '../db/repositories/paper_operations';
 import { ResearchRepository } from '../db/repositories/research';
-import { anchorQuote } from './paper_intake';
+import { anchorQuote } from './source_anchor';
 import { researchPackage } from '../workbench/publication';
 
 export function loadPaperOperationProfile() {

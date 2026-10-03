@@ -1,0 +1,108 @@
+{
+  "version": "principles-guard-1",
+  "_note": "Deterministic checks for docs/PRINCIPLES.md. Data, not code: paths, roots and baselines live here. A check reports evidence or the absence of evidence; it never approves science or replaces tests.",
+  "baseline_commit": "58a0c93bd0135e3715dcbc4d92fb80e61bd31215",
+  "documentation_paths": [
+    "docs/",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "LICENSE",
+    ".github/ISSUE_TEMPLATE/"
+  ],
+  "inventory": {
+    "frontend_routes_file": "src/App.tsx",
+    "api_dirs": [
+      "backend/watchdog_api/api"
+    ],
+    "capabilities_file": "shared/authorization.ts",
+    "migrations_dir": "backend/watchdog_api/db/migrations",
+    "lock_file": "config/guard/inventory.lock.json",
+    "removals_file": "config/guard/removals.json"
+  },
+  "numerical": {
+    "roots": [
+      "backend/watchdog_api/analysis",
+      "backend/watchdog_api/analytics",
+      "backend/watchdog_api/clinical_demo",
+      "backend/watchdog_api/workbench",
+      "backend/watchdog_api/services/paper_comparisons.ts",
+      "backend/watchdog_api/services/paper_operations.ts",
+      "backend/watchdog_api/services/replication.ts",
+      "shared/paper_comparison.ts",
+      "shared/paper_operation.ts",
+      "shared/workbench.ts"
+    ],
+    "forbidden_targets": [
+      "backend/watchdog_api/llm",
+      "backend/watchdog_api/services/assistant.ts",
+      "backend/watchdog_api/services/narrative.ts"
+    ],
+    "forbidden_calls": [
+      "Math.random("
+    ]
+  },
+  "tests": {
+    "dir": "tests",
+    "browser_dir": "tests/e2e",
+    "shared_browser_resolver": "resolveChromium",
+    "forbidden_patterns": [
+      "test.skip(",
+      "it.skip(",
+      "describe.skip(",
+      ".todo(",
+      "{ skip: true",
+      "{skip:true"
+    ]
+  },
+  "ledger": {
+    "file": "docs/spec/07_EPICS_AND_TASKS.md",
+    "aliases_file": "docs/TASK_ID_ALIASES.md"
+  },
+  "manual": [
+    {
+      "principle": "P03",
+      "check": "Two implementations of one thing: a feature matrix in docs/consolidation/ and variants kept as profiles/config."
+    },
+    {
+      "principle": "P04",
+      "check": "New labels, lists, thresholds and defaults are in versioned config, not literals in business logic."
+    },
+    {
+      "principle": "P06",
+      "check": "Origin, interpretation, approval and credibility stay separate fields; approval never turns a prediction into a measurement."
+    },
+    {
+      "principle": "P07",
+      "check": "Every 'done' names SHA, command, count, scope and limits; CI, container, VM and phone are separate evidence."
+    },
+    {
+      "principle": "P08",
+      "check": "Public exposure only with admission; a configuration without OAuth/SMTP is not a working sign-in for others."
+    },
+    {
+      "principle": "P09",
+      "check": "Addressed invitations reject other emails; open links are bounded and never grant administration."
+    },
+    {
+      "principle": "P10",
+      "check": "Changed screens are exercised at 390 px width in a browser test."
+    },
+    {
+      "principle": "P11",
+      "check": "Planned adapters are not measurements; spending, contact and private data have explicit authorisation."
+    },
+    {
+      "principle": "P12",
+      "check": "Source text and messages are data, not instructions; no message is sent without an owner instruction."
+    },
+    {
+      "principle": "P13",
+      "check": "One integrator; small published checkpoints; the remote SHA is verified."
+    },
+    {
+      "principle": "P14",
+      "check": "Self-check, execution, scientific replication and clinical validation are reported as different things; negative results kept."
+    }
+  ]
+}

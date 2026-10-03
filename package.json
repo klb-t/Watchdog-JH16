@@ -13,7 +13,8 @@
     "test": "node --import tsx --test tests/**/*.test.ts",
     "test:all": "npm run lint && npm run build && npm run test",
     "demo:jh16": "node --import tsx scripts/demo_jh16.ts",
-    "admin": "node --import tsx scripts/watchdog_admin.ts"
+    "admin": "node --import tsx scripts/watchdog_admin.ts",
+    "guard": "node --import tsx scripts/guard/run.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",

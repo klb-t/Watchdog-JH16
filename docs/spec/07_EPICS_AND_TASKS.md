@@ -18,8 +18,28 @@ Claude owns integration and the global ledger. Completed historical task paragra
 - [ ] **E6.4 — Case hypotheses and reviewed constraints.** Detailed scope remains below.
 - [ ] **E6.5 — Profile-bound measurement suggestions.** Detailed scope remains below.
 - [ ] **E6.6 — Remaining field integrations.** Detailed scope remains below.
+- [ ] **E3.18 — Live installation acceptance.** First real install on the owner's VM with
+  `deploy_gcp_vm.sh --owner … --public`, a real certificate, SMTP (`watchdogctl set-mail`) and one
+  invited person signing in from outside. Needs the owner to start the VM; everything else is code
+  that exists. Until this is ticked, nothing is "ready for external testers".
 
 E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a separate gate. Existing RESEARCH/CLINICAL/OPERATIONS packages are integrated, not awaiting claims.
+
+## Completed — 2026-10-03
+
+- [x] **E0.7 — Principles guard.** `npm run guard`: deterministic checks for P01/P02
+  (inventory of 26 routes, 176 API endpoints, 24 capabilities, 23 migrations; removals need
+  an approved reason, migrations are byte-locked), P05 and hard rules 2/7 (no LLM module or
+  `Math.random` reachable from 10 numerical roots incl. workbench, paper comparisons/operations
+  and replication; `anchorQuote` moved to a pure module so those services no longer import the
+  assistant layer), P07/P13 (no code commit skips CI after
+  the baseline, shared browser launcher, no skipped tests, unique task IDs); other principles
+  reported as needing review, never as passed. Config `config/guard/policy.json`, docs
+  `docs/GUARD.md`, CI step on every PR and push to main (full history fetched). Test:
+  `tests/unit/guard.test.ts` 9/9; retroactively flags `00a5b78`, `a0e061f`, `58a0c93`.
+- [x] **Handover acceptance.** main `58a0c93` re-verified (613/613 local; Actions
+  37127954662 verify + container). Seven browser suites moved to the shared launcher; E3.5
+  test isolated from stale databases.
 
 ## Completed resumed acceptance — 2026-10-02
 
