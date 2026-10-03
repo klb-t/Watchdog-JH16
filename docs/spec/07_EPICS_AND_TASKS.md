@@ -12,6 +12,22 @@ Task IDs are stable after collision resolution. See [TASK_ID_ALIASES](../TASK_ID
 Claude owns integration and the global ledger. Completed historical task paragraphs below do not close these remaining scopes.
 
 - [ ] **E5.7b — General executable replication and hypothesis studies.** Detailed scope remains below.
+  - [ ] **E5.7b.1 — Frozen comparison families (next).** A family is the ordered set of reviewed
+    E5.7d claim hashes for one paper, frozen and hashed *before* any member attempt runs. Results
+    report every member — matched, not matched, missing input, failed attempt — with explicit
+    denominators ("k of n frozen claims"); members cannot be added or dropped after freeze; a
+    change creates a new family revision that references the old one, and both stay visible.
+    Rationale: G1–G3 (`docs/PARALLEL_RESEARCH_GPT.md`) — choosing what to report after looking
+    inflates agreement. No significance test, correction method or verdict threshold is chosen
+    by code; tolerances stay per claim as already reviewed. Additive migration (024), service,
+    API, contextual UI, export v-next with old readers, principles guard green. Test: integration
+    (freeze-before-run, no post-hoc drop, revision chain, denominators incl. missing/failed),
+    browser at 390 px, export verifier.
+  - [ ] **E5.7b.2 — Data roles and confirmation partitions** (exploratory vs held-out rows declared
+    and frozen before use; G3 shows neither holdout nor correction is universally better, so both
+    stay available as declared options).
+  - [ ] **E5.7b.3 — Whole-paper replication record** linking families, MethodSpecs and acquired
+    inputs into one reviewable project view (feeds E7.3 reviewer projection).
 - [ ] **E5.8b — General extension execution and adaptive navigation.** Detailed scope remains below.
 - [ ] **E3.5 — Container and Cloud Run.** Detailed scope remains below.
 - [ ] **E5.11 — Remaining workbench methods.** Detailed scope remains below.
