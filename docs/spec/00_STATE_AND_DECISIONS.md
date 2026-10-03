@@ -3,12 +3,14 @@
 **Publikacja sprawdzona 3.10.2026:** poprawki produktu są na main w `a0e061f78dfd46fab3c13381e24f5aa5299ccfd1` (drzewo źródłowego `2c0e013`), pilotaże na osobnej gałęzi w `9c562d8d20ea2e129b44062080c138cb2adb1ceb` (drzewo źródłowego `7346f0a`), a oryginalne commity w archiwum `a683082c`. Aktualny punkt startowy: [handoff](../HANDOFF_2026-10-02_TO_CLAUDE.md). Starsze SHA poniżej są źródłowymi checkpointami; nie są automatycznie zdalnymi refami.
 
 
-Last updated: 2026-10-02, resumed acceptance and auth/recovery completion. Update this file whenever a
+Last updated: 2026-10-03, handover accepted by Claude. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**Handover accepted by Claude — 2026-10-03:** main `58a0c93` independently re-run: lint, build and **613/613** locally once two stale local SQLite files from the pre-consolidation Claude branch were moved aside; GitHub Actions [37127954662](https://github.com/klb-t/Watchdog-JH16/actions/runs/37127954662) (manual dispatch, because every post-#9 commit carried `[skip ci]`) passed **verify and container**. Consolidation checked: migrations 001–022 byte-identical, email-code/open-link/SMTP sign-in, public HTTPS refusal without accounts, two navigation profiles. Follow-up fixed: seven browser suites bypassed the shared Chromium resolver (four failed outside CI), and the E3.5 refuse-to-start test used a fixed `/tmp` database that a stale file could break. Rule from here: code commits on main do not use `[skip ci]`. Leadership: Claude. Real VM, SMTP, OAuth and certificate acceptance remain open.
 
 **Latest acceptance — 2026-10-02:** resumed review fixed explicit-OIDC fallback, access CLI recovery-marker bypass and legacy grant decision races. Clean local typecheck/build and **613/613** pass; [completion record](../RESUME_2026-10-02.md), [receipt](../history/evidence/2026-10-02/receipt.json). Prior receipts below remain tied to their original code. Research pilots are tracked separately; the product backlog and live VM gate remain open.
 

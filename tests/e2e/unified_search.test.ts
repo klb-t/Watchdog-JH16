@@ -1,6 +1,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium, type Browser } from 'playwright';
+import { resolveChromium } from '../helpers/browser';
 import { spawn, type ChildProcess } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -54,7 +55,7 @@ before(async () => {
     await new Promise(resolve => setTimeout(resolve, 200));
   }
   assert.ok(ready, `Search server did not start: ${logs}`);
-  browser = await chromium.launch();
+  browser = await chromium.launch({ executablePath: resolveChromium() });
 });
 
 after(async () => {
