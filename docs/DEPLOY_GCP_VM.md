@@ -134,6 +134,41 @@ rola → cofnięcie w istniejącej sesji → restart z danymi → weryfikacja ba
 odtworzenie → osobno kontrolowana aktywacja. Lokalny test skryptów nie zamyka tych punktów.
 Nie używaj szerokiego wyjątku produkcyjnego local-user do ominięcia awarii logowania.
 
+## Diagnostyka: gdzie szukać, gdy coś nie działa
+
+Nowa instalacja zapisuje **pełny ślad** (`WATCHDOG_DIAGNOSTICS_MODE=TRACE`) w
+`/var/lib/watchdog/diagnostics/RRRR-MM-DD/`. Niezależnie od trybu (poza `OFF`) każdego dnia
+powstają też pliki:
+
+| Plik | Co zawiera |
+|---|---|
+| `requests.jsonl` | każde żądanie API: status, czas, kto, kod i komunikat błędu, `trace_id` |
+| `server-errors.jsonl` | każdy nieoczekiwany błąd serwera z pełnym stosem i łańcuchem przyczyn |
+| `process-errors.jsonl` | awaria procesu lub odmowa startu (np. zła konfiguracja) z przyczyną |
+| `client-errors.jsonl` | błędy z przeglądarek użytkowników: wyjątki JS, odrzucone obietnice, odpowiedzi 5xx, zerwane połączenia |
+| `<trace_id>/events.jsonl` | w TRACE: każdy krok żądania lub analizy po kolei, z danymi wejściowymi i decyzjami |
+
+Każda odpowiedź z błędem zawiera `trace_id` (też w nagłówku `x-trace-id`), a konsola
+(`watchdogctl logs`) wypisuje każde nieudane lub wolne żądanie razem z nim. Dane są
+redagowane przed zapisem (hasła, tokeny, klucze); przeglądarka wysyła tylko metadane, bez
+treści formularzy i bez parametrów adresu.
+
+Przez SSH na VM, bez otwierania aplikacji:
+
+```bash
+sudo watchdogctl errors          # ostatnie awarie: serwer, proces, przeglądarki, nieudane żądania
+sudo watchdogctl trace TRACE_ID  # wszystko o jednym zdarzeniu, krok po kroku
+sudo watchdogctl diag-summary    # dzisiejsze liczby, tryb, zajęte miejsce
+sudo watchdogctl logs            # konsola usługi (journald)
+sudo watchdogctl proxy-logs      # HTTPS / certyfikat
+sudo watchdogctl diagnostics-mode NORMAL   # lżejszy tryb po zakończeniu testów
+```
+
+Retencja: 14 dni i maks. 2048 MB (`WATCHDOG_DIAGNOSTICS_RETENTION_DAYS`,
+`WATCHDOG_DIAGNOSTICS_MAX_MB` w `/etc/watchdog/app.env`); dzisiejszy dzień nie jest usuwany.
+Programista widzi te same ślady w aplikacji (Analiza › Diagnostyka) i może pobrać paczkę ZIP.
+Starsze instalacje zachowują swój tryb; przełącz go komendą `diagnostics-mode`.
+
 ## Utrzymanie i dane
 
 Polecenia wykonywane **przez SSH na VM**:

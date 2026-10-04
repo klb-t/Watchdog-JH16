@@ -173,8 +173,10 @@ WATCHDOG_ALLOW_OPEN_INSTANCE=true
 DB_PATH=/mnt/watchdog/watchdog.sqlite
 STORE_BACKEND=local
 STORE_PATH=/mnt/watchdog/object_store
-WATCHDOG_DIAGNOSTICS_MODE=NORMAL
+WATCHDOG_DIAGNOSTICS_MODE=TRACE
 WATCHDOG_DIAGNOSTICS_DIR=/mnt/watchdog/diagnostics
+WATCHDOG_DIAGNOSTICS_RETENTION_DAYS=14
+WATCHDOG_DIAGNOSTICS_MAX_MB=2048
 WATCHDOG_VAULT_KEY_FILE=/mnt/watchdog/secrets/master.key
 SESSION_SIGNING_KEY=$(openssl rand -hex 32)
 EOF
@@ -185,6 +187,7 @@ install -m 0644 "$release/deploy/watchdog.service" "$root/etc/systemd/system/wat
 install -d -m 0755 "$root/usr/local/sbin" "$root/usr/local/lib/watchdog"
 install -m 0755 "$release/scripts/watchdogctl.sh" "$root/usr/local/sbin/watchdogctl"
 install -m 0755 "$release/scripts/watchdog_backup.py" "$root/usr/local/lib/watchdog/watchdog_backup.py"
+if [[ -f $release/scripts/watchdog_diag.py ]]; then install -m 0755 "$release/scripts/watchdog_diag.py" "$root/usr/local/lib/watchdog/watchdog_diag.py"; fi
 if [[ -f $release/deploy/watchdog-proxy.service ]]; then install -m 0644 "$release/deploy/watchdog-proxy.service" "$root/etc/systemd/system/watchdog-proxy.service"; fi
 if [[ -f $release/scripts/watchdog_access.sh ]]; then install -m 0755 "$release/scripts/watchdog_access.sh" "$root/usr/local/lib/watchdog/watchdog_access.sh"; fi
 systemctl daemon-reload

@@ -48,6 +48,12 @@ Claude owns integration and the global ledger. Completed historical task paragra
 - [ ] **E6.4 — Case hypotheses and reviewed constraints.** Detailed scope remains below.
 - [ ] **E6.5 — Profile-bound measurement suggestions.** Detailed scope remains below.
 - [ ] **E6.6 — Remaining field integrations.** Detailed scope remains below.
+- [x] **E3.19 — Continuous diagnostics for the live installation (owner request 2026-10-04).**
+  Daily request/server/process/client error records in every mode except OFF; trace ID in error
+  bodies and console; browser failure reporting; crash recording; retention; VM default TRACE;
+  `watchdogctl errors|trace|diag-summary|diagnostics-mode`. Fixed on the way: request paths inside
+  mounted routers were logged relative to the mount. Tests: `tests/integration/diagnostics_live.test.ts`
+  6/6 (real server process), `tests/e2e/client_diagnostics.test.ts` (real browser at 390 px).
 - [ ] **E3.18 — Live installation acceptance.** First real install on the owner's VM with
   `deploy_gcp_vm.sh --owner … --public`, a real certificate, SMTP (`watchdogctl set-mail`) and one
   invited person signing in from outside. Needs the owner to start the VM; everything else is code

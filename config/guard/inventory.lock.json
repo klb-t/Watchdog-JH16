@@ -112,6 +112,7 @@
     "GET /watches (automation_routes.ts)",
     "GET /watches/:id (automation_routes.ts)",
     "GET /watches/profile (automation_routes.ts)",
+    "POST / (client_errors.ts)",
     "POST / (research_project_routes.ts)",
     "POST / (settings_routes.ts)",
     "POST /:id/assessments (source_access_routes.ts)",

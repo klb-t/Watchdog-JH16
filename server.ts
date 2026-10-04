@@ -24,6 +24,10 @@ import path from 'path';
 import url from 'node:url';
 import { buildApiRouter } from './backend/watchdog_api/api/routes';
 import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middleware';
+import { buildClientErrorRouter } from './backend/watchdog_api/api/client_errors';
+import { pruneDiagnostics, retentionFromEnv } from './backend/watchdog_api/diag/retention';
+import { tracer } from './backend/watchdog_api/utils/tracer';
+import { buildErrorEnvelope } from './backend/watchdog_api/utils/errors';
 import { ExtractionDatasetService } from './backend/watchdog_api/services/extraction_dataset';
 import { buildIdentity, assertAuthSafeForEnvironment, readAuthConfig } from './backend/watchdog_api/identity';
 import { buildAuthRouter, principalMiddleware, requireInstallationAccess } from './backend/watchdog_api/api/auth_routes';
@@ -77,6 +81,8 @@ app.use((req, res, next) => {
   next();
 });
 
+// Before the 2 MB parser: browser error reports have their own 16 KB limit and rate limit.
+app.use('/api/client-errors', buildClientErrorRouter());
 app.use(express.json({ limit: '2mb' }));
 app.use(traceMiddleware);
 
@@ -150,7 +156,28 @@ export async function configureApp() {
   return { app, identity, automation };
 }
 
+/** Crashes and stray rejections leave a full record, not just whatever Node prints. */
+function installProcessDiagnostics() {
+  const record = (kind: string, error: unknown) => {
+    const err = error instanceof Error ? error : new Error(String(error));
+    tracer.record('process-errors.jsonl', { kind, ...buildErrorEnvelope(err, { component: 'process', operation: kind }) });
+    console.error(`[PROCESS] ${kind}: ${err.stack ?? err.message}`);
+  };
+  // Node's own behaviour is kept — both still end the process (systemd restarts
+  // it); the difference is that the cause is written down first.
+  process.on('unhandledRejection', reason => { record('unhandledRejection', reason); process.exit(1); });
+  process.on('uncaughtException', error => { record('uncaughtException', error); process.exit(1); });
+  const retention = retentionFromEnv();
+  const prune = () => { try {
+    const r = pruneDiagnostics(tracer.getLogDir(), retention);
+    if (r.removed.length) console.log(`[DIAGNOSTICS] retention removed ${r.removed.join(', ')}; ${Math.round(r.bytes / 1048576)} MB kept`);
+  } catch (error) { console.error(`[DIAGNOSTICS] retention failed: ${(error as Error).message}`); } };
+  prune(); setInterval(prune, 3_600_000).unref();
+  console.log(`Diagnostics: mode ${tracer.getMode()}, directory ${tracer.getLogDir()}, keep ${retention.days} days / ${Math.round(retention.maxBytes / 1048576)} MB`);
+}
+
 async function startServer() {
+  installProcessDiagnostics();
   const { identity, automation } = await configureApp();
   automation.start();
   console.log(`Authentication: ${identity.mode} — ${identity.config.reason}`);
