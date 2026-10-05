@@ -134,6 +134,39 @@ rola → cofnięcie w istniejącej sesji → restart z danymi → weryfikacja ba
 odtworzenie → osobno kontrolowana aktywacja. Lokalny test skryptów nie zamyka tych punktów.
 Nie używaj szerokiego wyjątku produkcyjnego local-user do ominięcia awarii logowania.
 
+## Usypiana VM: stały adres, koszty tylko przy użyciu (E3.20)
+
+Po instalacji z `--owner` (bez `--public`) uruchom w Cloud Shell:
+
+```bash
+bash scripts/deploy_gcp_gate.sh --project TWOJ_PROJEKT --zone TWOJA_STREFA --instance TWOJA_VM
+```
+
+Powstaje mały „budzik” na Cloud Run z adresem `https://watchdog-gate-…run.app`. To jest od teraz
+adres WatchDoga: w zaproszeniach, linkach i mailach. Działanie:
+
+- VM **sama się wyłącza** po 30 minutach bez użycia (`--idle-minutes N`, 10–1440). Za używanie
+  liczą się zalogowane żądania i działające zadania zbierania danych; sprawdzanie gotowości
+  przez budzik się nie liczy. Nie wyłącza się w trakcie instalacji ani kopii zapasowej i przez
+  pierwsze N minut po starcie.
+- Wejście na adres, gdy VM śpi: budzik ją uruchamia i pokazuje stronę „Uruchamiam WatchDoga…”,
+  która sama się odświeża (zwykle 1–2 minuty).
+- **Harmonogramy zbierania danych:** Cloud Scheduler budzi VM co 6 godzin
+  (`--wake-schedule "0 */6 * * *"`, czas warszawski). Zaległe terminy wykonują się po
+  przebudzeniu raz (scalone), więc zadanie może się spóźnić najwyżej o odstęp budzenia.
+- Budzik ma prawo wyłącznie odczytać i uruchomić **tę jedną** VM. Reguła firewalla wpuszcza
+  na port 8080 tylko jego podsieć. Logowanie, uprawnienia i dane obsługuje wyłącznie aplikacja.
+
+Koszty, orientacyjnie (sprawdź cennik GCP dla swojego regionu): za maszynę płacisz tylko za
+godziny pracy. Dysk jest płatny stale (50 GB to kilka $ miesięcznie). Cloud Run, Cloud Scheduler
+(do 3 zadań) i Cloud Build mieszczą się zwykle w darmowych limitach. Statyczny IP nie jest
+potrzebny; jeśli wcześniej użyłeś `--public`, zwolnij go w konsoli (płatny także, gdy VM śpi).
+Każdy, kto zna adres, może obudzić VM. Bez zalogowania nie utrzyma jej jednak włączonej: zaśnie
+po czasie bezczynności.
+
+Wyłączenie: `sudo watchdogctl disable-gate` na VM (VM zostaje włączona na stałe), potem usuń
+usługę `watchdog-gate` i zadanie `watchdog-gate-wake` w konsoli.
+
 ## Diagnostyka: gdzie szukać, gdy coś nie działa
 
 Nowa instalacja zapisuje **pełny ślad** (`WATCHDOG_DIAGNOSTICS_MODE=TRACE`) w

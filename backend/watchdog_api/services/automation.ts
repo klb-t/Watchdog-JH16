@@ -1,4 +1,5 @@
 import { AutomationRepository, AutomationError } from '../db/repositories/automation';
+import { markActivity } from '../utils/activity';
 import type { AutomationProfile } from '../config/automation';
 import { PublicHttp, AcquisitionStopped, type PublicTransport } from '../sources/public_http';
 import { pubchem, chembl, wikidata, substanceLiterature } from '../sources/public_reference';
@@ -28,7 +29,8 @@ export class AutomationService {
       const checkpoint = () => {
         if (canceled || !this.repo.heartbeat(job.id, token, new Date(), profile.worker.leaseMs)) throw new AcquisitionStopped('CANCELED_OR_AUTHORIZATION_REVOKED');
       };
-      const heartbeat = setInterval(() => { if (!this.repo.heartbeat(job.id, token, new Date(), profile.worker.leaseMs)) canceled = true; }, profile.worker.heartbeatMs); heartbeat.unref();
+      markActivity('job');
+      const heartbeat = setInterval(() => { markActivity('job'); if (!this.repo.heartbeat(job.id, token, new Date(), profile.worker.leaseMs)) canceled = true; }, profile.worker.heartbeatMs); heartbeat.unref();
       const http = new PublicHttp(this.repo, job.id, profile, job.request.maxRequests, checkpoint, this.transport, this.delay);
       const outcomes: any[] = [], errors: { source: string; code: string }[] = [];
       const attempt = async (source: string, fn: () => Promise<unknown>) => {

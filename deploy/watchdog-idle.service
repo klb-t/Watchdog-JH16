@@ -1,0 +1,8 @@
+# Managed by scripts/gcp_vm_bootstrap.sh. E3.20: power off when nobody uses WatchDog.
+[Unit]
+Description=Watchdog idle check (sleeping VM)
+After=watchdog.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/watchdogctl idle-check

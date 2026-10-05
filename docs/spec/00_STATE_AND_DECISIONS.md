@@ -10,6 +10,8 @@ decision changes or an epic completes.
 
 ## 1. Where the project actually is
 
+**D25 / E3.20 — 2026-10-05:** "always available, pay only when used" is a VM that powers itself off after N idle minutes behind a scale-to-zero Cloud Run gate (stable `run.app` HTTPS address, wakes the VM, proxies over the VPC); Cloud Scheduler wakes it for collection jobs, whose missed occurrences coalesce. Chosen over Cloud Run + Postgres, which would replace the SQLite persistence layer (342 synchronous call sites) — an irreversible subsystem replacement needing its own plan. The external advice proposing FastAPI/Next.js/TimescaleDB/APScheduler changes described a different stack and was not applied.
+
 **D24 / E3.19 — 2026-10-04:** continuous diagnostics for the live test VM, at the owner's request: daily `requests.jsonl`, `server-errors.jsonl`, `process-errors.jsonl`, `client-errors.jsonl` in every mode except OFF; trace IDs in error bodies; browser failures reported to the server; new VM installs default to TRACE with 14-day / 2 GB retention; `watchdogctl errors|trace|diag-summary`. This deliberately departs from spec 06's "production runs NORMAL" for the test installation; `diagnostics-mode NORMAL` returns to it. See DEPLOY_GCP_VM.md › Diagnostyka.
 
 **E5.7b.1 — 2026-10-03:** frozen comparison families (migration 024): reviewed E5.7d comparisons of one paper are fixed before running and always reported k-of-n against the frozen denominator, including failures, refusals and members never run; no family verdict, test or correction is chosen by code. Prior attempts are disclosed, not counted; revisions supersede without erasing. Principles guard now covers the family modules (12 numerical roots). See PAPER_ANALYSES.md.

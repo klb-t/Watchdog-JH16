@@ -54,6 +54,15 @@ Claude owns integration and the global ledger. Completed historical task paragra
   `watchdogctl errors|trace|diag-summary|diagnostics-mode`. Fixed on the way: request paths inside
   mounted routers were logged relative to the mount. Tests: `tests/integration/diagnostics_live.test.ts`
   6/6 (real server process), `tests/e2e/client_diagnostics.test.ts` (real browser at 390 px).
+- [x] **E3.20 — Sleeping VM behind an always-on gate (owner request 2026-10-05).** Cloud Run
+  gate (`deploy/gate`, Node built-ins) forwards over the VPC, starts the stopped VM through the
+  Compute API and shows a self-refreshing wait page; `watchdogctl idle-check` (5-minute timer)
+  powers off after N idle minutes (signed-in requests/jobs only, boot grace, install lock);
+  Cloud Scheduler wakes it for collection jobs; `deploy_gcp_gate.sh` uses an instance-scoped
+  role and a subnet-scoped tcp:8080 rule. Rejected alternative: Cloud Run + Postgres would
+  replace the SQLite persistence layer (342 synchronous call sites) — recorded in D25.
+  Tests: `tests/integration/gate.test.ts` 3/3, `tests/integration/sleeping_vm.test.ts` 6/6.
+  Live acceptance belongs to E3.18.
 - [ ] **E3.18 — Live installation acceptance.** First real install on the owner's VM with
   `deploy_gcp_vm.sh --owner … --public`, a real certificate, SMTP (`watchdogctl set-mail`) and one
   invited person signing in from outside. Needs the owner to start the VM; everything else is code

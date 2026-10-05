@@ -4,6 +4,7 @@ import { tracer } from '../utils/tracer';
 import { randomUUID } from 'node:crypto';
 import { authErrorStatus } from './auth_routes';
 import { redact, redactText } from '../utils/redaction';
+import { markActivity, READINESS_PATHS } from '../utils/activity';
 
 /** Requests at least this slow are printed even when they succeed. */
 const SLOW_REQUEST_MS = Number(process.env.WATCHDOG_SLOW_REQUEST_MS ?? 2000);
@@ -36,6 +37,7 @@ export function traceMiddleware(req: Request, res: Response, next: NextFunction)
     const entry = { at: new Date().toISOString(), trace_id: traceId, request_id: requestId, method: req.method, path: fullPath,
       status: aborted && !res.writableEnded ? null : res.statusCode, duration_ms: durationMs, aborted: aborted && !res.writableEnded,
       actor_id: req.principal?.id ?? null, ...(failure ? { error: failure } : {}) };
+    if (req.principal && fullPath.startsWith('/api/') && !READINESS_PATHS.has(`${req.method} ${fullPath}`)) markActivity('request');
     tracer.emit('REQUEST_COMPLETE', entry);
     tracer.record('requests.jsonl', entry);
     if (entry.status === null || entry.status >= 400 || durationMs >= SLOW_REQUEST_MS) {

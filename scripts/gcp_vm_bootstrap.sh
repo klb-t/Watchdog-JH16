@@ -189,6 +189,9 @@ install -m 0755 "$release/scripts/watchdogctl.sh" "$root/usr/local/sbin/watchdog
 install -m 0755 "$release/scripts/watchdog_backup.py" "$root/usr/local/lib/watchdog/watchdog_backup.py"
 if [[ -f $release/scripts/watchdog_diag.py ]]; then install -m 0755 "$release/scripts/watchdog_diag.py" "$root/usr/local/lib/watchdog/watchdog_diag.py"; fi
 if [[ -f $release/deploy/watchdog-proxy.service ]]; then install -m 0644 "$release/deploy/watchdog-proxy.service" "$root/etc/systemd/system/watchdog-proxy.service"; fi
+for unit in watchdog-idle.service watchdog-idle.timer; do
+  if [[ -f $release/deploy/$unit ]]; then install -m 0644 "$release/deploy/$unit" "$root/etc/systemd/system/$unit"; fi
+done
 if [[ -f $release/scripts/watchdog_access.sh ]]; then install -m 0755 "$release/scripts/watchdog_access.sh" "$root/usr/local/lib/watchdog/watchdog_access.sh"; fi
 systemctl daemon-reload
 systemctl enable --runtime --now watchdog.service
