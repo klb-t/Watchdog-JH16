@@ -19,6 +19,7 @@ function fakeRoot(appEnv: string) {
   write('usr/local/lib/watchdog/watchdog_access.sh', readFileSync('scripts/watchdog_access.sh', 'utf8'), 0o755);
   write('proc/uptime', '7200.00 100.00\n');
   write('proc/loadavg', '0.05 0.04 0.03 1/100 123\n');
+  write('proc/net/tcp', '  sl  local_address rem_address   st\n');
   write('usr/local/lib/watchdog/watchdog_idle.py', readFileSync('scripts/watchdog_idle.py', 'utf8'), 0o755);
   for (const command of ['systemctl', 'curl', 'docker', 'logger']) write(`test-bin/${command}`, `#!/usr/bin/env python3
 import json,sys,os
@@ -61,6 +62,8 @@ test('E3.20 idle-check: powers off only when the gate is on, the machine is not 
     r.write('var/lib/watchdog/activity.json', '{"at":"now","reason":"request"}');
     assert.match(r.run(['idle-check']).stdout, /Last use \d+s ago; staying on/); assert.equal(poweredOff(), 0);
     const old = new Date(Date.now() - 31 * 60_000); utimesSync(path.join(r.root, 'var/lib/watchdog/activity.json'), old, old);
+    // Advance the persisted observation too: this fixture represents 31 elapsed minutes.
+    utimesSync(path.join(r.root, 'var/lib/watchdog/idle-last-observed-use.json'), old, old);
     // An install or backup holding the lock keeps the machine on.
     mkdirSync(path.join(r.root, 'run/lock'), { recursive: true });
     const holder = spawnSync('bash', ['-c', `exec 9>"${r.root}/run/lock/watchdog-install.lock"; flock -n 9 && bash scripts/watchdogctl.sh idle-check`],
@@ -79,7 +82,11 @@ test('E3.20 idle decision: other services count — sessions, load, public conne
     const decide = () => { const x = r.run(['idle-check']); return { out: x.stdout, off: r.calls().filter(c => c === 'systemctl poweroff').length }; };
     // Quiet machine: sleeps.
     assert.equal(decide().off, 1);
-    const reset = () => { rmSync(path.join(r.root, 'calls'), { force: true }); };
+    // Independent sensor cases. Transition/history behavior has dedicated Python regressions.
+    const reset = () => {
+      rmSync(path.join(r.root, 'calls'), { force: true });
+      rmSync(path.join(r.root, 'var/lib/watchdog/idle-last-observed-use.json'), { force: true });
+    };
     // An open login session.
     reset(); r.write('var/run/who.txt', 'marcin pts/0 2026-10-07 10:00 (1.2.3.4)\n');
     let d = decide(); assert.match(d.out, /1 login session\(s\) open; staying on/); assert.equal(d.off, 0);
