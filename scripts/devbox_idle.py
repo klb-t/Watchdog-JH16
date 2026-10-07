@@ -21,7 +21,7 @@ def decide(now: float, uptime: float, window: float, last_use: float | None,
            activity: list[float], reasons: list[str]) -> tuple[bool, float, str]:
     """Return (may_sleep, new_last_use, reason); no I/O or wall-clock access."""
     values = [now, uptime, window, *activity] + ([] if last_use is None else [last_use])
-    if any(not math.isfinite(x) or x < 0 for x in values) or window <= 0:
+    if any(type(x) not in (int, float) or not math.isfinite(x) or x < 0 for x in values) or window <= 0:
         raise SetupError('Invalid time observation; staying on')
     last = now if last_use is None else last_use
     if activity:
@@ -47,7 +47,7 @@ def observe(root: Path, p: dict, now: float) -> tuple[float, list[float], list[s
         tables.append(((proc / 'net/tcp6').read_text(), True))
     for text, v6 in tables:
         lines = text.splitlines()
-        if not lines or 'local_address' not in lines[0] or 'rem_address' not in lines[0]:
+        if not lines or 'local_address' not in lines[0] or not any(k in lines[0] for k in ('rem_address', 'remote_address')):
             raise SetupError('Unreadable TCP table header')
         if len(list(parse_tcp(text, v6))) != len([line for line in lines[1:] if line.strip()]):
             raise SetupError('Malformed TCP observation')
