@@ -63,6 +63,15 @@ Claude owns integration and the global ledger. Completed historical task paragra
   replace the SQLite persistence layer (342 synchronous call sites) — recorded in D25.
   Tests: `tests/integration/gate.test.ts` 3/3, `tests/integration/sleeping_vm.test.ts` 6/6.
   Live acceptance belongs to E3.18.
+- [x] **E3.21 — Shared host and richer idle detection (owner 2026-10-07: everything runs on one
+  machine; sleep after 30 idle minutes when nothing but system background work remains).**
+  `deploy_gcp_vm.sh --shared-host`: no VPC deny rules, no default-deny firewall, other containers
+  allowed, port-8080 and container-name conflicts stop the install before anything is stopped.
+  `scripts/watchdog_idle.py` decides sleep from WatchDog use, login sessions, 15-minute load,
+  public-internet connections to other services, a manual `keep-awake` hold and boot grace; a
+  failed decision never powers off. Tests: `sleeping_vm.test.ts` (9), `operations_update.test.ts`
+  (+3), `gcp_vm.test.ts` (+1). Not detected: an idle service nobody is using at that moment;
+  documented, with `keep-awake` as the answer.
 - [ ] **E3.18 — Live installation acceptance.** First real install on the owner's VM with
   `deploy_gcp_vm.sh --owner … --public`, a real certificate, SMTP (`watchdogctl set-mail`) and one
   invited person signing in from outside. Needs the owner to start the VM; everything else is code

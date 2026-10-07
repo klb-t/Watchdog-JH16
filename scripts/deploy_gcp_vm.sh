@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # Run in Cloud Shell (or a terminal with Bash 4+, gcloud, git and Python 3).
-# Existing, dedicated VM only. GitHub credentials stay on this machine.
+# Existing VM: dedicated by default, or --shared-host next to other services. GitHub credentials stay on this machine.
 set -Eeuo pipefail
 usage() {
   cat <<'EOF'
 Usage: bash scripts/deploy_gcp_vm.sh --project PROJECT --zone ZONE --instance VM
-         [--ref REF] [--owner EMAIL] [--public | --domain HOST] [--plan]
+         [--ref REF] [--owner EMAIL] [--public | --domain HOST] [--shared-host] [--plan]
 Default ref: main. Run from a GitHub checkout.
 Without flags, project defaults to gcloud's current project; zone/VM are prompted.
 Configures only the selected VM, scoped firewall rules and boot-disk retention.
@@ -14,16 +14,21 @@ App access: SSH through IAP + Cloud Shell Web Preview, port 8080.
 --public       also open https://<VM-IP>.sslip.io to the internet (no domain needed;
                sign-in required). Keeps the VM's external IP by making it static.
 --domain HOST  like --public, with your own name (its DNS A record -> the VM's IP).
+--shared-host  the VM runs other services too: nothing of theirs is closed or refused. No deny
+               rules in the VPC, no UFW default-deny, other containers are fine; WatchDog only adds
+               its own allow rule for IAP SSH. Stops with a message if port 8080 is taken.
+               Pass it on every update of a shared machine.
 --plan validates/prints intent without fetching code or changing cloud resources.
 EOF
 }
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
-project=''; zone=''; instance=''; ref='main'; plan=false; public=false; domain=''; owner=''
+project=''; zone=''; instance=''; ref='main'; plan=false; public=false; domain=''; owner=''; shared=false
 while (($#)); do
   case "$1" in
     --help|-h) usage; exit 0 ;;
     --plan) plan=true; shift ;;
     --public) public=true; shift ;;
+    --shared-host) shared=true; shift ;;
     --project|--zone|--instance|--ref|--domain|--owner)
       (($# >= 2)) || die "Missing value for $1"
       case "$1" in --project) project=$2;; --zone) zone=$2;; --instance) instance=$2;; --ref) ref=$2;;
@@ -43,7 +48,11 @@ if [[ -z $zone && -t 0 ]]; then read -r -p 'VM zone (e.g. europe-central2-a): ' 
 [[ -z $domain || $domain =~ ^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$ ]] || die 'Invalid --domain (a host name, no https://).'
 [[ -z $owner || $owner =~ ^[^[:space:]@\"]+@[^[:space:]@\"]+\.[^[:space:]@\"]+$ ]] || die 'Invalid --owner email.'
 printf 'Target: %s / %s / %s; Git ref: %s\n' "$project" "$zone" "$instance" "${ref:-the branch checked out here}"
-printf '%s\n' 'Dedicated VM: deny external ingress; allow SSH from IAP; bind app to 127.0.0.1:8080.'
+if $shared; then
+  printf '%s\n' 'Shared VM: other services are left as they are (no deny rules, no default-deny firewall); allow SSH from IAP; app on 127.0.0.1:8080.'
+else
+  printf '%s\n' 'Dedicated VM: deny external ingress; allow SSH from IAP; bind app to 127.0.0.1:8080.'
+fi
 if $public; then
   printf 'Public: HTTPS on %s (ports 80/443 open; Caddy in front; sign-in enforced).\n' "${domain:-<external IP>.sslip.io}"
   printf '%s\n' "The VM's current external IPv4 is promoted to a static address so the name keeps working."
@@ -121,9 +130,11 @@ gcloud compute instances add-tags "$instance" --project "$project" --zone "$zone
 ssh_vm() { gcloud compute ssh "$instance" --project "$project" --zone "$zone" --tunnel-through-iap --quiet --command "$1"; }
 # Prove IAP works BEFORE closing previous SSH paths. No automatic IAM grants.
 ssh_vm 'true' || die 'IAP SSH failed. Check roles/iap.tunnelResourceAccessor and OS Login/SSH permissions; restrictive rules were not installed.'
-firewall "$tag-private-v4" deny 1 '0.0.0.0/0' all
-firewall "$tag-private-v6" deny 1 '::/0' all
-ssh_vm 'true' || die 'IAP check after firewall update failed. Inspect the two VM-scoped private rules in the GCP console.'
+if ! $shared; then
+  firewall "$tag-private-v4" deny 1 '0.0.0.0/0' all
+  firewall "$tag-private-v6" deny 1 '::/0' all
+  ssh_vm 'true' || die 'IAP check after firewall update failed. Inspect the two VM-scoped private rules in the GCP console.'
+fi
 gcloud compute instances set-disk-auto-delete "$instance" --project "$project" --zone "$zone" --disk "$boot_disk" --no-auto-delete --quiet
 if $public; then
   # An ephemeral IP changes when the VM is stopped, which would break the
@@ -142,6 +153,7 @@ gcloud compute scp "$stage/source.tar.gz" "$instance:$remote_dir/source.tar.gz" 
 extra=()
 [[ -n $owner ]] && extra+=(--owner "$owner")
 $public && extra+=(--public-host "$public_host")
+$shared && extra+=(--shared-host)
 printf -v remote_command 'set -eu; cd %q; printf "%%s  source.tar.gz\\n" %q | sha256sum -c -; tar -xzf source.tar.gz scripts/gcp_vm_bootstrap.sh; sudo bash scripts/gcp_vm_bootstrap.sh --archive %q --commit %q' "$remote_dir" "$checksum" "$remote_dir/source.tar.gz" "$commit"
 for arg in "${extra[@]}"; do printf -v remote_command '%s %q' "$remote_command" "$arg"; done
 ssh_vm "$remote_command"

@@ -54,26 +54,32 @@ case "${1:-help}" in
     sub=$1; shift; [[ $sub == diag-summary ]] && sub=summary
     WATCHDOG_ROOT="${root:-/}" python3 "$diag" "$sub" "$@" ;;
   idle-check)
-    # Run every 5 minutes by watchdog-idle.timer when the gate is enabled. Powers the VM off
-    # only when: the gate is configured, the machine has been up longer than the idle time,
-    # nobody has used the app (activity file) for that long, and no install/backup holds the lock.
+    # Run every 5 minutes by watchdog-idle.timer when the gate is enabled. The decision lives in
+    # watchdog_idle.py (WatchDog use, login sessions, load, internet connections to other
+    # services, manual hold, boot grace). Here: the install lock, then power off.
     require_admin; require_commands systemctl
     [[ -f $root/etc/watchdog/idle.env ]] || { echo 'Gate not enabled; nothing to do.'; exit 0; }
-    idle=$(sed -n 's/^WATCHDOG_IDLE_MINUTES=//p' "$root/etc/watchdog/idle.env")
-    [[ $idle =~ ^[0-9]+$ ]] && ((idle >= 10)) || die 'Invalid WATCHDOG_IDLE_MINUTES.'
-    up=$(cut -d' ' -f1 "$root/proc/uptime"); up=${up%.*}
-    if ((up < idle * 60)); then echo "Up ${up}s; staying on for at least ${idle} minutes after boot."; exit 0; fi
-    activity="$root/var/lib/watchdog/activity.json"
-    if [[ -f $activity ]]; then
-      age=$(( $(date +%s) - $(stat -c %Y "$activity") ))
-      if ((age < idle * 60)); then echo "Last use ${age}s ago; staying on."; exit 0; fi
-    fi
+    idle_py="$root/usr/local/lib/watchdog/watchdog_idle.py"
+    [[ -f $idle_py ]] || die 'Idle decision module missing; update the installation.'
+    code=0; reason=$(WATCHDOG_ROOT="${root:-/}" python3 "$idle_py") || code=$?
+    echo "$reason"
+    if ((code == 10)); then exit 0; fi
+    ((code == 0)) || die 'Idle decision failed; staying on.'
     install -d -m 0755 "$root/run/lock"
     exec 9>"$root/run/lock/watchdog-install.lock"
     flock -n 9 || { echo 'Install or backup in progress; staying on.'; exit 0; }
-    logger -t watchdog-idle "No use for ${idle} minutes; powering off. The gate starts the VM on the next visit." 2>/dev/null || true
-    echo "No use for ${idle} minutes; powering off."
+    logger -t watchdog-idle "$reason The gate starts the VM on the next visit." 2>/dev/null || true
     systemctl poweroff ;;
+  keep-awake)
+    # Hold the machine on for HOURS (max 72) — e.g. for work on another service — or release it.
+    (($# == 2)) || die 'Usage: watchdogctl keep-awake HOURS|off'
+    require_admin
+    hold="$root/var/lib/watchdog/keep-awake-until"
+    if [[ $2 == off ]]; then rm -f "$hold"; echo 'Hold released; normal idle rules apply.'; exit 0; fi
+    [[ $2 =~ ^[0-9]+$ ]] && (($2 >= 1 && $2 <= 72)) || die 'HOURS must be 1-72, or off.'
+    install -d -m 0755 "$root/var/lib/watchdog"
+    printf '%s\n' "$(( $(date +%s) + $2 * 3600 ))" > "$hold"
+    echo "Staying on for $2 hour(s)." ;;
   diagnostics-mode)
     (($# == 2)) && [[ $2 =~ ^(OFF|ERRORS|NORMAL|TRACE)$ ]] || die 'Usage: watchdogctl diagnostics-mode OFF|ERRORS|NORMAL|TRACE'
     require_admin; require_commands systemctl
@@ -131,5 +137,5 @@ PYEOF
     (($# == 3)) || die 'Usage: watchdogctl restore ARCHIVE NEW_ABSOLUTE_DIRECTORY'
     # Staging only: never touches the active installation or invokes Docker/systemd.
     python3 "$helper" restore --archive "$2" --destination "$3" ;;
-  *) printf '%s\n' 'Usage: watchdogctl status | logs | errors [N] | trace TRACE_ID | diag-summary | diagnostics-mode MODE | idle-check | enable-gate URL INTERNAL_IP [MIN] | disable-gate | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY | people | grant | invite | open-link | signin-link | enable-accounts EMAIL | enable-public HOST | disable-public | proxy-logs | set-public-url URL | set-mail'; [[ ${1:-help} == help ]] ;;
+  *) printf '%s\n' 'Usage: watchdogctl status | logs | errors [N] | trace TRACE_ID | diag-summary | diagnostics-mode MODE | idle-check | keep-awake HOURS|off | enable-gate URL INTERNAL_IP [MIN] | disable-gate | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY | people | grant | invite | open-link | signin-link | enable-accounts EMAIL | enable-public HOST | disable-public | proxy-logs | set-public-url URL | set-mail'; [[ ${1:-help} == help ]] ;;
 esac

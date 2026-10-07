@@ -18,6 +18,8 @@ function fakeRoot(appEnv: string) {
   write('etc/systemd/system/watchdog-idle.timer', 'synthetic');
   write('usr/local/lib/watchdog/watchdog_access.sh', readFileSync('scripts/watchdog_access.sh', 'utf8'), 0o755);
   write('proc/uptime', '7200.00 100.00\n');
+  write('proc/loadavg', '0.05 0.04 0.03 1/100 123\n');
+  write('usr/local/lib/watchdog/watchdog_idle.py', readFileSync('scripts/watchdog_idle.py', 'utf8'), 0o755);
   for (const command of ['systemctl', 'curl', 'docker', 'logger']) write(`test-bin/${command}`, `#!/usr/bin/env python3
 import json,sys,os
 with open(os.environ['WATCHDOG_ROOT']+'/calls','a') as f:f.write(json.dumps([os.path.basename(sys.argv[0]),*sys.argv[1:]])+'\\n')
@@ -66,6 +68,54 @@ test('E3.20 idle-check: powers off only when the gate is on, the machine is not 
     assert.match(holder.stdout, /Install or backup in progress; staying on/); assert.equal(poweredOff(), 0);
     const off = r.run(['idle-check']); assert.equal(off.status, 0, off.stderr);
     assert.match(off.stdout, /No use for 30 minutes; powering off/); assert.equal(poweredOff(), 1);
+  } finally { r.clean(); }
+});
+
+const tcp = (rows: string[]) => `  sl  local_address rem_address   st\n${rows.map((r, i) => `   ${i}: ${r} 00000000 0 0 1`).join('\n')}\n`;
+// 0A = LISTEN, 01 = ESTABLISHED. Little-endian IPv4: 0100007F = 127.0.0.1, 0100000A = 10.0.0.1, 08080808 = 8.8.8.8
+test('E3.20 idle decision: other services count — sessions, load, public connections and a manual hold keep the machine on', () => {
+  const r = fakeRoot('WATCHDOG_AUTH=accounts\n'); try {
+    r.write('etc/watchdog/idle.env', 'WATCHDOG_IDLE_MINUTES=30\n');
+    const decide = () => { const x = r.run(['idle-check']); return { out: x.stdout, off: r.calls().filter(c => c === 'systemctl poweroff').length }; };
+    // Quiet machine: sleeps.
+    assert.equal(decide().off, 1);
+    const reset = () => { rmSync(path.join(r.root, 'calls'), { force: true }); };
+    // An open login session.
+    reset(); r.write('var/run/who.txt', 'marcin pts/0 2026-10-07 10:00 (1.2.3.4)\n');
+    let d = decide(); assert.match(d.out, /1 login session\(s\) open; staying on/); assert.equal(d.off, 0);
+    rmSync(path.join(r.root, 'var/run/who.txt'));
+    // A busy machine, e.g. another service computing.
+    reset(); r.write('proc/loadavg', '1.90 1.20 0.80 3/100 123\n');
+    d = decide(); assert.match(d.out, /Machine busy: 15-minute load 0\.80 is at or above 0\.50/); assert.equal(d.off, 0);
+    r.write('etc/watchdog/idle.env', 'WATCHDOG_IDLE_MINUTES=30\nWATCHDOG_IDLE_MAX_LOAD=1.00\n');
+    reset(); assert.equal(decide().off, 1, 'the load threshold is configurable');
+    r.write('proc/loadavg', '0.05 0.04 0.03 1/100 123\n');
+    // Another service (port 3000) with a visitor from the public internet.
+    reset(); r.write('proc/net/tcp', tcp(['00000000:0BB8 00000000:0000 0A', '0100007F:0BB8 08080808:D2F0 01']));
+    d = decide(); assert.match(d.out, /Inbound connections from the internet on port\(s\) 3000/); assert.equal(d.off, 0);
+    // Not use: SSH, WatchDog's own port, loopback and private-network peers (containers, cloud agent).
+    reset(); r.write('proc/net/tcp', tcp(['00000000:0016 00000000:0000 0A', '00000000:1F90 00000000:0000 0A', '00000000:0BB8 00000000:0000 0A',
+      '0100007F:0016 08080808:D2F0 01', '0100007F:1F90 08080808:D2F1 01', '0100007F:0BB8 0100007F:D2F2 01', '0100007F:0BB8 0100000A:D2F3 01']));
+    assert.equal(decide().off, 1);
+    // IPv6-mapped public peer (::ffff:8.8.8.8) is public too.
+    reset(); r.write('proc/net/tcp', tcp([])); r.write('proc/net/tcp6', tcp(['00000000000000000000000000000000:0BB8 00000000000000000000000000000000:0000 0A',
+      '0000000000000000FFFF00000100007F:0BB8 0000000000000000FFFF000008080808:D2F4 01']));
+    d = decide(); assert.match(d.out, /port\(s\) 3000/); assert.equal(d.off, 0);
+    rmSync(path.join(r.root, 'proc/net/tcp6'));
+    // Manual hold.
+    reset(); assert.equal(r.run(['keep-awake', '2']).status, 0);
+    d = decide(); assert.match(d.out, /Kept awake by watchdogctl keep-awake/); assert.equal(d.off, 0);
+    assert.notEqual(r.run(['keep-awake', '100']).status, 0); assert.notEqual(r.run(['keep-awake', 'x']).status, 0);
+    assert.equal(r.run(['keep-awake', 'off']).status, 0);
+    reset(); assert.equal(decide().off, 1);
+  } finally { r.clean(); }
+});
+
+test('E3.20 idle decision: a failure to decide never powers the machine off', () => {
+  const r = fakeRoot('WATCHDOG_AUTH=accounts\n'); try {
+    r.write('etc/watchdog/idle.env', 'WATCHDOG_IDLE_MINUTES=3\n');
+    const x = r.run(['idle-check']); assert.notEqual(x.status, 0);
+    assert.equal(r.calls().filter(c => c === 'systemctl poweroff').length, 0);
   } finally { r.clean(); }
 });
 
