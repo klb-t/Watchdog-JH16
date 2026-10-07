@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "desktops": ["kde", "gnome"],
+  "default_desktop": "kde",
+  "keyboard": "pl",
+  "geometry": "1920x1080",
+  "heartbeat_seconds": 60,
+  "heartbeat_active_ms": 300000,
+  "protocols": ["rdp", "vnc", "crd", "dcv"],
+  "novnc_port": 6080,
+  "dcv_port": 8443,
+  "minimum_free_gib": 8,
+  "dcv_evaluation": true,
+  "packages": {
+    "common": ["python3", "dbus-x11", "dbus-user-session", "x11-utils", "x11-xserver-utils", "xauth", "xprintidle", "xserver-xorg-video-dummy", "fonts-dejavu-core", "curl", "ca-certificates", "iproute2"],
+    "kde": ["kde-plasma-desktop", "konsole", "dolphin"],
+    "gnome_ubuntu": ["ubuntu-session", "gnome-terminal", "nautilus", "gnome-control-center", "dconf-cli"],
+    "gnome_debian": ["gnome-session", "gnome-shell", "gnome-terminal", "nautilus", "gnome-control-center", "dconf-cli"],
+    "rdp": ["xrdp", "xorgxrdp"],
+    "vnc": ["tigervnc-standalone-server", "tigervnc-common", "tigervnc-tools"],
+    "novnc": ["novnc", "websockify"]
+  },
+  "dcv_artifacts": {
+    "22.04": "https://d1uj6qtbmh3dt5.cloudfront.net/2025.0/Servers/nice-dcv-2025.0-20103-ubuntu2204-x86_64.tgz",
+    "24.04": "https://d1uj6qtbmh3dt5.cloudfront.net/2025.0/Servers/nice-dcv-2025.0-20103-ubuntu2404-x86_64.tgz"
+  }
+}
