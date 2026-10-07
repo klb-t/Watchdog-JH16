@@ -10,3 +10,5 @@ data/
 diagnostics/
 runs/
 test-artifacts/
+__pycache__/
+*.pyc

@@ -1,7 +1,7 @@
 name: Watchdog validation
 on:
   push:
-    branches: ['astra/**']
+    branches: [main, 'astra/**']
   pull_request:
   workflow_dispatch:
 permissions:
@@ -12,6 +12,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # the principles guard reads commits since its baseline
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
@@ -20,6 +22,9 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: npm run test:all
       - run: npm run demo:jh16
+      - name: Principles guard (docs/PRINCIPLES.md, config/guard/policy.json)
+        if: always()
+        run: npm run guard
       - name: Print browser failures
         if: failure()
         run: python3 -c "import pathlib; [print(str(p), p.read_text()[:16000]) for p in pathlib.Path('test-artifacts').glob('*.json')]"

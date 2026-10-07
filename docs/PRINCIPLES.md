@@ -19,4 +19,8 @@ Ten indeks operacjonalizuje istniejące publiczne `CLAUDE.md`, `DESIGN_RULES.md`
 | P13 | Jeden integrator i trwałe checkpointy. WORK_COORDINATION | Zakres/owner/base/result, małe commity; weryfikacja zdalnego SHA; wyszukiwanie historii nie jest doręczeniem |
 | P14 | Sukces syntetyczny nie oznacza generalizacji. JH16/RESEARCH/CLINICAL | Oddzielić self-check, wykonanie, naukową replikację i walidację kliniczną; zachować wyniki negatywne |
 
+## Automatyczny strażnik (E0.7)
+
+`npm run guard` sprawdza mechanicznie: P01/P02 (inwentarz tras, API, uprawnień i migracji — nic nie znika bez wpisu w `config/guard/removals.json`, żadna migracja nie zmienia bajtów), P05 i reguły 2/7 (z modułów liczbowych nie da się dojść importami do LLM, brak `Math.random`), P07/P13 (żaden commit z kodem po bazie nie omija CI; jeden launcher przeglądarki; zero pominiętych testów; unikalne ID zadań). Pozostałe reguły raportuje jako „brak automatycznego dowodu — przegląd”, nigdy jako zaliczone. Konfiguracja: `config/guard/policy.json`; opis: [GUARD.md](GUARD.md). Strażnik uruchamia się w CI przy każdym PR i pushu do `main`.
+
 Proponowany strażnik PR powinien raportować dowód albo brak dowodu dla tych reguł. Nie powinien autonomicznie zmieniać metod, aprobować wyników czy zastępować wykonania testów oceną LLM. Projekt takiego strażnika pozostaje po stronie integratora; w tym pakiecie nie dodano kolejnego runtime’u.

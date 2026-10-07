@@ -27,7 +27,8 @@ test('E4.7: populated 022 upgrade retains ownership, request-only tokens and liv
   db.prepare('INSERT INTO research_project_revisions VALUES (?,?,?,?,?,?,?)').run('revision','project','google:existing',1,'hash','{"title":"retained"}',at);
   const tables = ['installation_grants','admission_requests','admission_invitations','admission_events','research_projects','research_project_revisions'];
   const before = tables.map(t=>db.prepare(`SELECT * FROM ${t}`).all());
-  assert.deepEqual(runMigrations(db).applied,['023_accounts']);
+  // 023 and every later migration apply on top of a populated 022 database, each exactly once.
+  assert.deepEqual(runMigrations(db).applied,MIGRATIONS.filter(m=>m.id>='023').map(m=>m.id));
   assert.deepEqual(runMigrations(db).applied,[]);
   assert.deepEqual(tables.map(t=>db.prepare(`SELECT * FROM ${t}`).all()),before);
   const repo = new AdmissionRepository(db);

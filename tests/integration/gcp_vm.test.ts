@@ -180,3 +180,20 @@ test('public HTTPS: sign-in is enforced before the internet can reach the app; p
   const unit=readFileSync(path.join(root,'deploy/watchdog.service'),'utf8');
   assert.ok(unit.includes('--publish 127.0.0.1:8080:8080'),'the app itself never listens publicly');
 });
+
+test('E3.20 --shared-host: no deny rules, IAP allow only, flag passed to the VM; default still closes the machine',()=>{
+  const h=harness();try {
+    const r=h.run(['--shared-host']);assert.equal(r.status,0,r.stderr);
+    const calls=h.calls(), created=calls.filter(a=>a.includes('firewall-rules')&&a.includes('create'));
+    assert.equal(created.length,1);assert.ok(created[0].includes('ALLOW')&&created[0].includes('tcp:22'));
+    assert.ok(!calls.some(a=>a.includes('DENY')),'no ingress is denied for other services');
+    assert.equal(calls.filter(a=>a.includes('ssh')&&a.includes('true')).length,1,'no post-deny SSH re-check is needed');
+    const remote=calls.find(a=>a.some(v=>v.includes('sudo bash scripts/gcp_vm_bootstrap.sh')))!.find(v=>v.includes('gcp_vm_bootstrap'))!;
+    assert.match(remote,/--shared-host/);assert.match(r.stdout,/Shared VM/);
+  }finally{h.clean();}
+  const d=harness();try {
+    const r=d.run();assert.equal(r.status,0,r.stderr);
+    assert.equal(d.calls().filter(a=>a.includes('firewall-rules')&&a.includes('create')).length,3);
+    assert.ok(!d.calls().flat().some(v=>String(v).includes('--shared-host')));
+  }finally{d.clean();}
+});

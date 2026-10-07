@@ -134,6 +134,110 @@ rola → cofnięcie w istniejącej sesji → restart z danymi → weryfikacja ba
 odtworzenie → osobno kontrolowana aktywacja. Lokalny test skryptów nie zamyka tych punktów.
 Nie używaj szerokiego wyjątku produkcyjnego local-user do ominięcia awarii logowania.
 
+## Wspólna maszyna: WatchDog obok innych usług (`--shared-host`)
+
+Domyślnie instalator zakłada maszynę tylko dla WatchDoga: zamyka na niej cały ruch przychodzący
+poza SSH przez IAP, włącza zaporę z domyślną odmową i odmawia, gdy chodzą inne kontenery.
+Gdy na maszynie ma działać więcej serwisów, dodaj do instalacji `--shared-host`. Wtedy:
+
+- w VPC nie powstają reguły blokujące (tylko jedna reguła zezwalająca na SSH przez IAP);
+- zapora na maszynie nie jest włączana ani zmieniana (jeśli już działa, dostaje tylko zgodę na SSH z IAP);
+- inne kontenery nie przeszkadzają;
+- WatchDog nasłuchuje tylko na `127.0.0.1:8080` (i na adresie prywatnym dla budzika), więc nie wystawia nic światu;
+- instalacja zatrzymuje się z komunikatem, jeśli **port 8080 zajmuje inna usługa** albo istnieje cudzy
+  kontener o nazwie `watchdog` / `watchdog-proxy` (unit usuwa kontenery o tych nazwach);
+- nadal wymagany jest Docker 28+ i 4 GB RAM / 12 GB wolnego miejsca (minimum; przy 16–32 GB RAM
+  i 50 GB dysku jest zapas na kilka usług).
+
+Podawaj `--shared-host` przy **każdej** aktualizacji tej maszyny. Zmiana rozmiaru maszyny, jeśli
+trzeba (VM musi być zatrzymana): `gcloud compute instances set-machine-type NAZWA --zone STREFA
+--machine-type e2-standard-4` (16 GB) lub `e2-highmem-4` (32 GB); dysk można tylko powiększyć:
+`gcloud compute disks resize NAZWA --zone STREFA --size 50GB`.
+
+Uwaga: kto ma inne usługi na tej maszynie, musi pamiętać o skutkach usypiania opisanych niżej.
+
+## Usypiana VM: stały adres, koszty tylko przy użyciu (E3.20)
+
+Po instalacji z `--owner` (bez `--public`) uruchom w Cloud Shell:
+
+```bash
+bash scripts/deploy_gcp_gate.sh --project TWOJ_PROJEKT --zone TWOJA_STREFA --instance TWOJA_VM
+```
+
+Powstaje mały „budzik” na Cloud Run z adresem `https://watchdog-gate-…run.app`. To jest od teraz
+adres WatchDoga: w zaproszeniach, linkach i mailach. Działanie:
+
+- VM **sama się wyłącza** po 30 minutach bez użycia (`--idle-minutes N`, 10–1440), ale tylko gdy
+  poza procesami systemowymi nic się nie dzieje. Maszyna zostaje włączona, jeśli: ktoś używa
+  WatchDoga (zalogowane żądania, zadania zbierania danych; sprawdzanie gotowości przez budzik się
+  nie liczy); jest otwarta sesja logowania (SSH, konsola); 15-minutowe obciążenie wynosi co
+  najmniej 0,50 (`WATCHDOG_IDLE_MAX_LOAD` w `/etc/watchdog/idle.env`); z publicznego internetu
+  trwa połączenie z jakąkolwiek inną usługą na maszynie (poza SSH i WatchDogiem; połączenia
+  z sieci prywatnej, loopbacku i między kontenerami się nie liczą); trwa instalacja lub kopia
+  zapasowa; nie minęło N minut od startu; albo ręcznie przytrzymasz ją komendą
+  `sudo watchdogctl keep-awake GODZINY` (1–72; `off` zwalnia). Gdy decyzja nie da się podjąć,
+  maszyna zostaje włączona.
+- **Inne usługi a usypianie:** budzik budzi maszynę tylko na adres WatchDoga. Usługa, której nikt
+  nie używa przez pół godziny i która nie obciąża procesora, nie zatrzyma snu; jej użytkownicy
+  zastaną wyłączoną maszynę. Takie usługi albo wystaw przez ten sam budzik (osobna reguła w
+  `deploy/gate`, do zrobienia na życzenie), albo przytrzymaj maszynę `keep-awake`.
+- **Zmienny adres IP:** zatrzymana maszyna traci zewnętrzny adres IP, jeśli nie jest statyczny.
+  Wszystko, co dotychczas działało pod tym adresem (usługi na innych portach, DNS), po przebudzeniu
+  będzie pod nowym. Zachowaj adres: `gcloud compute addresses create NAZWA --region REGION
+  --addresses OBECNY_IP` (płatny także, gdy maszyna śpi).
+- Wejście na adres, gdy VM śpi: budzik ją uruchamia i pokazuje stronę „Uruchamiam WatchDoga…”,
+  która sama się odświeża (zwykle 1–2 minuty).
+- **Harmonogramy zbierania danych:** Cloud Scheduler budzi VM co 6 godzin
+  (`--wake-schedule "0 */6 * * *"`, czas warszawski). Zaległe terminy wykonują się po
+  przebudzeniu raz (scalone), więc zadanie może się spóźnić najwyżej o odstęp budzenia.
+- Budzik ma prawo wyłącznie odczytać i uruchomić **tę jedną** VM. Reguła firewalla wpuszcza
+  na port 8080 tylko jego podsieć. Logowanie, uprawnienia i dane obsługuje wyłącznie aplikacja.
+
+Koszty, orientacyjnie (sprawdź cennik GCP dla swojego regionu): za maszynę płacisz tylko za
+godziny pracy. Dysk jest płatny stale (50 GB to kilka $ miesięcznie). Cloud Run, Cloud Scheduler
+(do 3 zadań) i Cloud Build mieszczą się zwykle w darmowych limitach. Statyczny IP nie jest
+potrzebny; jeśli wcześniej użyłeś `--public`, zwolnij go w konsoli (płatny także, gdy VM śpi).
+Każdy, kto zna adres, może obudzić VM. Bez zalogowania nie utrzyma jej jednak włączonej: zaśnie
+po czasie bezczynności.
+
+Wyłączenie: `sudo watchdogctl disable-gate` na VM (VM zostaje włączona na stałe), potem usuń
+usługę `watchdog-gate` i zadanie `watchdog-gate-wake` w konsoli.
+
+## Diagnostyka: gdzie szukać, gdy coś nie działa
+
+Nowa instalacja zapisuje **pełny ślad** (`WATCHDOG_DIAGNOSTICS_MODE=TRACE`) w
+`/var/lib/watchdog/diagnostics/RRRR-MM-DD/`. Niezależnie od trybu (poza `OFF`) każdego dnia
+powstają też pliki:
+
+| Plik | Co zawiera |
+|---|---|
+| `requests.jsonl` | każde żądanie API: status, czas, kto, kod i komunikat błędu, `trace_id` |
+| `server-errors.jsonl` | każdy nieoczekiwany błąd serwera z pełnym stosem i łańcuchem przyczyn |
+| `process-errors.jsonl` | awaria procesu lub odmowa startu (np. zła konfiguracja) z przyczyną |
+| `client-errors.jsonl` | błędy z przeglądarek użytkowników: wyjątki JS, odrzucone obietnice, odpowiedzi 5xx, zerwane połączenia |
+| `<trace_id>/events.jsonl` | w TRACE: każdy krok żądania lub analizy po kolei, z danymi wejściowymi i decyzjami |
+
+Każda odpowiedź z błędem zawiera `trace_id` (też w nagłówku `x-trace-id`), a konsola
+(`watchdogctl logs`) wypisuje każde nieudane lub wolne żądanie razem z nim. Dane są
+redagowane przed zapisem (hasła, tokeny, klucze); przeglądarka wysyła tylko metadane, bez
+treści formularzy i bez parametrów adresu.
+
+Przez SSH na VM, bez otwierania aplikacji:
+
+```bash
+sudo watchdogctl errors          # ostatnie awarie: serwer, proces, przeglądarki, nieudane żądania
+sudo watchdogctl trace TRACE_ID  # wszystko o jednym zdarzeniu, krok po kroku
+sudo watchdogctl diag-summary    # dzisiejsze liczby, tryb, zajęte miejsce
+sudo watchdogctl logs            # konsola usługi (journald)
+sudo watchdogctl proxy-logs      # HTTPS / certyfikat
+sudo watchdogctl diagnostics-mode NORMAL   # lżejszy tryb po zakończeniu testów
+```
+
+Retencja: 14 dni i maks. 2048 MB (`WATCHDOG_DIAGNOSTICS_RETENTION_DAYS`,
+`WATCHDOG_DIAGNOSTICS_MAX_MB` w `/etc/watchdog/app.env`); dzisiejszy dzień nie jest usuwany.
+Programista widzi te same ślady w aplikacji (Analiza › Diagnostyka) i może pobrać paczkę ZIP.
+Starsze instalacje zachowują swój tryb; przełącz go komendą `diagnostics-mode`.
+
 ## Utrzymanie i dane
 
 Polecenia wykonywane **przez SSH na VM**:

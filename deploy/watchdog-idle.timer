@@ -1,0 +1,10 @@
+# Managed by scripts/gcp_vm_bootstrap.sh. Enabled only by `watchdogctl enable-gate`.
+[Unit]
+Description=Watchdog idle check every 5 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

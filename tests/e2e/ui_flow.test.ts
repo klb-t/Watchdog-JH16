@@ -1,6 +1,7 @@
 import { test, before, after } from 'node:test';
 import * as assert from 'node:assert';
 import { chromium, Browser, Page, type Route as PlaywrightRoute } from 'playwright';
+import { resolveChromium } from '../helpers/browser';
 import { spawn, ChildProcess, execFileSync } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -31,19 +32,6 @@ const DB_PATH = path.join('/tmp', `watchdog_e2e_${Date.now()}.sqlite`);
 // paired with a fresh database is a different scenario from a clean start.
 const STORE_PATH = path.join('/tmp', `watchdog_e2e_store_${Date.now()}`);
 
-function resolveChromium(): string | undefined {
-  const root = process.env.PLAYWRIGHT_BROWSERS_PATH ?? '/opt/pw-browsers';
-  if (!fs.existsSync(root)) return undefined;   // fall back to Playwright's own lookup
-  for (const dir of fs.readdirSync(root).sort()) {
-    for (const candidate of [
-      path.join(root, dir, 'chrome-linux', 'chrome'),
-      path.join(root, dir, 'chrome-linux', 'headless_shell'),
-    ]) {
-      if (fs.existsSync(candidate)) return candidate;
-    }
-  }
-  return undefined;
-}
 
 async function waitForServer(url: string, timeoutMs = 60_000) {
   const deadline = Date.now() + timeoutMs;

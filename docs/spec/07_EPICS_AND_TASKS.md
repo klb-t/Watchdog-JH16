@@ -12,14 +12,88 @@ Task IDs are stable after collision resolution. See [TASK_ID_ALIASES](../TASK_ID
 Claude owns integration and the global ledger. Completed historical task paragraphs below do not close these remaining scopes.
 
 - [ ] **E5.7b — General executable replication and hypothesis studies.** Detailed scope remains below.
+  - [x] **E5.7b.1 — Frozen comparison families.** A family is the ordered set of reviewed
+    E5.7d claim hashes for one paper, frozen and hashed *before* any member attempt runs. Results
+    report every member — matched, not matched, missing input, failed attempt — with explicit
+    denominators ("k of n frozen claims"); members cannot be added or dropped after freeze; a
+    change creates a new family revision that references the old one, and both stay visible.
+    Rationale: G1–G3 (`docs/PARALLEL_RESEARCH_GPT.md`) — choosing what to report after looking
+    inflates agreement. No significance test, correction method or verdict threshold is chosen
+    by code; tolerances stay per claim as already reviewed. Additive migration (024), service,
+    API, contextual UI, export v-next with old readers, principles guard green. Test: integration
+    (freeze-before-run, no post-hoc drop, revision chain, denominators incl. missing/failed),
+    browser at 390 px, export verifier.
+    **Done 2026-10-03:** migration 024 (WORM), `shared/paper_comparison_family.ts` (pure summary),
+    service/repository, 4 API routes, contextual UI in paper analyses (labels in profile v4).
+    Tests: `tests/integration/comparison_families.test.ts` 5/5 (exact-review freeze, k-of-n with
+    match/failure/refusal, re-run, restart, WORM, prior exposure, revision chain),
+    `tests/e2e/comparison_families.test.ts` at 390 px. Docs: PAPER_ANALYSES.md. Not in this slice:
+    a family-level export package (members keep their verifiable E5.7d packages) → E5.7b.1a.
+  - [x] **E5.7b.1a — Family export package** with standalone verifier recomputing the summary
+    from member packages; old package readers retained. **Done 2026-10-03:** new format
+    `watchdog-comparison-family-package-1` (research packages v1/v2 unchanged): family record,
+    every event, summary, each member's latest completed family attempt as its full E5.7d package
+    under `members/N/`, explicit reasons for members without one. `verify-family.mjs` (Node
+    built-ins, offline) checks every byte, runs each member verifier pinned to its manifest hash
+    and recomputes the summary; a forged summary with all hashes recomputed is rejected. Export is
+    deterministic. Tests: integration 7/7 (incl. verifier/product rule parity), browser download.
+  - [ ] **E5.7b.2 — Data roles and confirmation partitions** (exploratory vs held-out rows declared
+    and frozen before use; G3 shows neither holdout nor correction is universally better, so both
+    stay available as declared options).
+  - [ ] **E5.7b.3 — Whole-paper replication record** linking families, MethodSpecs and acquired
+    inputs into one reviewable project view (feeds E7.3 reviewer projection).
 - [ ] **E5.8b — General extension execution and adaptive navigation.** Detailed scope remains below.
 - [ ] **E3.5 — Container and Cloud Run.** Detailed scope remains below.
 - [ ] **E5.11 — Remaining workbench methods.** Detailed scope remains below.
 - [ ] **E6.4 — Case hypotheses and reviewed constraints.** Detailed scope remains below.
 - [ ] **E6.5 — Profile-bound measurement suggestions.** Detailed scope remains below.
 - [ ] **E6.6 — Remaining field integrations.** Detailed scope remains below.
+- [x] **E3.19 — Continuous diagnostics for the live installation (owner request 2026-10-04).**
+  Daily request/server/process/client error records in every mode except OFF; trace ID in error
+  bodies and console; browser failure reporting; crash recording; retention; VM default TRACE;
+  `watchdogctl errors|trace|diag-summary|diagnostics-mode`. Fixed on the way: request paths inside
+  mounted routers were logged relative to the mount. Tests: `tests/integration/diagnostics_live.test.ts`
+  6/6 (real server process), `tests/e2e/client_diagnostics.test.ts` (real browser at 390 px).
+- [x] **E3.20 — Sleeping VM behind an always-on gate (owner request 2026-10-05).** Cloud Run
+  gate (`deploy/gate`, Node built-ins) forwards over the VPC, starts the stopped VM through the
+  Compute API and shows a self-refreshing wait page; `watchdogctl idle-check` (5-minute timer)
+  powers off after N idle minutes (signed-in requests/jobs only, boot grace, install lock);
+  Cloud Scheduler wakes it for collection jobs; `deploy_gcp_gate.sh` uses an instance-scoped
+  role and a subnet-scoped tcp:8080 rule. Rejected alternative: Cloud Run + Postgres would
+  replace the SQLite persistence layer (342 synchronous call sites) — recorded in D25.
+  Tests: `tests/integration/gate.test.ts` 3/3, `tests/integration/sleeping_vm.test.ts` 6/6.
+  Live acceptance belongs to E3.18.
+- [x] **E3.21 — Shared host and richer idle detection (owner 2026-10-07: everything runs on one
+  machine; sleep after 30 idle minutes when nothing but system background work remains).**
+  `deploy_gcp_vm.sh --shared-host`: no VPC deny rules, no default-deny firewall, other containers
+  allowed, port-8080 and container-name conflicts stop the install before anything is stopped.
+  `scripts/watchdog_idle.py` decides sleep from WatchDog use, login sessions, 15-minute load,
+  public-internet connections to other services, a manual `keep-awake` hold and boot grace; a
+  failed decision never powers off. Tests: `sleeping_vm.test.ts` (9), `operations_update.test.ts`
+  (+3), `gcp_vm.test.ts` (+1). Not detected: an idle service nobody is using at that moment;
+  documented, with `keep-awake` as the answer.
+- [ ] **E3.18 — Live installation acceptance.** First real install on the owner's VM with
+  `deploy_gcp_vm.sh --owner … --public`, a real certificate, SMTP (`watchdogctl set-mail`) and one
+  invited person signing in from outside. Needs the owner to start the VM; everything else is code
+  that exists. Until this is ticked, nothing is "ready for external testers".
 
 E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a separate gate. Existing RESEARCH/CLINICAL/OPERATIONS packages are integrated, not awaiting claims.
+
+## Completed — 2026-10-03
+
+- [x] **E0.7 — Principles guard.** `npm run guard`: deterministic checks for P01/P02
+  (inventory of 26 routes, 176 API endpoints, 24 capabilities, 23 migrations; removals need
+  an approved reason, migrations are byte-locked), P05 and hard rules 2/7 (no LLM module or
+  `Math.random` reachable from 10 numerical roots incl. workbench, paper comparisons/operations
+  and replication; `anchorQuote` moved to a pure module so those services no longer import the
+  assistant layer), P07/P13 (no code commit skips CI after
+  the baseline, shared browser launcher, no skipped tests, unique task IDs); other principles
+  reported as needing review, never as passed. Config `config/guard/policy.json`, docs
+  `docs/GUARD.md`, CI step on every PR and push to main (full history fetched). Test:
+  `tests/unit/guard.test.ts` 9/9; retroactively flags `00a5b78`, `a0e061f`, `58a0c93`.
+- [x] **Handover acceptance.** main `58a0c93` re-verified (613/613 local; Actions
+  37127954662 verify + container). Seven browser suites moved to the shared launcher; E3.5
+  test isolated from stale databases.
 
 ## Completed resumed acceptance — 2026-10-02
 

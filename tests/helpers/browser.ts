@@ -11,10 +11,14 @@ import { chromium } from 'playwright';
  * carry a browser from a different Playwright release, and a test that cannot
  * find it silently turns every browser assertion into a launch failure.
  *
+ * WATCHDOG_TEST_CHROMIUM, when set, wins over both.
+ *
  * One helper for every browser suite, because each suite re-deriving this is
  * how a new one ended up unable to run outside CI.
  */
 export function resolveChromium(): string | undefined {
+  const explicit = process.env.WATCHDOG_TEST_CHROMIUM;
+  if (explicit) return explicit;
   try {
     if (fs.existsSync(chromium.executablePath())) return undefined;
   } catch { /* no bundled path known; fall through to scanning */ }

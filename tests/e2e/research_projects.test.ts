@@ -1,6 +1,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium, type Browser, type Page } from 'playwright';
+import { resolveChromium } from '../helpers/browser';
 import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -11,14 +12,6 @@ import { testDataset } from '../helpers/workbench';
 
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'watchdog-project-ui-'));
 let server: ChildProcess, browser: Browser, page: Page, baseUrl: string;
-function chromiumPath(): string | undefined {
-  const root = process.env.PLAYWRIGHT_BROWSERS_PATH ?? '/opt/pw-browsers';
-  if (!fs.existsSync(root)) return undefined;
-  for (const dir of fs.readdirSync(root).sort()) for (const name of ['chrome', 'headless_shell']) {
-    const candidate = path.join(root, dir, 'chrome-linux', name); if (fs.existsSync(candidate)) return candidate;
-  }
-  return undefined;
-}
 before(async () => {
   baseUrl = `http://127.0.0.1:${5400 + Math.floor(Math.random() * 400)}`;
   server = spawn(process.execPath, ['--import', 'tsx', 'server.ts'], {
@@ -29,7 +22,7 @@ before(async () => {
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) { try { if ((await fetch(`${baseUrl}/api/auth/me`)).ok) break; } catch { /* startup */ } await new Promise(resolve => setTimeout(resolve, 200)); }
   assert.equal((await fetch(`${baseUrl}/api/auth/me`)).status, 200);
-  browser = await chromium.launch({ executablePath: chromiumPath() }); page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  browser = await chromium.launch({ executablePath: resolveChromium() }); page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 });
 after(async () => {
   await browser?.close(); if (server?.pid) { try { process.kill(-server.pid, 'SIGKILL'); } catch { /* closed */ } }

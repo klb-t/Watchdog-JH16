@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import * as os from 'node:os';
 import { execFileSync } from 'node:child_process';
 
 const read = (...p: string[]) => fs.readFileSync(path.join(process.cwd(), ...p), 'utf-8');
@@ -133,14 +134,16 @@ test('E3.5: a production start with ephemeral storage exits non-zero', () => {
   // actually publishes an unsafe instance.
   let failed = false;
   let output = '';
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'watchdog-e35-'));
   try {
     output = execFileSync(process.execPath, ['--import', 'tsx', 'server.ts'], {
       env: {
         ...process.env,
         NODE_ENV: 'production',
         WATCHDOG_ALLOW_OPEN_INSTANCE: 'true',   // isolate the storage check
-        DB_PATH: '/tmp/watchdog-e35.sqlite',
-        STORE_PATH: '/tmp/watchdog-e35-store',
+        // Fresh per run: a database left by an older checkout must not decide the outcome.
+        DB_PATH: path.join(scratch, 'watchdog.sqlite'),
+        STORE_PATH: path.join(scratch, 'store'),
         PORT: '0',
       },
       encoding: 'utf-8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60_000,
@@ -148,6 +151,8 @@ test('E3.5: a production start with ephemeral storage exits non-zero', () => {
   } catch (e: any) {
     failed = true;
     output = `${e.stdout ?? ''}${e.stderr ?? ''}`;
+  } finally {
+    fs.rmSync(scratch, { recursive: true, force: true });
   }
 
   assert.ok(failed, 'the server must refuse to start, not warn and continue');

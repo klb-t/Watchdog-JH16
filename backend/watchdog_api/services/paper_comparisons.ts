@@ -4,7 +4,7 @@ import { canonicalHash } from '../domain/canonical';
 import { PaperComparisonsRepository } from '../db/repositories/paper_comparisons';
 import { WorkbenchError } from '../db/repositories/workbench_error';
 import type { PaperOperationService } from './paper_operations';
-import { anchorQuote } from './paper_intake';
+import { anchorQuote } from './source_anchor';
 import { evaluateClaim, type Verdict } from './replication';
 
 /** Strict adapter around the established evaluator; no numerical method is changed. */

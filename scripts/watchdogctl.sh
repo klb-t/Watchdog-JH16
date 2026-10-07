@@ -35,7 +35,7 @@ image_id() {
   printf '%s\n' "$value"
 }
 case "${1:-help}" in
-  people|grant|invite|open-link|signin-link|enable-accounts|enable-public|disable-public|proxy-logs|set-public-url|set-mail)
+  people|grant|invite|open-link|signin-link|enable-accounts|enable-public|disable-public|enable-gate|disable-gate|proxy-logs|set-public-url|set-mail)
     module="$root/usr/local/lib/watchdog/watchdog_access.sh"
     [[ -f $module ]] || die 'Access administration module missing; update the installation.'
     . "$module"
@@ -48,6 +48,50 @@ case "${1:-help}" in
     exit "$code"
     ;;
   logs) require_commands journalctl; journalctl -u watchdog.service -n 150 --no-pager ;;
+  errors|trace|diag-summary)
+    diag="$root/usr/local/lib/watchdog/watchdog_diag.py"
+    [[ -f $diag ]] || die 'Diagnostics reader missing; update the installation.'
+    sub=$1; shift; [[ $sub == diag-summary ]] && sub=summary
+    WATCHDOG_ROOT="${root:-/}" python3 "$diag" "$sub" "$@" ;;
+  idle-check)
+    # Run every 5 minutes by watchdog-idle.timer when the gate is enabled. The decision lives in
+    # watchdog_idle.py (WatchDog use, login sessions, load, internet connections to other
+    # services, manual hold, boot grace). Here: the install lock, then power off.
+    require_admin; require_commands systemctl
+    [[ -f $root/etc/watchdog/idle.env ]] || { echo 'Gate not enabled; nothing to do.'; exit 0; }
+    idle_py="$root/usr/local/lib/watchdog/watchdog_idle.py"
+    [[ -f $idle_py ]] || die 'Idle decision module missing; update the installation.'
+    code=0; reason=$(WATCHDOG_ROOT="${root:-/}" python3 "$idle_py") || code=$?
+    echo "$reason"
+    if ((code == 10)); then exit 0; fi
+    ((code == 0)) || die 'Idle decision failed; staying on.'
+    install -d -m 0755 "$root/run/lock"
+    exec 9>"$root/run/lock/watchdog-install.lock"
+    flock -n 9 || { echo 'Install or backup in progress; staying on.'; exit 0; }
+    logger -t watchdog-idle "$reason The gate starts the VM on the next visit." 2>/dev/null || true
+    systemctl poweroff ;;
+  keep-awake)
+    # Hold the machine on for HOURS (max 72) — e.g. for work on another service — or release it.
+    (($# == 2)) || die 'Usage: watchdogctl keep-awake HOURS|off'
+    require_admin
+    hold="$root/var/lib/watchdog/keep-awake-until"
+    if [[ $2 == off ]]; then rm -f "$hold"; echo 'Hold released; normal idle rules apply.'; exit 0; fi
+    [[ $2 =~ ^[0-9]+$ ]] && (($2 >= 1 && $2 <= 72)) || die 'HOURS must be 1-72, or off.'
+    install -d -m 0755 "$root/var/lib/watchdog"
+    printf '%s\n' "$(( $(date +%s) + $2 * 3600 ))" > "$hold"
+    echo "Staying on for $2 hour(s)." ;;
+  diagnostics-mode)
+    (($# == 2)) && [[ $2 =~ ^(OFF|ERRORS|NORMAL|TRACE)$ ]] || die 'Usage: watchdogctl diagnostics-mode OFF|ERRORS|NORMAL|TRACE'
+    require_admin; require_commands systemctl
+    python3 - "$root/etc/watchdog/app.env" "$2" <<'PYEOF'
+import os, sys
+path, mode = sys.argv[1:3]
+lines = [l for l in open(path).read().splitlines() if not l.startswith('WATCHDOG_DIAGNOSTICS_MODE=')] + [f'WATCHDOG_DIAGNOSTICS_MODE={mode}']
+tmp = path + '.tmp'
+open(tmp, 'w').write('\n'.join(lines) + '\n'); os.chmod(tmp, 0o600); os.replace(tmp, path)
+PYEOF
+    systemctl restart watchdog.service
+    printf 'Diagnostics mode %s. Daily request/error records are kept in every mode except OFF.\n' "$2" ;;
   restart)
     require_admin; require_commands systemctl; lock
     [[ ! -e $root/etc/watchdog/recovery-required ]] || die 'Recovery required; inspect /etc/watchdog/recovery-required before starting.'
@@ -93,5 +137,5 @@ case "${1:-help}" in
     (($# == 3)) || die 'Usage: watchdogctl restore ARCHIVE NEW_ABSOLUTE_DIRECTORY'
     # Staging only: never touches the active installation or invokes Docker/systemd.
     python3 "$helper" restore --archive "$2" --destination "$3" ;;
-  *) printf '%s\n' 'Usage: watchdogctl status | logs | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY | people | grant | invite | open-link | signin-link | enable-accounts EMAIL | enable-public HOST | disable-public | proxy-logs | set-public-url URL | set-mail'; [[ ${1:-help} == help ]] ;;
+  *) printf '%s\n' 'Usage: watchdogctl status | logs | errors [N] | trace TRACE_ID | diag-summary | diagnostics-mode MODE | idle-check | keep-awake HOURS|off | enable-gate URL INTERNAL_IP [MIN] | disable-gate | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY | people | grant | invite | open-link | signin-link | enable-accounts EMAIL | enable-public HOST | disable-public | proxy-logs | set-public-url URL | set-mail'; [[ ${1:-help} == help ]] ;;
 esac

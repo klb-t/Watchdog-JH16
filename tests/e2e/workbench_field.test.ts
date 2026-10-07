@@ -1,6 +1,7 @@
 import { test, before, after, afterEach } from 'node:test';
 import * as assert from 'node:assert/strict';
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
+import { resolveChromium } from '../helpers/browser';
 import { spawn, execFileSync, type ChildProcess } from 'node:child_process';
 import { mkdtempSync, rmSync, mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -32,7 +33,7 @@ before(async () => {
     await new Promise(resolve => setTimeout(resolve, 200));
   }
   assert.ok(ready, serverLog);
-  browser = await chromium.launch(); context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, acceptDownloads: true });
+  browser = await chromium.launch({ executablePath: resolveChromium() }); context = await browser.newContext({ viewport: { width: 1440, height: 1050 }, acceptDownloads: true });
   page = await context.newPage(); page.setDefaultTimeout(15_000); page.on('pageerror', error => browserErrors.push(error.message));
 });
 afterEach(async t => {

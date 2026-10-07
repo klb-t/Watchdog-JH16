@@ -1,0 +1,4 @@
+{
+    "_note": "Approved removals from the inventory. Each entry: {\"item\": \"<exact inventory string>\", \"reason\": \"...\", \"approved_by\": \"owner|integrator\", \"date\": \"YYYY-MM-DD\"}. Nothing disappears without a line here (P01).",
+    "removals": []
+}

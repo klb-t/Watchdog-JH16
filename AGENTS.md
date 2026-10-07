@@ -31,4 +31,6 @@ the owner to choose ordinary implementation details.
 
 Documentation index: `docs/README.md`. Read the entire remote branch inventory before a new wave; current task IDs and historical collisions are mapped in `docs/TASK_ID_ALIASES.md`. Parallel GPT experiments do not own the integrator’s product files.
 
+Before every commit run `npm run guard` (`docs/GUARD.md`); `[skip ci]` only for documentation-only commits.
+
 History contract: `docs/HISTORY_POLICY.md`. Preserve source experiment refs and receipts; new main increments are linear, accepted deltas only. Never rewrite existing ancestry for cosmetic linearity.
