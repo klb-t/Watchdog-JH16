@@ -4,18 +4,54 @@ import { tracer } from '../utils/tracer';
 import { randomUUID } from 'node:crypto';
 import { authErrorStatus } from './auth_routes';
 import { redact, redactText } from '../utils/redaction';
+import { markActivity, READINESS_PATHS } from '../utils/activity';
+
+/** Requests at least this slow are printed even when they succeed. */
+const SLOW_REQUEST_MS = Number(process.env.WATCHDOG_SLOW_REQUEST_MS ?? 2000);
 
 export function traceMiddleware(req: Request, res: Response, next: NextFunction) {
   const supplied = req.headers['x-trace-id'];
   const traceId = typeof supplied === 'string' && /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(supplied)
     ? supplied : randomUUID();
+  // Captured now: inside a mounted router req.path is relative to the mount point.
+  const started = process.hrtime.bigint(), requestId = randomUUID(), fullPath = req.originalUrl.split('?')[0];
+  let failure: { code: unknown; message: unknown } | null = null;
+  // Route helpers answer domain errors (409, 404…) themselves, so they never reach
+  // errorHandler. Capture the error code/message they send, and add the trace ID
+  // to every error body so a person can quote it.
+  const json = res.json.bind(res);
+  res.json = (body: any) => {
+    if (res.statusCode >= 400 && body && typeof body === 'object' && !Array.isArray(body)) {
+      const code = typeof body.error === 'object' ? body.error?.code : body.error;
+      const message = body.message ?? (typeof body.error === 'object' ? body.error?.message : undefined);
+      failure = { code: code ?? null, message: typeof message === 'string' ? message.slice(0, 500) : null };
+      body = { ...body, trace_id: traceId };
+    }
+    return json(body);
+  };
+  let logged = false;
+  const finish = (aborted: boolean) => {
+    if (logged) return; logged = true;
+    const durationMs = Number((process.hrtime.bigint() - started) / 1_000_000n);
+    if (!fullPath.startsWith('/api/') && res.statusCode < 400) return;
+    const entry = { at: new Date().toISOString(), trace_id: traceId, request_id: requestId, method: req.method, path: fullPath,
+      status: aborted && !res.writableEnded ? null : res.statusCode, duration_ms: durationMs, aborted: aborted && !res.writableEnded,
+      actor_id: req.principal?.id ?? null, ...(failure ? { error: failure } : {}) };
+    if (req.principal && fullPath.startsWith('/api/') && !READINESS_PATHS.has(`${req.method} ${fullPath}`)) markActivity('request');
+    tracer.emit('REQUEST_COMPLETE', entry);
+    tracer.record('requests.jsonl', entry);
+    if (entry.status === null || entry.status >= 400 || durationMs >= SLOW_REQUEST_MS) {
+      const f = failure as { code: unknown; message: unknown } | null;
+      console.log(redactText(`[HTTP] ${entry.status ?? 'ABORTED'} ${req.method} ${fullPath} ${durationMs}ms trace=${traceId}${f ? ` ${String(f.code)}: ${String(f.message)}` : ''}`));
+    }
+  };
   void tracer.runWithSpan('http_request', `${req.method} ${req.path}`, () => new Promise<void>(resolve => {
     tracer.emit('INCOMING_REQUEST', { method: req.method, path: req.path });
     res.setHeader('x-trace-id', traceId);
-    res.once('finish', resolve);
-    res.once('close', resolve);
+    res.once('finish', () => { finish(false); resolve(); });
+    res.once('close', () => { finish(true); resolve(); });
     next();
-  }), { trace_id: traceId, request_id: randomUUID() }).catch(next);
+  }), { trace_id: traceId, request_id: requestId }).catch(next);
 }
 
 export function errorHandler(err: any, req: Request, res: Response, next: NextFunction) {

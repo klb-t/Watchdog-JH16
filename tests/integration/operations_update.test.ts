@@ -33,6 +33,7 @@ if tool=='df': print('Avail\\n99999999')
 elif tool=='docker':
     if args[0]=='ps':
         if (r/'service-active').exists(): print('watchdog')
+        if (r/'other-container').exists(): print('other-app')
     elif args[0]=='version': print('28.0.0')
     elif args[0]=='inspect':
         if not (r/'service-active').exists(): sys.exit(1)
@@ -93,4 +94,35 @@ test('OPERATIONS update: legacy installation without helper can create pre-updat
 });
 test('OPERATIONS recovery marker blocks retry, backup and restart before host mutation',()=>{
  const h=fixture();try{writeFileSync(path.join(h.root,'etc/watchdog/recovery-required'),'fictional recovery evidence');const before=h.read('etc/watchdog/release.env');for(const [script,args] of [['gcp_vm_bootstrap.sh',undefined],['watchdogctl.sh',['backup']],['watchdogctl.sh',['restart']]] as const){const r=h.run(script,args ? [...args] : undefined);assert.notEqual(r.status,0);assert.match(r.stderr,/Recovery required/);}assert.equal(h.read('etc/watchdog/release.env'),before);assert.ok(!h.calls().some(c=>['apt-get','ufw'].includes(c[0])||(c[0]==='systemctl'&&['start','restart','stop','enable'].includes(c[1]))));}finally{h.clean();}
+});
+
+test('E3.20 shared host: other containers block a dedicated install, but not --shared-host, which leaves the firewall alone',()=>{
+ const h=fixture();try{
+  writeFileSync(path.join(h.root,'other-container'),'x');
+  const refused=h.run();assert.notEqual(refused.status,0);assert.match(refused.stderr,/--shared-host/);
+  assert.ok(!h.calls().some(c=>c[0]==='systemctl'&&c[1]==='stop'),'nothing was stopped before the refusal');
+  const archive=path.join(h.root,'source.tar.gz');
+  const shared=h.run('gcp_vm_bootstrap.sh',['--archive',archive,'--commit','b'.repeat(40),'--shared-host']);assert.equal(shared.status,0,shared.stderr);
+  const calls=h.calls();
+  assert.ok(!calls.some(c=>c[0]==='ufw'&&(c.includes('deny')||c.includes('default')||c.includes('enable')||c.includes('--force'))),'no firewall policy is changed');
+  assert.ok(!calls.some(c=>c[0]==='apt-get'&&c.includes('ufw')),'ufw is not installed for a machine that has its own arrangements');
+  assert.ok(h.has('service-active'));
+ }finally{h.clean();}
+});
+test('E3.20 port 8080 held by another service stops the install before anything is stopped; our own service does not',()=>{
+ const h=fixture();try{
+  mkdirSync(path.join(h.root,'proc/net'),{recursive:true});
+  writeFileSync(path.join(h.root,'proc/net/tcp'),'  sl  local_address rem_address   st\n   0: 0100007F:1F90 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 1\n');
+  const ours=h.run();assert.equal(ours.status,0,'its own running service holds 8080: '+ours.stderr);
+  rmSync(path.join(h.root,'service-active'));
+  const taken=h.run();assert.notEqual(taken.status,0);assert.match(taken.stderr,/port 8080 is already in use/i);
+  writeFileSync(path.join(h.root,'proc/net/tcp'),'  sl  local_address rem_address   st\n   0: 0100007F:1F91 00000000:0000 0A 00000000:00000000 00:00000000 00000000     0        0 1\n');
+  assert.equal(h.run().status,0,'another port is no obstacle');
+ }finally{h.clean();}
+});
+test('E3.20 an unmanaged container called watchdog is never removed',()=>{
+ const h=fixture();try{
+  rmSync(path.join(h.root,'etc/watchdog/installer-v1'));rmSync(path.join(h.root,'etc/watchdog'),{recursive:true});rmSync(path.join(h.root,'etc/systemd/system/watchdog.service'));rmSync(path.join(h.root,'var/lib/watchdog'),{recursive:true});
+  const r=h.run();assert.notEqual(r.status,0);assert.match(r.stderr,/not managed by this installer/);
+ }finally{h.clean();}
 });

@@ -1,5 +1,5 @@
 {
-  "version": "paper-operation-ui-3",
+  "version": "paper-operation-ui-4",
   "title": "Analizy prac",
   "introduction": "Powiąż cytat z konkretnymi kolumnami i sprawdź metodę przed obliczeniami. Działa bez klucza LLM. Każdy plan obejmuje jedną operację na wszystkich wierszach albo jawnie wybranej kohorcie.",
   "scopeLabel": "Analiza wybranej części pracy; replikacja całości nie została ustalona.",
@@ -161,5 +161,35 @@
     "deviationLabel": "Odchylenie",
     "reasonLabel": "Przyczyna i ograniczenia",
     "rawResultLabel": "Pełny wynik i ślad pochodzenia"
+  },
+  "family": {
+    "title": "Rodzina porównań z tą pracą",
+    "notice": "Rodzina zamraża listę zatwierdzonych porównań przed uruchomieniem. Wynik zawsze pokazuje wszystkie, również niezgodne, nieudane i odrzucone — nie da się po fakcie zostawić tylko pasujących. To nie jest prerejestracja ani werdykt dla całej pracy; o tym, ile zgodności wystarcza, decyduje człowiek.",
+    "titleLabel": "Nazwa rodziny",
+    "rationaleLabel": "Dlaczego te porównania, a nie inne",
+    "membersLabel": "Zatwierdzone porównania tej pracy do zamrożenia",
+    "noMembersLabel": "Brak zatwierdzonych porównań tej pracy. Zatwierdź porównania powyżej.",
+    "createLabel": "Zamroź rodzinę",
+    "executeLabel": "Wykonaj wszystkie porównania rodziny",
+    "listLabel": "Zamrożone rodziny tej pracy",
+    "denominatorLabel": "zamrożonych porównań",
+    "supersedesLabel": "Zastępuje rodzinę",
+    "supersededByLabel": "Zastąpiona przez",
+    "reviseLabel": "Przygotuj nową wersję tej rodziny",
+    "exposureLabel": "Co było już widziane przy zamrożeniu",
+    "eventsLabel": "Wszystkie próby i odmowy rodziny",
+    "createdNotice": "Rodzina zamrożona. Jej skład nie może się już zmienić; zmiana tworzy nową wersję, a ta zostaje widoczna.",
+    "outcomes": {
+      "reproduced": "zgodne w tolerancji",
+      "deviates": "poza tolerancją",
+      "not_computable": "nie do policzenia",
+      "method_unclear": "metoda niejasna",
+      "failed": "próba nieudana",
+      "refused": "odrzucone przed uruchomieniem",
+      "pending": "w toku",
+      "not_run": "jeszcze nie uruchomione"
+    },
+    "exportLabel": "Pobierz pakiet całej rodziny",
+    "exportNotice": "Pobrano pakiet rodziny. Sprawdź go offline: node verify-family.mjs . — i zachowaj osobno SHA-256 manifestu:"
   }
 }

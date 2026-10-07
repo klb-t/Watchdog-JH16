@@ -3,12 +3,24 @@
 **Publikacja sprawdzona 3.10.2026:** poprawki produktu są na main w `a0e061f78dfd46fab3c13381e24f5aa5299ccfd1` (drzewo źródłowego `2c0e013`), pilotaże na osobnej gałęzi w `9c562d8d20ea2e129b44062080c138cb2adb1ceb` (drzewo źródłowego `7346f0a`), a oryginalne commity w archiwum `a683082c`. Aktualny punkt startowy: [handoff](../HANDOFF_2026-10-02_TO_CLAUDE.md). Starsze SHA poniżej są źródłowymi checkpointami; nie są automatycznie zdalnymi refami.
 
 
-Last updated: 2026-10-02, resumed acceptance and auth/recovery completion. Update this file whenever a
+Last updated: 2026-10-03, handover accepted by Claude. Update this file whenever a
 decision changes or an epic completes.
 
 ---
 
 ## 1. Where the project actually is
+
+**D26 / E3.21 — 2026-10-07:** the test machine runs several services, so the installer gained `--shared-host` (additive, never closes or refuses what belongs to other services; conflicts stop it early) instead of a dedicated-VM-only rule, and the sleep decision became a separate module that treats anything beyond system background work as use. The dedicated-VM behaviour remains the default and is unchanged.
+
+Owner policy (2026-10-07): during development and α everything runs on one machine; separate machines (possibly elsewhere) start with β/releases. The external address was stable for months only because that machine never stopped — once it sleeps, an unreserved ephemeral IP changes.
+
+**D25 / E3.20 — 2026-10-05:** "always available, pay only when used" is a VM that powers itself off after N idle minutes behind a scale-to-zero Cloud Run gate (stable `run.app` HTTPS address, wakes the VM, proxies over the VPC); Cloud Scheduler wakes it for collection jobs, whose missed occurrences coalesce. Chosen over Cloud Run + Postgres, which would replace the SQLite persistence layer (342 synchronous call sites) — an irreversible subsystem replacement needing its own plan. The external advice proposing FastAPI/Next.js/TimescaleDB/APScheduler changes described a different stack and was not applied.
+
+**D24 / E3.19 — 2026-10-04:** continuous diagnostics for the live test VM, at the owner's request: daily `requests.jsonl`, `server-errors.jsonl`, `process-errors.jsonl`, `client-errors.jsonl` in every mode except OFF; trace IDs in error bodies; browser failures reported to the server; new VM installs default to TRACE with 14-day / 2 GB retention; `watchdogctl errors|trace|diag-summary`. This deliberately departs from spec 06's "production runs NORMAL" for the test installation; `diagnostics-mode NORMAL` returns to it. See DEPLOY_GCP_VM.md › Diagnostyka.
+
+**E5.7b.1 — 2026-10-03:** frozen comparison families (migration 024): reviewed E5.7d comparisons of one paper are fixed before running and always reported k-of-n against the frozen denominator, including failures, refusals and members never run; no family verdict, test or correction is chosen by code. Prior attempts are disclosed, not counted; revisions supersede without erasing. Principles guard now covers the family modules (12 numerical roots). See PAPER_ANALYSES.md.
+
+**Handover accepted by Claude — 2026-10-03:** main `58a0c93` independently re-run: lint, build and **613/613** locally once two stale local SQLite files from the pre-consolidation Claude branch were moved aside; GitHub Actions [37127954662](https://github.com/klb-t/Watchdog-JH16/actions/runs/37127954662) (manual dispatch, because every post-#9 commit carried `[skip ci]`) passed **verify and container**. Consolidation checked: migrations 001–022 byte-identical, email-code/open-link/SMTP sign-in, public HTTPS refusal without accounts, two navigation profiles. Follow-up fixed: seven browser suites bypassed the shared Chromium resolver (four failed outside CI), and the E3.5 refuse-to-start test used a fixed `/tmp` database that a stale file could break. Rule from here: code commits on main do not use `[skip ci]` — enforced by the principles guard (E0.7, `npm run guard`, `docs/GUARD.md`), which runs in CI on every PR and push to main. Leadership: Claude. Real VM, SMTP, OAuth and certificate acceptance remain open.
 
 **Latest acceptance — 2026-10-02:** resumed review fixed explicit-OIDC fallback, access CLI recovery-marker bypass and legacy grant decision races. Clean local typecheck/build and **613/613** pass; [completion record](../RESUME_2026-10-02.md), [receipt](../history/evidence/2026-10-02/receipt.json). Prior receipts below remain tied to their original code. Research pilots are tracked separately; the product backlog and live VM gate remain open.
 

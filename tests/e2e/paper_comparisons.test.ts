@@ -1,6 +1,7 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium, type Browser, type Page } from 'playwright';
+import { resolveChromium } from '../helpers/browser';
 import { spawn, spawnSync, type ChildProcess } from 'node:child_process';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
@@ -23,7 +24,7 @@ before(async () => {
   let ready = false;
   for (let i = 0; i < 150; i++) { try { if ((await fetch(`${baseUrl}/api/auth/me`)).ok) { ready = true; break; } } catch { /* starting */ } await new Promise(resolve => setTimeout(resolve, 200)); }
   assert.ok(ready, log);
-  browser = await chromium.launch({ ...(process.env.WATCHDOG_TEST_CHROMIUM ? { executablePath: process.env.WATCHDOG_TEST_CHROMIUM } : {}) });
+  browser = await chromium.launch({ executablePath: resolveChromium() });
   page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true }); page.setDefaultTimeout(20_000);
 });
 after(async () => { await browser?.close(); if (server?.pid) try { process.kill(-server.pid, 'SIGKILL'); } catch { /* closed */ }

@@ -9,8 +9,10 @@ StartLimitBurst=5
 
 [Service]
 EnvironmentFile=/etc/watchdog/release.env
+# Optional (E3.20 gate): WATCHDOG_EXTRA_PUBLISH also publishes on the VM's private address.
+EnvironmentFile=-/etc/watchdog/network.env
 ExecStartPre=-/usr/bin/docker rm -f watchdog
-ExecStart=/usr/bin/docker run --rm --name watchdog --init --user 1000:1000 --read-only --cap-drop ALL --security-opt no-new-privileges=true --pids-limit 512 --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 --tmpfs /tmp:rw,nosuid,nodev,size=256m --publish 127.0.0.1:8080:8080 --mount type=bind,src=/var/lib/watchdog,dst=/mnt/watchdog --env-file /etc/watchdog/app.env ${WATCHDOG_IMAGE}
+ExecStart=/usr/bin/docker run --rm --name watchdog --init --user 1000:1000 --read-only --cap-drop ALL --security-opt no-new-privileges=true --pids-limit 512 --log-driver json-file --log-opt max-size=10m --log-opt max-file=3 --tmpfs /tmp:rw,nosuid,nodev,size=256m --publish 127.0.0.1:8080:8080 $WATCHDOG_EXTRA_PUBLISH --mount type=bind,src=/var/lib/watchdog,dst=/mnt/watchdog --env-file /etc/watchdog/app.env ${WATCHDOG_IMAGE}
 ExecStop=/usr/bin/docker stop --time 30 watchdog
 TimeoutStartSec=0
 TimeoutStopSec=45

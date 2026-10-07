@@ -120,6 +120,11 @@ Recognise and refuse these.
   `## Blocked` with enough detail that a human can unblock it in one action, then move to the
   next unblocked task rather than waiting.
 - Keep `docs/spec/00_STATE_AND_DECISIONS.md` current. It is what the next session reads.
+- Before every commit: `npm run guard` (principles guard, `docs/GUARD.md`). It fails when a
+  route/API/capability disappears without an approved removal, a migration is edited, a
+  language model becomes reachable from the numerical path, code skips CI, a test is
+  skipped or a browser suite bypasses the shared launcher. New items are recorded with
+  `npm run guard -- --update`. Never use `[skip ci]` on a commit that changes code.
 
 ## 4. When to stop and ask
 

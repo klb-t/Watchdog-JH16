@@ -71,12 +71,23 @@ const comparisonProfile = z.object({
   methodRequiredLabel: text,
   statistics: z.array(z.object({ id: z.enum(['pearson', 'spearman', 'describe.mean', 'describe.median', 'describe.sd', 'describe.min', 'describe.max']), label: text }).strict()).length(7),
 }).strict().refine(v => new Set(v.statistics.map(s => s.id)).size === 7, 'Unique comparison statistics required');
+const familyOutcome = z.enum(['reproduced', 'deviates', 'not_computable', 'method_unclear', 'failed', 'refused', 'pending', 'not_run']);
+/** E5.7b.1 labels; outcome keys mirror MEMBER_OUTCOMES in shared/paper_comparison_family.ts. */
+const familyProfile = z.object({
+  title: text, notice: text, titleLabel: text, rationaleLabel: text, membersLabel: text, noMembersLabel: text,
+  createLabel: text, executeLabel: text, listLabel: text, denominatorLabel: text, supersedesLabel: text,
+  supersededByLabel: text, reviseLabel: text, exposureLabel: text, eventsLabel: text, createdNotice: text,
+  exportLabel: text, exportNotice: text,
+  outcomes: z.record(familyOutcome, text).refine(v => familyOutcome.options.every(o => o in v), 'Every outcome needs a label'),
+}).strict();
 export const PaperOperationProfileSchema = z.object({
-  version: z.enum(['paper-operation-ui-2', 'paper-operation-ui-3']), title: text, introduction: text, scopeLabel: text,
+  version: z.enum(['paper-operation-ui-2', 'paper-operation-ui-3', 'paper-operation-ui-4']), title: text, introduction: text, scopeLabel: text,
   comparison: comparisonProfile.optional(),
+  family: familyProfile.optional(),
   cohort: z.object({ title: text, allRows: text, selectedRows: text, quoteLabel: text, rationaleLabel: text,
     searchLabel: text, notice: text, reviewLabel: text }).strict(),
   methods: z.array(z.object({ id: PaperMethodSchema, label: text, renderer: z.enum(['bar','scatter']), missingPolicies: z.array(z.enum(['propagate','exclude','fail'])).min(1).max(3) }).strict()).length(3),
   origins: z.array(z.object({ id: DataOriginSchema, label: text }).strict()).length(7),
   missingPolicies: z.array(z.object({ id: z.enum(['propagate', 'exclude', 'fail']), label: text }).strict()).length(3),
-}).strict().refine(v => new Set(v.methods.map(x => x.id)).size === 3 && new Set(v.origins.map(x => x.id)).size === 7 && new Set(v.missingPolicies.map(x => x.id)).size === 3, 'Unique profile options required').refine(v => v.version === 'paper-operation-ui-3' ? !!v.comparison : v.comparison === undefined, 'Comparison labels require profile version 3');
+}).strict().refine(v => new Set(v.methods.map(x => x.id)).size === 3 && new Set(v.origins.map(x => x.id)).size === 7 && new Set(v.missingPolicies.map(x => x.id)).size === 3, 'Unique profile options required').refine(v => v.version === 'paper-operation-ui-2' ? v.comparison === undefined : !!v.comparison, 'Comparison labels require profile version 3 or later')
+  .refine(v => v.version === 'paper-operation-ui-4' ? !!v.family : v.family === undefined, 'Family labels require profile version 4');

@@ -1,6 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
+import { resolveChromium } from '../helpers/browser';
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -42,7 +43,7 @@ test('admission browser: private deep link, real request approval and revocation
       repo.recordIdentity({id:'google:applicant',email:'applicant@example.test',displayName:'Fixture applicant',at});
     });
     const codec=new SessionCodec(signingKey),expiry=Date.now()+60*60*1000;
-    browser=await chromium.launch();
+    browser=await chromium.launch({ executablePath: resolveChromium() });
     const context=await browser.newContext({viewport:{width:390,height:844}}),page=await context.newPage();
     page.setDefaultTimeout(15000);
     await page.route('https://accounts.google.com/**',route=>route.abort());

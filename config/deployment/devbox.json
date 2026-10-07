@@ -1,0 +1,33 @@
+{
+  "schema": "watchdog.devbox/1",
+  "shared_host": true,
+  "minimum_ram_gb": 16,
+  "minimum_disk_gb": 50,
+  "upgrade_machine_type": "e2-standard-4",
+  "free_space_gb": 20,
+  "ssh_attempts": 30,
+  "ssh_retry_seconds": 10,
+  "poll_seconds": 10,
+  "install_timeout_seconds": 7200,
+  "apt_lock_seconds": 300,
+  "iap_source": "35.235.240.0/20",
+  "desktop": {
+    "default": "kde",
+    "rdp_port": 3389,
+    "vnc_display": 12,
+    "geometry": "1600x900",
+    "users": {"rdp": "wd-rdp", "vnc": "wd-vnc", "crd": "wd-crd"},
+    "packages": ["ca-certificates", "curl", "openssl", "dbus-x11", "xauth", "x11-xserver-utils", "xprintidle", "xrdp", "xorgxrdp", "tigervnc-standalone-server", "tigervnc-tools", "plasma-desktop", "plasma-workspace", "konsole", "dolphin", "gnome-session", "gnome-shell", "gnome-terminal", "fonts-dejavu", "xserver-xorg-core"],
+    "supported_os": ["ubuntu:22.04", "ubuntu:24.04", "debian:12", "debian:13"],
+    "crd_deb": "https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb",
+    "chrome_deb": "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+  },
+  "idle": {
+    "minutes": 30,
+    "max_load15": 0.5,
+    "poll_seconds": 60,
+    "activity_sample_seconds": 15,
+    "input_recent_ms": 60000,
+    "protected_tcp_ports": [22, 3389, 5912]
+  }
+}

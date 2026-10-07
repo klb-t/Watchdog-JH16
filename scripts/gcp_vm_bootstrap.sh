@@ -15,10 +15,11 @@ if [[ -n $root ]]; then
     [[ $resolved == "$root/"* ]] || die "Isolated WATCHDOG_ROOT requires $cmd stub beneath that root."
   done
 fi
-archive=''; commit=''; public_host=''; owner=''
+archive=''; commit=''; public_host=''; owner=''; shared=false
 while (($#)); do
   case "$1" in
-    --help|-h) printf '%s\n' 'Internal VM bootstrap: sudo bash gcp_vm_bootstrap.sh --archive SOURCE.tar.gz --commit FULL_SHA [--public-host HOST] [--owner EMAIL]'; exit 0 ;;
+    --help|-h) printf '%s\n' 'Internal VM bootstrap: sudo bash gcp_vm_bootstrap.sh --archive SOURCE.tar.gz --commit FULL_SHA [--public-host HOST] [--owner EMAIL] [--shared-host]'; exit 0 ;;
+    --shared-host) shared=true; shift ;;
     --archive|--commit|--public-host|--owner)
       (($# >= 2)) || die "Missing value for $1"
       case "$1" in --archive) archive=$2;; --commit) commit=$2;; --public-host) public_host=${2,,};; --owner) owner=${2,,};; esac; shift 2 ;;
@@ -49,15 +50,30 @@ if [[ -e "$root/etc/systemd/system/watchdog.service" ]]; then
 elif [[ ( -e "$root/etc/watchdog" || -e "$root/var/lib/watchdog" ) && ! -f "$root/etc/watchdog/installer-v1" ]]; then
   die 'Existing Watchdog state has no managed service. Inspect it before installing.'
 fi
-if command -v docker >/dev/null; then
+if command -v docker >/dev/null && ! $shared; then
   other=$(docker ps --format '{{.Names}}' | grep -Ev '^watchdog(-proxy)?$' || true)
-  [[ -z $other ]] || die 'Use a dedicated VM: other containers are running.'
+  [[ -z $other ]] || die 'Other containers are running. Use a dedicated VM, or rerun with --shared-host to install next to them.'
+fi
+# The unit removes containers named watchdog / watchdog-proxy on start; never someone else's.
+if command -v docker >/dev/null && [[ ! -f $root/etc/watchdog/installer-v1 ]] && docker ps -a --format '{{.Names}}' | grep -Eq '^watchdog(-proxy)?$'; then
+  die 'A container named watchdog or watchdog-proxy already exists and is not managed by this installer. Rename or remove it first.'
+fi
+# Another service on WatchDog's port would make the new release fail after the old one was stopped.
+port_listening() {
+  local hex f; hex=$(printf '%04X' "$1")
+  for f in "$root/proc/net/tcp" "$root/proc/net/tcp6"; do
+    [[ -r $f ]] && awk -v p=":$hex" 'NR>1 && $4=="0A" && substr($2,length($2)-4)==p {found=1} END{exit !found}' "$f" && return 0
+  done
+  return 1
+}
+if ! systemctl is-active --quiet watchdog.service 2>/dev/null && port_listening 8080; then
+  die 'TCP port 8080 is already in use by another service on this machine. Stop it or move it; WatchDog needs 127.0.0.1:8080.'
 fi
 [[ ! -e $root/etc/watchdog/recovery-required ]] || die 'Recovery required; inspect /etc/watchdog/recovery-required before another update.'
 [[ ! -f $root/etc/systemd/system/watchdog.service || -f $root/etc/watchdog/release.env ]] || die 'Managed service has no release metadata; inspect the incomplete installation before updating.'
 export DEBIAN_FRONTEND=noninteractive
 apt-get -o DPkg::Lock::Timeout=120 update
-apt-get -o DPkg::Lock::Timeout=120 install -y --no-install-recommends ca-certificates curl openssl python3 ufw
+apt-get -o DPkg::Lock::Timeout=120 install -y --no-install-recommends ca-certificates curl openssl python3 $($shared || printf ufw)
 if ! command -v docker >/dev/null; then
   # Refuse conflicting engines rather than silently removing someone else's runtime.
   for package in docker.io docker-compose podman-docker containerd runc; do
@@ -88,11 +104,19 @@ docker_major=$(docker version --format '{{.Server.Version}}' | cut -d. -f1)
 # another firewall. Docker bypasses UFW, so the container MUST also bind loopback.
 # Append the allow first, then the deny. Unlike "ufw insert 1", this also works
 # on a pristine UFW ruleset; UFW de-duplicates identical rules on reruns.
-ufw allow from 35.235.240.0/20 to any port 22 proto tcp comment 'Watchdog IAP SSH'
-ufw deny 22/tcp comment 'Watchdog SSH only through IAP'
-ufw default deny incoming
-ufw default allow outgoing
-ufw --force enable
+if $shared; then
+  # Shared machine: never change what other services rely on. If a firewall is already active,
+  # make sure IAP SSH is allowed; otherwise leave the firewall alone.
+  if command -v ufw >/dev/null && ufw status | grep -q '^Status: active'; then
+    ufw allow from 35.235.240.0/20 to any port 22 proto tcp comment 'Watchdog IAP SSH'
+  fi
+else
+  ufw allow from 35.235.240.0/20 to any port 22 proto tcp comment 'Watchdog IAP SSH'
+  ufw deny 22/tcp comment 'Watchdog SSH only through IAP'
+  ufw default deny incoming
+  ufw default allow outgoing
+  ufw --force enable
+fi
 
 install -d -m 0755 "$root/opt/watchdog" "$root/opt/watchdog/releases"
 release=$(mktemp -d "$root/opt/watchdog/releases/$commit.XXXXXXXX")
@@ -173,8 +197,10 @@ WATCHDOG_ALLOW_OPEN_INSTANCE=true
 DB_PATH=/mnt/watchdog/watchdog.sqlite
 STORE_BACKEND=local
 STORE_PATH=/mnt/watchdog/object_store
-WATCHDOG_DIAGNOSTICS_MODE=NORMAL
+WATCHDOG_DIAGNOSTICS_MODE=TRACE
 WATCHDOG_DIAGNOSTICS_DIR=/mnt/watchdog/diagnostics
+WATCHDOG_DIAGNOSTICS_RETENTION_DAYS=14
+WATCHDOG_DIAGNOSTICS_MAX_MB=2048
 WATCHDOG_VAULT_KEY_FILE=/mnt/watchdog/secrets/master.key
 SESSION_SIGNING_KEY=$(openssl rand -hex 32)
 EOF
@@ -185,7 +211,12 @@ install -m 0644 "$release/deploy/watchdog.service" "$root/etc/systemd/system/wat
 install -d -m 0755 "$root/usr/local/sbin" "$root/usr/local/lib/watchdog"
 install -m 0755 "$release/scripts/watchdogctl.sh" "$root/usr/local/sbin/watchdogctl"
 install -m 0755 "$release/scripts/watchdog_backup.py" "$root/usr/local/lib/watchdog/watchdog_backup.py"
+if [[ -f $release/scripts/watchdog_diag.py ]]; then install -m 0755 "$release/scripts/watchdog_diag.py" "$root/usr/local/lib/watchdog/watchdog_diag.py"; fi
+if [[ -f $release/scripts/watchdog_idle.py ]]; then install -m 0755 "$release/scripts/watchdog_idle.py" "$root/usr/local/lib/watchdog/watchdog_idle.py"; fi
 if [[ -f $release/deploy/watchdog-proxy.service ]]; then install -m 0644 "$release/deploy/watchdog-proxy.service" "$root/etc/systemd/system/watchdog-proxy.service"; fi
+for unit in watchdog-idle.service watchdog-idle.timer; do
+  if [[ -f $release/deploy/$unit ]]; then install -m 0644 "$release/deploy/$unit" "$root/etc/systemd/system/$unit"; fi
+done
 if [[ -f $release/scripts/watchdog_access.sh ]]; then install -m 0755 "$release/scripts/watchdog_access.sh" "$root/usr/local/lib/watchdog/watchdog_access.sh"; fi
 systemctl daemon-reload
 systemctl enable --runtime --now watchdog.service

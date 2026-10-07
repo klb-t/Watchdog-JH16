@@ -68,6 +68,31 @@ access_command() {
       rm -f "$root/etc/watchdog/public-host"
       set_access_env WATCHDOG_PUBLIC_URL ''; set_access_env WATCHDOG_TRUST_PROXY ''
       systemctl restart watchdog.service ;;
+    enable-gate)
+      # E3.20: the Cloud Run gate becomes the public address; the VM powers itself
+      # off after IDLE_MINUTES without real use and the gate starts it again.
+      local url=${2:-} internal=${3:-} idle=${4:-30}
+      [[ $url =~ ^https://[a-z0-9.-]+$ ]] || die 'Usage: watchdogctl enable-gate https://GATE_HOST INTERNAL_IP [IDLE_MINUTES]'
+      [[ $internal =~ ^(10|172\.(1[6-9]|2[0-9]|3[01])|192\.168)\.[0-9]{1,3}\.[0-9]{1,3}(\.[0-9]{1,3})?$ ]] || die 'INTERNAL_IP must be the private address of this VM.'
+      [[ $idle =~ ^[0-9]+$ ]] && ((idle >= 10 && idle <= 1440)) || die 'IDLE_MINUTES must be between 10 and 1440.'
+      grep -qsx 'WATCHDOG_AUTH=accounts' "$root/etc/watchdog/app.env" || die 'Refusing a public gate: enable accounts first.'
+      [[ -f $root/etc/systemd/system/watchdog-idle.timer ]] || die 'Idle timer unit missing; update the installation.'
+      # Published on the private address as well; the VPC firewall admits only the gate's subnet.
+      printf 'WATCHDOG_EXTRA_PUBLISH=--publish %s:8080:8080\n' "$internal" > "$root/etc/watchdog/network.env"
+      printf 'WATCHDOG_IDLE_MINUTES=%s\n' "$idle" > "$root/etc/watchdog/idle.env"
+      chmod 0600 "$root/etc/watchdog/network.env" "$root/etc/watchdog/idle.env"
+      set_access_env WATCHDOG_PUBLIC_URL "$url"
+      set_access_env WATCHDOG_TRUST_PROXY 'loopback,uniquelocal'
+      set_access_env WATCHDOG_ACTIVITY_FILE /mnt/watchdog/activity.json
+      systemctl daemon-reload; systemctl restart watchdog.service; access_ready
+      systemctl enable --now watchdog-idle.timer
+      printf 'Gate enabled: %s. The VM powers off after %s idle minutes; a visit or the wake schedule starts it.\n' "$url" "$idle" ;;
+    disable-gate)
+      systemctl disable --now watchdog-idle.timer || true
+      rm -f "$root/etc/watchdog/network.env" "$root/etc/watchdog/idle.env"
+      set_access_env WATCHDOG_ACTIVITY_FILE ''
+      systemctl daemon-reload; systemctl restart watchdog.service
+      printf 'Gate disabled: the VM stays on; the private address is no longer published. Remove the Cloud Run gate separately.\n' ;;
     set-public-url)
       [[ ${2:-} =~ ^https://[^[:space:]/]+$ ]] || die 'Usage: watchdogctl set-public-url https://HOST'
       set_access_env WATCHDOG_PUBLIC_URL "$2"; systemctl restart watchdog.service ;;

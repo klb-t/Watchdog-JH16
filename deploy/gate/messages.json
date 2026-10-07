@@ -1,0 +1,17 @@
+{
+  "default_language": "en",
+  "languages": {
+    "pl": {
+      "title": "Uruchamiam WatchDoga…",
+      "body": "Serwer był uśpiony, żeby nie generować kosztów. Budzi się zwykle w 1–2 minuty — ta strona odświeży się sama.",
+      "status": "Stan maszyny",
+      "api": "WatchDog się uruchamia; spróbuj ponownie za chwilę."
+    },
+    "en": {
+      "title": "Starting WatchDog…",
+      "body": "The server was asleep to avoid costs. It usually wakes in 1–2 minutes; this page refreshes by itself.",
+      "status": "Machine state",
+      "api": "WatchDog is starting; try again in a moment."
+    }
+  }
+}

@@ -8,12 +8,8 @@ import { createHash } from 'node:crypto';
 import { AcquisitionStopped } from '../sources/public_http';
 import type { AutomationJob } from '../../../shared/automation';
 
-export function anchorQuote(text: string, quote: string): SourceAnchor {
-  const start = text.indexOf(quote);
-  if (start < 0) throw new AutomationError('A proposed source quote does not occur in the supplied document');
-  if (text.indexOf(quote, start + 1) >= 0) throw new AutomationError('A proposed quote is ambiguous; a longer unique span is required');
-  return { quote, startUtf16: start, endUtf16: start + quote.length, textHash: createHash('sha256').update(text).digest('hex') };
-}
+import { anchorQuote } from './source_anchor';
+export { anchorQuote };
 export class PaperIntakeService {
   constructor(readonly repo: ResearchRepository, readonly assistant: AssistantService, readonly automation: AutomationRepository) {}
   async reviewJob(job: AutomationJob, checkpoint: () => void) {

@@ -102,6 +102,18 @@ scenario, not an edge case.
 Context propagates: browser → API → service → queue → worker → adapter, repository, analyser,
 exporter.
 
+## Live-installation records (2026-10-04, D24)
+
+Owner requirement for the test VM: a complete, continuously collected log so a failure can be
+located immediately. Every mode except `OFF` writes daily `requests.jsonl` (every API request:
+status, duration, actor, error code/message, trace ID), `server-errors.jsonl` (full envelope
+with stack and cause chain), `process-errors.jsonl` (crash or refused start) and
+`client-errors.jsonl` (browser-reported uncaught errors, rejected promises, 5xx and network
+failures via `POST /api/client-errors`: metadata only, ≤16 KB, same-origin, rate-limited).
+Error bodies carry `trace_id`. The VM installer defaults new installations to `TRACE`;
+retention (days, MB cap) bounds the directory. `watchdogctl errors|trace|diag-summary` read it
+over SSH. Node's exit-on-unhandled-rejection behaviour is kept; the cause is written first.
+
 ## Redaction
 
 A central redaction layer runs before every sink, without exception. It knows credential-shaped
