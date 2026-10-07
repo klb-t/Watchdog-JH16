@@ -175,7 +175,10 @@ adres WatchDoga: w zaproszeniach, linkach i mailach. Działanie:
   trwa połączenie z jakąkolwiek inną usługą na maszynie (poza SSH i WatchDogiem; połączenia
   z sieci prywatnej, loopbacku i między kontenerami się nie liczą); trwa instalacja lub kopia
   zapasowa; nie minęło N minut od startu; albo ręcznie przytrzymasz ją komendą
-  `sudo watchdogctl keep-awake GODZINY` (1–72; `off` zwalnia). Gdy decyzja nie da się podjąć,
+  `sudo watchdogctl keep-awake GODZINY` (1–72; `off` zwalnia); albo inna usługa lub pulpit
+  zdalny dotknął w ostatnich N minutach pliku w `/run/keep-awake/` (pulpit robi to sam, gdy ktoś
+  przy nim pracuje — [REMOTE_DESKTOP.md](REMOTE_DESKTOP.md)). Odłączone pulpity zdalne i sesje
+  tmux/screen nie liczą się jako sesja logowania. Gdy decyzja nie da się podjąć,
   maszyna zostaje włączona.
 - **Inne usługi a usypianie:** budzik budzi maszynę tylko na adres WatchDoga. Usługa, której nikt
   nie używa przez pół godziny i która nie obciąża procesora, nie zatrzyma snu; jej użytkownicy

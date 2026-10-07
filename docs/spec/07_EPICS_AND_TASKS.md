@@ -72,6 +72,17 @@ Claude owns integration and the global ledger. Completed historical task paragra
   failed decision never powers off. Tests: `sleeping_vm.test.ts` (9), `operations_update.test.ts`
   (+3), `gcp_vm.test.ts` (+1). Not detected: an idle service nobody is using at that moment;
   documented, with `keep-awake` as the answer.
+- [x] **E3.22 — Remote desktops on the shared host (owner 2026-10-07: "kde, gnome, rdp, CRD,
+  vnc — remote sessions always had problems").** `scripts/host/remote_desktop.sh` (installs
+  itself as `remote-desktop`: status, doctor, use, reset, crd-register, vnc-password, tunnel):
+  one session starter for xrdp, Chrome Remote Desktop and TigerVNC; RDP/VNC on loopback only
+  (IAP tunnel); stale-session cleanup and stop→wait→start VNC restarts; no lock/suspend/auth
+  dialogs; NetworkManager kept off cloud interfaces; reruns keep running sessions and tuned
+  settings. Idle detection: disconnected X displays and tmux/screen no longer count as logins;
+  desktops in use touch `/run/keep-awake/` (created by the bootstrap). Tests:
+  `sleeping_vm.test.ts` (+2); manual container acceptance on Ubuntu 24.04 (RDP login, VNC KDE
+  and GNOME, 6/6 restarts, heartbeat). Not verified: CRD download/registration (blocked in the
+  test network) — check on the real VM. Doc: `docs/REMOTE_DESKTOP.md`.
 - [ ] **E3.18 — Live installation acceptance.** First real install on the owner's VM with
   `deploy_gcp_vm.sh --owner … --public`, a real certificate, SMTP (`watchdogctl set-mail`) and one
   invited person signing in from outside. Needs the owner to start the VM; everything else is code

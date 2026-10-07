@@ -214,6 +214,10 @@ install -m 0755 "$release/scripts/watchdog_backup.py" "$root/usr/local/lib/watch
 if [[ -f $release/scripts/watchdog_diag.py ]]; then install -m 0755 "$release/scripts/watchdog_diag.py" "$root/usr/local/lib/watchdog/watchdog_diag.py"; fi
 if [[ -f $release/scripts/watchdog_idle.py ]]; then install -m 0755 "$release/scripts/watchdog_idle.py" "$root/usr/local/lib/watchdog/watchdog_idle.py"; fi
 if [[ -f $release/deploy/watchdog-proxy.service ]]; then install -m 0644 "$release/deploy/watchdog-proxy.service" "$root/etc/systemd/system/watchdog-proxy.service"; fi
+# Any service may touch a file here while in use; the idle check then keeps the machine on.
+install -d -m 0755 "$root/etc/tmpfiles.d"
+printf '%s\n' '# Managed by scripts/gcp_vm_bootstrap.sh — files here mean "this machine is in use".' 'd /run/keep-awake 1777 root root -' > "$root/etc/tmpfiles.d/keep-awake.conf"
+install -d -m 1777 "$root/run/keep-awake"
 for unit in watchdog-idle.service watchdog-idle.timer; do
   if [[ -f $release/deploy/$unit ]]; then install -m 0644 "$release/deploy/$unit" "$root/etc/systemd/system/$unit"; fi
 done

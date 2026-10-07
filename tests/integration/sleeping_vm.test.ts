@@ -102,6 +102,14 @@ test('E3.20 idle decision: other services count — sessions, load, public conne
       '0000000000000000FFFF00000100007F:0BB8 0000000000000000FFFF000008080808:D2F4 01']));
     d = decide(); assert.match(d.out, /port\(s\) 3000/); assert.equal(d.off, 0);
     rmSync(path.join(r.root, 'proc/net/tcp6'));
+    // Disconnected remote-desktop displays, tmux and screen are not people at a terminal.
+    reset(); r.write('var/run/who.txt', 'marcin :10 2026-10-07 10:00 (:10)\nmarcin pts/3 2026-10-07 10:01 (:10)\nmarcin pts/4 2026-10-07 10:02 (tmux(812).%0)\n');
+    assert.equal(decide().off, 1); rmSync(path.join(r.root, 'var/run/who.txt'));
+    // A desktop or service signalling use in /run/keep-awake; a stale signal does not count.
+    reset(); r.write('run/keep-awake/desktop-marcin-10', '');
+    d = decide(); assert.match(d.out, /In use: desktop-marcin-10/); assert.equal(d.off, 0);
+    const stale = new Date(Date.now() - 31 * 60_000); utimesSync(path.join(r.root, 'run/keep-awake/desktop-marcin-10'), stale, stale);
+    reset(); assert.equal(decide().off, 1);
     // Manual hold.
     reset(); assert.equal(r.run(['keep-awake', '2']).status, 0);
     d = decide(); assert.match(d.out, /Kept awake by watchdogctl keep-awake/); assert.equal(d.off, 0);

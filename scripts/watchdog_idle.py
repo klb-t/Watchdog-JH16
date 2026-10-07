@@ -15,7 +15,12 @@ happening beyond the system's own background work:
     SSH and WatchDog's own (so other services in use keep the machine awake;
     private/VPC, loopback and link-local peers do not, since containers and the
     cloud agent hold such connections open permanently);
-  * a manual hold: `watchdogctl keep-awake HOURS`.
+  * a manual hold: `watchdogctl keep-awake HOURS`;
+  * a recent file in /run/keep-awake — any service or desktop session can touch one there
+    while it is in use (remote_desktop.sh does so while someone types or moves the mouse).
+
+Login sessions count only terminals people sit at (SSH, console): X displays of remote
+desktops and terminal multiplexers stay listed while disconnected, so they do not count.
 
 Standard library only. Pure decision function; the CLI only gathers facts.
 """
@@ -23,6 +28,7 @@ import ipaddress
 import json
 import os
 import pathlib
+import re
 import subprocess
 import sys
 import time
@@ -63,7 +69,35 @@ def public_inbound(tables):
     return sorted(busy)
 
 
-def decide(*, now, uptime_s, idle_minutes, max_load, load15, activity_mtime, sessions, keep_until, public_ports):
+def count_sessions(who_output):
+    """SSH/console logins only; ':10' (X display), 'tmux(…)' or 'screen' hosts are not people at a terminal."""
+    n = 0
+    for line in who_output.splitlines():
+        parts = line.split()
+        if len(parts) < 2 or not (parts[1].startswith('pts/') or parts[1].startswith('tty')):
+            continue
+        m = re.search(r'\((.*)\)\s*$', line)
+        host = m.group(1) if m else ''
+        if host.startswith(':') or host.startswith('tmux(') or host.startswith('screen'):
+            continue
+        n += 1
+    return n
+
+
+def recent_signals(directory, now, window):
+    """Names of /run/keep-awake files touched within the idle window."""
+    out = []
+    if directory.is_dir():
+        for f in sorted(directory.iterdir()):
+            try:
+                if f.is_file() and now - f.stat().st_mtime < window:
+                    out.append(f.name)
+            except OSError:
+                continue
+    return out
+
+
+def decide(*, now, uptime_s, idle_minutes, max_load, load15, activity_mtime, sessions, keep_until, public_ports, signals=()):
     window = idle_minutes * 60
     if keep_until and keep_until > now:
         return STAY, f'Kept awake by watchdogctl keep-awake for another {int(keep_until - now)}s; staying on.'
@@ -75,6 +109,8 @@ def decide(*, now, uptime_s, idle_minutes, max_load, load15, activity_mtime, ses
         return STAY, f'{sessions} login session(s) open; staying on.'
     if load15 is not None and load15 >= max_load:
         return STAY, f'Machine busy: 15-minute load {load15:.2f} is at or above {max_load:.2f}; staying on.'
+    if signals:
+        return STAY, f'In use: {", ".join(signals)} (in /run/keep-awake); staying on.'
     if public_ports:
         return STAY, f'Inbound connections from the internet on port(s) {", ".join(map(str, public_ports))}; staying on.'
     return SLEEP, f'No use for {idle_minutes} minutes; powering off.'
@@ -106,12 +142,12 @@ def gather(root):
         load15 = None
     if isolated:  # tests: sessions come from a fixture, not the host
         who = root / 'var/run/who.txt'
-        sessions = len([l for l in who.read_text().splitlines() if l.strip()]) if who.is_file() else 0
+        sessions = count_sessions(who.read_text()) if who.is_file() else 0
     else:
         out = subprocess.run(['who'], capture_output=True, text=True, timeout=10)
         if out.returncode != 0:
             raise SystemExit('Cannot list login sessions; staying on.')
-        sessions = len([l for l in out.stdout.splitlines() if l.strip()])
+        sessions = count_sessions(out.stdout)
     tables = []
     for name, v6 in (('tcp', False), ('tcp6', True)):
         f = root / 'proc/net' / name
@@ -121,7 +157,8 @@ def gather(root):
         keep_until = float(keep.read_text().strip()) if keep.is_file() else None
     except ValueError:
         keep_until = None
-    return dict(now=time.time(), uptime_s=float((root / 'proc/uptime').read_text().split()[0]), idle_minutes=idle,
+    now = time.time()
+    return dict(now=now, signals=recent_signals(root / 'run/keep-awake', now, idle * 60), uptime_s=float((root / 'proc/uptime').read_text().split()[0]), idle_minutes=idle,
                 max_load=max_load, load15=load15, activity_mtime=activity.stat().st_mtime if activity.is_file() else None,
                 sessions=sessions, keep_until=keep_until, public_ports=public_inbound(tables))
 

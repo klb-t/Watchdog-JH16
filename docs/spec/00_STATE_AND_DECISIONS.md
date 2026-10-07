@@ -10,6 +10,8 @@ decision changes or an epic completes.
 
 ## 1. Where the project actually is
 
+**E3.22 — 2026-10-07:** remote desktops for the shared host live outside WatchDog in `scripts/host/remote_desktop.sh` (see `docs/REMOTE_DESKTOP.md`); the only coupling is the generic `/run/keep-awake/` signal directory that the sleep decision reads, which any service may use. Chrome Remote Desktop is untested until the real VM.
+
 **D26 / E3.21 — 2026-10-07:** the test machine runs several services, so the installer gained `--shared-host` (additive, never closes or refuses what belongs to other services; conflicts stop it early) instead of a dedicated-VM-only rule, and the sleep decision became a separate module that treats anything beyond system background work as use. The dedicated-VM behaviour remains the default and is unchanged.
 
 Owner policy (2026-10-07): during development and α everything runs on one machine; separate machines (possibly elsewhere) start with β/releases. The external address was stable for months only because that machine never stopped — once it sleeps, an unreserved ephemeral IP changes.
