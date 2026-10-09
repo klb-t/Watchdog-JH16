@@ -11,7 +11,8 @@ Current full local matrix (the test:all sequence: lint → build → test) PASS:
 624/624 tests, zero failures/skips/cancellations, 64.534 seconds for the test phase,
 including actual Chromium. Source/config/build-output receipt was written after
 build and BEFORE tests; log data-graph-watchdog-params-full.log and matching
-receipt/patch. Publication is recorded after this commit; integration stays with Claude.
+receipt/patch. Published product commit: `263c8ab1` (full SHA is recorded below); push PASS.
+Integration stays with Claude.
 
 ## Historical WD-002 receipts
 
@@ -149,3 +150,5 @@ before tests. The historical 616 result remains historical.
 WD-003 scoped contract is ready for audit/Claude intake after publication.
 No paid model calls, CI, services, frozen JH16 changes or main writes. Next
 independent confirmed package is WD-001 template selection, not ratio.exclude.
+
+Published WD-003: `263c8ab1b5ef02dc8e4b1f48914dfc1bbb18bc59`; branch push PASS. Main remains at the fresh baseline.

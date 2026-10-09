@@ -8,7 +8,7 @@ request fields, actual-body hash and credential reference. `assistant-routing-2`
 requires explicit task parameters; historical v1 packs/runs remain archived. The
 supported-model temperature 0 that was previously dropped is now sent as the declared
 task policy. Current local lint/build/full-test matrix PASS:624/624, zero skips;
-receipt pins source/config/built files before test. Publication follows the product commit. See the [current B report](../reports/data-graph-engine-2026-10-09.md)
+receipt pins source/config/built files before test. Published product `263c8ab1`, push PASS on B only. See the [current B report](../reports/data-graph-engine-2026-10-09.md)
 and [migration contract](../PERSONAL_PROVIDERS.md#effective-generation-parameters-wd-003-2026-10-09).
 Frozen JH16 and main integration ownership are unchanged.
 
