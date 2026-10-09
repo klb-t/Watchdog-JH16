@@ -1,6 +1,20 @@
 # State and binding decisions
 
-**2026-10-09 B / A4-WD-003 scoped checkpoint:** the legacy analyzer now rejects
+**2026-10-09 B / current composed checkpoint:** published product
+`f2b6b8969b08eb36af36bf9a9a9323a65390bda7` includes A4-WD-001
+`6be9aed` and A4-WD-003. Actual local lint/build/test **644/644 PASS**,
+0 fail/skip/cancel/todo, Node summary65.637028848s; before-build source/config
+hashes and pretest built-file receipt match the clean source, with
+`source_drift=false`. This is one composed gate on f2b6b89, not separate full
+runs on both components. [Current report and exact evidence](../reports/data-graph-engine-2026-10-09.md).
+The changes preserve correct unique results and existing reviewed execution;
+historical runs are not rewritten. Next: independently reproduce A4-WD-002
+consumed-input provenance on this tree. Main integration remains with Claude;
+the wider product scope and scientific acceptance are not declared complete.
+The following scope-only and older full-run statements retain their historical
+state and do not override this checkpoint.
+
+**Historical 2026-10-09 B / A4-WD-003 scoped checkpoint:** the legacy analyzer now rejects
 ambiguous consumed-role input before filtering missing values, matching the
 existing MethodSpec consumer. Executor1.1.1 is recorded through existing fields;
 correct unique results stay byte-identical. Scope35/35 and lint PASS, independent
@@ -8,7 +22,7 @@ review without blocker. A4-WD-001 is published as6be9aed. Full composed gate
 pending; A4-WD-002 input provenance remains open. [Contract](../JH16_INPUT_CARDINALITY.md),
 [current report](../reports/data-graph-engine-2026-10-09.md).
 
-**2026-10-09 B / A4-WD-001 current scope:** unsupported HTTP run envelope/config
+**Historical 2026-10-09 B / A4-WD-001 scope:** unsupported HTTP run envelope/config
 fields now return400 before scheduling instead of being silently stripped.
 Known UI fields and open parameter bags are preserved; reviewed-plan direct
 execution stays supported. Focused20/20 and lint PASS; independent static review

@@ -1,6 +1,41 @@
 # DATA / GRAPH / ENGINE — 2026-10-09
 
-## Current continuation — A4-WD-001/003 (scopes PASS; composed full gate pending)
+## Current checkpoint — A4-WD-001/003 composed gate PASS
+
+The published B product `f2b6b8969b08eb36af36bf9a9a9323a65390bda7`
+(tree `040f9f7e6b13c9f66c549dd3d269ef80908c3cff`) includes A4-WD-001
+`6be9aedf833fce9d4ec7817b67d79169310e82e2` and A4-WD-003. The actual local
+`npm run lint`, `npm run build`, `npm run test` sequence completed:
+**644/644 PASS**, 0 failures, skips, cancellations or todo; Node summary
+**65.637028848 s**. This is one composed run, not separate full runs on each
+component commit. The clean source was frozen before the gate; source drift
+was false after it. Main and other agents' branches remain unchanged.
+
+Public evidence prefix: `/workspace/.onboarding/logs/data-graph-watchdog-submission-full`.
+The exact full log is `data-graph-watchdog-submission-full.log` (no `-tests`
+suffix). `-before-build.json` pins 376 source/config/test inputs before the
+sequence, timestamp `2026-10-09T13:01:11.443410+00:00`; `-receipt.json` pins
+source, Node24.19.0/npm11.9.0 and built files before tests; `-after.json` records
+exit0 and `source_drift=false`. Log SHA256:
+`f4650cb7c29267e0a5a452fc7b6fff865cf51e71d90d85d6ef8e937e6ed314a3`;
+pretest receipt SHA256:
+`4b8148dadf05860e90c49622cd0cc33f7824152c039108bb7907474c8054f99a`.
+The later documentation checkpoint changes only this report and the state/task
+ledger; the gate remains assigned to the product SHA above.
+
+The two confirmed fixes close only their audit findings: strict HTTP controls
+before enqueueing and explicit rejection of ambiguous consumed-role inputs
+before missingness filtering. Correct defaults/golden results, reviewed direct
+execution and immutable historical evidence remain unchanged. This is candidate
+product acceptance for A/Claude, not scientific approval or main integration.
+Earlier scoped and failed evidence below remains historical. Zero paid model
+calls or CI runs; only public synthetic fixtures were used.
+
+Next concrete Watchdog step: reproduce A4-WD-002's consumed-input provenance
+against this published tree before implementing a separate increment. The wider
+B scope, including ChatADHD P4b, remains open; this is a versioned checkpoint.
+
+## Historical A4-WD-001/003 continuation before the composed gate
 
 Fresh fetch on existing B: local/remote `6be9aedf833fce9d4ec7817b67d79169310e82e2`,
 main `58a0c93bd0135e3715dcbc4d92fb80e61bd31215`; clean before work. A4-WD-001

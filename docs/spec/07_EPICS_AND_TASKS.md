@@ -5,6 +5,13 @@ the work. If the repository contradicts a tick, the repository wins — untick i
 
 Task IDs are stable after collision resolution. See [TASK_ID_ALIASES](../TASK_ID_ALIASES.md). Historical labels remain aliases; new work uses unique canonical IDs.
 
+**2026-10-09 B checkpoint:** A4-WD-001/003 are published in composed product
+`f2b6b8969b08eb36af36bf9a9a9323a65390bda7`, actual local lint/build/test
+**644/644 PASS**, 0 fail/skip/cancel/todo, source drift false. This supersedes
+their earlier pending gates; main remains with Claude. A4-WD-002 input
+provenance is still open and needs a current reproduction. The wider canonical
+queue below is unchanged. [Exact gates and next step](../reports/data-graph-engine-2026-10-09.md).
+
 ---
 
 ## Open — canonical queue, 2026-10-01
@@ -693,9 +700,9 @@ Browser runtime recovery is complete: initial 525/552 + 27 launch failures becam
 
 ## DATA / GRAPH / ENGINE — 2026-10-09
 
-- [ ] **WD-B-001 / WD-001:** actual narrative catalog selection and immutable
-  recipe/parameter provenance implemented; scoped 59/59 plus lint PASS, full local
-  gate/publication pending. Default content/hash and provider prompt bytes unchanged;
+- [x] **WD-B-001 / WD-001:** actual narrative catalog selection and immutable
+  recipe/parameter provenance published in `05e4f290`; full local lint/build/test
+  630/630 PASS,0 skips. Default content/hash and provider prompt bytes unchanged;
   unknown selectors fail before dispatch, existing store/ledger and reopened API
   exercised. [Contract](../NARRATIVE_RECIPES.md),
   [current report](../reports/data-graph-engine-2026-10-09.md).
@@ -735,18 +742,21 @@ counted as60 distinct cases. See current report for exact remaining audit scope.
 
 ## B candidate correction — A4-WD-001, 2026-10-09
 
-- [ ] **WD-B-A4-001 / A4-WD-001:** strict HTTP run envelope/config on baseline
+- [x] **WD-B-A4-001 / A4-WD-001:** strict HTTP run envelope/config on baseline
   `bc2778e`; focused20/20 PASS with before-receipt. Actual router rejects unknown
   controls before queue/writes, valid analysis preserves baseline bytes/results
   and reopen, reviewed ResearchPlanService remains supported. Lint PASS and
-  independent static review found no blocker; full current gate pending; A4-WD-002/003 remain open.
+  independent static review found no blocker. Published component `6be9aed`,
+  accepted in composed `f2b6b89` lint/build/test644/644 PASS,0 skips/drift.
+  A4-WD-002 remains open.
   [Contract](../RUN_SUBMISSION_API.md), [report](../reports/data-graph-engine-2026-10-09.md).
 
 
 ## B candidate correction — A4-WD-003, 2026-10-09
 
-- [ ] **WD-B-A4-003 / A4-WD-003:** legacy JH16 input cardinality agrees with
+- [x] **WD-B-A4-003 / A4-WD-003:** legacy JH16 input cardinality agrees with
   existing MethodSpec rejection before missingness. Executor1.1.1, unchanged
   valid golden metrics, retained failure/source/reopen evidence. Scope35/35 and
-  lint PASS; full composed gate pending. No formulas, preset or history changes.
+  lint PASS; published `f2b6b89` full composed lint/build/test644/644 PASS,
+  0 fail/skip/cancel/todo, source drift false. No formulas, preset or history changes.
   [Contract](../JH16_INPUT_CARDINALITY.md), [report](../reports/data-graph-engine-2026-10-09.md).
