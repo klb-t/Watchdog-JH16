@@ -4,6 +4,7 @@ import type { AssistantProfile } from '../config/assistant';
 import { AutomationError } from '../db/repositories/automation';
 import { normalizeModelCatalog, routeModel } from '../llm/routing';
 import { ProfileGenerator } from '../llm/profile_generator';
+import { validateGenerationOverrides } from '../llm/generation_parameters';
 import { loadPersonalProviders } from '../config/personal_providers';
 import { canonicalHash } from '../domain/canonical';
 import { createHash } from 'node:crypto';
@@ -82,6 +83,7 @@ export class AssistantService {
     if (!settings.assistant.enabled) throw new AutomationError('Enable assistant calls in your personal settings first');
     const provider = this.provider(owner, task), credential = this.vault.resolve(owner, provider.id);
     if (!credential.isPresent) throw new AutomationError(credential.detail);
+    validateGenerationOverrides(provider, request.params);
     await this.ensureCatalog(owner, task);
     const catalog = this.catalog(owner, task); if (!catalog) throw new AutomationError('Refresh the model catalog first');
     if (provider.id !== 'openrouter') {
@@ -94,17 +96,21 @@ export class AssistantService {
       throw new AutomationError('Settings or credential changed during catalog discovery; retry with the current configuration');
     const endpoint = new URL(provider.endpoint);
     if (endpoint.protocol !== 'https:' || endpoint.username || endpoint.password) throw new AutomationError('A secure provider profile is required');
-    const reservation = this.repo.reserve(owner, route, settings.assistant.dailyBudgetUsd);
-    const started = Date.now();
-    try {
-      const generator = new ProfileGenerator(provider, credential, async (url, init) => {
+    const defaults = Object.fromEntries(Object.entries(rule.generationParameters).filter(([key]) => route.model.parameters.includes(key)));
+    const generator = new ProfileGenerator(provider, credential, async (url, init) => {
         const response = await this.transport(url, { ...init, redirect: 'error', signal: AbortSignal.timeout(this.profile.transport.timeoutMs) });
         const raw = await this.boundedBody(response, this.profile.transport.maxResponseBytes);
         return { ok: response.ok, status: response.status, text: async () => raw.toString('utf8') };
-      }, route.model.id, route.maxOutputTokens);
-      const generated = await generator.generate({ prompt: request.prompt, system, model: route.model.id,
-        params: { max_tokens: route.maxOutputTokens, ...(route.model.parameters.includes('temperature') ? { temperature: 0 } : {}),
-          provider: { allow_fallbacks: false }, plugins: [] } });
+      }, route.model.id, route.maxOutputTokens, provider.id === 'openrouter' ? route.model.parameters : null, defaults);
+    const generationRequest = { prompt: request.prompt, system, model: route.model.id, params: request.params };
+    // Model capability validation precedes generation dispatch and reservation.
+    // Authorized catalog discovery may already have fetched the model metadata.
+    // The adapter validates again when constructing its actual request.
+    const prepared = generator.prepare(generationRequest);
+    const reservation = this.repo.reserve(owner, route, settings.assistant.dailyBudgetUsd);
+    const started = Date.now();
+    try {
+      const generated = await generator.generate(generationRequest);
       // Secret-shaped property names (including "tokens") are intentionally
       // scrubbed by the generic redactor. Preserve these typed usage counters
       // while redacting every upstream string before persistence or display.
@@ -123,7 +129,7 @@ export class AssistantService {
       return { ...result, route, reservationId: reservation };
     } catch {
       // A timeout may already have incurred a charge. Keep its reservation; never auto-retry.
-      this.repo.settle(owner, reservation, { error: 'PROVIDER_CALL_FAILED', retryAutomatically: false }, null, true);
+      this.repo.settle(owner, reservation, { error: 'PROVIDER_CALL_FAILED', retryAutomatically: false, preparedGeneration: prepared }, null, true);
       throw new AutomationError('Provider call failed. Its budget reservation is retained; inspect the usage record before retrying.');
     }
   }

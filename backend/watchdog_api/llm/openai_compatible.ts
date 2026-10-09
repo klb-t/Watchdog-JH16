@@ -1,5 +1,5 @@
 import {
-  TextGenerator, TextGenerationRequest, TextGenerationResult, TextGenerationError, HttpPost,
+  assertGenerationParameterRecord, TextGenerator, TextGenerationRequest, TextGenerationResult, TextGenerationError, HttpPost,
 } from './base';
 import { SecretHandle } from '../secrets';
 
@@ -26,6 +26,9 @@ export class OpenAiCompatibleGenerator implements TextGenerator {
   ) {}
 
   async generate(request: TextGenerationRequest): Promise<TextGenerationResult> {
+    assertGenerationParameterRecord(request.params, this.providerKey);
+    if (['model', 'messages', 'system', 'prompt'].some(key => Object.hasOwn(request.params, key)))
+      throw new TextGenerationError('invalid_parameters', this.providerKey, 'Parameters cannot replace the request model or input');
     if (!this.credential.isPresent) {
       throw new TextGenerationError(
         this.credential.status === 'invalid' ? 'credential_invalid' : 'credential_absent',

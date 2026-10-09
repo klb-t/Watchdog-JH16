@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import express from 'express';
-import { mkdtempSync, rmSync, readFileSync, statSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { tmpdir } from 'node:os';
 import { runMigrations } from '../../backend/watchdog_api/db/migrations';
@@ -46,7 +46,10 @@ test('all 16 personal provider profiles execute their real protocol adapter with
         else { assert.equal(init.headers.Authorization, `Bearer ${CANARY}-${p.id}`); assert.equal(body.messages[0].content, 'source-grounded'); }
         return { ok: true, status: 200, text: async () => JSON.stringify(p.protocol === 'anthropic' ? { model: body.model, content: [{ type: 'text', text: 'Test response' }], usage: { input_tokens: 10, output_tokens: 20 } } : { model: body.model, choices: [{ message: { content: 'Test response' } }], usage: { prompt_tokens: 10, completion_tokens: 20 } }) };
       }, 'fictional/model', 1200);
-      const result = await adapter.generate({ model: 'fictional/model', system: 'source-grounded', prompt: 'test', params: { model: 'evil', max_tokens: 99999, tools: [{ type: 'execute' }] } });
+      await assert.rejects(() => adapter.generate({ model: 'fictional/model', system: 'source-grounded', prompt: 'test',
+        params: { model: 'evil', max_tokens: 99999, tools: [{ type: 'execute' }] } }), (e: any) => e.kind === 'invalid_parameters');
+      assert.equal(calls, 0, 'invalid parameters cannot dispatch');
+      const result = await adapter.generate({ model: 'fictional/model', system: 'source-grounded', prompt: 'test', params: {} });
       assert.equal(result.text, 'Test response'); assert.equal(result.usage.promptTokens, 10); assert.equal(calls, 1);
       await assert.rejects(() => adapter.generate({ model: 'different', prompt: 'test', params: {} }), /reserved route/); assert.equal(calls, 1);
     }
@@ -97,8 +100,81 @@ function harness() {
   const plans = new ResearchPlans(repo, automation, profile, sourceProfile, orchestrator, methods, vault), owner = 'local-user';
   const enable = () => { const record = repo.get(owner, profile.defaults); return repo.save(owner, { ...record.value, assistant: { ...record.value.assistant, enabled: true } }, record.hash, profile.defaults); };
   return { dir, db, orm, repo, profile, vault, keyFile, store, automation, sourceProfile, methods, orchestrator, plans, owner, enable,
-    close: () => { db.close(); rmSync(dir, { recursive: true, force: true }); } };
+    close: () => { if (db.open) db.close(); rmSync(dir, { recursive: true, force: true }); } };
 }
+
+test('WD-003: effective parameters reach transport and existing ledger with hashes, layers and reopen', async () => {
+  const h = harness();
+  try {
+    h.enable(); h.vault.save(h.owner, 'openrouter', CANARY);
+    const data = JSON.parse(catalogBytes().toString());
+    for (const model of data.data) model.supported_parameters.push('seed');
+    const raw = Buffer.from(JSON.stringify(data));
+    await h.repo.saveCatalog(normalizeModelCatalog(raw, h.profile), raw);
+    const bodies: any[] = [];
+    const transport: typeof fetch = async (_url, init) => {
+      const body = JSON.parse(String(init?.body)); bodies.push(body);
+      return new Response(JSON.stringify({ model: body.model, choices: [{ message: { content: 'Synthetic proposed response' } }],
+        usage: { prompt_tokens: 10, completion_tokens: 20 } }));
+    };
+    const service = new AssistantService(h.repo, h.vault, h.profile, transport);
+    const generated = await service.generator(h.owner, 'method_proposal').generate({ model: 'automatic', prompt: 'Synthetic input',
+      params: { temperature: 0.4, seed: 42 } });
+    assert.equal(bodies[0].temperature, 0.4); assert.equal(bodies[0].seed, 42);
+    assert.deepEqual(bodies[0].provider, { allow_fallbacks: false }); assert.deepEqual(bodies[0].plugins, []);
+    const evidence = generated.generation!;
+    assert.equal(evidence.requestBodyHash, canonicalHash(bodies[0]));
+    assert.equal(evidence.parameters.temperature, 0.4); assert.equal(evidence.sources.temperature, 'request');
+    assert.equal(evidence.sources.provider, 'provider_profile'); assert.equal(evidence.sources.max_tokens, 'reservation');
+    assert.equal(evidence.credentialRef, h.vault.resolve(h.owner, 'openrouter').ref);
+    const { hash, credentialRef, requestBodyHash, ...bound } = evidence;
+    assert.equal(hash, canonicalHash(bound));
+    const first = h.repo.generations(h.owner)[0];
+    assert.deepEqual(first.result.generation, evidence);
+    assert.ok(!JSON.stringify(first).includes(CANARY));
+    const defaultRun = await service.propose(h.owner, 'method_proposal', 'Synthetic default');
+    assert.equal(bodies[1].temperature, 0); assert.equal(defaultRun.generation.sources.temperature, 'task_profile');
+
+    const changed = JSON.parse(readFileSync('config/assistant.json', 'utf8'));
+    changed.tasks.find((t: any) => t.id === 'method_proposal').generationParameters.temperature = 0.75;
+    const filename = path.join(h.dir, 'changed-assistant.json'); writeFileSync(filename, JSON.stringify(changed));
+    const profile = loadAssistantProfile(filename);
+    const variant = await new AssistantService(h.repo, h.vault, profile, transport).propose(h.owner, 'method_proposal', 'Synthetic variant');
+    assert.equal(bodies[2].temperature, 0.75); assert.equal(variant.generation.sources.temperature, 'task_profile');
+    assert.notEqual(variant.generation.hash, defaultRun.generation.hash);
+    assert.notEqual(variant.route.routingProfileHash, defaultRun.route.routingProfileHash);
+    assert.deepEqual(h.repo.generations(h.owner).find(row => row.id === first.id), first, 'historical result is unchanged');
+
+    const before = bodies.length, reservations = h.repo.generations(h.owner).length;
+    for (const params of [{ max_tokens: 100000 }, { model: 'foreign' }, { messages: [] }, { provider: { allow_fallbacks: true } },
+      { plugins: [{ id: 'web' }] }, { tools: [] }, { api_key: CANARY }, { temperature: '0.4' }, { seed: 0.5 }]) {
+      await assert.rejects(() => service.generator(h.owner, 'method_proposal').generate({ model: 'automatic', prompt: 'Blocked', params }),
+        (e: any) => e.kind === 'invalid_parameters');
+    }
+    assert.equal(bodies.length, before); assert.equal(h.repo.generations(h.owner).length, reservations);
+    h.db.close();
+    const reopened = new Database(path.join(h.dir, 'db.sqlite'));
+    try {
+      const restored = new SettingsRepository(reopened, h.store).generations(h.owner).find(row => row.id === first.id);
+      assert.deepEqual(restored, first);
+      assert.ok(!readFileSync(path.join(h.dir, 'db.sqlite')).includes(Buffer.from(CANARY)));
+    } finally { reopened.close(); }
+  } finally { h.close(); }
+});
+
+test('WD-003: invalid overrides do not discover a catalog or create a reservation', async () => {
+  const h = harness();
+  try {
+    h.enable(); h.vault.save(h.owner, 'openrouter', CANARY);
+    let calls = 0;
+    const service = new AssistantService(h.repo, h.vault, h.profile, async () => { calls++; throw new Error('Unexpected transport'); });
+    for (const params of [{ messages: [] }, undefined, null, [], 'temperature'])
+      await assert.rejects(() => service.generator(h.owner, 'method_proposal').generate({ model: 'automatic', prompt: 'Synthetic input',
+        params: params as any }), (error: any) => error.kind === 'invalid_parameters');
+    assert.equal(calls, 0); assert.equal(h.repo.generations(h.owner).length, 0);
+    assert.equal(h.repo.catalog('openrouter', h.owner), null);
+  } finally { h.close(); }
+});
 
 test('personal settings persist per owner, detect stale edits and keep language/geography and interface mode independent', () => {
   const h = harness(); try {
@@ -167,6 +243,12 @@ test('assistant actually routes requests and archives provenance; budget/credent
     assert.equal(h.repo.generations('another').length, 0); assert.equal(h.repo.generations(h.owner)[0].status, 'ESTIMATED');
     fail = true; await assert.rejects(() => service.propose(h.owner, 'query_expansion', 'try once'), /reservation is retained/);
     const before = calls; assert.equal(h.repo.generations(h.owner)[0].status, 'FAILED_RESERVED');
+    const failed = h.db.prepare("SELECT result_json FROM assistant_reservations WHERE status='FAILED_RESERVED'").get() as any;
+    const failureEvidence = JSON.parse(failed.result_json);
+    assert.equal(failureEvidence.retryAutomatically, false);
+    assert.equal(failureEvidence.preparedGeneration.parameters.temperature, 0);
+    assert.equal(failureEvidence.preparedGeneration.sources.temperature, 'task_profile');
+    assert.equal(failureEvidence.preparedGeneration.requestBodyHash, undefined, 'prepared configuration is not a submitted-body receipt');
     const s = h.repo.get(h.owner, h.profile.defaults); h.repo.save(h.owner, { ...s.value, assistant: { ...s.value.assistant, dailyBudgetUsd: 0 } }, s.hash, h.profile.defaults);
     await assert.rejects(() => service.propose(h.owner, 'query_expansion', 'no budget'), /budget exhausted/); assert.equal(calls, before);
     const dump = h.db.prepare('SELECT result_json FROM assistant_reservations').all(); assert.ok(!JSON.stringify(dump).includes(CANARY));

@@ -1,5 +1,17 @@
 # State and binding decisions
 
+**B continuation, 2026-10-09:** candidate branch
+`gpt/data-graph-engine-2026-10-09` continues from `61ae246`. Published WD-002
+ratio/executor 1.0.2 is preserved. WD-003 now carries validated provider/task/request
+generation parameters through the existing adapter and immutable ledger, with protected
+request fields, actual-body hash and credential reference. `assistant-routing-2`
+requires explicit task parameters; historical v1 packs/runs remain archived. The
+supported-model temperature 0 that was previously dropped is now sent as the declared
+task policy. Current local lint/build/full-test matrix PASS:624/624, zero skips;
+receipt pins source/config/built files before test. Publication follows the product commit. See the [current B report](../reports/data-graph-engine-2026-10-09.md)
+and [migration contract](../PERSONAL_PROVIDERS.md#effective-generation-parameters-wd-003-2026-10-09).
+Frozen JH16 and main integration ownership are unchanged.
+
 **Publikacja sprawdzona 3.10.2026:** poprawki produktu są na main w `a0e061f78dfd46fab3c13381e24f5aa5299ccfd1` (drzewo źródłowego `2c0e013`), pilotaże na osobnej gałęzi w `9c562d8d20ea2e129b44062080c138cb2adb1ceb` (drzewo źródłowego `7346f0a`), a oryginalne commity w archiwum `a683082c`. Aktualny punkt startowy: [handoff](../HANDOFF_2026-10-02_TO_CLAUDE.md). Starsze SHA poniżej są źródłowymi checkpointami; nie są automatycznie zdalnymi refami.
 
 

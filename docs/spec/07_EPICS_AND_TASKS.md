@@ -693,6 +693,13 @@ Browser runtime recovery is complete: initial 525/552 + 27 launch failures becam
 
 ## DATA / GRAPH / ENGINE — 2026-10-09
 
+- [x] **WD-B-003 / WD-003:** implementation and current acceptance completed for
+  effective generation parameters in the existing adapters and AssistantService.
+  Typed capability data, task/request precedence, reserved model/input/budget/tool
+  fields, existing-ledger provenance and real SQLite reopen; bundled task pack now
+  `assistant-routing-2` with explicit migration. Current local test:all sequence
+  PASS624/624, zero skips; source/config/binary receipt before tests. See the
+  [current report](../reports/data-graph-engine-2026-10-09.md).
 - [x] **WD-B-002 / WD-002:** ratio's declared exclude policy now removes missing
   operand rows, preserving aligned entity IDs and an explicit trace through
   downstream Workbench execution/storage. Primitive/executor 1.0.2; propagate,

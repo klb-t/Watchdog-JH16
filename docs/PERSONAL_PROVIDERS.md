@@ -65,3 +65,50 @@ fixtures, checking native/bearer credentials, endpoint, limits, model pins and b
 parameter overrides. Other tests exercise native Messages through the owned budget
 service and private catalog store, cross-task routing, benchmark comparability and stale
 or unavailable configuration. These are not 16 paid account integration tests.
+
+## Effective generation parameters (WD-003, 2026-10-09)
+
+The existing `ProfileGenerator` resolves provider `parameters`, task
+`generationParameters`, then explicit request parameters. Reservation-controlled output
+limits and non-streaming mode are applied last. Every request/task override needs a
+typed `requestParameters` declaration in `config/providers/personal.json`. OpenRouter
+also requires the selected model's catalog capability. Current declarations cover
+temperature and integer seed for OpenRouter/OpenAI, and temperature for Anthropic;
+Anthropic seed and undeclared parameters fail explicitly. The other profiles retain
+their existing empty-request behavior. Protocol declarations and controlled-transport
+tests do not establish live account/model support.
+
+Generation parameters cannot change the selected model, messages/system/prompt,
+output bound, stream mode, number of outputs, tools, provider routing, plugins,
+credential or endpoint. Profile data cannot declare these fields overridable.
+OpenRouter's existing `allow_fallbacks: false` and empty plugins remain profile data.
+Rejected requests neither dispatch generation nor create budget reservations;
+invalid profile-level overrides are rejected even before catalog discovery.
+Model-specific capability rejection occurs after any already-authorized catalog
+refresh needed for routing, and before generation dispatch or budget reservation.
+Missing, null, array and non-object parameter containers also fail explicitly.
+
+Successful generations retain `watchdog.generation_parameters/1` in the existing
+generation ledger: effective values, each value's layer, provider-profile hash,
+canonical parameter hash, canonical hash of the actual submitted request body and
+`credentialRef`. The existing route retains settings/catalog/task-profile hashes and
+model identity. No credential value or duplicate request body is added to provenance.
+After a failed provider call, the held reservation retains `preparedGeneration` as
+configuration evidence, without claiming a submitted-body receipt or retrying. Existing
+ledger entries remain immutable and old results without this optional evidence stay
+readable.
+
+Migration: `assistant-routing-2` requires an explicit `generationParameters` object on
+every task. The bundled pack moves the previous intended temperature `0` from service
+code into these objects. The old adapter dropped that value; sending it now when the
+model advertises temperature is the WD-003 behavior repair. To migrate a custom v1
+pack, preserve all other fields, choose each task's parameters explicitly (`{}` keeps
+the provider default), and change `schemaVersion` to `assistant-routing-2`. A v1 file
+fails validation instead of receiving a hidden fallback. Archived v1 packs and past
+generation rows are not rewritten. The optional provider capability declaration is
+additive to `personal-providers-1`; its absence permits no request overrides.
+
+Numeric/boolean override rules are the implemented scope. String or structured
+overrides, automatic capability discovery for direct providers, and automatic execution
+of provider tools remain unavailable. Existing reviewed prices, spending admission,
+consent and the numerical pipeline are unchanged.

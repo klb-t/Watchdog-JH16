@@ -18,7 +18,17 @@
       },
       "documentation": "https://openrouter.ai/docs/api/api-reference/models/list-all-models-and-their-properties",
       "support": "text_nonstreaming",
-      "verification": "protocol_contract_tested; account/model acceptance verified on first use"
+      "verification": "protocol_contract_tested; account/model acceptance verified on first use",
+      "requestParameters": {
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "seed": {
+          "type": "integer"
+        }
+      }
     },
     {
       "id": "openai",
@@ -32,7 +42,17 @@
       "parameters": {},
       "documentation": "https://platform.openai.com/docs/api-reference/chat/create",
       "support": "text_nonstreaming",
-      "verification": "protocol_contract_tested; account/model acceptance verified on first use"
+      "verification": "protocol_contract_tested; account/model acceptance verified on first use",
+      "requestParameters": {
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 2
+        },
+        "seed": {
+          "type": "integer"
+        }
+      }
     },
     {
       "id": "anthropic",
@@ -48,7 +68,14 @@
       "parameters": {},
       "documentation": "https://docs.anthropic.com/en/api/messages",
       "support": "text_nonstreaming",
-      "verification": "protocol_contract_tested; account/model acceptance verified on first use"
+      "verification": "protocol_contract_tested; account/model acceptance verified on first use",
+      "requestParameters": {
+        "temperature": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
     },
     {
       "id": "gemini",

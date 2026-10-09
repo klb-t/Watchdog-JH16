@@ -30,6 +30,16 @@ export interface TextGenerationResult {
   /** Token counts, for cost visibility. Not a scientific quantity. */
   readonly usage: { promptTokens: number | null; completionTokens: number | null };
   readonly nondeterministic: true;
+  /** Exact non-secret parameter layers and submitted-body hash, when captured. */
+  readonly generation?: GenerationParameters & { requestBodyHash: string; credentialRef: string };
+}
+
+export interface GenerationParameters {
+  readonly schema: 'watchdog.generation_parameters/1';
+  readonly providerProfileHash: string;
+  readonly parameters: Readonly<Record<string, unknown>>;
+  readonly sources: Readonly<Record<string, 'provider_profile' | 'task_profile' | 'request' | 'reservation'>>;
+  readonly hash: string;
 }
 
 export type LlmFailureKind =
@@ -38,6 +48,7 @@ export type LlmFailureKind =
   | 'rate_limited'
   | 'quota_exhausted'
   | 'model_not_permitted'
+  | 'invalid_parameters'
   | 'upstream_error'
   | 'malformed_response';
 
@@ -58,6 +69,13 @@ export class TextGenerationError extends Error {
     super(`text.generate via '${providerKey}' failed (${kind}): ${detail}`);
     this.name = 'TextGenerationError';
   }
+}
+
+/** Runtime callers must supply a JSON object; missing/malformed is not empty. */
+export function assertGenerationParameterRecord(value: unknown, providerKey: string): asserts value is Readonly<Record<string, unknown>> {
+  if (!value || typeof value !== 'object' || Array.isArray(value)
+    || (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null))
+    throw new TextGenerationError('invalid_parameters', providerKey, 'Generation parameters must be an object');
 }
 
 export interface TextGenerator {
