@@ -1,5 +1,13 @@
 # State and binding decisions
 
+**2026-10-09 B / A4-WD-003 scoped checkpoint:** the legacy analyzer now rejects
+ambiguous consumed-role input before filtering missing values, matching the
+existing MethodSpec consumer. Executor1.1.1 is recorded through existing fields;
+correct unique results stay byte-identical. Scope35/35 and lint PASS, independent
+review without blocker. A4-WD-001 is published as6be9aed. Full composed gate
+pending; A4-WD-002 input provenance remains open. [Contract](../JH16_INPUT_CARDINALITY.md),
+[current report](../reports/data-graph-engine-2026-10-09.md).
+
 **2026-10-09 B / A4-WD-001 current scope:** unsupported HTTP run envelope/config
 fields now return400 before scheduling instead of being silently stripped.
 Known UI fields and open parameter bags are preserved; reviewed-plan direct

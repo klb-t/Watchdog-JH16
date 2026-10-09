@@ -1,0 +1,133 @@
+{
+  "baseline": "6be9aedf833fce9d4ec7817b67d79169310e82e2",
+  "analyzerVersion": "1.1.0",
+  "inputs": [
+    {
+      "seriesId": "a:popularity",
+      "entityId": "a",
+      "queryRole": "popularity",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": false,
+      "numericValue": 100
+    },
+    {
+      "seriesId": "a:harm",
+      "entityId": "a",
+      "queryRole": "harm",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": false,
+      "numericValue": 10
+    },
+    {
+      "seriesId": "b:popularity",
+      "entityId": "b",
+      "queryRole": "popularity",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": false,
+      "numericValue": 50
+    },
+    {
+      "seriesId": "b:harm",
+      "entityId": "b",
+      "queryRole": "harm",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": false,
+      "numericValue": 5
+    },
+    {
+      "seriesId": "zero:popularity",
+      "entityId": "zero",
+      "queryRole": "popularity",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": false,
+      "numericValue": 0
+    },
+    {
+      "seriesId": "zero:harm",
+      "entityId": "zero",
+      "queryRole": "harm",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": true,
+      "numericValue": null,
+      "missingReason": "PARSE_FAILED"
+    },
+    {
+      "seriesId": "missing:popularity",
+      "entityId": "missing",
+      "queryRole": "popularity",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": true,
+      "numericValue": null,
+      "missingReason": "PARSE_FAILED"
+    },
+    {
+      "seriesId": "missing:harm",
+      "entityId": "missing",
+      "queryRole": "harm",
+      "queryText": "synthetic",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "qualityFlags": [],
+      "isMissing": false,
+      "numericValue": 1
+    }
+  ],
+  "spec": {
+    "method_id": "jh16_faithful",
+    "method_version": "1.1.0",
+    "parameters": {
+      "reference_scores": {
+        "a": 7,
+        "b": 3,
+        "zero": 2,
+        "missing": 1
+      }
+    }
+  },
+  "resultsCanonical": "[{\"entityId\":\"a\",\"isMissing\":false,\"metricKey\":\"Pi\",\"unit\":\"%\",\"valueNumeric\":100},{\"entityId\":\"a\",\"isMissing\":false,\"metricKey\":\"Hi\",\"unit\":\"%\",\"valueNumeric\":10},{\"entityId\":\"b\",\"isMissing\":false,\"metricKey\":\"Pi\",\"unit\":\"%\",\"valueNumeric\":50},{\"entityId\":\"b\",\"isMissing\":false,\"metricKey\":\"Hi\",\"unit\":\"%\",\"valueNumeric\":10},{\"entityId\":\"missing\",\"isMissing\":true,\"metricKey\":\"Pi\",\"unit\":\"%\",\"valueNumeric\":null},{\"entityId\":\"missing\",\"isMissing\":true,\"metricKey\":\"Hi\",\"unit\":\"%\",\"valueNumeric\":null},{\"entityId\":\"zero\",\"isMissing\":false,\"metricKey\":\"Pi\",\"unit\":\"%\",\"valueNumeric\":0},{\"entityId\":\"zero\",\"isMissing\":true,\"metricKey\":\"Hi\",\"unit\":\"%\",\"valueNumeric\":null},{\"isMissing\":false,\"metricKey\":\"pearson_pi_ref\",\"valueNumeric\":0.944911182523068},{\"isMissing\":false,\"metricKey\":\"spearman_pi_ref\",\"valueNumeric\":1},{\"isMissing\":true,\"metricKey\":\"pearson_hi_ref\",\"valueNumeric\":null},{\"isMissing\":true,\"metricKey\":\"spearman_hi_ref\",\"valueNumeric\":null}]"
+}

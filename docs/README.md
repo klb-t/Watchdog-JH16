@@ -27,6 +27,7 @@ Macierze zachowują porównanie źródłowych gałęzi i opisują wykonaną inte
 - [Prywatna VM](DEPLOY_GCP_VM.md), [ograniczenia Cloud Run](DEPLOY_GCP.md), [admission](ADMISSION.md)
 - [Zgłoszenia uruchomień HTTP i ich walidacja](RUN_SUBMISSION_API.md)
 - [Architektura](spec/01_ARCHITECTURE.md), [model danych](spec/02_DATA_MODEL.md), [testy](spec/09_TESTS.md)
+- [Jednoznaczność wejść analyzera JH16](JH16_INPUT_CARDINALITY.md)
 - [Kontrakt JH16](spec/03_JH2016_CONTRACT.md), [metody i aprobata](spec/04_METHOD_COMPILER_AND_APPROVAL.md)
 - [Źródła](SOURCE_ACCESS.md), [warsztat](WORKBENCH.md), [interfejsy terenowe i kliniczne](spec/11_FIELD_AND_CLINICAL_INTERFACES.md)
 - [Szersza specyfikacja](specifications/00_START_HERE.md), [uzgodnienie specyfikacji z kodem](SPEC_RECONCILIATION_2026-09-30.md)

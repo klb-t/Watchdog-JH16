@@ -741,3 +741,12 @@ counted as60 distinct cases. See current report for exact remaining audit scope.
   and reopen, reviewed ResearchPlanService remains supported. Lint PASS and
   independent static review found no blocker; full current gate pending; A4-WD-002/003 remain open.
   [Contract](../RUN_SUBMISSION_API.md), [report](../reports/data-graph-engine-2026-10-09.md).
+
+
+## B candidate correction — A4-WD-003, 2026-10-09
+
+- [ ] **WD-B-A4-003 / A4-WD-003:** legacy JH16 input cardinality agrees with
+  existing MethodSpec rejection before missingness. Executor1.1.1, unchanged
+  valid golden metrics, retained failure/source/reopen evidence. Scope35/35 and
+  lint PASS; full composed gate pending. No formulas, preset or history changes.
+  [Contract](../JH16_INPUT_CARDINALITY.md), [report](../reports/data-graph-engine-2026-10-09.md).

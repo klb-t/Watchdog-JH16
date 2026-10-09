@@ -2,6 +2,8 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { JH16Analyzer } from '../../backend/watchdog_api/analytics/jh16';
 import { calculateRatio, normalizeMax, pearson, spearman } from '../../backend/watchdog_api/analytics/stats';
+import { canonicalizeJson } from '../../backend/watchdog_api/domain/canonical';
+import { analyzerRegistry } from '../../backend/watchdog_api/analytics/registry';
 import { Observation } from '../../backend/watchdog_api/domain/observation';
 
 function obs(entityId: string, queryRole: string, value: number | null): Observation {
@@ -162,4 +164,46 @@ test('JH2016 published data: the reported 81.6% is Pearson, not Spearman', () =>
     `Spearman should NOT match the published figure, got ${(rho * 100).toFixed(2)}%`);
 
   assert.strictEqual(paper.reported_statistics.statistic_determined_by_recomputation, 'pearson');
+});
+
+
+// A4-WD-003: same input cardinality as the existing reviewed MethodSpec route.
+test('JH16: ambiguous consumed roles fail before missing filtering, even when equal or missing', () => {
+  const analyzer = new JH16Analyzer();
+  const spec = { method_id: analyzer.analyzer_id, method_version: analyzer.analyzer_version,
+    parameters: { reference_scores: { candidate: 7, anchor: 3 } } };
+  for (const role of ['popularity', 'harm']) {
+    for (const pair of [[100, 200], [100, 100], [100, null], [null, null]]) {
+      const inputs = [obs('anchor', 'popularity', 300), obs('anchor', 'harm', 10),
+        obs('candidate', role, pair[0]), obs('candidate', role, pair[1])];
+      for (const rows of [inputs, [...inputs].reverse()]) {
+        const before = JSON.stringify(rows);
+        assert.throws(() => analyzer.validate_inputs(rows, spec), /Ambiguous JH16 input/);
+        assert.throws(() => analyzer.analyze(rows, spec), /Ambiguous JH16 input/);
+        assert.strictEqual(JSON.stringify(rows), before, 'validation never mutates or deduplicates source observations');
+      }
+    }
+  }
+});
+
+test('JH16: unique mixed inputs keep exact baseline results, correlations and input order independence', () => {
+  const fixture = JSON.parse(fs.readFileSync('tests/fixtures/jh16-unique-before.json', 'utf8'));
+  const analyzer = new JH16Analyzer();
+  const inputBytes = JSON.stringify(fixture.inputs);
+  for (const rows of [fixture.inputs, [...fixture.inputs].reverse()])
+    assert.strictEqual(canonicalizeJson(analyzer.analyze(rows, fixture.spec)), fixture.resultsCanonical);
+  assert.strictEqual(JSON.stringify(fixture.inputs), inputBytes);
+  assert.strictEqual(analyzer.analyzer_version, '1.1.1');
+  assert.strictEqual(analyzerRegistry.get('jh16_faithful').analyzer_version, '1.1.1');
+});
+
+test('JH16: distinct entities/roles remain valid and unconsumed roles are not newly constrained', () => {
+  const analyzer = new JH16Analyzer();
+  const spec = { method_id: analyzer.analyzer_id, method_version: analyzer.analyzer_version,
+    parameters: { reference_scores: { 'entity:popularity': 7, ['__proto__']: 2 } } };
+  const rows = [obs('entity:popularity', 'popularity', 100), obs('entity:popularity', 'harm', 25),
+    obs('__proto__', 'popularity', 50), obs('__proto__', 'harm', 10)];
+  const expected = analyzer.analyze(rows, spec);
+  const withUnconsumed = [...rows, obs('entity:popularity', 'custom', 1), obs('entity:popularity', 'custom', null)];
+  assert.deepStrictEqual(analyzer.analyze(withUnconsumed, spec), expected);
 });

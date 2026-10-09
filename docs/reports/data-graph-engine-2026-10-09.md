@@ -1,6 +1,52 @@
 # DATA / GRAPH / ENGINE — 2026-10-09
 
-## Current continuation — A4-WD-001 (focused PASS; full gate pending)
+## Current continuation — A4-WD-001/003 (scopes PASS; composed full gate pending)
+
+Fresh fetch on existing B: local/remote `6be9aedf833fce9d4ec7817b67d79169310e82e2`,
+main `58a0c93bd0135e3715dcbc4d92fb80e61bd31215`; clean before work. A4-WD-001
+already published; no reset or main/collaborator branch edits.
+
+Before-reproduction on actual analyzer 1.1.0: identical duplicate multiset gave
+Hi25/50 for opposite array orders. Actual source-run/SQLite/orchestrator completed
+with2 results and a manifest, retaining COMPLETED after reopen. Zero network
+attempts/model calls. `before2-receipt.json` captured source/runner BEFORE run;
+`before2.json`, log and public `before-store2` preserved. Initial `before.mts`
+failed fixture FK because its nonempty seriesId referenced no stored series;
+that failed run/log/receipt/store remain intact. Corrected synthetic input passes
+seriesId empty to insertMany, whose existing ensureSeries creates/resolves a real
+series row before persistence; the product was unchanged between
+attempts. The unique missing/zero/correlation golden fixture was captured before
+product edits, not invented after correction.
+
+Product change: legacy analyzer 1.1.1 rejects a second consumed role per entity
+before missingness filtering, matching the existing MethodSpec consumer. No
+formula, preset, selection, mean/dedup policy or source adaptation changes.
+Version travels through existing registry/executor/manifest fields. No migration
+or rewrite of historical results. Canonical contract/migration:
+`docs/JH16_INPUT_CARDINALITY.md`. R42 literals are existing role/version contracts
+and the same developer diagnostic; no allowlist/configuration mechanism added.
+
+New scientific tests cover both roles and both orders of different/equal/present+
+missing/two-missing inputs; direct validate_inputs and analyze must reject, inputs
+stay unchanged. Unique results must match exact baseline canonical bytes; distinct
+entities/roles and unrelated roles remain accepted as before. New integration
+executes real source-run analysis through both legacy and reviewed MethodSpec
+consumers, verifies failure before results/manifests, no source dispatch, preserved
+rows, current successful executor provenance and SQLite/ObjectStore reopen.
+
+Current scoped gate: **35/35 PASS**, zero failures/skips/cancellations, 13.109s
+(Node summary); runner13.183s, source hashes unchanged. `focused-receipt.json`
+was written before execution; full output and result hashes are in `focused.log`
+and `focused-after.json`. Existing golden, scientific, orchestrator and reviewed
+wizard controls passed. `npm run lint` PASS (exit0), `lint.log`. Root owns the
+next composed lint/build/test gate for A4-WD-001 plus A4-WD-003; no older full gate
+is substituted. A4-WD-002 remains open.
+
+Independent read-only audit matched6/6 handoff files and7/7 before-input hashes,
+found no blocker, and executed no tests/builds. The scope and lint subsequently passed; the full composed gate remains pending.
+
+
+## Historical A4-WD-001 scoped checkpoint (published 6be9aed; full gate then pending)
 
 Fresh all-head fetch completed with clean local/remote B at
 `bc2778e109d00602c124cabc1fad980b1007fa40`; main remains

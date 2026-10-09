@@ -12,11 +12,21 @@ import { Observation, numericOrNull } from '../domain/observation';
  */
 export class JH16Analyzer implements Analyzer {
   analyzer_id = 'jh16_faithful';
-  analyzer_version = '1.1.0';
+  analyzer_version = '1.1.1';
 
   validate_inputs(inputs: readonly Observation[], config: AnalysisSpec): void {
     if (!inputs || inputs.length === 0) throw new Error('No inputs provided for JH16 analysis');
     if (!config.parameters?.reference_scores) throw new Error("Missing 'reference_scores' in AnalysisSpec");
+    // Match the reviewed MethodSpec consumer's cardinality contract before
+    // missingness filtering: no implicit first/last/equal-value selection.
+    const rolesByEntity = new Map<string, Set<string>>();
+    for (const input of inputs) {
+      if (input.queryRole !== 'popularity' && input.queryRole !== 'harm') continue;
+      const roles = rolesByEntity.get(input.entityId) ?? new Set<string>();
+      if (roles.has(input.queryRole)) throw new Error('Ambiguous JH16 input: multiple counts for one entity and dimension');
+      roles.add(input.queryRole);
+      rolesByEntity.set(input.entityId, roles);
+    }
   }
 
   analyze(inputs: readonly Observation[], config: AnalysisSpec): AnalysisResultValue[] {
