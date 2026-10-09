@@ -1,5 +1,17 @@
 # State and binding decisions
 
+**2026-10-09 B / WD-011 scoped checkpoint:** exact signed decimal and whole-exponent
+admission now rejects changed numeric values without binary rounding or new
+notation equivalences. Controlled real API rejection preserves successful
+transport cost/parameter evidence and creates no narrative artifact. Final scope
+25/25 PASS, lint PASS, original 11/11 guard expectations and real protocol
+consumer after PASS. The review found a bare-radix-prefix edge, now corrected
+with a fresh 25/25 scope; final full local gate pending. Published WD-001
+`05e4f29` already passed its complete 630/630 gate; the older scoped paragraph
+below is historical. [Contract](../NARRATIVE_RECIPES.md#signed-numeric-admission-wd-011-2026-10-09),
+[current report](../reports/data-graph-engine-2026-10-09.md).
+
+
 **2026-10-09 B / WD-001 scoped checkpoint:** narrative template IDs now select
 validated catalog recipes through deterministic/provider consumers. Historical
 default text/hash/prompt bytes are preserved; actual API archives PROPOSED evidence
@@ -845,3 +857,6 @@ and immutable proposal evidence now use the existing service/store. Complete loc
 lint/build/test sequence630/630 PASS,0 skips; pretest source/config/dist receipt and
 posttest unchanged-source verification. Defaults remain byte-identical, historical
 artifacts untouched; [contract](../NARRATIVE_RECIPES.md) and [current report](../reports/data-graph-engine-2026-10-09.md).
+
+
+WD-011 current branch acceptance (2026-10-09): exact signed/precision-preserving numeric admission in the existing narrative service. Full current lint/build/test636/636 PASS,0 skips, with pretest receipt and source stability. The earlier missing-browser invocation601/636 remains a failed setup run. Actual API rejection does not erase factual transport/ledger evidence or change historical artifacts. See the current B report.

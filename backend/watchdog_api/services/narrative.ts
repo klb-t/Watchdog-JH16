@@ -161,15 +161,33 @@ export class NarrativeFabricationError extends Error {
   }
 }
 
-/** Digit-bearing tokens, normalised so 1,234 / 1234 / 12.30 / 12.3 compare equal. */
+/**
+ * Exact decimal identities: grouping and trailing fractional zeros are formatting,
+ * never a reason to round through Number. Scientific notation stays a separate
+ * identity (1e3 is not authorised by 1000); its exponent is not another value.
+ * Numeric-looking forms outside this grammar are opaque within the lexical
+ * coverage below; they can match only the same source spelling.
+ */
 function numericTokens(text: string): Map<string, string> {
   const out = new Map<string, string>();
-  for (const m of text.matchAll(/\d[\d,  ]*(?:\.\d+)?/g)) {
-    const raw = m[0].trim();
-    const normalised = raw.replace(/[,  ]/g, '');
-    const n = Number(normalised);
-    if (!Number.isFinite(n)) continue;
-    out.set(String(n), raw);
+  // Read the whole numeric-looking token before validating its grammar. In
+  // particular, malformed signs/grouping/exponents must not donate digit fragments.
+  // The trailing prose punctuation in "15." is not part of the token.
+  const candidates = /(?:[+\-−±][ \u00a0]*)*(?:0[xXbBoO][+\-−0-9a-zA-Z]*|\.?[0-9](?:[0-9]|[., \u00a0]+(?=[0-9]))*(?:[eE][+\-− \u00a0]*(?:[0-9](?:[0-9]|[., \u00a0]+(?=[0-9]))*)?)*)/g;
+  const decimal = /^([+\-−]?)([0-9]+|[0-9]{1,3}(?:,[0-9]{3})+|[0-9]{1,3}(?:[ \u00a0][0-9]{3})+)(?:\.([0-9]+))?(?:[eE]([+\-−]?)([0-9]+))?$/;
+  const signed = (sign: string, integer: string, fraction = '') => {
+    const whole = integer.replace(/[, \u00a0]/g, '').replace(/^0+(?=[0-9])/, '');
+    const part = fraction.replace(/0+$/, '');
+    const negative = (sign === '-' || sign === '−') && (whole !== '0' || part !== '');
+    return `${negative ? '-' : ''}${whole}${part ? `.${part}` : ''}`;
+  };
+  for (const match of text.matchAll(candidates)) {
+    const raw = match[0].trim();
+    const parsed = decimal.exec(raw);
+    const identity = !parsed ? `opaque:${raw}` : parsed[5] === undefined
+      ? `decimal:${signed(parsed[1], parsed[2], parsed[3])}`
+      : `scientific:${signed(parsed[1], parsed[2], parsed[3])}e${signed(parsed[4], parsed[5])}`;
+    out.set(identity, raw);
   }
   return out;
 }
@@ -184,6 +202,8 @@ function numericTokens(text: string): Map<string, string> {
  * is rejected outright — not flagged, not footnoted, because a narrative that
  * needs a caveat about which of its numbers are real is not usable evidence.
  *
+ * This is lexical value admission, not verification of units, entity association,
+ * spelled-out numbers or every mathematical notation.
  * Deliberately strict about rounding: "15.2" is a *different* number from
  * "15.17" and would be a silent precision change under rule 4.
  */

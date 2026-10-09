@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { runMigrations } from '../../backend/watchdog_api/db/migrations';
 import { RunRepository } from '../../backend/watchdog_api/db/repositories/runs';
+import { AnalysisResultRepository } from '../../backend/watchdog_api/db/repositories/data';
 import { ArtifactRepository } from '../../backend/watchdog_api/db/repositories/artifacts';
 import { AuditRepository } from '../../backend/watchdog_api/db/repositories/audit';
 import { SettingsRepository } from '../../backend/watchdog_api/db/repositories/settings';
@@ -27,12 +28,13 @@ test('WD-001: real API selects, validates and archives exact recipes; reopened s
   let sqlite = new Database(filename); sqlite.pragma('foreign_keys=ON'); runMigrations(sqlite);
   const store = new LocalFileSystemStore(path.join(directory, 'objects'));
   const owner = 'local-user', profile = loadAssistantProfile(), canary = 'synthetic-narrative-credential-private';
+  let fabricatedContent: string | null = null;
   let actor = owner, bodies: any[] = [], failProvider = false, failArchive = false, changeOwner = false;
   const transport: typeof fetch = async (_url, options) => {
     const body = JSON.parse(String(options?.body)); bodies.push(body);
     if (failProvider) return new Response('{}', { status: 503 });
     const user = body.messages.find((row: any) => row.role === 'user').content as string;
-    return new Response(JSON.stringify({ model: body.model, choices: [{ message: { content: user.slice(user.indexOf('\n\n') + 2) } }], usage: { prompt_tokens: 10, completion_tokens: 20 } }));
+    return new Response(JSON.stringify({ model: body.model, choices: [{ message: { content: fabricatedContent ?? user.slice(user.indexOf('\n\n') + 2) } }], usage: { prompt_tokens: 10, completion_tokens: 20 } }));
   };
   const guardedStore = { get: store.get.bind(store), put: async (key: string, bytes: Buffer) => {
     if (failArchive && key.startsWith('narratives/')) throw new Error('Synthetic storage interruption');
@@ -48,6 +50,8 @@ test('WD-001: real API selects, validates and archives exact recipes; reopened s
     architecture: { input_modalities: ['text'], output_modalities: ['text'] }, pricing: { prompt: '0.000001', completion: '0.000002', request: '0' }, supported_parameters: ['temperature'] }] }));
   await repo.saveCatalog(normalizeModelCatalog(raw, profile), raw);
   const runId = new RunRepository(drizzle(sqlite)).createRun({ runType: 'ANALYSIS', config: { fixture: true }, ownerPrincipalId: owner });
+  const analyses = new AnalysisResultRepository(drizzle(sqlite));
+  analyses.insertMany(analyses.createAnalysisRun(runId), [1, 2, 3, 4].map(valueNumeric => ({ metricKey: 'Pi', valueNumeric, isMissing: false })));
   new ArtifactRepository(drizzle(sqlite)).finalizeManifest(runId, 'synthetic:existing-manifest', 'a'.repeat(64));
   const start = async () => {
     repo = new SettingsRepository(sqlite, store);
@@ -94,18 +98,37 @@ test('WD-001: real API selects, validates and archives exact recipes; reopened s
     assert.equal(generated.value.narrative.producedBy.generation.requestBodyHash, canonicalHash(bodies[0]));
     assert.deepEqual(repo.generations(owner)[0].result.generation, generated.value.narrative.producedBy.generation);
     assert.equal(JSON.stringify(generated.value).includes(canary), false);
+    // A factual provider transport can succeed while the resulting narrative is invalid.
+    // Keep its ledger/cost/parameters, but never archive or return the fabricated proposal.
+    const priorIds = new Set(repo.generations(owner).map(row => row.id));
+    const beforeFabrication = artifacts().length;
+    fabricatedContent = 'Computed -4 indices.';
+    const fabricated = await call('/narrative/automatic', { consent: true });
+    assert.equal(fabricated.status, 400); assert.equal(fabricated.value.error, 'validation_error');
+    assert.match(fabricated.value.message, /-4/); assert.equal(bodies.length, 2, 'no automatic retry');
+    assert.equal(artifacts().length, beforeFabrication);
+    const transportSuccess = repo.generations(owner).find(row => !priorIds.has(row.id))!;
+    assert.equal(transportSuccess.status, 'ESTIMATED');
+    assert.equal(transportSuccess.result.text, fabricatedContent);
+    assert.equal(transportSuccess.result.error, undefined);
+    assert.deepEqual(transportSuccess.result.usage, { promptTokens: 10, completionTokens: 20 });
+    assert.equal(transportSuccess.result.generation.requestBodyHash, canonicalHash(bodies[1]));
+    assert.equal(bodies[1].temperature, 0);
+    assert.ok(transportSuccess.reservedOrEstimatedUsd > 0, 'successful transport retains factual cost evidence');
+    fabricatedContent = null;
     failProvider = true;
     const beforeFailure = artifacts().length;
     assert.notEqual((await call('/narrative/automatic', { consent: true })).status, 200);
-    assert.equal(bodies.length, 2); assert.equal(artifacts().length, beforeFailure);
+    assert.equal(bodies.length, 3); assert.equal(artifacts().length, beforeFailure);
     assert.equal(repo.generations(owner).some(row => row.result.retryAutomatically === false), true);
     assert.equal(new ArtifactRepository(drizzle(sqlite)).getManifest(runId)!.sha256, 'a'.repeat(64));
     await stop(); sqlite.close(); sqlite = new Database(filename); sqlite.pragma('foreign_keys=ON');
     server = await start();
     const restored = await call(`/narratives/${saved.value.artifact.artifactId}`);
     assert.equal(restored.status, 200); assert.deepEqual(restored.value, saved.value);
-    assert.equal(repo.generations(owner).length, 2);
+    assert.equal(repo.generations(owner).length, 3);
+    assert.deepEqual(repo.generations(owner).find(row => row.id === transportSuccess.id), transportSuccess);
     actor = 'other'; assert.equal((await call(`/narratives/${saved.value.artifact.artifactId}`)).status, 404);
-    assert.equal((await call('/narrative', {})).status, 404); assert.equal(bodies.length, 2);
+    assert.equal((await call('/narrative', {})).status, 404); assert.equal(bodies.length, 3);
   } finally { await stop(); sqlite.close(); rmSync(directory, { recursive: true, force: true }); }
 });

@@ -84,3 +84,43 @@ settings resolution, a new graph registry, or LLM quality evaluation. A4-WD-001/
 existing signed-number guard issue, and other audit findings remain independent.
 The existing numeric fabrication guard and human approval mechanisms were retained.
 All acceptance inputs and transport responses are public synthetic fixtures.
+
+## Signed numeric admission (WD-011, 2026-10-09)
+
+Provider rewrites still pass through the existing `assertNoNovelNumbers` before
+return or narrative archival. Numeric identities now preserve a nonzero ASCII
+minus or U+2212 minus, the entire signed exponent, and every decimal digit without
+binary `Number` conversion. `9007199254740992` and `9007199254740993` are distinct,
+as are arbitrarily small unequal decimal fractions. No rounding tolerance, new
+budget, retry policy or scientific computation is introduced.
+
+The existing formatting allowances remain: valid thousands grouping using commas,
+spaces or NBSP, leading integer zeros and trailing fractional zeros. ASCII plus is
+positive; signed decimal zero remains zero as before. Scientific notation has its
+own identity: `1e3` does not authorise `1000` or `10e2`. Mantissa formatting, e/E
+case and exponent leading zeros/positive sign may differ without changing that
+identity. A nonzero exponent sign change is rejected.
+
+Within the lexical coverage, malformed signs/grouping, decimal comma, leading-dot
+fractions, repeated/malformed exponents and radix-looking tokens are opaque: they
+can match only their unchanged source spelling. They never authorise their digit
+fragments or gain an inferred locale/notation conversion. Prose punctuation and
+the shipped `jh2016-faithful` identifier remain usable. This is not a proof of
+entity/value association, units, arithmetic expressions, spelled-out numbers or
+all Unicode/mathematical notations. Those semantic checks remain outside this
+lexical guard; no claim of universal numeric verification is made.
+
+A sign-changing output now produces the existing `validation_error`, with no
+returned/archived narrative and no automatic retry. The successful provider
+transport is still a successful transport: its existing usage estimate, effective
+parameters, response and ledger evidence remain recorded even when the content
+fails this later guard. A rejected proposal does not become approved. Actual
+transport failures retain their prior held-reservation behavior.
+
+This is a reversible parser correction, not a new owner policy. An ASCII-only
+sign patch was insufficient because exponent splitting and binary rounding would
+still admit changed quantities; a general numeric evaluator would add unsupported
+cross-notation equivalences. Existing artifacts, hashes, human approvals and
+finalised manifests are preserved. Historical proposals are not revalidated or
+assigned stronger evidence retrospectively; new generation uses the corrected
+guard. Deterministic default content and provider prompt bytes are unchanged.

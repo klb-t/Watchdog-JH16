@@ -247,6 +247,21 @@ test('E2.1: a fabricating provider is rejected outright, not footnoted', async (
   clearRegisteredSecrets();
 });
 
+test('WD-011: real protocol adapter rejects a changed sign before returning a proposal', async () => {
+  const cred = await store({ OPENROUTER_API_KEY: KEY }).resolve('env:OPENROUTER_API_KEY');
+  let calls = 0;
+  const input = { ...payload, results: [1, 2, 3, 4].map(valueNumeric => ({ metricKey: 'Pi', valueNumeric })) };
+  const generator = new OpenAiCompatibleGenerator('openrouter', 'https://invalid.local/no-network', cred,
+    async (url, init) => { ++calls; return respond(200, completion('Computed -4 indices.'))(url, init); }, {}, []);
+  try {
+    await assert.rejects(generateNarrativeWithProvider({ runId: 'wd011', payload: input,
+      payloadHash: hashNarrativePayload(input), templateId: 'jh2016-summary', templateVersion: '1.0',
+      providerId: 'openrouter', model: 'public-synthetic', generator }),
+    (error: any) => error instanceof NarrativeFabricationError && error.novelNumbers.includes('-4'));
+    assert.equal(calls, 1, 'the successful controlled transport is not retried');
+  } finally { clearRegisteredSecrets(); }
+});
+
 test('E2.1: a provider failure throws rather than silently serving template prose', async () => {
   const cred = await store({ OPENROUTER_API_KEY: KEY }).resolve('env:OPENROUTER_API_KEY');
   const g = new OpenAiCompatibleGenerator('openrouter', 'https://x/y', cred, respond(429, {}), {}, []);

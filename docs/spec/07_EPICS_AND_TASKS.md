@@ -720,3 +720,14 @@ WD-001 gate update: final current-tree lint/build/test **630/630 PASS**,0 skips.
 Receipt before tests and source stability after them recorded; candidate on B,
 main unchanged. Prior focused59 + amended-case rerun1 are historical and are not
 counted as60 distinct cases. See current report for exact remaining audit scope.
+
+
+## B candidate correction — WD-011, 2026-10-09
+
+- [x] **WD-B-011 / WD-011:** signed decimal/exponent guard correction on baseline
+  `05e4f29`; final current focused 25/25 PASS plus lint and exact original
+  repro-after acceptance. Review-found bare radix edge corrected and scoped
+  rerun 25/25 PASS; fresh full lint/build/test636/636 PASS,0 skips. Actual provider/API rejects sign changes before archival while the
+  successful transport ledger/cost evidence survives reopen. No rounding,
+  notation conversion, hidden retry, approval or historical artifact migration.
+  [Detailed scope and receipts](../reports/data-graph-engine-2026-10-09.md).

@@ -1,6 +1,65 @@
 # DATA / GRAPH / ENGINE — 2026-10-09
 
-## Current continuation state — WD-001 (complete local gate, candidate for integration)
+## Current continuation state — WD-011 (full current gate PASS)
+
+Fresh fetch of all remote heads completed on the existing B branch. Local HEAD
+and remote B were `05e4f290121e91ad516e4db70ee1973d6a4062b3`, clean before edits;
+main remains `58a0c93bd0135e3715dcbc4d92fb80e61bd31215`. WD-001 is published and
+its 630/630 result below is historical for this new increment. No main/collaborator
+branch changes, paid model calls, private fixtures or new services.
+
+Audit A WD-011 at `43cc61e0` still reproduced: original/reverse ASCII sign,
+Unicode minus and exponent-sign cases were incorrectly admitted. In addition to
+the actual guard's 11-case baseline, the real OpenAiCompatibleGenerator and
+`generateNarrativeWithProvider` accepted `Computed -4 indices.` for four Pi
+entries as PROPOSED. The only adaptation to A's pass2 fixture was selecting the
+real shipped template; its old nonexistent selector now correctly fails WD-001.
+Receipts were captured before each baseline runner. Evidence:
+`/workspace/.onboarding/watchdog-template/WD011-before*.json`,
+`WD011-consumer-before.json` and `WD011-consumer-before-receipt.json`.
+All transport was controlled in process; network attempts and paid calls were 0.
+
+The existing guard now compares exact signed decimal strings, preserves whole
+signed exponents in a distinct notation class, and retains supported grouping and
+trailing-zero formatting. It does not evaluate scientific notation as decimals or
+round through Number. Covered unsupported numeric-looking syntax is opaque rather
+than split into known values. No new data policy/allowlist/configuration engine;
+this grammar is a parser mechanism. Limits and reversible migration are explicit
+in [the narrative contract](../NARRATIVE_RECIPES.md#signed-numeric-admission-wd-011-2026-10-09).
+
+The actual API regression requires 400/no narrative artifact after a successful
+controlled response with a changed sign; the existing ledger remains ESTIMATED,
+with response, usage, cost and effective-parameter/body-hash evidence intact.
+There is exactly one dispatch and no retry. SQLite close/reopen retains that
+record, prior proposals and the unchanged finalised manifest. Existing failed
+transport, ownership interleaving, approval and default-byte regressions remain.
+
+First scoped run: **25/25 PASS**, 0 failures/skips/cancellations, 2.413s, including
+real provider adapter and actual loopback API/store/ledger. Its pre-run receipt is
+`WD011-focused-receipt.json`; log `data-graph-watchdog-numbers-focused.log`.
+Subsequent self-review extended opaque-token coverage to repeated exponents and
+signed radix-looking forms; the first receipt does not cover those two additions.
+Final current-source focused rerun: **25/25 PASS**, 0 failures/skips/cancellations,
+1.848s; `WD011-focused-final-receipt.json` was captured before execution and
+`data-graph-watchdog-numbers-focused-final.log` is the complete log.
+`npm run lint` PASS (exit 0), `data-graph-watchdog-numbers-lint-final.log`.
+Exact baseline runners were then replayed against the corrected source with
+`WD011-after-receipt.json` captured first: all 11/11 guard expectations passed;
+the actual adapter consumer rejected `-4` with NarrativeFabricationError after
+exactly one controlled dispatch, zero network attempts. Results are
+`WD011-after.json` and `WD011-consumer-after.json`. Independent review then found a bare-prefix edge (`0` was authorising `0x`,
+`0b` or `0o`). The lexer now consumes those entire opaque prefixes, with rejection
+and unchanged-spelling controls. Review-fix rerun: **25/25 PASS**, zero
+failures/skips/cancellations; `WD011-focused-review-receipt.json` was written before
+`data-graph-watchdog-numbers-focused-review.log`. The earlier final receipt/lint
+and exact-after runs remain evidence for their earlier source, not the bare-prefix
+fix. The new full r2 gate below includes this correction and fresh lint/build.
+`WD011-HANDOFF.json` pins the current final files; it is not a retrospective
+pre-run receipt.
+Full current lint/build/test r2 **636/636 PASS**, 0 failures/skips/cancellations,70.787s; this independently includes the corrected bare-prefix case. Exact source/config/dist receipt before tests and unchanged source afterward are retained under `data-graph-watchdog-numbers-r2-full-*`; browser selection uses the existing system Chromium. Earlier WD-001 PASS is not substituted. Next confirmed independent scope remains A4 method-selection/source-run-manifest/duplicate-entity findings; the ChatADHD coordinator is completing the combined native matrix.
+
+
+## Historical WD-001 continuation (published 05e4f29)
 
 Fresh baseline `867f83b695e93ac29445489c4c5408b0d0308cd8` on the existing B branch,
 clean before edits. Explicit all-head fetch updated B to the same SHA;
@@ -21,7 +80,7 @@ Publication is on B only; main integration remains with Claude.
 [Contract/migration](../NARRATIVE_RECIPES.md). The WD-003 heading below is history.
 
 
-## Current continuation state — WD-003
+## Historical WD-003 continuation
 
 Continuation baseline: `61ae2463541a9c8ce438b9d44265b3dd35ba8b97` on
 `gpt/data-graph-engine-2026-10-09`. Fresh fetch inspected all 20 remote heads;
@@ -248,3 +307,10 @@ ownership interleaving regression. No paid model call, CI, new service or change
 to main/scientific frozen data. This is a candidate product increment for A/Claude.
 Next confirmed audit packages remain A4 method selection/source-run manifest/duplicate
 entities and WD-011 signed-number guard; no generic Office/product rewrite is implied.
+
+
+## WD-011 full gate history and completed candidate
+
+First full invocation: lint/build PASS; tests601/636 PASS,35 failures,0 skips,39.319s. Root omitted the existing environment setup in the wrapper, so browser launch looked for an absent Playwright download instead of system Chromium. All35 failures identify that missing executable. This is retained as a failed invocation, not hidden or relabelled PASS. No test/product fix or browser download was used to bypass it.
+
+Fresh r2 sourced the existing env.sh, recorded explicit browser settings and repeated lint/build/test. **636/636 PASS**,0 failures/skips/cancellations,70.787s; source drift=false. The independent review and8-file manifest matched the final product; root publishes the small correction separately from WD-001. Model calls, paid CI and new services:0. Existing narratives/approvals/finalised manifests remain unchanged; narrower admission applies to new generation only. Evidence: `data-graph-watchdog-numbers-r2-full-receipt.json`, `...-working.patch`, `...log`, `...-after.json`; previous `data-graph-watchdog-numbers-full-*` preserved.
