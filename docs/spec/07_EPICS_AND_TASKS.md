@@ -690,3 +690,13 @@ just because the schema for all three already exists.
 Browser runtime recovery is complete: initial 525/552 + 27 launch failures became 552/552 on the original base, then 604/604 on the combined implementation. No test was disabled. The failed attempt remains recorded in the experiment history.
 
 [Historical resolved publication blockers](../history/LEDGER_BLOCKERS_BEFORE_2026-10-01.md) are retained for provenance. They do not block a new claim or imply current push failure.
+
+## DATA / GRAPH / ENGINE — 2026-10-09
+
+- [x] **WD-B-002 / WD-002:** ratio's declared exclude policy now removes missing
+  operand rows, preserving aligned entity IDs and an explicit trace through
+  downstream Workbench execution/storage. Primitive/executor 1.0.2; propagate,
+  fail and undefined denominator semantics retained. Local test:all 616/616,
+  no skips/cancellations, typecheck/build and offline JH16 self-check PASS.
+  [Report](../reports/data-graph-engine-2026-10-09.md). Main integration stays
+  with Claude; this entry is branch verification, not scientific approval.

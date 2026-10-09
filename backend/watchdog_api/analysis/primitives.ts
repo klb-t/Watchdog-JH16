@@ -129,7 +129,7 @@ const maxPrimitive: Primitive = {
 // --------------------------------------------------------------------------
 const ratioPrimitive: Primitive = {
   contract: {
-    name: 'ratio', version: '1.0.1',
+    name: 'ratio', version: '1.0.2',
     inputs: [{ name: 'numerator', shape: 'series' }, { name: 'denominator', shape: ['scalar', 'series'] }],
     params: [],
     acceptsSemanticTypes: 'any',
@@ -142,12 +142,14 @@ const ratioPrimitive: Primitive = {
   run(inputs, ctx) {
     const num = asSeries(inputs.numerator, 'ratio', 'numerator');
     const denRaw = inputs.denominator;
+    const numeratorIds = new Set(num.entityIds);
+    if (num.entityIds.length !== num.values.length || numeratorIds.size !== num.entityIds.length)
+      throw new PrimitiveError('ratio', 'numerator requires aligned values and distinct entity identifiers');
 
     // Array position is not entity identity. A missing entity is a join-policy
     // question, not an implicit missing measurement, so require an exact set.
     let denValues: PrimitiveValue[];
     if (denRaw && 'values' in denRaw) {
-      const numeratorIds = new Set(num.entityIds);
       const denominatorIds = new Set(denRaw.entityIds);
       if (num.entityIds.length !== num.values.length || denRaw.entityIds.length !== denRaw.values.length
         || numeratorIds.size !== num.entityIds.length || denominatorIds.size !== denRaw.entityIds.length
@@ -160,21 +162,33 @@ const ratioPrimitive: Primitive = {
       denValues = new Array(num.values.length).fill(asScalarNumber(denRaw, 'ratio', 'denominator'));
     }
 
-    const out: PrimitiveValue[] = num.values.map((n, i) => {
+    const kept: number[] = [];
+    const out: PrimitiveValue[] = [];
+    const excludedEntityIds: string[] = [], undefinedEntityIds: string[] = [];
+    for (const [i, n] of num.values.entries()) {
       const d = denValues[i];
       if (n === null || d === null) {
         if (ctx.missingPolicy === 'fail') throw new PrimitiveError('ratio', `missing operand at index ${i}`);
-        return null;
+        if (ctx.missingPolicy === 'exclude') {
+          excludedEntityIds.push(num.entityIds[i]);
+          continue;
+        }
+        kept.push(i); out.push(null);
+        continue;
       }
       // Never divide by zero, never substitute an epsilon, never return zero.
-      if (d <= 0) return null;
-      return n / d;
-    });
+      kept.push(i);
+      if (d <= 0) { out.push(null); undefinedEntityIds.push(num.entityIds[i]); }
+      else out.push(n / d);
+    }
 
     return {
       kind: 'series',
       series: { name: `${num.name}_ratio`, unit: 'dimensionless', semanticType: 'proportion',
-                values: out, entityIds: num.entityIds },
+                values: out, entityIds: kept.map(i => num.entityIds[i]) },
+      ...(ctx.missingPolicy === 'exclude' ? { metadata: { missingness: {
+        policy: ctx.missingPolicy, excludedEntityIds, undefinedEntityIds,
+      } } } : {}),
     };
   },
 };

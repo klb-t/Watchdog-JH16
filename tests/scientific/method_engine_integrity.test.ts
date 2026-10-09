@@ -45,7 +45,7 @@ test('Method integrity: JH16 ratios follow entity identity when input series hav
   const reordered = await executor.execute(spec, [series('Ni'), series('Ni_harm', ['b', 'a'], [5, 20])]);
   assert.deepEqual(reordered, expected, 'input ordering cannot change entity-bound results');
   assert.deepEqual(reordered.results.filter(result => result.metricKey === 'Hi').map(result => [result.entityId, result.valueNumeric]), [['a', 20], ['b', 50]]);
-  assert.equal(reordered.executorVersion, '1.0.1');
+  assert.equal(reordered.executorVersion, '1.0.2');
 });
 
 test('Method integrity: ratio refuses unreviewed joins and ambiguous entity identity', () => {
@@ -65,6 +65,70 @@ test('Method integrity: ratio refuses unreviewed joins and ambiguous entity iden
   const result = PRIMITIVES.ratio.run({ numerator: series('numerator', ['b', 'a'], [null, 5]), denominator: series() }, { missingPolicy: 'propagate', params: {} });
   assert.equal(result.kind, 'series');
   if (result.kind === 'series') assert.deepEqual(result.series.values, [null, 0.05], 'explicit null stays a missing measurement on the correct entity');
+});
+
+test('WD-002: ratio missing strategies are distinct and keep entity-aligned exclusion evidence', () => {
+  const numerator = series('numerator', ['a', 'b'], [null, 4]);
+  const denominator = { kind: 'scalar' as const, value: 2, unit: 'count' };
+  const run = (missingPolicy: 'propagate' | 'exclude' | 'fail') =>
+    PRIMITIVES.ratio.run({ numerator, denominator }, { missingPolicy, params: {} });
+  const propagated = run('propagate');
+  assert.equal(propagated.kind, 'series');
+  if (propagated.kind !== 'series') throw new Error('unexpected shape');
+  assert.deepEqual(propagated.series.entityIds, ['a', 'b']);
+  assert.deepEqual(propagated.series.values, [null, 2]);
+  const excluded = run('exclude');
+  assert.equal(excluded.kind, 'series');
+  if (excluded.kind !== 'series') throw new Error('unexpected shape');
+  assert.deepEqual(excluded.series.entityIds, ['b']);
+  assert.deepEqual(excluded.series.values, [2]);
+  assert.deepEqual(excluded.metadata?.missingness, { policy: 'exclude', excludedEntityIds: ['a'], undefinedEntityIds: [] });
+  assert.throws(() => PRIMITIVES.ratio.run({ numerator: excluded.series,
+    denominator: series('denominator', ['a', 'b'], [2, 2]) }, { missingPolicy: 'exclude', params: {} }),
+    PrimitiveError, 'a reduced series cannot silently join against the original entity set');
+  assert.throws(() => PRIMITIVES.ratio.run({ numerator: series('malformed', ['a'], [null, 4]), denominator },
+    { missingPolicy: 'exclude', params: {} }), PrimitiveError);
+  assert.throws(() => run('fail'), PrimitiveError);
+  const undefinedDenominator = PRIMITIVES.ratio.run({ numerator,
+    denominator: series('denominator', ['b', 'a'], [0, 2]) }, { missingPolicy: 'exclude', params: {} });
+  assert.equal(undefinedDenominator.kind, 'series');
+  if (undefinedDenominator.kind !== 'series') throw new Error('unexpected shape');
+  assert.deepEqual(undefinedDenominator.series.entityIds, ['b']);
+  assert.deepEqual(undefinedDenominator.series.values, [null]);
+  assert.deepEqual(undefinedDenominator.metadata?.missingness,
+    { policy: 'exclude', excludedEntityIds: ['a'], undefinedEntityIds: ['b'] });
+  const empty = PRIMITIVES.ratio.run({ numerator, denominator: { ...denominator, value: null } }, { missingPolicy: 'exclude', params: {} });
+  assert.equal(empty.kind, 'series');
+  if (empty.kind !== 'series') throw new Error('unexpected shape');
+  assert.deepEqual(empty.series.entityIds, []);
+  assert.deepEqual(empty.series.values, []);
+});
+
+test('WD-002: the same MethodSpec executor consumes policy data and retains trace through downstream scaling', async () => {
+  const spec: MethodSpec = {
+    specVersion: '1.0', name: 'synthetic ratio policy pipeline',
+    inputs: [{ name: 'counts', unit: 'count', semanticType: 'count' }, { name: 'denominator', unit: 'count', semanticType: 'count' }],
+    steps: [
+      { id: 'maximum', primitive: 'max', inputs: { series: 'denominator' }, params: {}, missingPolicy: 'fail' },
+      { id: 'ratio', primitive: 'ratio', inputs: { numerator: 'counts', denominator: 'maximum' }, params: {}, missingPolicy: 'exclude' },
+      { id: 'scaled', primitive: 'scale', inputs: { series: 'ratio' }, params: { factor: 100, unit: '%' }, missingPolicy: 'propagate' },
+    ], outputs: [{ name: 'scaled', fromStep: 'scaled', unit: '%', semanticType: 'percentage' }], assumptions: ['synthetic software fixture'],
+  };
+  const inputs = [series('counts', ['a', 'b'], [null, 4]), series('denominator', ['a', 'b'], [2, 2])];
+  const executor = new TypeScriptMethodExecutor();
+  const excluded = await executor.execute(spec, inputs);
+  assert.deepEqual(excluded.results.map(row => [row.entityId, row.valueNumeric]), [['b', 200]]);
+  assert.deepEqual(excluded.executionTrace, { schema: 'watchdog.execution_trace/1', steps: [{
+    stepId: 'ratio', primitive: 'ratio', primitiveVersion: '1.0.2',
+    metadata: { missingness: { policy: 'exclude', excludedEntityIds: ['a'], undefinedEntityIds: [] } },
+  }] });
+  assert.deepEqual(await executor.execute(spec, inputs), excluded);
+  const propagatedSpec = structuredClone(spec); (propagatedSpec.steps[1] as any).missingPolicy = 'propagate';
+  const propagated = await executor.execute(propagatedSpec, inputs);
+  assert.deepEqual(propagated.results.map(row => [row.entityId, row.valueNumeric]), [['a', null], ['b', 200]]);
+  assert.notEqual(propagated.specHash, excluded.specHash);
+  const failedSpec = structuredClone(spec); (failedSpec.steps[1] as any).missingPolicy = 'fail';
+  await assert.rejects(executor.execute(failedSpec, inputs), PrimitiveError);
 });
 
 test('Method integrity: runtime inputs cannot substitute units, semantics, identities or malformed values', async () => {

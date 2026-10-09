@@ -18,6 +18,7 @@ import { defaultFigure, validateDataset, csvExport } from '../../shared/workbenc
 import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
 import { testDataset } from '../helpers/workbench';
 import { tracer } from '../../backend/watchdog_api/utils/tracer';
+import type { MethodSpec } from '../../backend/watchdog_api/domain/method_spec';
 
 async function harness() {
   const dir = mkdtempSync(path.join(tmpdir(), 'watchdog-workbench-')), db = new Database(':memory:'); db.pragma('foreign_keys = ON'); runMigrations(db);
@@ -33,6 +34,39 @@ async function harness() {
   return { db, repo, service, call, approved, principal: (id: string, r: string[]) => { actor = id; roles = r; },
     close: async () => { await new Promise<void>(r => server.close(() => r())); db.close(); rmSync(dir, { recursive: true, force: true }); } };
 }
+
+test('WD-002: approved ratio exclusion retains its trace in the hashed immutable workbench result', async () => {
+  const h = await harness();
+  try {
+    const document = testDataset();
+    const column = document.columns.find(c => c.key === 'interest')!;
+    column.unit = 'count'; column.semanticType = 'count'; // Fictional counts, not a unit conversion of measurements.
+    const imported = await h.repo.importDataset(document, 'test-owner', 'synthetic-ratio');
+    const record = (await h.repo.approveDataset(imported.id, 'test-owner', imported.contentHash, false, 'synthetic-ratio'))!;
+    const figure = defaultFigure(record, loadWorkbenchProfile());
+    figure.channels.x = 'interest'; figure.channels.y = 'mentions';
+    const prepared = await h.service.prepare('test-owner', figure, 'pearson', 'synthetic-prepare');
+    const spec: MethodSpec = { ...structuredClone(prepared!.spec), name: 'Synthetic ratio with explicit exclusion',
+      steps: [{ id: 'ratio', primitive: 'ratio', inputs: { numerator: 'a', denominator: 'b' }, params: {}, missingPolicy: 'exclude' },
+        { id: 'scaled', primitive: 'scale', inputs: { series: 'ratio' }, params: { factor: 100, unit: '%' }, missingPolicy: 'propagate' }],
+      outputs: [{ name: 'scaled', fromStep: 'scaled', unit: '%', semanticType: 'percentage' }] };
+    const method = h.repo.proposeMethod('test-owner', record.id, spec, prepared!.selection, 'synthetic-edited-method')!;
+    h.repo.approveMethod(method.id, 'test-owner', method.hash, 'synthetic-review');
+    const result = await h.service.execute('test-owner', method.id, 'synthetic-run');
+    assert.equal(result.artifact.results.length, 4);
+    assert.ok(result.artifact.results.every(row => row.entityId !== 'row-5'));
+    assert.deepEqual(result.artifact.executionTrace?.steps[0].metadata.missingness,
+      { policy: 'exclude', excludedEntityIds: ['row-5'], undefinedEntityIds: [] });
+    const artifact = h.db.prepare('SELECT object_uri,sha256 FROM artifacts WHERE run_id=?').get(result.runId) as any;
+    const stored = JSON.parse((await h.repo.store.get(artifact.object_uri)).toString());
+    assert.equal(canonicalHash(stored), artifact.sha256);
+    assert.deepEqual(stored.artifact.executionTrace, result.artifact.executionTrace);
+    const restoredRepo = new WorkbenchRepository(h.db, h.repo.store);
+    const restored = await new WorkbenchService(restoredRepo, loadWorkbenchProfile()).execute('test-owner', method.id, 'synthetic-replay');
+    assert.deepEqual(restored.artifact, result.artifact);
+    assert.equal(restored.methodHash, result.methodHash);
+  } finally { await h.close(); }
+});
 
 test('E5: private/proposed data never reaches institutional users; explicit reviewed aggregate sharing does', async () => {
   const h = await harness();

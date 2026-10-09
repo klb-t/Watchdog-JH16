@@ -94,6 +94,16 @@ export interface AnalysisArtifact {
   readonly results: readonly AnalysisResultValue[];
   /** Every flag raised anywhere in execution, for the manifest. */
   readonly qualityFlags: readonly string[];
+  /** Explicit transformation evidence, retained in immutable result payloads. */
+  readonly executionTrace?: {
+    readonly schema: 'watchdog.execution_trace/1';
+    readonly steps: readonly {
+      readonly stepId: string;
+      readonly primitive: string;
+      readonly primitiveVersion: string;
+      readonly metadata: Record<string, JsonValue>;
+    }[];
+  };
 }
 
 /**

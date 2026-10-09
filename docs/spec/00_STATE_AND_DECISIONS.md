@@ -807,3 +807,14 @@ CONVERSATION_DELTA_2026-09-20.md. One engine and data-driven institution profile
 binding. Global appearance context, longitudinal case constraints and investigation
 suggestions are planned; clinical model examples are not approved evidence. The owner
 still requires discussion before changing prior decisions or implementation direction.
+
+## 2026-10-09 — DATA / GRAPH / ENGINE branch increment
+
+On `gpt/data-graph-engine-2026-10-09`, WD-002 fixes ratio.exclude in the existing
+MethodSpec executor. ratio/executor 1.0.2 retain historical propagate/fail and
+undefined denominator behavior. New optional execution trace preserves excluded
+IDs in the immutable Workbench result, including downstream transformations.
+Historical finalized payloads and locked JH16 files remain unchanged. Baseline
+613/613; current local test:all 616/616, no failures/skips/cancellations, typecheck,
+production build/Chromium and offline self-check PASS. [Report](../reports/data-graph-engine-2026-10-09.md).
+This is an implementation decision/contract repair, not scientific approval.

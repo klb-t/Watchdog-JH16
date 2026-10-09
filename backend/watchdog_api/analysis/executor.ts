@@ -24,7 +24,7 @@ export class ApprovalRequiredForExecutionError extends Error {
 
 export class TypeScriptMethodExecutor implements MethodExecutor {
   readonly executorId = 'typescript-inprocess';
-  readonly executorVersion = '1.0.1';
+  readonly executorVersion = '1.0.2';
 
   supports(spec: MethodSpec): boolean {
     return spec.steps.every(s => getPrimitive(s.primitive) !== undefined);
@@ -71,6 +71,7 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
     }
 
     const results: AnalysisResultValue[] = [];
+    const traces: NonNullable<AnalysisArtifact['executionTrace']>['steps'][number][] = [];
 
     for (const step of spec.steps) {
       const primitive = getPrimitive(step.primitive)!;
@@ -93,6 +94,9 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
         throw new PrimitiveError(step.primitive, `step '${step.id}' produced a nonfinite or invalid numeric value`);
       }
       symbols.set(step.id, out);
+      if (out.metadata?.missingness) traces.push({ stepId: step.id,
+        primitive: primitive.contract.name, primitiveVersion: primitive.contract.version,
+        metadata: out.metadata });
     }
 
     // Outputs are emitted in declared order, and entity rows within an output
@@ -109,6 +113,7 @@ export class TypeScriptMethodExecutor implements MethodExecutor {
       executorVersion: this.executorVersion,
       results,
       qualityFlags: [...qualityFlags].sort(),
+      ...(traces.length ? { executionTrace: { schema: 'watchdog.execution_trace/1' as const, steps: traces } } : {}),
     };
   }
 }
