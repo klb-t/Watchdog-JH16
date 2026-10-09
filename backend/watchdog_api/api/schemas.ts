@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+// HTTP submission has a deliberately smaller contract than reviewed internal
+// research-plan execution. Unsupported envelope/config fields must fail before
+// enqueueing; provider/analyzer parameter records retain their own open schemas.
 export const RunSubmissionSchema = z.object({
   type: z.enum(['ACQUISITION', 'ANALYSIS', 'PIPELINE']),
   config: z.object({
@@ -16,5 +19,5 @@ export const RunSubmissionSchema = z.object({
     ]).optional(),
     entities: z.array(z.string()).optional(),
     query_templates: z.record(z.string(), z.string()).optional()
-  })
-});
+  }).strict()
+}).strict();

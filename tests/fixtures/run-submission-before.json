@@ -1,0 +1,41 @@
+{
+  "baseline": "bc2778e109d00602c124cabc1fad980b1007fa40",
+  "fixture": "public synthetic A4 observations; readonly before store",
+  "input": {
+    "type": "PIPELINE",
+    "config": {
+      "source_id": "offline_fixture",
+      "source_params": {
+        "fixture_name": "public-valid",
+        "vendor_extension": {
+          "flags": [
+            true,
+            null,
+            "value"
+          ]
+        }
+      },
+      "method_id": "jh16_faithful",
+      "method_params": {
+        "reference_scores": {
+          "audit_entity": 7
+        },
+        "method_extension": {
+          "mode": "public"
+        }
+      },
+      "source_run_id": "public-source",
+      "language": "en",
+      "query_expansion_mode": "STRICT_CANONICAL",
+      "entities": [
+        "audit_entity"
+      ],
+      "query_templates": {
+        "popularity": "\"{entity}\"",
+        "harm": "\"{entity}\" \"harm\""
+      }
+    }
+  },
+  "schemaOutputJson": "{\"type\":\"PIPELINE\",\"config\":{\"source_id\":\"offline_fixture\",\"source_params\":{\"fixture_name\":\"public-valid\",\"vendor_extension\":{\"flags\":[true,null,\"value\"]}},\"method_id\":\"jh16_faithful\",\"method_params\":{\"reference_scores\":{\"audit_entity\":7},\"method_extension\":{\"mode\":\"public\"}},\"source_run_id\":\"public-source\",\"language\":\"en\",\"query_expansion_mode\":\"STRICT_CANONICAL\",\"entities\":[\"audit_entity\"],\"query_templates\":{\"popularity\":\"\\\"{entity}\\\"\",\"harm\":\"\\\"{entity}\\\" \\\"harm\\\"\"}}}",
+  "analysisResultsCanonical": "[{\"entityId\":\"audit_entity\",\"isMissing\":true,\"metricKey\":\"Hi\",\"statisticMetadata\":null,\"unit\":\"%\",\"valueNumeric\":null,\"valueText\":null},{\"entityId\":\"audit_entity\",\"isMissing\":false,\"metricKey\":\"Pi\",\"statisticMetadata\":null,\"unit\":\"%\",\"valueNumeric\":100,\"valueText\":null}]"
+}

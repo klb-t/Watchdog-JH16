@@ -731,3 +731,13 @@ counted as60 distinct cases. See current report for exact remaining audit scope.
   successful transport ledger/cost evidence survives reopen. No rounding,
   notation conversion, hidden retry, approval or historical artifact migration.
   [Detailed scope and receipts](../reports/data-graph-engine-2026-10-09.md).
+
+
+## B candidate correction — A4-WD-001, 2026-10-09
+
+- [ ] **WD-B-A4-001 / A4-WD-001:** strict HTTP run envelope/config on baseline
+  `bc2778e`; focused20/20 PASS with before-receipt. Actual router rejects unknown
+  controls before queue/writes, valid analysis preserves baseline bytes/results
+  and reopen, reviewed ResearchPlanService remains supported. Lint PASS and
+  independent static review found no blocker; full current gate pending; A4-WD-002/003 remain open.
+  [Contract](../RUN_SUBMISSION_API.md), [report](../reports/data-graph-engine-2026-10-09.md).

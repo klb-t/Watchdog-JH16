@@ -1,6 +1,54 @@
 # DATA / GRAPH / ENGINE — 2026-10-09
 
-## Current continuation state — WD-011 (full current gate PASS)
+## Current continuation — A4-WD-001 (focused PASS; full gate pending)
+
+Fresh all-head fetch completed with clean local/remote B at
+`bc2778e109d00602c124cabc1fad980b1007fa40`; main remains
+`58a0c93bd0135e3715dcbc4d92fb80e61bd31215`. Published WD-011 and its 636/636 full
+gate below are history, not validation of this new tree. Main stays with Claude.
+
+A's pass4 `43cc61e0` A4-WD-001 was independently reproduced on that base. The
+actual schema stripped method_spec_id/hash, personal_credentials and plan; the
+resulting real orchestrator run COMPLETED with two results/manifest. The original
+unstripped configuration correctly FAILED without either. The known valid
+control produced identical results; SQLite reopen retained both states. The
+baseline exercised schema/store/orchestrator, not HTTP. Public evidence remains
+in `/workspace/.onboarding/watchdog-next-audit/`: `TRIAGE.md`,
+`A4-WD001-before-receipt.json`, `A4-WD001-before.json`, its log and the separate
+readonly persisted-state inspection. Zero network attempts or model calls.
+
+Only the HTTP envelope/config z.object boundaries are now strict. The nine known
+optional UI fields and open source_params/method_params records are unchanged.
+Unknown fields return 400 before enqueueing, rather than silently selecting an
+alternate effective configuration. The global submitJob and reviewed
+ResearchPlanService.launch contracts are unchanged. R42 treats schema validation
+as mechanism; no broad allowlist, data policy, new executor or graph was added.
+[Canonical API and reversible migration](../RUN_SUBMISSION_API.md).
+
+Actual current focused gate: **20/20 PASS**, zero failures/skips/cancellations,
+17.906s. `A4-WD001-focused-receipt.json` pins sources before execution;
+`data-graph-watchdog-run-submission-focused.log` contains the complete run. The
+new real HTTP test delegates the actual queue and proves seven invalid requests
+cause no submitJob, SQL change, ObjectStore write, source resolution or ledger
+reservation. Source ownership denial remains404. A valid queued analysis matches
+the baseline config bytes/hash and canonical results; explicit missingness and
+stored manifest survive reopen. Direct unreviewed pins still fail. Existing
+pipeline, access and reviewed wizard tests passed unchanged. The golden fixture
+was captured from the unmodified baseline with its own before-receipt and
+readonly synthetic store; no expected values were invented after the fix.
+
+Lightweight gates were coordinated with e_intake during the serialized ChatADHD
+matrix. `npm run lint` PASS (exit0), log `data-graph-watchdog-run-submission-lint.log`.
+Independent static audit review found no blocker; the reviewer ran no additional
+tests/build. `A4-WD001-HANDOFF.json` pins the final nine files and receipts. Full
+WD lint/build/test and publication remain with root after its heavy slot becomes
+available. No
+paid CI, models, new services or changes to archived evidence. Next concrete
+step: full current gate, commit/push this boundary fix, then independently
+reproduce the still-open A4-WD-002/A4-WD-003 package before choosing work.
+
+
+## Historical WD-011 continuation (published bc2778e; full gate PASS)
 
 Fresh fetch of all remote heads completed on the existing B branch. Local HEAD
 and remote B were `05e4f290121e91ad516e4db70ee1973d6a4062b3`, clean before edits;

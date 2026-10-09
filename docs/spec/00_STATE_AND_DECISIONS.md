@@ -1,5 +1,14 @@
 # State and binding decisions
 
+**2026-10-09 B / A4-WD-001 current scope:** unsupported HTTP run envelope/config
+fields now return400 before scheduling instead of being silently stripped.
+Known UI fields and open parameter bags are preserved; reviewed-plan direct
+execution stays supported. Focused20/20 and lint PASS; independent static review
+found no blocker. Full current gate pending. WD-011 is already published as `bc2778e` with full636/636 PASS; older
+scoped paragraphs below are historical. [API/migration](../RUN_SUBMISSION_API.md),
+[current report](../reports/data-graph-engine-2026-10-09.md).
+
+
 **2026-10-09 B / WD-011 scoped checkpoint:** exact signed decimal and whole-exponent
 admission now rejects changed numeric values without binary rounding or new
 notation equivalences. Controlled real API rejection preserves successful
