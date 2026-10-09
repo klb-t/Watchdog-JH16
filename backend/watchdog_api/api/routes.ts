@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { createHash } from 'node:crypto';
 import { requireCapability } from './auth_routes';
 import { sourceRegistry } from '../sources/registry';
 import { analyzerRegistry } from '../analytics/registry';
@@ -16,7 +17,9 @@ import { MethodSpecRepository } from '../db/repositories/method_specs';
 import { capabilityRegistry } from '../sources/provider_registry';
 import { buildAllCharts } from '../services/charts';
 import { exportCsv, exportJson } from '../services/export';
-import { generateNarrative, generateNarrativeWithProvider, hashNarrativePayload } from '../services/narrative';
+import { generateNarrative, generateNarrativeWithProvider, hashNarrativePayload, type Narrative } from '../services/narrative';
+import { loadNarrativeCatalog, selectNarrativeRecipe } from '../config/narrative';
+import { canonicalHash, canonicalizeJson } from '../domain/canonical';
 import { buildTextGenerationRegistry } from '../llm';
 import { buildSearchProviderRegistry } from '../sources/search_providers';
 import { validateMethodSpec, hashMethodSpec } from '../analysis/method_spec_validation';
@@ -179,27 +182,65 @@ apiRouter.get('/runs/:id/charts', requireCapability('run.view'), (req, res, next
   } catch (e) { next(e); }
 });
 
+const NarrativeSelection = z.object({ templateId: z.string().min(1).optional(), templateVersion: z.string().min(1).optional() }).strict();
+const ProviderNarrativeSelection = NarrativeSelection.extend({ provider: z.string().min(1).optional(), model: z.string().min(1).optional() }).strict();
+const AutomaticNarrativeSelection = NarrativeSelection.extend({ consent: z.literal(true) }).strict();
+function narrativeInput(runId: string) {
+  const run = runRepo.getRun(runId)!;
+  const results = anRepo.getByRunId(runId), observations = obsRepo.getByRunId(runId);
+  return { presetId: run.preset_id,
+    results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId, valueNumeric: r.valueNumeric, unit: r.unit })),
+    missingCount: observations.filter(o => o.isMissing).length,
+    qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort() };
+}
+async function archiveNarrative(narrative: Narrative, owner: string) {
+  if (!runRepo.getOwnedRun(narrative.runId, owner)) return null;
+  const bytes = Buffer.from(canonicalizeJson(narrative)), sha256 = canonicalHash(narrative);
+  const uri = await store.put(`narratives/${sha256}.json`, bytes);
+  if (!runRepo.getOwnedRun(narrative.runId, owner)) return null;
+  const artifactId = artRepo.recordArtifact({ runId: narrative.runId, kind: 'narrative', objectUri: uri,
+    sha256, byteSize: bytes.length, mediaType: 'application/json',
+    metadata: { schema: 'watchdog.narrative_artifact/1', contentHash: narrative.contentHash,
+      inputPayloadHash: narrative.inputPayloadHash, producedBy: narrative.producedBy, approvalState: narrative.approvalState } });
+  return { artifactId, sha256 };
+}
+
 apiRouter.get('/runs/:id/narrative', requireCapability('run.view'), (req, res, next) => {
   try {
-    const results = anRepo.getByRunId(req.params.id);
-    const observations = obsRepo.getByRunId(req.params.id);
-    const run = runRepo.getRun(req.params.id);
-    if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
+    const catalog = loadNarrativeCatalog();
+    const recipe = selectNarrativeRecipe(catalog, NarrativeSelection.parse(req.query));
+    const payload = narrativeInput(req.params.id);
+    res.json({ narrative: generateNarrative({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
+      templateId: recipe.id, templateVersion: recipe.version, providerId: null, model: null }, catalog) });
+  } catch (error) { next(error); }
+});
 
-    const payload = {
-      presetId: run.preset_id,
-      results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId,
-                                   valueNumeric: r.valueNumeric, unit: r.unit })),
-      missingCount: observations.filter(o => o.isMissing).length,
-      qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
-    };
-    res.json({
-      narrative: generateNarrative({
-        runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
-        templateId: 'jh2016-summary', templateVersion: '1.0', providerId: null, model: null,
-      }),
-    });
-  } catch (e) { next(e); }
+// Explicit local generation archives the proposal in the existing artifact
+// store. A preview GET never writes and no finalised run manifest is edited.
+apiRouter.post('/runs/:id/narrative', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
+  try {
+    const catalog = loadNarrativeCatalog();
+    const recipe = selectNarrativeRecipe(catalog, NarrativeSelection.parse(req.body));
+    const payload = narrativeInput(req.params.id);
+    const narrative = generateNarrative({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
+      templateId: recipe.id, templateVersion: recipe.version, providerId: null, model: null }, catalog);
+    const artifact = await archiveNarrative(narrative, req.principal!.id);
+    if (!artifact) return res.status(404).json({ error: 'NOT_FOUND' });
+    res.json({ narrative, artifact });
+  } catch (error) { next(error); }
+});
+
+// Historical proposals are read from their immutable artifact, never generated
+// again using today's catalog. Recheck ownership after asynchronous storage I/O.
+apiRouter.get('/runs/:id/narratives/:artifactId', requireCapability('run.view'), async (req, res, next) => {
+  try {
+    const record = artRepo.getArtifacts(req.params.id).find(row => row.id === req.params.artifactId && row.kind === 'narrative');
+    if (!record) return res.status(404).json({ error: 'NOT_FOUND' });
+    const bytes = await store.get(record.object_uri);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (createHash('sha256').update(bytes).digest('hex') !== record.sha256) throw new Error('Narrative artifact content hash mismatch');
+    res.json({ narrative: JSON.parse(bytes.toString('utf8')), artifact: { artifactId: record.id, sha256: record.sha256 } });
+  } catch (error) { next(error); }
 });
 
 apiRouter.get('/runs/:id/export', requireCapability('export.download'), (req, res, next) => {
@@ -282,12 +323,15 @@ apiRouter.get('/providers/readiness', requireCapability('provider.view'), async 
 apiRouter.post('/runs/:id/narrative/generate',
   requireCapability('narrative.approve'), async (req, res, next) => {
   try {
+    const body = ProviderNarrativeSelection.parse(req.body ?? {});
+    const catalog = loadNarrativeCatalog();
+    const recipe = selectNarrativeRecipe(catalog, body);
     const results = anRepo.getByRunId(req.params.id);
     const observations = obsRepo.getByRunId(req.params.id);
     const run = runRepo.getRun(req.params.id);
     if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
 
-    const providerKey = String((req.body ?? {}).provider ?? 'openrouter');
+    const providerKey = body.provider ?? 'openrouter';
     const registry = buildTextGenerationRegistry();
     const availability = await registry.availability(providerKey);
     if (availability.status !== 'implemented') {
@@ -308,29 +352,35 @@ apiRouter.post('/runs/:id/narrative/generate',
 
     const narrative = await generateNarrativeWithProvider({
       runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
-      templateId: 'jh2016-summary', templateVersion: '1.0',
+      templateId: recipe.id, templateVersion: recipe.version,
       providerId: providerKey,
-      model: String((req.body ?? {}).model ?? availability.defaultModel),
+      model: String(body.model ?? availability.defaultModel),
       generationParams: await registry.defaultParams(providerKey),
       generator: await registry.get(providerKey),
-    });
+    }, catalog);
 
     // PROPOSED, always. The gate is unchanged by the text having come from a
     // model rather than a template.
-    res.json({ narrative });
+    const artifact = await archiveNarrative(narrative, req.principal!.id);
+    if (!artifact) return res.status(404).json({ error: 'NOT_FOUND' });
+    res.json({ narrative, artifact });
   } catch (e) { next(e); }
 });
 
 apiRouter.post('/runs/:id/narrative/automatic', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
   try {
-    z.object({ consent: z.literal(true) }).strict().parse(req.body);
+    const body = AutomaticNarrativeSelection.parse(req.body);
+    const catalog = loadNarrativeCatalog();
+    const recipe = selectNarrativeRecipe(catalog, body);
     if (!assistant) return res.status(409).json({ error: 'Personal assistant is not configured' });
     const run = runRepo.getRun(req.params.id)!, results = anRepo.getByRunId(req.params.id), observations = obsRepo.getByRunId(req.params.id);
     const payload = { presetId: run.preset_id, results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId, valueNumeric: r.valueNumeric, unit: r.unit })),
       missingCount: observations.filter(o => o.isMissing).length, qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort() };
     const narrative = await generateNarrativeWithProvider({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
-      templateId: 'jh2016-summary', templateVersion: '1.0', providerId: assistant.provider(req.principal!.id, 'narrative').id, model: 'automatic', generator: assistant.generator(req.principal!.id, 'narrative') });
-    res.json({ narrative });
+      templateId: recipe.id, templateVersion: recipe.version, providerId: assistant.provider(req.principal!.id, 'narrative').id, model: 'automatic', generator: assistant.generator(req.principal!.id, 'narrative') }, catalog);
+    const artifact = await archiveNarrative(narrative, req.principal!.id);
+    if (!artifact) return res.status(404).json({ error: 'NOT_FOUND' });
+    res.json({ narrative, artifact });
   } catch (error) { next(error); }
 });
 

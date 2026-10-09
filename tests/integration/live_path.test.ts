@@ -288,7 +288,7 @@ test('Live path: a model that invents a figure is rejected over real HTTP too', 
 
   await assert.rejects(() => generateNarrativeWithProvider({
     runId: 'r', payload, payloadHash: hashNarrativePayload(payload),
-    templateId: 't', templateVersion: '1', providerId: 'openrouter',
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: 'openrouter',
     model: 'anthropic/claude-sonnet-4.5', generator: fabricating as any,
   }), /do not appear in the frozen payload/);
   clearRegisteredSecrets();

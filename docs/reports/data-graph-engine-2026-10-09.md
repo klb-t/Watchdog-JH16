@@ -1,5 +1,26 @@
 # DATA / GRAPH / ENGINE — 2026-10-09
 
+## Current continuation state — WD-001 (complete local gate, candidate for integration)
+
+Fresh baseline `867f83b695e93ac29445489c4c5408b0d0308cd8` on the existing B branch,
+clean before edits. Explicit all-head fetch updated B to the same SHA;
+`origin/main` remains `58a0c93bd0135e3715dcbc4d92fb80e61bd31215`. WD-002 and WD-003
+are already published. No reset, main changes, other branch edits or private data.
+
+WD-001 is implemented in the existing narrative service and real API: validated
+catalog selection, byte-identical historical defaults, explicit alternate recipe,
+actual provider prompts, exact producedBy evidence, existing artifact storage and
+reopened reads. Focused 59/59 PASS plus lint PASS preceded the final ownership
+recheck. The amended integration test then passed on rerun; it is not a sixtieth
+distinct case, and no separate pre-rerun receipt was captured. The subsequent complete
+current-tree test:all sequence (lint → build → test) passed **630/630**, zero
+failures/skips/cancellations,62.674 seconds for tests including Chromium. The
+source/config/build-output receipt was written BEFORE tests; source hashes match
+afterward. Logs/receipt/patch/after: data-graph-watchdog-template-full-*.
+Publication is on B only; main integration remains with Claude.
+[Contract/migration](../NARRATIVE_RECIPES.md). The WD-003 heading below is history.
+
+
 ## Current continuation state — WD-003
 
 Continuation baseline: `61ae2463541a9c8ce438b9d44265b3dd35ba8b97` on
@@ -152,3 +173,78 @@ No paid model calls, CI, services, frozen JH16 changes or main writes. Next
 independent confirmed package is WD-001 template selection, not ratio.exclude.
 
 Published WD-003: `263c8ab1b5ef02dc8e4b1f48914dfc1bbb18bc59`; branch push PASS. Main remains at the fresh baseline.
+
+## WD-001 — actual template selection and narrative provenance
+
+Audit source: A branch `43cc61e0`, WD-001 plus current pass4 to avoid repeating
+ratio.exclude/parameter work. Before: different and unknown template IDs produced
+identical content, and an unknown ID dispatched once to a controlled generator.
+Zero external network/model calls. Receipt `/workspace/.onboarding/watchdog-template/before.json`
+retains baseline default content/hash and actual prompt/system bytes. The first
+external TS runner attempt failed because top-level await was interpreted as CJS;
+renaming the local runner to .mts produced the actual reproduction. Both logs are
+retained; the failed setup attempt is not runtime evidence. Existing output/LLM
+baseline: 26/26 PASS, which did not catch the missing selector.
+
+New `config/narratives.json` is the versioned validated source. Metrics, ranking,
+locale/text, and provider prompt are consumed by the same existing narrative
+mechanism; no second graph/workflow/configuration engine. Default
+jh2016-summary@1.0 content/hash and provider request bytes match the pre-change
+fixture exactly. A Polish recipe and data-only topK/direction changes demonstrate
+actual selection. Unknown ID/version, malformed/unknown fields and unsupported
+bindings fail before provider calls/reservations. Arbitrary historical test labels
+were replaced by the true existing recipe, retaining all prior assertions.
+
+New `producedBy` snapshots bind source payload, exact recipe/catalog, mechanism,
+prompt and available WD-003 generation evidence. JSON export retains this binding;
+CSV remains unchanged. New explicit deterministic POST and existing successful
+provider POSTs archive PROPOSED JSON through the existing ObjectStore and
+ArtifactRepository. GET preview stays read-only. Archived reads verify bytes and
+ownership without regenerating from the current catalog. No finalised manifest,
+legacy narrative or historical receipt is rewritten. Absence of provenance on old
+objects remains absence; no inferred migration. Documentation records the
+reversible decision and alternatives; frozen scientific methodology is untouched.
+
+Actual focused gate: **59/59 PASS**, zero failures/skips/cancellations, 14.914s;
+`data-graph-watchdog-template-focused-final.log`. Source receipt was captured before
+that run. It covers default bytes, two recipes, data-file reload, all/zero ranking,
+explicit tie policy, mutable input preservation, prompt hashes, zero invalid
+selector dispatch, approval/export, controlled real provider adapter and existing
+ledger, actual HTTP API, immutable store and SQLite close/reopen, failed storage
+and provider execution, held reservation, preserved finalised manifest and owner
+isolation. `npm run lint` PASS. After the scope, the new archive I/O boundary gained
+an ownership recheck plus a controlled interleaving assertion in the existing
+integration test. That test was rerun successfully without a separately captured
+pre-run receipt; the earlier focused receipt does not cover these later edits. No paid model calls, new service, CI or scientific result claimed.
+
+Remaining work before a finished increment: full local lint→build→test sequence
+with source/config/binary receipt before tests, then small commit/push by B root.
+No full-matrix result from WD-003 is counted for this tree. Independent WD/A4
+findings remain open; this slice adds no UI template picker or LLM quality claim.
+
+Additional final scope: new archive ownership can change during asynchronous
+ObjectStore.put; the regression now proves 404 and no registered proposal after
+that interleaving. `data-graph-watchdog-template-ownership.log` records PASS1/1
+(1.245s) for the modified existing integration test, followed by `npm run lint`
+PASS (`...-lint-final2.log`). No pre-ownership-rerun receipt exists. HANDOFF.json
+pins the final state after that run; it is not reconstructed pre-run evidence.
+Root will capture a fresh source/config/binary receipt before the full current
+gate. Product files are frozen
+for root review/full gate. Fresh inventory has 20 remote refs; narrative-specific
+non-main history only points to the archive-only checkpoint branch where the
+product path is absent, not another unintegrated implementation.
+
+
+## WD-001 final current-tree gate
+
+Independent static review found no new product blocker and explicitly documented
+the older scoped receipt gap. Root then ran the complete local lint → build → test
+sequence on the final frozen product. **630/630 PASS**,0 skips/failures/cancellations,
+62.674s for tests; actual Chromium and controlled provider/storage paths executed.
+Fresh source/config/dist receipt before test, source hashes identical afterward:
+`data-graph-watchdog-template-full-receipt.json`, `...-working.patch`, `...log`,
+`...-after.json`. No historical gate is substituted. Full acceptance contains the
+ownership interleaving regression. No paid model call, CI, new service or changes
+to main/scientific frozen data. This is a candidate product increment for A/Claude.
+Next confirmed audit packages remain A4 method selection/source-run manifest/duplicate
+entities and WD-011 signed-number guard; no generic Office/product rewrite is implied.

@@ -693,6 +693,13 @@ Browser runtime recovery is complete: initial 525/552 + 27 launch failures becam
 
 ## DATA / GRAPH / ENGINE — 2026-10-09
 
+- [ ] **WD-B-001 / WD-001:** actual narrative catalog selection and immutable
+  recipe/parameter provenance implemented; scoped 59/59 plus lint PASS, full local
+  gate/publication pending. Default content/hash and provider prompt bytes unchanged;
+  unknown selectors fail before dispatch, existing store/ledger and reopened API
+  exercised. [Contract](../NARRATIVE_RECIPES.md),
+  [current report](../reports/data-graph-engine-2026-10-09.md).
+
 - [x] **WD-B-003 / WD-003:** implementation and current acceptance completed for
   effective generation parameters in the existing adapters and AssistantService.
   Typed capability data, task/request precedence, reserved model/input/budget/tool
@@ -707,3 +714,9 @@ Browser runtime recovery is complete: initial 525/552 + 27 launch failures becam
   no skips/cancellations, typecheck/build and offline JH16 self-check PASS.
   [Report](../reports/data-graph-engine-2026-10-09.md). Main integration stays
   with Claude; this entry is branch verification, not scientific approval.
+
+
+WD-001 gate update: final current-tree lint/build/test **630/630 PASS**,0 skips.
+Receipt before tests and source stability after them recorded; candidate on B,
+main unchanged. Prior focused59 + amended-case rerun1 are historical and are not
+counted as60 distinct cases. See current report for exact remaining audit scope.

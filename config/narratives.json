@@ -1,0 +1,75 @@
+{
+  "schemaVersion": "watchdog.narrative_catalog/1",
+  "defaultTemplate": {
+    "id": "jh2016-summary",
+    "version": "1.0"
+  },
+  "templates": [
+    {
+      "id": "jh2016-summary",
+      "version": "1.0",
+      "locale": "en",
+      "metrics": {
+        "primary": "Pi",
+        "secondary": "Hi"
+      },
+      "ranking": {
+        "metricKey": "Pi",
+        "direction": "descending",
+        "topK": 3,
+        "tieBreak": "input_order"
+      },
+      "text": {
+        "completed": "Methodological reproduction completed{{preset}}.",
+        "preset": " under preset {{presetId}}",
+        "counts": "Data acquisition produced {{primaryCount}} computable popularity indices and {{secondaryCount}} computable harm indices.",
+        "missing": "{{missingCount}} observation(s) were missing and are enumerated in the manifest; they are not treated as zero.",
+        "noMissing": "No observations were missing.",
+        "ranking": "Ranked by popularity index, the highest were: {{entities}}.",
+        "qualityFlags": "Quality flags raised in this run: {{qualityFlags}}.",
+        "equivalence": "Equivalence to previously published findings is not asserted here; see the replication verdicts for that comparison."
+      },
+      "formatting": {
+        "lineSeparator": " ",
+        "listSeparator": ", "
+      },
+      "provider": {
+        "system": "You rewrite a factual research summary into clear prose for a scientific audience.\n\nAbsolute constraints:\n- Use ONLY the facts in the provided summary. Introduce no figure, percentage, count, rank\n  or date that is not already present in it, and do not round or reformat any number.\n- Do not compute anything, including differences, totals, averages or ratios.\n- Do not characterise the result as a successful or failed replication, and do not assert\n  equivalence to any published finding.\n- Do not speculate about causes, implications or policy.\n- Missing observations are missing, never zero, and never \"no activity\".\n\nReturn prose only, with no preamble, no headings and no markdown.",
+        "prompt": "Summary to rewrite:\n\n{{summary}}"
+      }
+    },
+    {
+      "id": "summary-pl",
+      "version": "1.0",
+      "locale": "pl",
+      "metrics": {
+        "primary": "Pi",
+        "secondary": "Hi"
+      },
+      "ranking": {
+        "metricKey": "Pi",
+        "direction": "descending",
+        "topK": null,
+        "tieBreak": "input_order"
+      },
+      "text": {
+        "completed": "Zakończono odtworzenie metody{{preset}}.",
+        "preset": " z profilem {{presetId}}",
+        "counts": "Uzyskano {{primaryCount}} obliczalnych wskaźników popularności oraz {{secondaryCount}} obliczalnych wskaźników szkód.",
+        "missing": "Liczba brakujących obserwacji: {{missingCount}}. Są wymienione w manifeście; braków nie traktuje się jako zera.",
+        "noMissing": "Nie brakowało obserwacji.",
+        "ranking": "Kolejność według wskaźnika popularności: {{entities}}.",
+        "qualityFlags": "Flagi jakości w tym wykonaniu: {{qualityFlags}}.",
+        "equivalence": "Nie stwierdza się tutaj równoważności z opublikowanymi wynikami; porównanie wymaga odrębnej oceny replikacji."
+      },
+      "formatting": {
+        "lineSeparator": " ",
+        "listSeparator": ", "
+      },
+      "provider": {
+        "system": "You rewrite a factual research summary into clear prose for a scientific audience.\n\nAbsolute constraints:\n- Use ONLY the facts in the provided summary. Introduce no figure, percentage, count, rank\n  or date that is not already present in it, and do not round or reformat any number.\n- Do not compute anything, including differences, totals, averages or ratios.\n- Do not characterise the result as a successful or failed replication, and do not assert\n  equivalence to any published finding.\n- Do not speculate about causes, implications or policy.\n- Missing observations are missing, never zero, and never \"no activity\".\n\nReturn prose only, with no preamble, no headings and no markdown.\nWrite the prose in Polish.",
+        "prompt": "Podsumowanie do przeredagowania:\n\n{{summary}}"
+      }
+    }
+  ]
+}

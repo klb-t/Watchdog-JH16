@@ -107,6 +107,10 @@ export function exportJson(input: ExportInput): string {
           model: input.narrative.model,
           input_payload_hash: input.narrative.inputPayloadHash,
           content: input.narrative.content,
+          ...(input.narrative.producedBy ? {
+            template_id: input.narrative.templateId, template_version: input.narrative.templateVersion,
+            content_hash: input.narrative.contentHash, produced_by: input.narrative.producedBy,
+          } : {}),
         }
       : null,
   };

@@ -120,7 +120,7 @@ test('E1.17: a payload that changed under its hash is refused', () => {
 
   assert.throws(() => generateNarrative({
     runId: 'run-1', payload: tampered, payloadHash: hash,
-    templateId: 't', templateVersion: '1', providerId: null, model: null,
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: null, model: null,
   }), NarrativePayloadTamperedError);
 });
 
@@ -128,7 +128,7 @@ test('E1.17: the narrative uses precise status language, never "successful repli
   const p = payload();
   const n = generateNarrative({
     runId: 'run-1', payload: p, payloadHash: hashNarrativePayload(p),
-    templateId: 't', templateVersion: '1', providerId: null, model: null,
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: null, model: null,
   });
 
   assert.match(n.content, /methodological reproduction completed/i);
@@ -162,7 +162,7 @@ test('E1.18: an unapproved narrative cannot reach an export', () => {
   const p = payload();
   const narrative = generateNarrative({
     runId: 'run-1', payload: p, payloadHash: hashNarrativePayload(p),
-    templateId: 't', templateVersion: '1', providerId: null, model: null,
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: null, model: null,
   });
 
   assert.throws(() => exportCsv({ runId: 'run-1', results: RESULTS, narrative }),
@@ -183,7 +183,7 @@ test('E1.18: generated prose is distinguishable from computed results in JSON to
   const p = payload();
   const narrative = generateNarrative({
     runId: 'run-1', payload: p, payloadHash: hashNarrativePayload(p),
-    templateId: 't', templateVersion: '1', providerId: null, model: null,
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: null, model: null,
   });
   const approved: Approvable = approve(
     { id: 'n1', kind: 'narrative', content: { content: narrative.content } },

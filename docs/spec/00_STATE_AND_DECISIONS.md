@@ -1,5 +1,13 @@
 # State and binding decisions
 
+**2026-10-09 B / WD-001 scoped checkpoint:** narrative template IDs now select
+validated catalog recipes through deterministic/provider consumers. Historical
+default text/hash/prompt bytes are preserved; actual API archives PROPOSED evidence
+through the existing object store and reads it after reopen. Scoped59/59 + lint
+PASS; final full matrix/publication pending. This is not scientific approval or
+main integration. [Contract](../NARRATIVE_RECIPES.md),
+[report](../reports/data-graph-engine-2026-10-09.md).
+
 **B continuation, 2026-10-09:** candidate branch
 `gpt/data-graph-engine-2026-10-09` continues from `61ae246`. Published WD-002
 ratio/executor 1.0.2 is preserved. WD-003 now carries validated provider/task/request
@@ -830,3 +838,10 @@ Historical finalized payloads and locked JH16 files remain unchanged. Baseline
 613/613; current local test:all 616/616, no failures/skips/cancellations, typecheck,
 production build/Chromium and offline self-check PASS. [Report](../reports/data-graph-engine-2026-10-09.md).
 This is an implementation decision/contract repair, not scientific approval.
+
+
+WD-001 current branch acceptance (2026-10-09): real narrative template selection
+and immutable proposal evidence now use the existing service/store. Complete local
+lint/build/test sequence630/630 PASS,0 skips; pretest source/config/dist receipt and
+posttest unchanged-source verification. Defaults remain byte-identical, historical
+artifacts untouched; [contract](../NARRATIVE_RECIPES.md) and [current report](../reports/data-graph-engine-2026-10-09.md).

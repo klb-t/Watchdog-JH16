@@ -1,6 +1,7 @@
 import { canonicalHash } from '../domain/canonical';
 import { ApprovalState } from '../domain/approval';
-import { TextGenerator, TextGenerationError } from '../llm/base';
+import { TextGenerator, TextGenerationError, TextGenerationResult } from '../llm/base';
+import { loadNarrativeCatalog, selectNarrativeRecipe, renderNarrativeText, type NarrativeCatalog, type NarrativeRecipe } from '../config/narrative';
 
 /**
  * Narrative service (E1.17).
@@ -56,6 +57,18 @@ export interface Narrative {
   approvalState: ApprovalState;
   /** Marks the text as machine-generated in every format that can show it. */
   generated: true;
+  /** Additive evidence; absent on historical narratives, never inferred later. */
+  producedBy?: {
+    schema: 'watchdog.narrative_execution/1';
+    mechanism: 'deterministic_template/1' | 'provider_rewrite/1';
+    catalogHash: string;
+    recipeHash: string;
+    recipe: NarrativeRecipe;
+    inputPayloadHash: string;
+    systemHash: string | null;
+    promptHash: string | null;
+    generation: TextGenerationResult['generation'] | null;
+  };
 }
 
 export class NarrativePayloadTamperedError extends Error {
@@ -80,32 +93,37 @@ export function hashNarrativePayload(payload: NarrativePayload): string {
  * The reporting-language rule in `03_JH2016_CONTRACT.md` applies here: this
  * never says "successful replication", only what was computed.
  */
-export function generateNarrative(request: NarrativeRequest): Narrative {
+export function generateNarrative(request: NarrativeRequest, catalog = loadNarrativeCatalog()): Narrative {
   const actual = hashNarrativePayload(request.payload);
   if (actual !== request.payloadHash) throw new NarrativePayloadTamperedError();
 
+  const recipe = selectNarrativeRecipe(catalog, request);
   const { payload } = request;
-  const pi = payload.results.filter(r => r.metricKey === 'Pi' && r.valueNumeric !== null);
-  const hi = payload.results.filter(r => r.metricKey === 'Hi' && r.valueNumeric !== null);
-
-  const ranked = [...pi].sort((a, b) => (b.valueNumeric ?? 0) - (a.valueNumeric ?? 0));
-  const top = ranked.slice(0, 3).map(r => r.entityId).filter(Boolean);
-
+  const count = (metric: string) => payload.results.filter(r => r.metricKey === metric && r.valueNumeric !== null).length;
+  const ranked = payload.results.filter(r => r.metricKey === recipe.ranking.metricKey && r.valueNumeric !== null)
+    .map((row, index) => ({ row, index })).sort((a, b) => {
+      const difference = (a.row.valueNumeric! - b.row.valueNumeric!) * (recipe.ranking.direction === 'ascending' ? 1 : -1);
+      if (difference) return difference;
+      if (recipe.ranking.tieBreak === 'entity_id') {
+        const left = a.row.entityId ?? '', right = b.row.entityId ?? '';
+        if (left !== right) return left < right ? -1 : 1;
+      }
+      return a.index - b.index;
+    });
+  const selected = recipe.ranking.topK === null ? ranked : ranked.slice(0, recipe.ranking.topK);
+  const top = selected.map(({ row }) => row.entityId).filter(Boolean);
+  const render = renderNarrativeText;
+  const preset = payload.presetId ? render(recipe.text.preset, { presetId: payload.presetId }) : '';
   const lines = [
-    'Methodological reproduction completed' +
-      (payload.presetId ? ` under preset ${payload.presetId}` : '') + '.',
-    `Data acquisition produced ${pi.length} computable popularity indices and ${hi.length} computable harm indices.`,
-    payload.missingCount > 0
-      ? `${payload.missingCount} observation(s) were missing and are enumerated in the manifest; they are not treated as zero.`
-      : 'No observations were missing.',
-    top.length > 0 ? `Ranked by popularity index, the highest were: ${top.join(', ')}.` : '',
+    render(recipe.text.completed, { preset }),
+    render(recipe.text.counts, { primaryCount: count(recipe.metrics.primary), secondaryCount: count(recipe.metrics.secondary) }),
+    payload.missingCount > 0 ? render(recipe.text.missing, { missingCount: payload.missingCount }) : recipe.text.noMissing,
+    top.length > 0 ? render(recipe.text.ranking, { entities: top.join(recipe.formatting.listSeparator) }) : '',
     payload.qualityFlags.length > 0
-      ? `Quality flags raised in this run: ${[...payload.qualityFlags].sort().join(', ')}.`
-      : '',
-    'Equivalence to previously published findings is not asserted here; see the replication verdicts for that comparison.',
+      ? render(recipe.text.qualityFlags, { qualityFlags: [...payload.qualityFlags].sort().join(recipe.formatting.listSeparator) }) : '',
+    recipe.text.equivalence,
   ].filter(Boolean);
-
-  const content = lines.join(' ');
+  const content = lines.join(recipe.formatting.lineSeparator);
 
   return {
     runId: request.runId,
@@ -120,6 +138,9 @@ export function generateNarrative(request: NarrativeRequest): Narrative {
     // Always PROPOSED on creation. Nothing here can approve itself.
     approvalState: 'PROPOSED',
     generated: true,
+    producedBy: { schema: 'watchdog.narrative_execution/1', mechanism: 'deterministic_template/1',
+      catalogHash: catalog.contentHash, recipeHash: canonicalHash(recipe), recipe: structuredClone(recipe),
+      inputPayloadHash: request.payloadHash, systemHash: null, promptHash: null, generation: null },
   };
 }
 
@@ -191,20 +212,6 @@ export interface ProviderNarrative extends Narrative {
   usage: { promptTokens: number | null; completionTokens: number | null } | null;
 }
 
-const NARRATIVE_SYSTEM_PROMPT = [
-  'You rewrite a factual research summary into clear prose for a scientific audience.',
-  '',
-  'Absolute constraints:',
-  '- Use ONLY the facts in the provided summary. Introduce no figure, percentage, count, rank',
-  '  or date that is not already present in it, and do not round or reformat any number.',
-  '- Do not compute anything, including differences, totals, averages or ratios.',
-  '- Do not characterise the result as a successful or failed replication, and do not assert',
-  '  equivalence to any published finding.',
-  '- Do not speculate about causes, implications or policy.',
-  '- Missing observations are missing, never zero, and never "no activity".',
-  '',
-  'Return prose only, with no preamble, no headings and no markdown.',
-].join('\n');
 
 /**
  * Generates the narrative with a real provider, then verifies it against the
@@ -218,12 +225,15 @@ const NARRATIVE_SYSTEM_PROMPT = [
  */
 export async function generateNarrativeWithProvider(
   request: ProviderNarrativeRequest,
+  catalog: NarrativeCatalog = loadNarrativeCatalog(),
 ): Promise<ProviderNarrative> {
-  const deterministic = generateNarrative(request);
+  const deterministic = generateNarrative(request, catalog);
+  const recipe = deterministic.producedBy!.recipe;
+  const system = recipe.provider.system;
+  const prompt = renderNarrativeText(recipe.provider.prompt, { summary: deterministic.content });
 
   const result = await request.generator.generate({
-    system: NARRATIVE_SYSTEM_PROMPT,
-    prompt: `Summary to rewrite:\n\n${deterministic.content}`,
+    system, prompt,
     model: request.model,
     params: request.generationParams ?? {},
   });
@@ -243,6 +253,8 @@ export async function generateNarrativeWithProvider(
     nondeterministicContent: true,
     upstreamId: result.upstreamId,
     usage: result.usage,
+    producedBy: { ...deterministic.producedBy!, mechanism: 'provider_rewrite/1',
+      systemHash: canonicalHash({ system }), promptHash: canonicalHash({ prompt }), generation: result.generation ? structuredClone(result.generation) : null },
   };
 }
 

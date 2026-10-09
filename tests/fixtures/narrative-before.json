@@ -1,0 +1,22 @@
+{
+  "sourceHead": "867f83b695e93ac29445489c4c5408b0d0308cd8",
+  "defaultNarrative": {
+    "runId": "public-before",
+    "templateId": "jh2016-summary",
+    "templateVersion": "1.0",
+    "providerId": null,
+    "model": null,
+    "generationParams": null,
+    "inputPayloadHash": "168e68218e496e4af1c679c8f64ba00c680525049a26b4e483b3e1c61eb5210b",
+    "content": "Methodological reproduction completed. Data acquisition produced 4 computable popularity indices and 0 computable harm indices. No observations were missing. Ranked by popularity index, the highest were: a, b, c. Equivalence to previously published findings is not asserted here; see the replication verdicts for that comparison.",
+    "contentHash": "e42a0f6e1705b4b9c582cd631b87ccd5168dfc4ce82d0c477ed2e5ce771164a8",
+    "approvalState": "PROPOSED",
+    "generated": true
+  },
+  "providerRequest": {
+    "system": "You rewrite a factual research summary into clear prose for a scientific audience.\n\nAbsolute constraints:\n- Use ONLY the facts in the provided summary. Introduce no figure, percentage, count, rank\n  or date that is not already present in it, and do not round or reformat any number.\n- Do not compute anything, including differences, totals, averages or ratios.\n- Do not characterise the result as a successful or failed replication, and do not assert\n  equivalence to any published finding.\n- Do not speculate about causes, implications or policy.\n- Missing observations are missing, never zero, and never \"no activity\".\n\nReturn prose only, with no preamble, no headings and no markdown.",
+    "prompt": "Summary to rewrite:\n\nMethodological reproduction completed. Data acquisition produced 4 computable popularity indices and 0 computable harm indices. No observations were missing. Ranked by popularity index, the highest were: a, b, c. Equivalence to previously published findings is not asserted here; see the replication verdicts for that comparison.",
+    "model": "public-model",
+    "params": {}
+  }
+}

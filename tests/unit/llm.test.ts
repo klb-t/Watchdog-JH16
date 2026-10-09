@@ -212,7 +212,7 @@ test('E2.1: a provider narrative is PROPOSED, marked generated and marked nondet
   const cred = await store({ OPENROUTER_API_KEY: KEY }).resolve('env:OPENROUTER_API_KEY');
   const deterministic = generateNarrative({
     runId: 'r1', payload, payloadHash: hashNarrativePayload(payload),
-    templateId: 't', templateVersion: '1', providerId: null, model: null,
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: null, model: null,
   });
 
   const g = new OpenAiCompatibleGenerator('openrouter', 'https://x/y', cred,
@@ -220,7 +220,7 @@ test('E2.1: a provider narrative is PROPOSED, marked generated and marked nondet
 
   const n = await generateNarrativeWithProvider({
     runId: 'r1', payload, payloadHash: hashNarrativePayload(payload),
-    templateId: 't', templateVersion: '1', providerId: 'openrouter',
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: 'openrouter',
     model: 'anthropic/claude-sonnet-4.5', generator: g, generationParams: { temperature: 0 },
   });
 
@@ -241,7 +241,7 @@ test('E2.1: a fabricating provider is rejected outright, not footnoted', async (
 
   await assert.rejects(() => generateNarrativeWithProvider({
     runId: 'r1', payload, payloadHash: hashNarrativePayload(payload),
-    templateId: 't', templateVersion: '1', providerId: 'openrouter',
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: 'openrouter',
     model: 'anthropic/claude-sonnet-4.5', generator: g,
   }), NarrativeFabricationError);
   clearRegisteredSecrets();
@@ -253,7 +253,7 @@ test('E2.1: a provider failure throws rather than silently serving template pros
 
   await assert.rejects(() => generateNarrativeWithProvider({
     runId: 'r1', payload, payloadHash: hashNarrativePayload(payload),
-    templateId: 't', templateVersion: '1', providerId: 'openrouter',
+    templateId: 'jh2016-summary', templateVersion: '1.0', providerId: 'openrouter',
     model: 'anthropic/claude-sonnet-4.5', generator: g,
   }), (e: any) => e.kind === 'rate_limited',
     'falling back to the template would be a silent provider substitution under rule 4');
