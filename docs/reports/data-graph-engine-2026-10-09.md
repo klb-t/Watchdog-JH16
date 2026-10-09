@@ -38,8 +38,8 @@ migration was added. Historical finalized payloads remain untouched.
 
 Focused initial gates: method engine 24/24 PASS, workbench integration 8/8 PASS,
 including approved execution, hashed trace readback and reopened repository
-re-execution. Typecheck PASS. Final local test:all and unchanged locked JH16
-self-check still to run before commit. No scientific approval claimed.
+re-execution. Typecheck PASS. Final gates were subsequently completed below; this paragraph records the
+initial focused checkpoint, not an outstanding verification. No scientific approval claimed.
 
 Final local gates: npm run test:all PASS, 616/616, zero failures/skips/cancellations,
 including production Chromium, tsc and build. New 3 tests cover distinct
@@ -55,3 +55,5 @@ Resolved ID: WD-002 / WD-B-002. Other audit IDs remain open. Optional execution
 trace is preserved by immutable Workbench payloads; the legacy run orchestrator
 stores numeric rows and executor identity, and does not yet archive this entire
 trace. No claim of complete trace coverage for every legacy caller.
+
+Published product commit: `666775a` on `gpt/data-graph-engine-2026-10-09`; push succeeded. Main remains at baseline. Next concrete increment: WD-003, effective generation parameters must be capability-validated, protected against model/message/output-bound overrides, and recorded without credential values. No changes for WD-003 have been made yet.
