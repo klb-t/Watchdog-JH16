@@ -74,11 +74,14 @@ export class AssistantService {
       catch (e) { return { task: t.id, blocked: (e as Error).message }; }
     });
   }
-  /** Used both by free-form proposal requests and the existing checked narrative path. */
-  generator(owner: string, task: AssistantTask): TextGenerator {
-    return { providerKey: this.provider(owner, task).id, generate: request => this.generateRequest(owner, task, request) };
+  /** Product-owned synchronous guard, never request data. Catalog readiness can
+   * await; consumers with additional source permissions must recheck them at
+   * the existing reservation/dispatch boundary. Other callers are unchanged.
+   */
+  generator(owner: string, task: AssistantTask, beforeDispatch?: () => undefined): TextGenerator {
+    return { providerKey: this.provider(owner, task).id, generate: request => this.generateRequest(owner, task, request, beforeDispatch) };
   }
-  private async generateRequest(owner: string, task: AssistantTask, request: TextGenerationRequest) {
+  private async generateRequest(owner: string, task: AssistantTask, request: TextGenerationRequest, beforeDispatch?: () => undefined) {
     const settings = this.repo.get(owner, this.profile.defaults).value;
     if (!settings.assistant.enabled) throw new AutomationError('Enable assistant calls in your personal settings first');
     const provider = this.provider(owner, task), credential = this.vault.resolve(owner, provider.id);
@@ -107,6 +110,7 @@ export class AssistantService {
     // Authorized catalog discovery may already have fetched the model metadata.
     // The adapter validates again when constructing its actual request.
     const prepared = generator.prepare(generationRequest);
+    beforeDispatch?.();
     const reservation = this.repo.reserve(owner, route, settings.assistant.dailyBudgetUsd);
     const started = Date.now();
     try {

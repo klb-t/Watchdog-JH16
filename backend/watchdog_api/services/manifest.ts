@@ -34,6 +34,8 @@ export interface ManifestAnalysisRecord {
   executor_version: string | null;
   input_series_ids: string[];
   input_hashes: string[];
+  /** Absent on historical records; never reconstructed from current sources. */
+  input_receipt?: { schema: string; source_run_id: string; sha256: string; object_uri: string };
 }
 
 export interface ManifestMissingObservation {

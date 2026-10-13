@@ -1,5 +1,7 @@
 # State and binding decisions
 
+**2026-10-13 B / A4-WD-002 scoped checkpoint:** actual immutable consumed-input evidence now feeds manifest/export/charts/narratives; async ownership and terminal-state publication guards included. Scope **74/74 and lint PASS**, no drift. Full current lint/build/test still pending; historical644 is not current acceptance. No schema/scientific-method change or historical backfill. [Evidence and next step](../reports/data-graph-engine-2026-10-09.md).
+
 **2026-10-09 B / current composed checkpoint:** published product
 `f2b6b8969b08eb36af36bf9a9a9323a65390bda7` includes A4-WD-001
 `6be9aed` and A4-WD-003. Actual local lint/build/test **644/644 PASS**,

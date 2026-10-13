@@ -1,5 +1,7 @@
 # Dokumentacja WatchDog
 
+- [Trwałe dowody wejść użytych przez analizę](ANALYSIS_INPUT_PROVENANCE.md)
+
 ## Pierwszy przegląd projektu
 
 - [Opis projektu i działających zakresów — English overview](OVERVIEW.md)

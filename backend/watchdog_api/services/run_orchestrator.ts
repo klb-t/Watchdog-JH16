@@ -17,6 +17,7 @@ import { MethodSpecRepository } from '../db/repositories/method_specs';
 import { TypeScriptMethodExecutor } from '../analysis/executor';
 import type { SourceAdapter } from '../sources/base';
 import type { TypedSeries } from '../domain/method_spec';
+import { captureAnalysisInput, freezeAnalysisInput, persistAnalysisWithInput, readAnalysisInput, assertAnalysisInputAccess } from './analysis_inputs';
 
 /**
  * One (entity, dimension) pair to acquire. The preset decides both; the
@@ -189,7 +190,8 @@ export class RunOrchestrator {
         if (runType === 'ANALYSIS' || runType === 'PIPELINE') {
           stateAtFailure = 'LOADING_OBSERVATIONS';
           const obsRunId = config.source_run_id || runId;
-          const observations = this.obsRepo.getByRunId(obsRunId);
+          const captured = captureAnalysisInput(this.db, this.store, runId, obsRunId);
+          const observations = captured.observations;
 
           stateAtFailure = 'EXECUTING_ANALYSIS';
           if (config.method_spec_id) {
@@ -201,17 +203,24 @@ export class RunOrchestrator {
                 return matches[0] && !matches[0].isMissing ? matches[0].numericValue : null; }),
               qualityFlags: [...new Set(observations.filter(o => o.queryRole === role).flatMap(o => [...o.qualityFlags]))].sort() });
             const inputs = [seriesFor('popularity'), seriesFor('harm')];
-            const artifact = await new TypeScriptMethodExecutor().execute(spec, inputs, { approvable: {
+            const executor = new TypeScriptMethodExecutor();
+            const frozen = freezeAnalysisInput(captured, { method_id: row.id, method_spec_id: row.id,
+              method_spec_hash: row.spec_hash, method_spec: spec, typed_series: inputs,
+              approval_state: 'APPROVED', approved_by: row.approved_by, approved_hash: row.approved_hash,
+              executor_id: executor.executorId, executor_version: executor.executorVersion });
+            const artifact = await executor.execute(spec, inputs, { approvable: {
               id: row.id, kind: 'method_spec', content: spec, approvedHash: row.approved_hash, approvedBy: row.approved_by, approvedAt: row.approved_at } });
-            const analysisRunId = this.anRepo.createAnalysisRun(runId, { methodSpecId: row.id, executorId: artifact.executorId,
-              executorVersion: artifact.executorVersion, inputSeriesIds: entityIds, inputHashes: [canonicalHash(inputs)] });
-            this.anRepo.insertMany(analysisRunId, artifact.results);
+            stateAtFailure = 'PERSISTING_RESULTS';
+            await persistAnalysisWithInput(this.db, this.store, frozen, artifact.results);
           } else {
             const analyzer = analyzerRegistry.get(config.method_id);
-            const results = analyzer.analyze(observations, { method_id: config.method_id, method_version: analyzer.analyzer_version, parameters: config.method_params ?? {} });
+            const parameters = config.method_params ?? {};
+            const frozen = freezeAnalysisInput(captured, { method_id: config.method_id, method_spec_id: null,
+              method_spec_hash: null, parameters, approval_state: 'APPROVED', approved_by: null, approved_hash: null,
+              executor_id: analyzer.analyzer_id, executor_version: analyzer.analyzer_version });
+            const results = analyzer.analyze(observations, { method_id: config.method_id, method_version: analyzer.analyzer_version, parameters });
             stateAtFailure = 'PERSISTING_RESULTS';
-            const analysisRunId = this.anRepo.createAnalysisRun(runId, { executorId: analyzer.analyzer_id, executorVersion: analyzer.analyzer_version });
-            this.anRepo.insertMany(analysisRunId, results);
+            await persistAnalysisWithInput(this.db, this.store, frozen, results);
           }
         } else tracer.emit('ANALYSIS_NOT_REQUESTED', { runType });
 
@@ -220,12 +229,11 @@ export class RunOrchestrator {
         stateAtFailure = 'FINALIZING_MANIFEST';
         await this.finalizeManifest(runId);
 
-        this.runRepo.updateStatus(runId, 'COMPLETED');
         tracer.emit('RUN_COMPLETED', { runId });
 
       } catch (err: any) {
         const current = this.runRepo.getRun(runId);
-        if (current && current.status !== 'FAILED' && current.status !== 'COMPLETED') {
+        if (current && !['FAILED', 'COMPLETED', 'CANCELLED'].includes(current.status)) {
           this.runRepo.updateStatus(runId, 'FAILED', err.message, String(err.stack ?? ''));
         }
         tracer.emit('STATE_AT_FAILURE', { state: stateAtFailure, error: err.message });
@@ -242,12 +250,18 @@ export class RunOrchestrator {
   private async finalizeManifest(runId: string): Promise<void> {
     const run = this.runRepo.getRun(runId);
     if (!run) return;
+    assertAnalysisInputAccess(this.db, runId, run.owner_principal_id, [], 'EXPORTING');
+    if (this.artRepo.getManifest(runId)) throw new Error('Finalized manifest cannot be replaced');
 
     const fetchRows = this.acqRepo.getFetchEvents(runId);
-    const observations = this.obsRepo.getByRunId(runId);
+    const input = run.run_type === 'ACQUISITION' ? null
+      : await readAnalysisInput(this.db, this.store, runId, run.owner_principal_id);
+    if (input && input.evidence.status !== 'verified') throw new Error('Consumed analysis input evidence is unavailable');
+    if (!this.runRepo.getOwnedRun(runId, run.owner_principal_id)) throw new Error('Run ownership changed before manifest creation');
+    const observations = input ? input.observations! : this.obsRepo.getByRunId(runId);
     const results = this.anRepo.getByRunId(runId);
 
-    const fetches: ManifestFetchRecord[] = fetchRows.map(f => ({
+    const fetches: ManifestFetchRecord[] = input ? input.receipts.flatMap(record => record.receipt.fetches) : fetchRows.map(f => ({
       source_id: f.source_id,
       provider_id: f.provider_id ?? null,
       provider_version: f.provider_version ?? null,
@@ -268,9 +282,9 @@ export class RunOrchestrator {
         missing_reason: (o as Extract<Observation, { isMissing: true }>).missingReason,
       }));
 
-    // Re-detected from what was actually stored rather than trusting the
-    // annotation pass: the manifest is the scientific claim, and it should rest
-    // on the persisted rows, not on an in-memory result from earlier in the run.
+    // Analysis disclosure uses the verified consumed-input artifact. Acquisition
+    // manifests retain their existing persisted-row path; neither substitutes
+    // a present-day source lookup for historical analysis input.
     const discontinuity = detectDiscontinuities(observations);
 
     const qualityFlags = new Set<string>();
@@ -290,6 +304,16 @@ export class RunOrchestrator {
       presetLocked: Boolean(run.preset_id),
       fetches,
       analyses: analysisRows.map(a => {
+        const pinned = input?.receipts.find(record => record.analysisRunId === a.id);
+        if (pinned) {
+          const execution = pinned.receipt.execution;
+          return { method_spec_id: execution.method_spec_id, method_spec_hash: execution.method_spec_hash,
+            approval_state: execution.approval_state, approved_by: execution.approved_by,
+            executor_id: execution.executor_id, executor_version: execution.executor_version,
+            input_series_ids: pinned.receipt.series.map(row => row.id), input_hashes: pinned.receipt.series.map(row => row.sha256),
+            input_receipt: { schema: pinned.receipt.schema, source_run_id: pinned.receipt.source_run.id,
+              sha256: pinned.sha256, object_uri: pinned.objectUri } };
+        }
         const methods = new MethodSpecRepository(this.db), spec = a.method_spec_id ? methods.get(a.method_spec_id) : null;
         return {
         method_spec_id: a.method_spec_id ?? null,
@@ -314,8 +338,15 @@ export class RunOrchestrator {
     });
 
     const { bytes, sha256 } = serializeManifest(manifest);
+    assertAnalysisInputAccess(this.db, runId, run.owner_principal_id,
+      input?.receipts.map(record => record.receipt.source_run.id) ?? [], 'EXPORTING');
     const uri = await this.store.put(`manifests/${runId}.json`, bytes);
-    this.artRepo.finalizeManifest(runId, uri, sha256);
+    this.db.transaction(() => {
+      assertAnalysisInputAccess(this.db, runId, run.owner_principal_id,
+        input?.receipts.map(record => record.receipt.source_run.id) ?? [], 'EXPORTING');
+      this.artRepo.finalizeManifest(runId, uri, sha256);
+      this.runRepo.updateStatus(runId, 'COMPLETED');
+    });
 
     void (results as readonly AnalysisResultValue[]);
     tracer.emit('MANIFEST_FINALIZED', { runId, sha256 });

@@ -1,5 +1,7 @@
 # Task ledger
 
+- [ ] **A4-WD-002 — immutable consumed-analysis inputs and real consumers.** Implementation/static review complete, actual scope74/74 plus lint PASS; full committed-tree gate pending before closure. No earlier644 PASS is reused. [Current report](../reports/data-graph-engine-2026-10-09.md).
+
 **This is the working document.** Tick a box only when its test passes. Commit the tick with
 the work. If the repository contradicts a tick, the repository wins — untick it and say so.
 

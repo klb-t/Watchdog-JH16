@@ -5,7 +5,7 @@ import { sourceRegistry } from '../sources/registry';
 import { analyzerRegistry } from '../analytics/registry';
 import { RunOrchestrator } from '../services/run_orchestrator';
 import { RunRepository } from '../db/repositories/runs';
-import { ObservationRepository, AnalysisResultRepository } from '../db/repositories/data';
+import { AnalysisResultRepository } from '../db/repositories/data';
 import { ArtifactRepository } from '../db/repositories/artifacts';
 import { AcquisitionRepository } from '../db/repositories/acquisition';
 import type { ObjectStore } from '../storage/object_store';
@@ -15,11 +15,12 @@ import { tracer } from '../utils/tracer';
 import { RunSubmissionSchema } from './schemas';
 import { MethodSpecRepository } from '../db/repositories/method_specs';
 import { capabilityRegistry } from '../sources/provider_registry';
-import { buildAllCharts } from '../services/charts';
+import { buildPiChart, buildHiChart, buildHiVsReferenceChart } from '../services/charts';
 import { exportCsv, exportJson } from '../services/export';
 import { generateNarrative, generateNarrativeWithProvider, hashNarrativePayload, type Narrative } from '../services/narrative';
 import { loadNarrativeCatalog, selectNarrativeRecipe } from '../config/narrative';
 import { canonicalHash, canonicalizeJson } from '../domain/canonical';
+import { readAnalysisInput, assertAnalysisInputAccess } from '../services/analysis_inputs';
 import { buildTextGenerationRegistry } from '../llm';
 import { buildSearchProviderRegistry } from '../sources/search_providers';
 import { validateMethodSpec, hashMethodSpec } from '../analysis/method_spec_validation';
@@ -34,7 +35,6 @@ const apiRouter = Router();
 
 const orchestrator = new RunOrchestrator(db, store);
 const runRepo = new RunRepository(db);
-const obsRepo = new ObservationRepository(db);
 const anRepo = new AnalysisResultRepository(db);
 const artRepo = new ArtifactRepository(db);
 const acqRepo = new AcquisitionRepository(db, store);
@@ -83,18 +83,21 @@ apiRouter.get('/runs/:id', requireCapability('run.view'), (req, res) => {
   res.json({ run });
 });
 
-apiRouter.get('/runs/:id/results', requireCapability('run.view'), (req, res) => {
+apiRouter.get('/runs/:id/results', requireCapability('run.view'), async (req, res, next) => {
+  try {
   const run = runRepo.getRun(req.params.id);
   if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
-  
-  const observations = obsRepo.getByRunId(req.params.id);
+  const input = await readAnalysisInput(db, store, req.params.id, req.principal!.id);
+  if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
   const results = anRepo.getByRunId(req.params.id);
   
   res.json({
     run_id: req.params.id,
-    observations,
+    observations: input.observations,
+    input_evidence: input.evidence,
     analysis_results: results
   });
+  } catch (error) { next(error); }
 });
 
 apiRouter.get('/runs/:id/manifest', requireCapability('run.view'), (req, res) => {
@@ -172,32 +175,46 @@ apiRouter.post('/method-specs/:id/approve', requireCapability('method.approve'),
 // Results surfaces (E1.23).
 // --------------------------------------------------------------------------
 
-apiRouter.get('/runs/:id/charts', requireCapability('run.view'), (req, res, next) => {
+apiRouter.get('/runs/:id/charts', requireCapability('run.view'), async (req, res, next) => {
   try {
+    const input = await readAnalysisInput(db, store, req.params.id, req.principal!.id);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
     const results = anRepo.getByRunId(req.params.id);
-    const observations = obsRepo.getByRunId(req.params.id);
-    const flags = [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort();
-    const reference = readConfig('config', 'reference', 'nutt-2010.json');
-    res.json({ charts: buildAllCharts(results, reference.scores, flags) });
+    const flags = input.observations === null ? null : [...new Set(input.observations.flatMap(o => [...o.qualityFlags]))].sort();
+    // Diagnostic legend vocabulary, not a fabricated scientific quality flag.
+    const legend = flags ?? ['INPUT_EVIDENCE_UNAVAILABLE'];
+    const charts = [buildPiChart(results, legend), buildHiChart(results, legend)];
+    const references = input.receipts.map(record => record.receipt.execution.parameters?.reference_scores);
+    const reference = references.length === 1 ? references[0] : undefined;
+    const usableReference = reference && typeof reference === 'object' && !Array.isArray(reference) &&
+      Object.values(reference).every(value => typeof value === 'number' && Number.isFinite(value));
+    if (usableReference) charts.push(buildHiVsReferenceChart(results, reference as Record<string, number>, legend));
+    res.json({ charts: charts.map(chart => ({ ...chart, input_evidence: input.evidence })),
+      quality_flags: flags, input_evidence: input.evidence,
+      omissions: usableReference ? [] : [{ projection: 'hi-vs-reference-scatter', reason: 'consumed_reference_scores_unavailable' }] });
   } catch (e) { next(e); }
 });
 
 const NarrativeSelection = z.object({ templateId: z.string().min(1).optional(), templateVersion: z.string().min(1).optional() }).strict();
 const ProviderNarrativeSelection = NarrativeSelection.extend({ provider: z.string().min(1).optional(), model: z.string().min(1).optional() }).strict();
 const AutomaticNarrativeSelection = NarrativeSelection.extend({ consent: z.literal(true) }).strict();
-function narrativeInput(runId: string) {
+async function narrativeInput(runId: string, owner: string) {
   const run = runRepo.getRun(runId)!;
-  const results = anRepo.getByRunId(runId), observations = obsRepo.getByRunId(runId);
-  return { presetId: run.preset_id,
+  const input = await readAnalysisInput(db, store, runId, owner);
+  if (input.observations === null) return { evidence: input.evidence, payload: null };
+  const results = anRepo.getByRunId(runId), observations = input.observations;
+  return { evidence: input.evidence, payload: { presetId: run.preset_id,
     results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId, valueNumeric: r.valueNumeric, unit: r.unit })),
     missingCount: observations.filter(o => o.isMissing).length,
-    qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort() };
+    qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort() } };
 }
-async function archiveNarrative(narrative: Narrative, owner: string) {
-  if (!runRepo.getOwnedRun(narrative.runId, owner)) return null;
+async function archiveNarrative(narrative: Narrative, owner: string, sourceIds: readonly string[]) {
+  try { assertAnalysisInputAccess(db, narrative.runId, owner, sourceIds); }
+  catch { return null; }
   const bytes = Buffer.from(canonicalizeJson(narrative)), sha256 = canonicalHash(narrative);
   const uri = await store.put(`narratives/${sha256}.json`, bytes);
-  if (!runRepo.getOwnedRun(narrative.runId, owner)) return null;
+  try { assertAnalysisInputAccess(db, narrative.runId, owner, sourceIds); }
+  catch { return null; }
   const artifactId = artRepo.recordArtifact({ runId: narrative.runId, kind: 'narrative', objectUri: uri,
     sha256, byteSize: bytes.length, mediaType: 'application/json',
     metadata: { schema: 'watchdog.narrative_artifact/1', contentHash: narrative.contentHash,
@@ -205,11 +222,14 @@ async function archiveNarrative(narrative: Narrative, owner: string) {
   return { artifactId, sha256 };
 }
 
-apiRouter.get('/runs/:id/narrative', requireCapability('run.view'), (req, res, next) => {
+apiRouter.get('/runs/:id/narrative', requireCapability('run.view'), async (req, res, next) => {
   try {
     const catalog = loadNarrativeCatalog();
     const recipe = selectNarrativeRecipe(catalog, NarrativeSelection.parse(req.query));
-    const payload = narrativeInput(req.params.id);
+    const input = await narrativeInput(req.params.id, req.principal!.id);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (!input.payload) return res.status(409).json({ error: 'input_evidence_unavailable', input_evidence: input.evidence });
+    const payload = input.payload;
     res.json({ narrative: generateNarrative({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
       templateId: recipe.id, templateVersion: recipe.version, providerId: null, model: null }, catalog) });
   } catch (error) { next(error); }
@@ -221,10 +241,13 @@ apiRouter.post('/runs/:id/narrative', requireCapability('narrative.approve'), sa
   try {
     const catalog = loadNarrativeCatalog();
     const recipe = selectNarrativeRecipe(catalog, NarrativeSelection.parse(req.body));
-    const payload = narrativeInput(req.params.id);
+    const input = await narrativeInput(req.params.id, req.principal!.id);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (!input.payload) return res.status(409).json({ error: 'input_evidence_unavailable', input_evidence: input.evidence });
+    const payload = input.payload;
     const narrative = generateNarrative({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
       templateId: recipe.id, templateVersion: recipe.version, providerId: null, model: null }, catalog);
-    const artifact = await archiveNarrative(narrative, req.principal!.id);
+    const artifact = await archiveNarrative(narrative, req.principal!.id, input.evidence.receipts.map(row => row.source_run_id));
     if (!artifact) return res.status(404).json({ error: 'NOT_FOUND' });
     res.json({ narrative, artifact });
   } catch (error) { next(error); }
@@ -243,18 +266,21 @@ apiRouter.get('/runs/:id/narratives/:artifactId', requireCapability('run.view'),
   } catch (error) { next(error); }
 });
 
-apiRouter.get('/runs/:id/export', requireCapability('export.download'), (req, res, next) => {
+apiRouter.get('/runs/:id/export', requireCapability('export.download'), async (req, res, next) => {
   try {
     const format = String(req.query.format ?? 'json');
     const results = anRepo.getByRunId(req.params.id);
-    const observations = obsRepo.getByRunId(req.params.id);
+    const disclosure = await readAnalysisInput(db, store, req.params.id, req.principal!.id);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    const observations = disclosure.observations;
     const input = {
       runId: req.params.id, results,
-      missingObservations: observations.filter(o => o.isMissing).map(o => ({
+      inputEvidence: disclosure.evidence,
+      missingObservations: observations === null ? null : observations.filter(o => o.isMissing).map(o => ({
         entity_id: o.entityId, query_role: o.queryRole,
         missing_reason: (o as any).missingReason,
       })),
-      qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
+      qualityFlags: observations === null ? null : [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
     };
 
     if (format === 'csv') {
@@ -315,8 +341,8 @@ apiRouter.get('/providers/readiness', requireCapability('provider.view'), async 
 /**
  * Generates the narrative through a language provider (E2.1).
  *
- * Separate from `GET /runs/:id/narrative`, which stays deterministic and
- * always available. A POST because it spends money and produces a new
+ * Separate from `GET /runs/:id/narrative`, which is deterministic when its
+ * consumed-input evidence is available. A POST because it spends money and produces a new
  * artifact, and because a GET that bills the maintainer is a GET that a link
  * prefetcher can bill them for.
  */
@@ -326,10 +352,11 @@ apiRouter.post('/runs/:id/narrative/generate',
     const body = ProviderNarrativeSelection.parse(req.body ?? {});
     const catalog = loadNarrativeCatalog();
     const recipe = selectNarrativeRecipe(catalog, body);
-    const results = anRepo.getByRunId(req.params.id);
-    const observations = obsRepo.getByRunId(req.params.id);
     const run = runRepo.getRun(req.params.id);
     if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
+    const input = await narrativeInput(req.params.id, req.principal!.id);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (!input.payload) return res.status(409).json({ error: 'input_evidence_unavailable', input_evidence: input.evidence });
 
     const providerKey = body.provider ?? 'openrouter';
     const registry = buildTextGenerationRegistry();
@@ -342,46 +369,56 @@ apiRouter.post('/runs/:id/narrative/generate',
       });
     }
 
-    const payload = {
-      presetId: run.preset_id,
-      results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId,
-                                   valueNumeric: r.valueNumeric, unit: r.unit })),
-      missingCount: observations.filter(o => o.isMissing).length,
-      qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
-    };
-
+    const payload = input.payload;
+    const generationParams = await registry.defaultParams(providerKey);
+    const generator = await registry.get(providerKey);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    try { assertAnalysisInputAccess(db, req.params.id, req.principal!.id, input.evidence.receipts.map(row => row.source_run_id)); }
+    catch { return res.status(409).json({ error: 'input_evidence_unavailable', input_evidence: {
+      schema: 'watchdog.analysis_input_evidence/1', status: 'unavailable', reason: 'input_access_changed', receipts: [] } }); }
     const narrative = await generateNarrativeWithProvider({
       runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
       templateId: recipe.id, templateVersion: recipe.version,
       providerId: providerKey,
       model: String(body.model ?? availability.defaultModel),
-      generationParams: await registry.defaultParams(providerKey),
-      generator: await registry.get(providerKey),
+      generationParams,
+      generator,
     }, catalog);
 
     // PROPOSED, always. The gate is unchanged by the text having come from a
     // model rather than a template.
-    const artifact = await archiveNarrative(narrative, req.principal!.id);
+    const artifact = await archiveNarrative(narrative, req.principal!.id, input.evidence.receipts.map(row => row.source_run_id));
     if (!artifact) return res.status(404).json({ error: 'NOT_FOUND' });
     res.json({ narrative, artifact });
   } catch (e) { next(e); }
 });
 
 apiRouter.post('/runs/:id/narrative/automatic', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
+  let inputAccessChanged = false;
   try {
     const body = AutomaticNarrativeSelection.parse(req.body);
     const catalog = loadNarrativeCatalog();
     const recipe = selectNarrativeRecipe(catalog, body);
     if (!assistant) return res.status(409).json({ error: 'Personal assistant is not configured' });
-    const run = runRepo.getRun(req.params.id)!, results = anRepo.getByRunId(req.params.id), observations = obsRepo.getByRunId(req.params.id);
-    const payload = { presetId: run.preset_id, results: results.map(r => ({ metricKey: r.metricKey, entityId: r.entityId, valueNumeric: r.valueNumeric, unit: r.unit })),
-      missingCount: observations.filter(o => o.isMissing).length, qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort() };
+    const input = await narrativeInput(req.params.id, req.principal!.id);
+    if (!runRepo.getOwnedRun(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (!input.payload) return res.status(409).json({ error: 'input_evidence_unavailable', input_evidence: input.evidence });
+    const payload = input.payload;
     const narrative = await generateNarrativeWithProvider({ runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
-      templateId: recipe.id, templateVersion: recipe.version, providerId: assistant.provider(req.principal!.id, 'narrative').id, model: 'automatic', generator: assistant.generator(req.principal!.id, 'narrative') }, catalog);
-    const artifact = await archiveNarrative(narrative, req.principal!.id);
+      templateId: recipe.id, templateVersion: recipe.version, providerId: assistant.provider(req.principal!.id, 'narrative').id, model: 'automatic',
+      generator: assistant.generator(req.principal!.id, 'narrative', () => {
+        try { assertAnalysisInputAccess(db, req.params.id, req.principal!.id, input.evidence.receipts.map(row => row.source_run_id)); }
+        catch (error) { inputAccessChanged = true; throw error; }
+        return undefined;
+      }) }, catalog);
+    const artifact = await archiveNarrative(narrative, req.principal!.id, input.evidence.receipts.map(row => row.source_run_id));
     if (!artifact) return res.status(404).json({ error: 'NOT_FOUND' });
     res.json({ narrative, artifact });
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (inputAccessChanged) return res.status(409).json({ error: 'input_evidence_unavailable', input_evidence: {
+      schema: 'watchdog.analysis_input_evidence/1', status: 'unavailable', reason: 'input_access_changed', receipts: [] } });
+    next(error);
+  }
 });
 
 return apiRouter;

@@ -1,0 +1,57 @@
+{
+  "schema": "watchdog.synthetic_consumed_input_before/1",
+  "baseline": "8772114c8cf0266e590ba33331279a045c1c3759",
+  "source": [
+    {
+      "seriesId": "0ebf5af9-6086-4bbc-bfaa-c2c2018adf51",
+      "entityId": "audit_entity",
+      "queryRole": "harm",
+      "queryText": "public fixture harm",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "qualityFlags": [
+        "COUNT_PARSE_UNCERTAIN"
+      ],
+      "isMissing": true,
+      "numericValue": null,
+      "missingReason": "RATE_LIMITED"
+    },
+    {
+      "seriesId": "66d010f8-a126-44ed-b4a7-3073c56e31fd",
+      "entityId": "audit_entity",
+      "queryRole": "popularity",
+      "queryText": "public fixture popularity",
+      "language": "en",
+      "queryExpansionMode": "STRICT_CANONICAL",
+      "retrievedAt": "2026-10-09T00:00:00Z",
+      "sourceId": "public-fixture",
+      "sourceAdapterVersion": "1",
+      "qualityFlags": [],
+      "isMissing": false,
+      "numericValue": 100
+    }
+  ],
+  "configs": [
+    {
+      "source_run_id": "91202857-b2d8-4cbb-95f5-6460acdfe7c7",
+      "method_id": "jh16_faithful",
+      "method_params": {
+        "reference_scores": {
+          "audit_entity": 7
+        }
+      }
+    },
+    {
+      "source_run_id": "91202857-b2d8-4cbb-95f5-6460acdfe7c7",
+      "method_spec_id": "jh2016-faithful",
+      "method_spec_hash": "48f7733e4ceae46db8e3ee1b898d9440bd632f37d4a3dc54e04a21cc10884591"
+    }
+  ],
+  "resultsCanonical": [
+    "[{\"entityId\":\"audit_entity\",\"isMissing\":true,\"metricKey\":\"Hi\",\"statisticMetadata\":null,\"unit\":\"%\",\"valueNumeric\":null,\"valueText\":null},{\"entityId\":\"audit_entity\",\"isMissing\":false,\"metricKey\":\"Pi\",\"statisticMetadata\":null,\"unit\":\"%\",\"valueNumeric\":100,\"valueText\":null}]",
+    "[{\"entityId\":\"audit_entity\",\"isMissing\":true,\"metricKey\":\"Hi\",\"statisticMetadata\":null,\"unit\":\"%\",\"valueNumeric\":null,\"valueText\":null},{\"entityId\":\"audit_entity\",\"isMissing\":false,\"metricKey\":\"Pi\",\"statisticMetadata\":null,\"unit\":\"%\",\"valueNumeric\":100,\"valueText\":null}]"
+  ]
+}

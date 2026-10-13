@@ -8,7 +8,8 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { runMigrations } from '../../backend/watchdog_api/db/migrations';
 import { RunRepository } from '../../backend/watchdog_api/db/repositories/runs';
-import { AnalysisResultRepository } from '../../backend/watchdog_api/db/repositories/data';
+import { ObservationRepository } from '../../backend/watchdog_api/db/repositories/data';
+import { RunOrchestrator } from '../../backend/watchdog_api/services/run_orchestrator';
 import { ArtifactRepository } from '../../backend/watchdog_api/db/repositories/artifacts';
 import { AuditRepository } from '../../backend/watchdog_api/db/repositories/audit';
 import { SettingsRepository } from '../../backend/watchdog_api/db/repositories/settings';
@@ -49,10 +50,19 @@ test('WD-001: real API selects, validates and archives exact recipes; reopened s
   const raw = Buffer.from(JSON.stringify({ data: [{ id: 'synthetic/narrative', name: 'Synthetic narrative', context_length: 64000,
     architecture: { input_modalities: ['text'], output_modalities: ['text'] }, pricing: { prompt: '0.000001', completion: '0.000002', request: '0' }, supported_parameters: ['temperature'] }] }));
   await repo.saveCatalog(normalizeModelCatalog(raw, profile), raw);
-  const runId = new RunRepository(drizzle(sqlite)).createRun({ runType: 'ANALYSIS', config: { fixture: true }, ownerPrincipalId: owner });
-  const analyses = new AnalysisResultRepository(drizzle(sqlite));
-  analyses.insertMany(analyses.createAnalysisRun(runId), [1, 2, 3, 4].map(valueNumeric => ({ metricKey: 'Pi', valueNumeric, isMissing: false })));
-  new ArtifactRepository(drizzle(sqlite)).finalizeManifest(runId, 'synthetic:existing-manifest', 'a'.repeat(64));
+  const runId = new RunRepository(drizzle(sqlite)).createRun({ runType: 'ANALYSIS',
+    config: { method_id: 'jh16_faithful', method_params: { reference_scores: {} } }, ownerPrincipalId: owner });
+  new ObservationRepository(drizzle(sqlite)).insertMany(runId, [
+    ['a', 'popularity', 100], ['a', 'harm', 1], ['b', 'popularity', 50], ['b', 'harm', 2],
+  ].map(([entityId, queryRole, numericValue]) => ({ seriesId: '', entityId: String(entityId), queryRole: String(queryRole),
+    numericValue: Number(numericValue), isMissing: false as const, qualityFlags: [], queryText: 'public synthetic narrative input',
+    language: 'en', queryExpansionMode: 'STRICT_CANONICAL', retrievedAt: '2026-10-09T00:00:00Z',
+    sourceId: 'public-fixture', sourceAdapterVersion: '1' })));
+  await new RunOrchestrator(drizzle(sqlite), store).executeRun(runId);
+  assert.equal(new RunRepository(drizzle(sqlite)).getRun(runId)!.status, 'COMPLETED');
+  const baselineArtifacts = new ArtifactRepository(drizzle(sqlite)).getArtifacts(runId);
+  const baselineManifest = new ArtifactRepository(drizzle(sqlite)).getManifest(runId)!;
+  assert.equal(baselineArtifacts.length, 1, 'actual consumed inputs are archived before narrative tests');
   const start = async () => {
     repo = new SettingsRepository(sqlite, store);
     const service = new AssistantService(repo, new UserVault(repo, path.join(directory, 'master.key'), {}), profile, transport);
@@ -70,7 +80,11 @@ test('WD-001: real API selects, validates and archives exact recipes; reopened s
   };
   const stop = () => new Promise<void>(resolve => server.close(() => resolve()));
   try {
-    const artifacts = () => new ArtifactRepository(drizzle(sqlite)).getArtifacts(runId);
+    const artifacts = () => {
+      const all = new ArtifactRepository(drizzle(sqlite)).getArtifacts(runId);
+      assert.deepEqual(all.filter(row => baselineArtifacts.some(base => base.id === row.id)), baselineArtifacts);
+      return all.filter(row => !baselineArtifacts.some(base => base.id === row.id));
+    };
     const preview = await call('/narrative'); assert.equal(preview.status, 200);
     assert.equal(preview.value.narrative.templateId, 'jh2016-summary'); assert.equal(artifacts().length, 0);
     const plPreview = await call('/narrative?templateId=summary-pl&templateVersion=1.0');
@@ -121,7 +135,7 @@ test('WD-001: real API selects, validates and archives exact recipes; reopened s
     assert.notEqual((await call('/narrative/automatic', { consent: true })).status, 200);
     assert.equal(bodies.length, 3); assert.equal(artifacts().length, beforeFailure);
     assert.equal(repo.generations(owner).some(row => row.result.retryAutomatically === false), true);
-    assert.equal(new ArtifactRepository(drizzle(sqlite)).getManifest(runId)!.sha256, 'a'.repeat(64));
+    assert.deepEqual(new ArtifactRepository(drizzle(sqlite)).getManifest(runId), baselineManifest);
     await stop(); sqlite.close(); sqlite = new Database(filename); sqlite.pragma('foreign_keys=ON');
     server = await start();
     const restored = await call(`/narratives/${saved.value.artifact.artifactId}`);

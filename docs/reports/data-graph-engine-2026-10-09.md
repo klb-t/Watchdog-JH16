@@ -1,5 +1,44 @@
 # DATA / GRAPH / ENGINE — 2026-10-09
 
+## 2026-10-13 — A4-WD-002 scoped checkpoint; full gate pending
+
+The interrupted increment is preserved on B over `8772114c8cf0266e590ba33331279a045c1c3759`.
+Fresh 2026-10-13 fetch confirms main remains `58a0c93bd0135e3715dcbc4d92fb80e61bd31215`;
+no main or collaborator branch is changed. The reviewed 12-file handoff SHA256 is
+`094ee6f3c9e1c0b4d2fc88ca9d2a2ef35bff672a121e71187dbbc1c541b0ccd7`.
+All 12 hashes still match the actual scope run; no product changes followed it.
+
+New analyses capture their actual normalized inputs, observation/series IDs,
+per-series hashes and method configuration in the existing immutable store.
+Manifest, export, charts and narrative consumers read that verified evidence.
+Unknown historical inputs remain unknown; stored numeric results remain usable.
+Current source changes cannot rewrite an earlier result. Ownership is rechecked
+after asynchronous reads, provider discovery and artifact writes. Manifest
+registration and COMPLETED commit atomically; cancellation keeps its terminal
+state. Earlier computed evidence survives a later publication failure.
+
+No formula, scientific preset, provider budget, database schema or historical
+manifest is changed. The public before-reproduction records both real analyzers
+reporting source/result missingness 1 but manifest/export missingness 0. Exact
+pre-change numeric fixtures remain acceptance inputs. Details and migration
+boundaries: [consumed-input contract](../ANALYSIS_INPUT_PROVENANCE.md).
+
+Actual scope on 2026-10-12: **74/74 PASS**, including all seven new integration
+cases; **lint PASS**, zero fail/skip/cancel/todo. Node test duration16.187685919s,
+lint16.650839s. The 13-file scope covers actual SQLite/ObjectStore/HTTP,
+AssistantService, owner changes during awaits, denial before reservation/model
+execution, cancellation, rollback, source loss, corrupt evidence and reopen.
+Source, installed modules, executables and handoff drift are all false.
+Evidence: `/workspace/.onboarding/logs/data-graph-watchdog-input-provenance-scope-20261012T171235-v03kg_56/summary.json`, with
+per-command before receipts and full logs. Independent final static review found
+no remaining blocker; its SHA256 is
+`f7bab9fdbe7f39c32427499e30a067ca6fecf1904d2dd881f6beba1699c61323`.
+
+This is a scoped checkpoint, not full acceptance. Next: full local
+lint → build → test on this committed tree with a new receipt, then publish the
+result. Historical 644-test acceptance below does not certify this increment.
+No paid calls, hosted CI, private corpus or scientific approval is involved.
+
 ## Current checkpoint — A4-WD-001/003 composed gate PASS
 
 The published B product `f2b6b8969b08eb36af36bf9a9a9323a65390bda7`

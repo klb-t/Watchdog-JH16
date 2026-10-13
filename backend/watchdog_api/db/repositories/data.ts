@@ -113,6 +113,19 @@ export class ObservationRepository {
           : { ...base, isMissing: false as const, numericValue: r.numeric_value ?? 0 };
       });
   }
+
+  /** Exact JSON-domain input and its stored identities, in the same row order.
+   * The executor receives this detached snapshot. Raw provider/config bodies
+   * are not part of the normalized observation contract and are not copied.
+   */
+  inputSnapshot(runId: string): { observationIds: string[]; observations: DomainObservation[] } {
+    return this.db.transaction(() => {
+      const rows = this.db.select({ id: observations.id }).from(observations)
+        .where(eq(observations.run_id, runId)).all().sort((a, b) => a.id.localeCompare(b.id));
+      return { observationIds: rows.map(row => row.id),
+        observations: JSON.parse(JSON.stringify(this.getByRunId(runId))) as DomainObservation[] };
+    });
+  }
 }
 
 export class AnalysisResultRepository {

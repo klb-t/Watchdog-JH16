@@ -1,6 +1,7 @@
 import { AnalysisResultValue } from '../domain/method_spec';
 import { Narrative } from './narrative';
 import { approvalState, Approvable } from '../domain/approval';
+import type { InputEvidence } from './analysis_inputs';
 
 /**
  * Export (E1.18).
@@ -28,8 +29,9 @@ export interface ExportInput {
   narrative?: Narrative | null;
   /** The approvable record for the narrative, if one is being included. */
   narrativeApprovable?: Approvable | null;
-  missingObservations?: readonly { entity_id: string; query_role: string; missing_reason: string }[];
-  qualityFlags?: readonly string[];
+  missingObservations?: readonly { entity_id: string; query_role: string; missing_reason: string }[] | null;
+  qualityFlags?: readonly string[] | null;
+  inputEvidence?: InputEvidence;
 }
 
 function assertExportable(input: ExportInput) {
@@ -68,6 +70,15 @@ export function exportCsv(input: ExportInput): string {
 
   const lines = [header.join(','), ...rows];
 
+  if (input.inputEvidence) {
+    // An explicit second section preserves ordinary numeric CSV rows. Unknown
+    // quality is represented by status/null, never by a fabricated empty list.
+    lines.push('', '# INPUT EVIDENCE', 'evidence_field,json_value',
+      ['input_evidence', JSON.stringify(input.inputEvidence)].map(csvEscape).join(','),
+      ['missing_observations', JSON.stringify(input.missingObservations ?? null)].map(csvEscape).join(','),
+      ['quality_flags', JSON.stringify(input.qualityFlags ?? null)].map(csvEscape).join(','));
+  }
+
   if (input.narrative) {
     // CSV has no styling, so the distinction is carried in the data itself.
     lines.push('');
@@ -93,9 +104,10 @@ export function exportJson(input: ExportInput): string {
         unit: r.unit ?? null,
         is_missing: r.isMissing,
       })),
-    missing_observations: [...(input.missingObservations ?? [])]
+    missing_observations: input.missingObservations === null ? null : [...(input.missingObservations ?? [])]
       .sort((a, b) => a.entity_id.localeCompare(b.entity_id) || a.query_role.localeCompare(b.query_role)),
-    quality_flags: [...new Set(input.qualityFlags ?? [])].sort(),
+    quality_flags: input.qualityFlags === null ? null : [...new Set(input.qualityFlags ?? [])].sort(),
+    ...(input.inputEvidence ? { input_evidence: input.inputEvidence } : {}),
     narrative: input.narrative
       ? {
           // Machine-written content is labelled as such in the structure, not
