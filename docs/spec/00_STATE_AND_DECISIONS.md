@@ -1,5 +1,7 @@
 # State and binding decisions
 
+**2026-10-13 B / A4-WD-002 full acceptance:** product `03e85b3128eb6423d055c4005fab34ee97a143f5`, actual local lint/build/test **651/651 PASS**, no fail/skip/cancel/todo or source drift. Consumed-input evidence and async ownership/cancellation guards verified through real consumers. No DDL/backfill/formula change. Candidate ready for A/Claude; main integration remains separate. [Report and manifest](../reports/data-graph-engine-2026-10-09.md).
+
 **2026-10-13 B / A4-WD-002 scoped checkpoint:** actual immutable consumed-input evidence now feeds manifest/export/charts/narratives; async ownership and terminal-state publication guards included. Scope **74/74 and lint PASS**, no drift. Full current lint/build/test still pending; historical644 is not current acceptance. No schema/scientific-method change or historical backfill. [Evidence and next step](../reports/data-graph-engine-2026-10-09.md).
 
 **2026-10-09 B / current composed checkpoint:** published product

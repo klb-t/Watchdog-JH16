@@ -1,5 +1,31 @@
 # DATA / GRAPH / ENGINE — 2026-10-09
 
+## 2026-10-13 — A4-WD-002 full acceptance on B
+
+Product **`03e85b3128eb6423d055c4005fab34ee97a143f5`** passed the complete local
+lint → build → test sequence: **651/651 PASS**, zero fail/skip/cancel/todo,
+Node test duration **68.751130343s**. Lint18.043s and build3.839s also passed.
+Source, installed-module, executable and handoff drift are all false. Receipts
+precede each command; the test receipt includes the actual build outputs.
+
+The exact consumed-input evidence now reaches real manifests, exports, charts
+and narrative consumers; the seven new integration cases and all earlier tests
+ran in this composed gate. Numeric defaults and the existing ledger remain
+intact. This closes A4-WD-002's candidate implementation and local acceptance;
+main integration and independent scientific approval are separate.
+
+[Machine-readable integration/acceptance manifest](data-graph-engine-2026-10-13-acceptance.json)
+binds source/base/dependencies, actual results and every evidence-file hash.
+Full logs and before/after receipts are in
+`/workspace/.onboarding/logs/data-graph-watchdog-input-provenance-full-20261013T183556-81zao6uc`.
+No paid models, hosted CI or private inputs were used. The scoped and older
+644-test records below remain history. No historical data was rewritten.
+
+Next: receiver A/Claude reviews this B commit; further ecosystem work starts
+from current findings. ChatADHD's published B history is already on main; its
+remaining local P4b.1 must be aligned with the newer use_model/actions/rules,
+not used to restore superseded send restrictions.
+
 ## 2026-10-13 — A4-WD-002 scoped checkpoint; full gate pending
 
 The interrupted increment is preserved on B over `8772114c8cf0266e590ba33331279a045c1c3759`.

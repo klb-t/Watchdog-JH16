@@ -1,0 +1,141 @@
+{
+  "schema": "watchdog.B_acceptance/1",
+  "finding": "A4-WD-002",
+  "branch": "gpt/data-graph-engine-2026-10-09",
+  "source_commit": "03e85b3128eb6423d055c4005fab34ee97a143f5",
+  "accepted_commit": "03e85b3128eb6423d055c4005fab34ee97a143f5",
+  "acceptance_kind": "direct authored candidate on B; main integration remains Claude",
+  "base_commit": "8772114c8cf0266e590ba33331279a045c1c3759",
+  "dependencies": [
+    "f2b6b8969b08eb36af36bf9a9a9323a65390bda7",
+    "existing ObjectStore, ArtifactRepository, analyzers and usage ledger"
+  ],
+  "handoff_sha256": "094ee6f3c9e1c0b4d2fc88ca9d2a2ef35bff672a121e71187dbbc1c541b0ccd7",
+  "full_gate": {
+    "finished_at": "2026-10-13T18:37:28.691401+00:00",
+    "source_commit": "03e85b3128eb6423d055c4005fab34ee97a143f5",
+    "mode": "full",
+    "handoff_sha256": "094ee6f3c9e1c0b4d2fc88ca9d2a2ef35bff672a121e71187dbbc1c541b0ccd7",
+    "exit_code": 0,
+    "outcomes": [
+      {
+        "finished_at": "2026-10-13T18:36:15.325010+00:00",
+        "stage": "lint",
+        "exit_code": 0,
+        "elapsed_seconds": 18.043058423965704,
+        "source_drift": false,
+        "modules_drift": false,
+        "executables_drift": false,
+        "handoff_drift": false,
+        "interrupted_signals": [],
+        "before_sha256": "ac71da50ec4323827e42a20bb8236de4b935c1ac41ab847c58e7008dd920dbdc",
+        "log_sha256": "83555ec2e6132a51c737da048e9d4a75e447a206a140aae4b6f811653e912298",
+        "accepted": true
+      },
+      {
+        "finished_at": "2026-10-13T18:36:19.362830+00:00",
+        "stage": "build",
+        "exit_code": 0,
+        "elapsed_seconds": 3.839047256973572,
+        "source_drift": false,
+        "modules_drift": false,
+        "executables_drift": false,
+        "handoff_drift": false,
+        "interrupted_signals": [],
+        "before_sha256": "e4094ac582aa537f72d07f79c2f72a04cee1ae0eeef0fda6d1c4d32b3445bd50",
+        "log_sha256": "e39e7c42c157f83f5c0e1f64ae61c70d51d67daa0aa52fb6e9f5bd15dc2f9e7a",
+        "accepted": true
+      },
+      {
+        "finished_at": "2026-10-13T18:37:28.684368+00:00",
+        "stage": "test",
+        "exit_code": 0,
+        "elapsed_seconds": 69.11696729302639,
+        "source_drift": false,
+        "modules_drift": false,
+        "executables_drift": false,
+        "handoff_drift": false,
+        "interrupted_signals": [],
+        "before_sha256": "5c7438274ae873006622fa5dc72801339d4a909fda6fd0261748de60ea81509d",
+        "log_sha256": "1fdc2be073ba0997ec259cde5bd5ce0e5b8eac1864c690a12c283222d5845f2f",
+        "actual_summary": {
+          "tests": 651,
+          "suites": 0,
+          "pass": 651,
+          "fail": 0,
+          "cancelled": 0,
+          "skipped": 0,
+          "todo": 0,
+          "node_summary_seconds": 68.751130343
+        },
+        "complete_passing_test_summary": true,
+        "accepted": true
+      }
+    ],
+    "unrun_stages": [],
+    "interrupted_signals": [],
+    "test_count_claim": "Only actual_summary from finished Node output; no static invented count",
+    "claim": "Local synthetic gate evidence, not scientific/model-quality approval; no publication performed"
+  },
+  "evidence_files": {
+    "HANDOFF.json": {
+      "sha256": "094ee6f3c9e1c0b4d2fc88ca9d2a2ef35bff672a121e71187dbbc1c541b0ccd7",
+      "bytes": 3408
+    },
+    "build-after.json": {
+      "sha256": "1840de1a4d31d3a7571aa74af536a3c84127bddd8cc8898aca7075c5bd8dd23a",
+      "bytes": 461
+    },
+    "build-before.json": {
+      "sha256": "e4094ac582aa537f72d07f79c2f72a04cee1ae0eeef0fda6d1c4d32b3445bd50",
+      "bytes": 74191
+    },
+    "build.log": {
+      "sha256": "e39e7c42c157f83f5c0e1f64ae61c70d51d67daa0aa52fb6e9f5bd15dc2f9e7a",
+      "bytes": 2337
+    },
+    "lint-after.json": {
+      "sha256": "bcd1529f1a0a2b86d3e7fc9c352aa08260cf8f8bc3fb477f73a46ab3ff2c9646",
+      "bytes": 461
+    },
+    "lint-before.json": {
+      "sha256": "ac71da50ec4323827e42a20bb8236de4b935c1ac41ab847c58e7008dd920dbdc",
+      "bytes": 74189
+    },
+    "lint.log": {
+      "sha256": "83555ec2e6132a51c737da048e9d4a75e447a206a140aae4b6f811653e912298",
+      "bytes": 139
+    },
+    "plan.json": {
+      "sha256": "1c7ca9e4edc29e723d659d19da8d41e31a85d449969b8036f40516ecf96bb4e6",
+      "bytes": 880
+    },
+    "summary.json": {
+      "sha256": "4b4a0f41cdb3261c96500c48c5f9a1ab8ed02ef1a8a04f1e0787c18fc90c5e90",
+      "bytes": 2346
+    },
+    "test-after.json": {
+      "sha256": "7e7e0a3c8a22dad6054a6efd2a75e880946ecdb6165c5a1d72a7506e006de980",
+      "bytes": 689
+    },
+    "test-before.json": {
+      "sha256": "5c7438274ae873006622fa5dc72801339d4a909fda6fd0261748de60ea81509d",
+      "bytes": 74972
+    },
+    "test.log": {
+      "sha256": "1fdc2be073ba0997ec259cde5bd5ce0e5b8eac1864c690a12c283222d5845f2f",
+      "bytes": 114585
+    },
+    "toolchain-before.json": {
+      "sha256": "6e3a9ce2f36a3944ff3a31d2a34123311db8405532070d5da920e6eababec2ae",
+      "bytes": 75743
+    },
+    "toolchain.json": {
+      "sha256": "10c9dc28b350b561ee0cb81a8589801b031611ccb9c7ec232adefa896f78e9cc",
+      "bytes": 1431
+    }
+  },
+  "readiness": "local full matrix PASS; ready for A/Claude review; not scientific approval",
+  "migration": "No DDL or historical backfill; missing historical evidence is explicit unavailable/null; numeric results remain usable",
+  "next_step": "Consume this candidate through the receiving integrator; source-context work in ChatADHD must align with current use_model/actions/rules."
+}
