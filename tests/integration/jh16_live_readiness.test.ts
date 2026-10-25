@@ -136,16 +136,21 @@ test('a reachable-result count is flagged, never corrected, and Hi above 100 is 
   const adapter = new SerpApiAdapter(serpConfig, await credential(), async url => {
     const q = new URL(url).searchParams.get('q')!;
     return { ok: true, status: 200, text: async () => q === '"heroin"'
-      ? serpBody(q, { search_information: { total_results: 74 }, serpapi_pagination: { other_pages: { 2: 'x', 8: 'x' } } }) : serpBody(q) };
+      ? serpBody(q, { search_information: { total_results: 74 }, serpapi_pagination: { other_pages: { 2: 'x', 8: 'x' } } })
+      : q === '"khat"' ? serpBody(q, { search_information: { total_results: 10 }, serpapi_pagination: undefined }) : serpBody(q) };
   }, async () => {});
   const { id } = await runWith(adapter, liveConfig());
   const heroin = new ObservationRepository(db).getByRunId(id).find(o => o.entityId === 'heroin' && o.queryRole === 'popularity')!;
   assert.strictEqual(heroin.isMissing === false && heroin.numericValue, 74, 'the provider value is stored as reported');
   assert.ok(heroin.qualityFlags.includes('PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS'));
+  const khat = new ObservationRepository(db).getByRunId(id).find(o => o.entityId === 'khat' && o.queryRole === 'popularity')!;
+  assert.ok(khat.qualityFlags.includes('PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS'), 'a single-page count is a reachable count too');
+  const cocaine = new ObservationRepository(db).getByRunId(id).find(o => o.entityId === 'cocaine' && o.queryRole === 'popularity')!;
+  assert.ok(!cocaine.qualityFlags.includes('PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS'), 'an index estimate is not flagged');
   const ev = await readEvaluation(id), row = ev.entities.find((e: any) => e.entity_id === 'heroin');
   assert.ok(row.Hi > 100 && row.flags.includes('HI_ABOVE_100'));
   const sens = ev.exploratory.find((x: any) => x.id === 'without_reachable_result_counts');
-  assert.deepStrictEqual(sens.excluded, ['heroin']);
+  assert.deepStrictEqual(sens.excluded, ['heroin', 'khat']);
 });
 
 test('run-level provider parameters: allowed ones reach the request, others are refused', async () => {

@@ -1,0 +1,2258 @@
+{
+ "generated_from": "stored WatchDog outputs (API) of the audit instance; no value recomputed here",
+ "runs": [
+  {
+   "acquired_utc": [
+    "2026-10-25T12:23:26.038Z",
+    "2026-10-25T12:23:26.496Z"
+   ],
+   "evaluation": {
+    "attempt_kind": "pipeline_self_check",
+    "complete": true,
+    "entities": [
+     {
+      "Hi": 27.506426735218508,
+      "Ni": 389000000,
+      "Ni_harm": 107000000,
+      "Pi": 100,
+      "entity_id": "alcohol",
+      "flags": [],
+      "published_Hi": 27.5,
+      "published_Pi": 100,
+      "reference_score": 72
+     },
+     {
+      "Hi": 5.126791620727674,
+      "Ni": 9070000,
+      "Ni_harm": 465000,
+      "Pi": 2.3316195372750643,
+      "entity_id": "amphetamine",
+      "flags": [],
+      "published_Hi": 5.1,
+      "published_Pi": 2.3,
+      "reference_score": 23
+     },
+     {
+      "Hi": 10.331858407079645,
+      "Ni": 4520000,
+      "Ni_harm": 467000,
+      "Pi": 1.1619537275064267,
+      "entity_id": "benzodiazepines",
+      "flags": [],
+      "published_Hi": 10.3,
+      "published_Pi": 1.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 5.84375,
+      "Ni": 6400000,
+      "Ni_harm": 374000,
+      "Pi": 1.6452442159383032,
+      "entity_id": "buprenorphine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 1.6,
+      "reference_score": 7
+     },
+     {
+      "Hi": 3.271186440677966,
+      "Ni": 11800000,
+      "Ni_harm": 386000,
+      "Pi": 3.033419023136247,
+      "entity_id": "butane",
+      "flags": [],
+      "published_Hi": 3.3,
+      "published_Pi": 3,
+      "reference_score": 11
+     },
+     {
+      "Hi": 4.585448392554992,
+      "Ni": 59100000,
+      "Ni_harm": 2710000,
+      "Pi": 15.192802056555271,
+      "entity_id": "cannabis",
+      "flags": [],
+      "published_Hi": 4.6,
+      "published_Pi": 15.2,
+      "reference_score": 20
+     },
+     {
+      "Hi": 25.597269624573375,
+      "Ni": 58600000,
+      "Ni_harm": 15000000,
+      "Pi": 15.064267352185091,
+      "entity_id": "cocaine",
+      "flags": [],
+      "published_Hi": 25.6,
+      "published_Pi": 15.1,
+      "reference_score": 27
+     },
+     {
+      "Hi": 1.5594405594405594,
+      "Ni": 42900000,
+      "Ni_harm": 669000,
+      "Pi": 11.028277634961439,
+      "entity_id": "ecstasy",
+      "flags": [],
+      "published_Hi": 1.6,
+      "published_Pi": 11,
+      "reference_score": 9
+     },
+     {
+      "Hi": 1.2382978723404257,
+      "Ni": 23500000,
+      "Ni_harm": 291000,
+      "Pi": 6.041131105398458,
+      "entity_id": "gamma-hydroxybutyric acid",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 6,
+      "reference_score": 19
+     },
+     {
+      "Hi": 25,
+      "Ni": 46800000,
+      "Ni_harm": 11700000,
+      "Pi": 12.030848329048844,
+      "entity_id": "heroin",
+      "flags": [],
+      "published_Hi": 25,
+      "published_Pi": 12,
+      "reference_score": 55
+     },
+     {
+      "Hi": 4.892857142857142,
+      "Ni": 8400000,
+      "Ni_harm": 411000,
+      "Pi": 2.159383033419023,
+      "entity_id": "ketamine",
+      "flags": [],
+      "published_Hi": 4.9,
+      "published_Pi": 2.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 6.7075471698113205,
+      "Ni": 10600000,
+      "Ni_harm": 711000,
+      "Pi": 2.7249357326478147,
+      "entity_id": "khat",
+      "flags": [],
+      "published_Hi": 6.7,
+      "published_Pi": 2.7,
+      "reference_score": 9
+     },
+     {
+      "Hi": 1.1934156378600824,
+      "Ni": 48600000,
+      "Ni_harm": 580000,
+      "Pi": 12.49357326478149,
+      "entity_id": "lysergic acid diethylamide",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 12.5,
+      "reference_score": 7
+     },
+     {
+      "Hi": 4.48780487804878,
+      "Ni": 2050000,
+      "Ni_harm": 92000,
+      "Pi": 0.5269922879177378,
+      "entity_id": "mephedrone",
+      "flags": [],
+      "published_Hi": 4.5,
+      "published_Pi": 0.5,
+      "reference_score": 13
+     },
+     {
+      "Hi": 4.052238805970149,
+      "Ni": 13400000,
+      "Ni_harm": 543000,
+      "Pi": 3.444730077120823,
+      "entity_id": "methadone",
+      "flags": [],
+      "published_Hi": 4.1,
+      "published_Pi": 3.4,
+      "reference_score": 14
+     },
+     {
+      "Hi": 5.842824601366742,
+      "Ni": 8780000,
+      "Ni_harm": 513000,
+      "Pi": 2.25706940874036,
+      "entity_id": "methamphetamine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 2.3,
+      "reference_score": 33
+     }
+    ],
+    "exploratory": [
+     {
+      "excluded": [
+       "alcohol"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 15,
+        "p_two_sided": 0.002550145995193499,
+        "statistic": "pearson",
+        "value": 0.7184502784513297
+       },
+       {
+        "n": 15,
+        "p_two_sided": 0.08032774173063505,
+        "statistic": "spearman",
+        "value": 0.4655343558437873
+       }
+      ],
+      "id": "without_alcohol"
+     },
+     {
+      "excluded": [],
+      "hi_vs_reference": [
+       {
+        "n": 16,
+        "p_two_sided": 0.00011527208895339493,
+        "statistic": "pearson",
+        "value": 0.8161605610484365
+       },
+       {
+        "n": 16,
+        "p_two_sided": 0.024055104767001078,
+        "statistic": "spearman",
+        "value": 0.5600603222106771
+       }
+      ],
+      "id": "without_reachable_result_counts"
+     }
+    ],
+    "hi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.00011527208895339493,
+      "statistic": "pearson",
+      "value": 0.8161605610484365
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.024055104767001078,
+      "statistic": "spearman",
+      "value": 0.5600603222106771
+     }
+    ],
+    "hypothesis_harm": "supports",
+    "missing": [],
+    "pi_vs_published": {
+     "n": 16,
+     "p_two_sided": 3.117773436717642e-21,
+     "statistic": "spearman",
+     "value": 0.9992644353546793
+    },
+    "pi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.0005167185236467583,
+      "statistic": "pearson",
+      "value": 0.7676587814518214
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.1948805984298314,
+      "statistic": "spearman",
+      "value": 0.3419315651391503
+     }
+    ],
+    "quality_flags": [],
+    "verdicts": [
+     {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "observed_value": 0.8161605610484365,
+      "verdict": "reproduced"
+     },
+     {
+      "claim_key": "popularity_ranking_stability",
+      "observed_value": 0.9992644353546793,
+      "verdict": "reproduced"
+     }
+    ]
+   },
+   "fetch_status": [
+    "SUCCESS"
+   ],
+   "fetches": 32,
+   "git_commit": "55674c3a3633c0da759f035978214e2edb4576ec",
+   "label": "R-hist",
+   "meaning": "recomputation of the 2014 published counts (Study page)",
+   "preset": [
+    "jh2016-faithful",
+    "2016-faithful-v1"
+   ],
+   "run_id": "a0d88a49-f110-492f-b29b-95b71ac844b6"
+  },
+  {
+   "acquired_utc": [
+    "2026-10-25T11:58:09.105Z",
+    "2026-10-25T11:58:57.066Z"
+   ],
+   "evaluation": null,
+   "fetch_status": [
+    "SUCCESS"
+   ],
+   "fetches": 32,
+   "git_commit": null,
+   "label": "R1-faithful-prefix",
+   "meaning": "new fetch, faithful, product before fixes (commit 58a0c93, unstamped)",
+   "preset": [
+    "jh2016-faithful",
+    "2016-faithful-v1"
+   ],
+   "run_id": "e2aa7643-fa2d-4c6b-b75f-1085f9082c6f"
+  },
+  {
+   "acquired_utc": null,
+   "evaluation": {
+    "attempt_kind": "independent_attempt",
+    "complete": true,
+    "entities": [
+     {
+      "Hi": 29.97159090909091,
+      "Ni": 704000000,
+      "Ni_harm": 211000000,
+      "Pi": 100,
+      "entity_id": "alcohol",
+      "flags": [],
+      "published_Hi": 27.5,
+      "published_Pi": 100,
+      "reference_score": 72
+     },
+     {
+      "Hi": 97.17607973421927,
+      "Ni": 6020000,
+      "Ni_harm": 5850000,
+      "Pi": 0.8551136363636364,
+      "entity_id": "amphetamine",
+      "flags": [],
+      "published_Hi": 5.1,
+      "published_Pi": 2.3,
+      "reference_score": 23
+     },
+     {
+      "Hi": 0.00125,
+      "Ni": 4640000,
+      "Ni_harm": 58,
+      "Pi": 0.6590909090909091,
+      "entity_id": "benzodiazepines",
+      "flags": [],
+      "published_Hi": 10.3,
+      "published_Pi": 1.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 75.65632458233891,
+      "Ni": 8380000,
+      "Ni_harm": 6340000,
+      "Pi": 1.1903409090909092,
+      "entity_id": "buprenorphine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 1.6,
+      "reference_score": 7
+     },
+     {
+      "Hi": 2456140.3508771933,
+      "Ni": 57,
+      "Ni_harm": 1400000,
+      "Pi": 8.09659090909091e-06,
+      "entity_id": "butane",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 3.3,
+      "published_Pi": 3,
+      "reference_score": 11
+     },
+     {
+      "Hi": 16.044776119402986,
+      "Ni": 134000000,
+      "Ni_harm": 21500000,
+      "Pi": 19.03409090909091,
+      "entity_id": "cannabis",
+      "flags": [],
+      "published_Hi": 4.6,
+      "published_Pi": 15.2,
+      "reference_score": 20
+     },
+     {
+      "Hi": 41.458333333333336,
+      "Ni": 48000000,
+      "Ni_harm": 19900000,
+      "Pi": 6.8181818181818175,
+      "entity_id": "cocaine",
+      "flags": [],
+      "published_Hi": 25.6,
+      "published_Pi": 15.1,
+      "reference_score": 27
+     },
+     {
+      "Hi": 16.455696202531644,
+      "Ni": 55300000,
+      "Ni_harm": 9100000,
+      "Pi": 7.855113636363637,
+      "entity_id": "ecstasy",
+      "flags": [],
+      "published_Hi": 1.6,
+      "published_Pi": 11,
+      "reference_score": 9
+     },
+     {
+      "Hi": 5.024570024570025,
+      "Ni": 8140000,
+      "Ni_harm": 409000,
+      "Pi": 1.15625,
+      "entity_id": "gamma-hydroxybutyric acid",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 6,
+      "reference_score": 19
+     },
+     {
+      "Hi": 21486486.486486487,
+      "Ni": 74,
+      "Ni_harm": 15900000,
+      "Pi": 1.0511363636363637e-05,
+      "entity_id": "heroin",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 25,
+      "published_Pi": 12,
+      "reference_score": 55
+     },
+     {
+      "Hi": 38.230088495575224,
+      "Ni": 11300000,
+      "Ni_harm": 4320000,
+      "Pi": 1.6051136363636365,
+      "entity_id": "ketamine",
+      "flags": [],
+      "published_Hi": 4.9,
+      "published_Pi": 2.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 3.7022900763358777,
+      "Ni": 13100000,
+      "Ni_harm": 485000,
+      "Pi": 1.8607954545454546,
+      "entity_id": "khat",
+      "flags": [],
+      "published_Hi": 6.7,
+      "published_Pi": 2.7,
+      "reference_score": 9
+     },
+     {
+      "Hi": 8.190709046454767,
+      "Ni": 40900000,
+      "Ni_harm": 3350000,
+      "Pi": 5.809659090909091,
+      "entity_id": "lysergic acid diethylamide",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 12.5,
+      "reference_score": 7
+     },
+     {
+      "Hi": 697.9166666666667,
+      "Ni": 672000,
+      "Ni_harm": 4690000,
+      "Pi": 0.09545454545454546,
+      "entity_id": "mephedrone",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 4.5,
+      "published_Pi": 0.5,
+      "reference_score": 13
+     },
+     {
+      "Hi": 57.490636704119844,
+      "Ni": 5340000,
+      "Ni_harm": 3070000,
+      "Pi": 0.7585227272727273,
+      "entity_id": "methadone",
+      "flags": [],
+      "published_Hi": 4.1,
+      "published_Pi": 3.4,
+      "reference_score": 14
+     },
+     {
+      "Hi": 99.03846153846155,
+      "Ni": 10400000,
+      "Ni_harm": 10300000,
+      "Pi": 1.4772727272727273,
+      "entity_id": "methamphetamine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 2.3,
+      "reference_score": 33
+     }
+    ],
+    "exploratory": [
+     {
+      "excluded": [
+       "alcohol"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 15,
+        "p_two_sided": 0.0005090667061958495,
+        "statistic": "pearson",
+        "value": 0.7862331783641223
+       },
+       {
+        "n": 15,
+        "p_two_sided": 0.28811619509314335,
+        "statistic": "spearman",
+        "value": 0.2936447475322351
+       }
+      ],
+      "id": "without_alcohol"
+     },
+     {
+      "excluded": [],
+      "hi_vs_reference": [
+       {
+        "n": 16,
+        "p_two_sided": 0.06496024556739102,
+        "statistic": "pearson",
+        "value": 0.4719102248793246
+       },
+       {
+        "n": 16,
+        "p_two_sided": 0.37927152654478813,
+        "statistic": "spearman",
+        "value": 0.23581487250975883
+       }
+      ],
+      "id": "without_reachable_result_counts"
+     }
+    ],
+    "hi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.06496024556739102,
+      "statistic": "pearson",
+      "value": 0.4719102248793246
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.37927152654478813,
+      "statistic": "spearman",
+      "value": 0.23581487250975883
+     }
+    ],
+    "hypothesis_harm": "contradicts",
+    "missing": [],
+    "pi_vs_published": {
+     "n": 16,
+     "p_two_sided": 0.017473114534993017,
+     "statistic": "spearman",
+     "value": 0.5842532854724708
+    },
+    "pi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.0018389368952142736,
+      "statistic": "pearson",
+      "value": 0.7153012291388605
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.7736925970300483,
+      "statistic": "spearman",
+      "value": 0.0781136765188576
+     }
+    ],
+    "quality_flags": [
+     "HI_ABOVE_100"
+    ],
+    "verdicts": [
+     {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "observed_value": 0.4719102248793246,
+      "verdict": "deviates"
+     },
+     {
+      "claim_key": "popularity_ranking_stability",
+      "observed_value": 0.5842532854724708,
+      "verdict": "deviates"
+     }
+    ]
+   },
+   "fetch_status": [],
+   "fetches": 0,
+   "git_commit": "55674c3a3633c0da759f035978214e2edb4576ec",
+   "label": "R1-recompute",
+   "meaning": "recomputation of R1 stored counts by fixed code (ANALYSIS run)",
+   "preset": null,
+   "run_id": "9d80efca-d819-49fb-9b0c-fec57c0e8d74"
+  },
+  {
+   "acquired_utc": [
+    "2026-10-25T12:39:21.518Z",
+    "2026-10-25T12:40:10.097Z"
+   ],
+   "evaluation": {
+    "attempt_kind": "independent_attempt",
+    "complete": true,
+    "entities": [
+     {
+      "Hi": 30.113636363636363,
+      "Ni": 704000000,
+      "Ni_harm": 212000000,
+      "Pi": 100,
+      "entity_id": "alcohol",
+      "flags": [],
+      "published_Hi": 27.5,
+      "published_Pi": 100,
+      "reference_score": 72
+     },
+     {
+      "Hi": 98.00664451827242,
+      "Ni": 6020000,
+      "Ni_harm": 5900000,
+      "Pi": 0.8551136363636364,
+      "entity_id": "amphetamine",
+      "flags": [],
+      "published_Hi": 5.1,
+      "published_Pi": 2.3,
+      "reference_score": 23
+     },
+     {
+      "Hi": 0.00125,
+      "Ni": 4640000,
+      "Ni_harm": 58,
+      "Pi": 0.6590909090909091,
+      "entity_id": "benzodiazepines",
+      "flags": [
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 10.3,
+      "published_Pi": 1.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 76.09988109393579,
+      "Ni": 8410000,
+      "Ni_harm": 6400000,
+      "Pi": 1.1946022727272727,
+      "entity_id": "buprenorphine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 1.6,
+      "reference_score": 7
+     },
+     {
+      "Hi": 119.64285714285714,
+      "Ni": 56,
+      "Ni_harm": 67,
+      "Pi": 7.954545454545455e-06,
+      "entity_id": "butane",
+      "flags": [
+       "HI_ABOVE_100",
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 3.3,
+      "published_Pi": 3,
+      "reference_score": 11
+     },
+     {
+      "Hi": 99.25925925925925,
+      "Ni": 135000000,
+      "Ni_harm": 134000000,
+      "Pi": 19.176136363636363,
+      "entity_id": "cannabis",
+      "flags": [],
+      "published_Hi": 4.6,
+      "published_Pi": 15.2,
+      "reference_score": 20
+     },
+     {
+      "Hi": 40.91858037578288,
+      "Ni": 47900000,
+      "Ni_harm": 19600000,
+      "Pi": 6.8039772727272725,
+      "entity_id": "cocaine",
+      "flags": [],
+      "published_Hi": 25.6,
+      "published_Pi": 15.1,
+      "reference_score": 27
+     },
+     {
+      "Hi": 16.564195298372514,
+      "Ni": 55300000,
+      "Ni_harm": 9160000,
+      "Pi": 7.855113636363637,
+      "entity_id": "ecstasy",
+      "flags": [],
+      "published_Hi": 1.6,
+      "published_Pi": 11,
+      "reference_score": 9
+     },
+     {
+      "Hi": 5.006119951040391,
+      "Ni": 8170000,
+      "Ni_harm": 409000,
+      "Pi": 1.1605113636363635,
+      "entity_id": "gamma-hydroxybutyric acid",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 6,
+      "reference_score": 19
+     },
+     {
+      "Hi": 61.86770428015564,
+      "Ni": 25700000,
+      "Ni_harm": 15900000,
+      "Pi": 3.650568181818182,
+      "entity_id": "heroin",
+      "flags": [],
+      "published_Hi": 25,
+      "published_Pi": 12,
+      "reference_score": 55
+     },
+     {
+      "Hi": 39.02654867256637,
+      "Ni": 11300000,
+      "Ni_harm": 4410000,
+      "Pi": 1.6051136363636365,
+      "entity_id": "ketamine",
+      "flags": [],
+      "published_Hi": 4.9,
+      "published_Pi": 2.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 3.6717557251908395,
+      "Ni": 13100000,
+      "Ni_harm": 481000,
+      "Pi": 1.8607954545454546,
+      "entity_id": "khat",
+      "flags": [],
+      "published_Hi": 6.7,
+      "published_Pi": 2.7,
+      "reference_score": 9
+     },
+     {
+      "Hi": 0.0001782178217821782,
+      "Ni": 40400000,
+      "Ni_harm": 72,
+      "Pi": 5.738636363636364,
+      "entity_id": "lysergic acid diethylamide",
+      "flags": [
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 1.2,
+      "published_Pi": 12.5,
+      "reference_score": 7
+     },
+     {
+      "Hi": 695.7831325301205,
+      "Ni": 664000,
+      "Ni_harm": 4620000,
+      "Pi": 0.09431818181818181,
+      "entity_id": "mephedrone",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 4.5,
+      "published_Pi": 0.5,
+      "reference_score": 13
+     },
+     {
+      "Hi": 57.92452830188679,
+      "Ni": 5300000,
+      "Ni_harm": 3070000,
+      "Pi": 0.7528409090909091,
+      "entity_id": "methadone",
+      "flags": [],
+      "published_Hi": 4.1,
+      "published_Pi": 3.4,
+      "reference_score": 14
+     },
+     {
+      "Hi": 101.92307692307692,
+      "Ni": 10400000,
+      "Ni_harm": 10600000,
+      "Pi": 1.4772727272727273,
+      "entity_id": "methamphetamine",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 5.8,
+      "published_Pi": 2.3,
+      "reference_score": 33
+     }
+    ],
+    "exploratory": [
+     {
+      "excluded": [
+       "alcohol"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 15,
+        "p_two_sided": 0.8635232987354008,
+        "statistic": "pearson",
+        "value": -0.04856985087468179
+       },
+       {
+        "n": 15,
+        "p_two_sided": 0.2974353734715247,
+        "statistic": "spearman",
+        "value": 0.28827319727249906
+       }
+      ],
+      "id": "without_alcohol"
+     },
+     {
+      "excluded": [
+       "benzodiazepines",
+       "butane",
+       "lysergic acid diethylamide"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 13,
+        "p_two_sided": 0.6016291245034853,
+        "statistic": "pearson",
+        "value": -0.15997398607766988
+       },
+       {
+        "n": 13,
+        "p_two_sided": 0.5774442802833075,
+        "statistic": "spearman",
+        "value": 0.17056412284302613
+       }
+      ],
+      "id": "without_reachable_result_counts"
+     }
+    ],
+    "hi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.7014669402774014,
+      "statistic": "pearson",
+      "value": -0.10401183669099408
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.4202643762171242,
+      "statistic": "spearman",
+      "value": 0.21665491411834092
+     }
+    ],
+    "hypothesis_harm": "contradicts",
+    "missing": [],
+    "pi_vs_published": {
+     "n": 16,
+     "p_two_sided": 0.0005734728194582657,
+     "statistic": "spearman",
+     "value": 0.7637971162725752
+    },
+    "pi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.0011623355340929756,
+      "statistic": "pearson",
+      "value": 0.7356320908263596
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.31791188287704,
+      "statistic": "spearman",
+      "value": 0.26676557452666466
+     }
+    ],
+    "quality_flags": [
+     "HI_ABOVE_100",
+     "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+    ],
+    "verdicts": [
+     {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "observed_value": -0.10401183669099408,
+      "verdict": "deviates"
+     },
+     {
+      "claim_key": "popularity_ranking_stability",
+      "observed_value": 0.7637971162725752,
+      "verdict": "reproduced"
+     }
+    ]
+   },
+   "fetch_status": [
+    "SUCCESS"
+   ],
+   "fetches": 32,
+   "git_commit": "64023580775afe0a0b5e68afa499bfb8f504ffa2",
+   "label": "R3-faithful",
+   "meaning": "new fetch, faithful, fixed product",
+   "preset": [
+    "jh2016-faithful",
+    "2016-faithful-v1"
+   ],
+   "run_id": "2e701755-e83a-42dd-a39d-b3d247d9eed2"
+  },
+  {
+   "acquired_utc": [
+    "2026-10-25T12:39:21.667Z",
+    "2026-10-25T12:40:54.252Z"
+   ],
+   "evaluation": {
+    "attempt_kind": "independent_attempt",
+    "complete": true,
+    "entities": [
+     {
+      "Hi": 29.545454545454547,
+      "Ni": 704000000,
+      "Ni_harm": 208000000,
+      "Pi": 100,
+      "entity_id": "alcohol",
+      "flags": [],
+      "published_Hi": 27.5,
+      "published_Pi": 100,
+      "reference_score": 72
+     },
+     {
+      "Hi": 97.68211920529801,
+      "Ni": 6040000,
+      "Ni_harm": 5900000,
+      "Pi": 0.8579545454545454,
+      "entity_id": "amphetamine",
+      "flags": [],
+      "published_Hi": 5.1,
+      "published_Pi": 2.3,
+      "reference_score": 23
+     },
+     {
+      "Hi": 5444444.444444445,
+      "Ni": 63,
+      "Ni_harm": 3430000,
+      "Pi": 8.948863636363636e-06,
+      "entity_id": "benzodiazepines",
+      "flags": [
+       "HI_ABOVE_100",
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 10.3,
+      "published_Pi": 1.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 76.11044417767107,
+      "Ni": 8330000,
+      "Ni_harm": 6340000,
+      "Pi": 1.1832386363636365,
+      "entity_id": "buprenorphine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 1.6,
+      "reference_score": 7
+     },
+     {
+      "Hi": 6.634146341463415,
+      "Ni": 20500000,
+      "Ni_harm": 1360000,
+      "Pi": 2.911931818181818,
+      "entity_id": "butane",
+      "flags": [],
+      "published_Hi": 3.3,
+      "published_Pi": 3,
+      "reference_score": 11
+     },
+     {
+      "Hi": 16.074074074074073,
+      "Ni": 135000000,
+      "Ni_harm": 21700000,
+      "Pi": 19.176136363636363,
+      "entity_id": "cannabis",
+      "flags": [],
+      "published_Hi": 4.6,
+      "published_Pi": 15.2,
+      "reference_score": 20
+     },
+     {
+      "Hi": 2.092050209205021e-06,
+      "Ni": 47800000,
+      "Ni_harm": 1,
+      "Pi": 6.7897727272727275,
+      "entity_id": "cocaine",
+      "flags": [],
+      "published_Hi": 25.6,
+      "published_Pi": 15.1,
+      "reference_score": 27
+     },
+     {
+      "Hi": 16.6003616636528,
+      "Ni": 55300000,
+      "Ni_harm": 9180000,
+      "Pi": 7.855113636363637,
+      "entity_id": "ecstasy",
+      "flags": [],
+      "published_Hi": 1.6,
+      "published_Pi": 11,
+      "reference_score": 9
+     },
+     {
+      "Hi": 5.024570024570025,
+      "Ni": 8140000,
+      "Ni_harm": 409000,
+      "Pi": 1.15625,
+      "entity_id": "gamma-hydroxybutyric acid",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 6,
+      "reference_score": 19
+     },
+     {
+      "Hi": 61.86770428015564,
+      "Ni": 25700000,
+      "Ni_harm": 15900000,
+      "Pi": 3.650568181818182,
+      "entity_id": "heroin",
+      "flags": [],
+      "published_Hi": 25,
+      "published_Pi": 12,
+      "reference_score": 55
+     },
+     {
+      "Hi": 0.0006460176991150443,
+      "Ni": 11300000,
+      "Ni_harm": 73,
+      "Pi": 1.6051136363636365,
+      "entity_id": "ketamine",
+      "flags": [
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 4.9,
+      "published_Pi": 2.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 3.6923076923076925,
+      "Ni": 13000000,
+      "Ni_harm": 480000,
+      "Pi": 1.8465909090909092,
+      "entity_id": "khat",
+      "flags": [],
+      "published_Hi": 6.7,
+      "published_Pi": 2.7,
+      "reference_score": 9
+     },
+     {
+      "Hi": 8.292079207920793,
+      "Ni": 40400000,
+      "Ni_harm": 3350000,
+      "Pi": 5.738636363636364,
+      "entity_id": "lysergic acid diethylamide",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 12.5,
+      "reference_score": 7
+     },
+     {
+      "Hi": 695.7831325301205,
+      "Ni": 664000,
+      "Ni_harm": 4620000,
+      "Pi": 0.09431818181818181,
+      "entity_id": "mephedrone",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 4.5,
+      "published_Pi": 0.5,
+      "reference_score": 13
+     },
+     {
+      "Hi": 57.06319702602231,
+      "Ni": 5380000,
+      "Ni_harm": 3070000,
+      "Pi": 0.7642045454545454,
+      "entity_id": "methadone",
+      "flags": [],
+      "published_Hi": 4.1,
+      "published_Pi": 3.4,
+      "reference_score": 14
+     },
+     {
+      "Hi": 100.96153846153845,
+      "Ni": 10400000,
+      "Ni_harm": 10500000,
+      "Pi": 1.4772727272727273,
+      "entity_id": "methamphetamine",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 5.8,
+      "published_Pi": 2.3,
+      "reference_score": 33
+     }
+    ],
+    "exploratory": [
+     {
+      "excluded": [
+       "alcohol"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 15,
+        "p_two_sided": 0.7870340346566076,
+        "statistic": "pearson",
+        "value": -0.07627148378440195
+       },
+       {
+        "n": 15,
+        "p_two_sided": 0.7365609070130489,
+        "statistic": "spearman",
+        "value": 0.0948973879220028
+       }
+      ],
+      "id": "without_alcohol"
+     },
+     {
+      "excluded": [
+       "benzodiazepines",
+       "ketamine"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 14,
+        "p_two_sided": 0.7291889428385157,
+        "statistic": "pearson",
+        "value": -0.10177520450812672
+       },
+       {
+        "n": 14,
+        "p_two_sided": 0.5265696875939161,
+        "statistic": "spearman",
+        "value": 0.18502247526320054
+       }
+      ],
+      "id": "without_reachable_result_counts"
+     }
+    ],
+    "hi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.7110828446934545,
+      "statistic": "pearson",
+      "value": -0.10051936872794676
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.6755982563221856,
+      "statistic": "spearman",
+      "value": 0.11348590739532143
+     }
+    ],
+    "hypothesis_harm": "contradicts",
+    "missing": [],
+    "pi_vs_published": {
+     "n": 16,
+     "p_two_sided": 5.831577829729677e-05,
+     "statistic": "spearman",
+     "value": 0.8344373119972064
+    },
+    "pi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.001235366412429113,
+      "statistic": "pearson",
+      "value": 0.73302966263455
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.49810909551330584,
+      "statistic": "spearman",
+      "value": 0.18275652619506308
+     }
+    ],
+    "quality_flags": [
+     "HI_ABOVE_100",
+     "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+    ],
+    "verdicts": [
+     {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "observed_value": -0.10051936872794676,
+      "verdict": "deviates"
+     },
+     {
+      "claim_key": "popularity_ranking_stability",
+      "observed_value": 0.8344373119972064,
+      "verdict": "reproduced"
+     }
+    ]
+   },
+   "fetch_status": [
+    "SUCCESS"
+   ],
+   "fetches": 32,
+   "git_commit": "64023580775afe0a0b5e68afa499bfb8f504ffa2",
+   "label": "R3-ext-repeat-1",
+   "meaning": "ENHANCED: repeat 1",
+   "preset": [
+    "jh2016-serp-extension",
+    "2026-10-25-v1"
+   ],
+   "run_id": "d935c03b-0b1c-4971-b6f2-d9b0ba15333d"
+  },
+  {
+   "acquired_utc": [
+    "2026-10-25T12:39:21.743Z",
+    "2026-10-25T12:41:19.896Z"
+   ],
+   "evaluation": {
+    "attempt_kind": "independent_attempt",
+    "complete": true,
+    "entities": [
+     {
+      "Hi": 29.929078014184395,
+      "Ni": 705000000,
+      "Ni_harm": 211000000,
+      "Pi": 100,
+      "entity_id": "alcohol",
+      "flags": [],
+      "published_Hi": 27.5,
+      "published_Pi": 100,
+      "reference_score": 72
+     },
+     {
+      "Hi": 98.00664451827242,
+      "Ni": 6020000,
+      "Ni_harm": 5900000,
+      "Pi": 0.8539007092198582,
+      "entity_id": "amphetamine",
+      "flags": [],
+      "published_Hi": 5.1,
+      "published_Pi": 2.3,
+      "reference_score": 23
+     },
+     {
+      "Hi": 99.57264957264957,
+      "Ni": 4680000,
+      "Ni_harm": 4660000,
+      "Pi": 0.6638297872340425,
+      "entity_id": "benzodiazepines",
+      "flags": [],
+      "published_Hi": 10.3,
+      "published_Pi": 1.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 77.18040621266428,
+      "Ni": 8370000,
+      "Ni_harm": 6460000,
+      "Pi": 1.1872340425531915,
+      "entity_id": "buprenorphine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 1.6,
+      "reference_score": 7
+     },
+     {
+      "Hi": 2403508.7719298243,
+      "Ni": 57,
+      "Ni_harm": 1370000,
+      "Pi": 8.085106382978723e-06,
+      "entity_id": "butane",
+      "flags": [
+       "HI_ABOVE_100",
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 3.3,
+      "published_Pi": 3,
+      "reference_score": 11
+     },
+     {
+      "Hi": 16,
+      "Ni": 135000000,
+      "Ni_harm": 21600000,
+      "Pi": 19.148936170212767,
+      "entity_id": "cannabis",
+      "flags": [],
+      "published_Hi": 4.6,
+      "published_Pi": 15.2,
+      "reference_score": 20
+     },
+     {
+      "Hi": 41.962421711899786,
+      "Ni": 47900000,
+      "Ni_harm": 20100000,
+      "Pi": 6.794326241134751,
+      "entity_id": "cocaine",
+      "flags": [],
+      "published_Hi": 25.6,
+      "published_Pi": 15.1,
+      "reference_score": 27
+     },
+     {
+      "Hi": 16.401446654611213,
+      "Ni": 55300000,
+      "Ni_harm": 9070000,
+      "Pi": 7.843971631205673,
+      "entity_id": "ecstasy",
+      "flags": [],
+      "published_Hi": 1.6,
+      "published_Pi": 11,
+      "reference_score": 9
+     },
+     {
+      "Hi": 5.024570024570025,
+      "Ni": 8140000,
+      "Ni_harm": 409000,
+      "Pi": 1.1546099290780143,
+      "entity_id": "gamma-hydroxybutyric acid",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 6,
+      "reference_score": 19
+     },
+     {
+      "Hi": 62.2568093385214,
+      "Ni": 25700000,
+      "Ni_harm": 16000000,
+      "Pi": 3.645390070921986,
+      "entity_id": "heroin",
+      "flags": [],
+      "published_Hi": 25,
+      "published_Pi": 12,
+      "reference_score": 55
+     },
+     {
+      "Hi": 797260273.9726027,
+      "Ni": 73,
+      "Ni_harm": 582000000,
+      "Pi": 1.0354609929078014e-05,
+      "entity_id": "ketamine",
+      "flags": [
+       "HI_ABOVE_100",
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 4.9,
+      "published_Pi": 2.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 3.7099236641221376,
+      "Ni": 13100000,
+      "Ni_harm": 486000,
+      "Pi": 1.8581560283687941,
+      "entity_id": "khat",
+      "flags": [],
+      "published_Hi": 6.7,
+      "published_Pi": 2.7,
+      "reference_score": 9
+     },
+     {
+      "Hi": 7.976190476190475,
+      "Ni": 42000000,
+      "Ni_harm": 3350000,
+      "Pi": 5.957446808510639,
+      "entity_id": "lysergic acid diethylamide",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 12.5,
+      "reference_score": 7
+     },
+     {
+      "Hi": 706.3253012048193,
+      "Ni": 664000,
+      "Ni_harm": 4690000,
+      "Pi": 0.09418439716312056,
+      "entity_id": "mephedrone",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 4.5,
+      "published_Pi": 0.5,
+      "reference_score": 13
+     },
+     {
+      "Hi": 57.92452830188679,
+      "Ni": 5300000,
+      "Ni_harm": 3070000,
+      "Pi": 0.75177304964539,
+      "entity_id": "methadone",
+      "flags": [],
+      "published_Hi": 4.1,
+      "published_Pi": 3.4,
+      "reference_score": 14
+     },
+     {
+      "Hi": 102.9126213592233,
+      "Ni": 10300000,
+      "Ni_harm": 10600000,
+      "Pi": 1.4609929078014183,
+      "entity_id": "methamphetamine",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 5.8,
+      "published_Pi": 2.3,
+      "reference_score": 33
+     }
+    ],
+    "exploratory": [
+     {
+      "excluded": [
+       "alcohol"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 15,
+        "p_two_sided": 0.7856515527323826,
+        "statistic": "pearson",
+        "value": -0.07677744854398849
+       },
+       {
+        "n": 15,
+        "p_two_sided": 0.5487673614483368,
+        "statistic": "spearman",
+        "value": 0.16830857480506156
+       }
+      ],
+      "id": "without_alcohol"
+     },
+     {
+      "excluded": [
+       "butane",
+       "ketamine"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 14,
+        "p_two_sided": 0.6719881755186093,
+        "statistic": "pearson",
+        "value": -0.12431345333209849
+       },
+       {
+        "n": 14,
+        "p_two_sided": 0.4399868566179308,
+        "statistic": "spearman",
+        "value": 0.22467014853388637
+       }
+      ],
+      "id": "without_reachable_result_counts"
+     }
+    ],
+    "hi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.7097308658734409,
+      "statistic": "pearson",
+      "value": -0.10100949431077473
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.6836119788110149,
+      "statistic": "spearman",
+      "value": 0.11053822148894944
+     }
+    ],
+    "hypothesis_harm": "contradicts",
+    "missing": [],
+    "pi_vs_published": {
+     "n": 16,
+     "p_two_sided": 0.0002942614001342203,
+     "statistic": "spearman",
+     "value": 0.7873438481807856
+    },
+    "pi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.001160405015186733,
+      "statistic": "pearson",
+      "value": 0.7357026762646093
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.32069442860048436,
+      "statistic": "spearman",
+      "value": 0.2652917315734787
+     }
+    ],
+    "quality_flags": [
+     "HI_ABOVE_100",
+     "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+    ],
+    "verdicts": [
+     {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "observed_value": -0.10100949431077473,
+      "verdict": "deviates"
+     },
+     {
+      "claim_key": "popularity_ranking_stability",
+      "observed_value": 0.7873438481807856,
+      "verdict": "reproduced"
+     }
+    ]
+   },
+   "fetch_status": [
+    "SUCCESS"
+   ],
+   "fetches": 32,
+   "git_commit": "64023580775afe0a0b5e68afa499bfb8f504ffa2",
+   "label": "R3-ext-repeat-2",
+   "meaning": "ENHANCED: repeat 2",
+   "preset": [
+    "jh2016-serp-extension",
+    "2026-10-25-v1"
+   ],
+   "run_id": "4e8ff376-52e1-4097-870c-5aac4dbb2cf5"
+  },
+  {
+   "acquired_utc": [
+    "2026-10-25T12:39:21.824Z",
+    "2026-10-25T12:40:42.802Z"
+   ],
+   "evaluation": {
+    "attempt_kind": "independent_attempt",
+    "complete": true,
+    "entities": [
+     {
+      "Hi": 5.673758865248227e-07,
+      "Ni": 705000000,
+      "Ni_harm": 4,
+      "Pi": 100,
+      "entity_id": "alcohol",
+      "flags": [],
+      "published_Hi": 27.5,
+      "published_Pi": 100,
+      "reference_score": 72
+     },
+     {
+      "Hi": 247.0978441127695,
+      "Ni": 6030000,
+      "Ni_harm": 14900000,
+      "Pi": 0.8553191489361702,
+      "entity_id": "amphetamine",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 5.1,
+      "published_Pi": 2.3,
+      "reference_score": 23
+     },
+     {
+      "Hi": 100,
+      "Ni": 4660000,
+      "Ni_harm": 4660000,
+      "Pi": 0.6609929078014184,
+      "entity_id": "benzodiazepines",
+      "flags": [],
+      "published_Hi": 10.3,
+      "published_Pi": 1.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 76.15658362989323,
+      "Ni": 8430000,
+      "Ni_harm": 6420000,
+      "Pi": 1.195744680851064,
+      "entity_id": "buprenorphine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 1.6,
+      "reference_score": 7
+     },
+     {
+      "Hi": 102.45098039215685,
+      "Ni": 20400000,
+      "Ni_harm": 20900000,
+      "Pi": 2.893617021276596,
+      "entity_id": "butane",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 3.3,
+      "published_Pi": 3,
+      "reference_score": 11
+     },
+     {
+      "Hi": 99.25925925925925,
+      "Ni": 135000000,
+      "Ni_harm": 134000000,
+      "Pi": 19.148936170212767,
+      "entity_id": "cannabis",
+      "flags": [],
+      "published_Hi": 4.6,
+      "published_Pi": 15.2,
+      "reference_score": 20
+     },
+     {
+      "Hi": 41.75365344467641,
+      "Ni": 47900000,
+      "Ni_harm": 20000000,
+      "Pi": 6.794326241134751,
+      "entity_id": "cocaine",
+      "flags": [],
+      "published_Hi": 25.6,
+      "published_Pi": 15.1,
+      "reference_score": 27
+     },
+     {
+      "Hi": 13861538.461538462,
+      "Ni": 65,
+      "Ni_harm": 9010000,
+      "Pi": 9.21985815602837e-06,
+      "entity_id": "ecstasy",
+      "flags": [
+       "HI_ABOVE_100",
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 1.6,
+      "published_Pi": 11,
+      "reference_score": 9
+     },
+     {
+      "Hi": 5.150375939849624,
+      "Ni": 7980000,
+      "Ni_harm": 411000,
+      "Pi": 1.1319148936170214,
+      "entity_id": "gamma-hydroxybutyric acid",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 6,
+      "reference_score": 19
+     },
+     {
+      "Hi": 61.86770428015564,
+      "Ni": 25700000,
+      "Ni_harm": 15900000,
+      "Pi": 3.645390070921986,
+      "entity_id": "heroin",
+      "flags": [],
+      "published_Hi": 25,
+      "published_Pi": 12,
+      "reference_score": 55
+     },
+     {
+      "Hi": 38.230088495575224,
+      "Ni": 11300000,
+      "Ni_harm": 4320000,
+      "Pi": 1.6028368794326242,
+      "entity_id": "ketamine",
+      "flags": [],
+      "published_Hi": 4.9,
+      "published_Pi": 2.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 4401.515151515152,
+      "Ni": 13200000,
+      "Ni_harm": 581000000,
+      "Pi": 1.872340425531915,
+      "entity_id": "khat",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 6.7,
+      "published_Pi": 2.7,
+      "reference_score": 9
+     },
+     {
+      "Hi": 8.292079207920793,
+      "Ni": 40400000,
+      "Ni_harm": 3350000,
+      "Pi": 5.730496453900709,
+      "entity_id": "lysergic acid diethylamide",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 12.5,
+      "reference_score": 7
+     },
+     {
+      "Hi": 7107692.307692308,
+      "Ni": 65,
+      "Ni_harm": 4620000,
+      "Pi": 9.21985815602837e-06,
+      "entity_id": "mephedrone",
+      "flags": [
+       "HI_ABOVE_100",
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 4.5,
+      "published_Pi": 0.5,
+      "reference_score": 13
+     },
+     {
+      "Hi": 57.490636704119844,
+      "Ni": 5340000,
+      "Ni_harm": 3070000,
+      "Pi": 0.7574468085106383,
+      "entity_id": "methadone",
+      "flags": [],
+      "published_Hi": 4.1,
+      "published_Pi": 3.4,
+      "reference_score": 14
+     },
+     {
+      "Hi": 101.92307692307692,
+      "Ni": 10400000,
+      "Ni_harm": 10600000,
+      "Pi": 1.475177304964539,
+      "entity_id": "methamphetamine",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 5.8,
+      "published_Pi": 2.3,
+      "reference_score": 33
+     }
+    ],
+    "exploratory": [
+     {
+      "excluded": [
+       "alcohol"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 15,
+        "p_two_sided": 0.3737201680756911,
+        "statistic": "pearson",
+        "value": -0.24754582221645602
+       },
+       {
+        "n": 15,
+        "p_two_sided": 0.5358913597212682,
+        "statistic": "spearman",
+        "value": -0.17368012506479757
+       }
+      ],
+      "id": "without_alcohol"
+     },
+     {
+      "excluded": [
+       "ecstasy",
+       "mephedrone"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 14,
+        "p_two_sided": 0.4322942288424897,
+        "statistic": "pearson",
+        "value": -0.22836811881256816
+       },
+       {
+        "n": 14,
+        "p_two_sided": 0.5366308444822275,
+        "statistic": "spearman",
+        "value": -0.18061717823312431
+       }
+      ],
+      "id": "without_reachable_result_counts"
+     }
+    ],
+    "hi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.3830313621847413,
+      "statistic": "pearson",
+      "value": -0.23401255372935245
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.22721665034760197,
+      "statistic": "spearman",
+      "value": -0.3198239208413604
+     }
+    ],
+    "hypothesis_harm": "contradicts",
+    "missing": [],
+    "pi_vs_published": {
+     "n": 16,
+     "p_two_sided": 0.0021308350285246212,
+     "statistic": "spearman",
+     "value": 0.7083946980854198
+    },
+    "pi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.000941136849892759,
+      "statistic": "pearson",
+      "value": 0.7444269977282936
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.16628753515587869,
+      "statistic": "spearman",
+      "value": 0.3635697169902745
+     }
+    ],
+    "quality_flags": [
+     "HI_ABOVE_100",
+     "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+    ],
+    "verdicts": [
+     {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "observed_value": -0.23401255372935245,
+      "verdict": "deviates"
+     },
+     {
+      "claim_key": "popularity_ranking_stability",
+      "observed_value": 0.7083946980854198,
+      "verdict": "reproduced"
+     }
+    ]
+   },
+   "fetch_status": [
+    "SUCCESS"
+   ],
+   "fetches": 32,
+   "git_commit": "64023580775afe0a0b5e68afa499bfb8f504ffa2",
+   "label": "R3-ext-gl-us",
+   "meaning": "ENHANCED: gl=us, google.com",
+   "preset": [
+    "jh2016-serp-extension",
+    "2026-10-25-v1"
+   ],
+   "run_id": "f4c9d3d5-3217-4b80-a3ca-eca6de63c3cb"
+  },
+  {
+   "acquired_utc": [
+    "2026-10-25T12:39:21.905Z",
+    "2026-10-25T12:41:12.739Z"
+   ],
+   "evaluation": {
+    "attempt_kind": "independent_attempt",
+    "complete": true,
+    "entities": [
+     {
+      "Hi": 35.08522727272727,
+      "Ni": 704000000,
+      "Ni_harm": 247000000,
+      "Pi": 100,
+      "entity_id": "alcohol",
+      "flags": [],
+      "published_Hi": 27.5,
+      "published_Pi": 100,
+      "reference_score": 72
+     },
+     {
+      "Hi": 21.357615894039736,
+      "Ni": 6040000,
+      "Ni_harm": 1290000,
+      "Pi": 0.8579545454545454,
+      "entity_id": "amphetamine",
+      "flags": [],
+      "published_Hi": 5.1,
+      "published_Pi": 2.3,
+      "reference_score": 23
+     },
+     {
+      "Hi": 3964285.7142857146,
+      "Ni": 84,
+      "Ni_harm": 3330000,
+      "Pi": 1.1931818181818183e-05,
+      "entity_id": "benzodiazepines",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 10.3,
+      "published_Pi": 1.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 48.311688311688314,
+      "Ni": 3850000,
+      "Ni_harm": 1860000,
+      "Pi": 0.546875,
+      "entity_id": "buprenorphine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 1.6,
+      "reference_score": 7
+     },
+     {
+      "Hi": 6.747572815533981,
+      "Ni": 20600000,
+      "Ni_harm": 1390000,
+      "Pi": 2.9261363636363638,
+      "entity_id": "butane",
+      "flags": [],
+      "published_Hi": 3.3,
+      "published_Pi": 3,
+      "reference_score": 11
+     },
+     {
+      "Hi": 16.296296296296298,
+      "Ni": 135000000,
+      "Ni_harm": 22000000,
+      "Pi": 19.176136363636363,
+      "entity_id": "cannabis",
+      "flags": [],
+      "published_Hi": 4.6,
+      "published_Pi": 15.2,
+      "reference_score": 20
+     },
+     {
+      "Hi": 32.77661795407098,
+      "Ni": 47900000,
+      "Ni_harm": 15700000,
+      "Pi": 6.8039772727272725,
+      "entity_id": "cocaine",
+      "flags": [],
+      "published_Hi": 25.6,
+      "published_Pi": 15.1,
+      "reference_score": 27
+     },
+     {
+      "Hi": 139.92740471869328,
+      "Ni": 55100000,
+      "Ni_harm": 77100000,
+      "Pi": 7.826704545454545,
+      "entity_id": "ecstasy",
+      "flags": [
+       "HI_ABOVE_100"
+      ],
+      "published_Hi": 1.6,
+      "published_Pi": 11,
+      "reference_score": 9
+     },
+     {
+      "Hi": 5.149625935162095,
+      "Ni": 8020000,
+      "Ni_harm": 413000,
+      "Pi": 1.1392045454545454,
+      "entity_id": "gamma-hydroxybutyric acid",
+      "flags": [],
+      "published_Hi": 1.2,
+      "published_Pi": 6,
+      "reference_score": 19
+     },
+     {
+      "Hi": 44.3579766536965,
+      "Ni": 25700000,
+      "Ni_harm": 11400000,
+      "Pi": 3.650568181818182,
+      "entity_id": "heroin",
+      "flags": [],
+      "published_Hi": 25,
+      "published_Pi": 12,
+      "reference_score": 55
+     },
+     {
+      "Hi": 38.125,
+      "Ni": 11200000,
+      "Ni_harm": 4270000,
+      "Pi": 1.5909090909090908,
+      "entity_id": "ketamine",
+      "flags": [],
+      "published_Hi": 4.9,
+      "published_Pi": 2.2,
+      "reference_score": 15
+     },
+     {
+      "Hi": 0.0005954198473282443,
+      "Ni": 13100000,
+      "Ni_harm": 78,
+      "Pi": 1.8607954545454546,
+      "entity_id": "khat",
+      "flags": [
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 6.7,
+      "published_Pi": 2.7,
+      "reference_score": 9
+     },
+     {
+      "Hi": 0.00017603911980440098,
+      "Ni": 40900000,
+      "Ni_harm": 72,
+      "Pi": 5.809659090909091,
+      "entity_id": "lysergic acid diethylamide",
+      "flags": [
+       "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "published_Hi": 1.2,
+      "published_Pi": 12.5,
+      "reference_score": 7
+     },
+     {
+      "Hi": 17.700453857791228,
+      "Ni": 661000,
+      "Ni_harm": 117000,
+      "Pi": 0.09389204545454545,
+      "entity_id": "mephedrone",
+      "flags": [],
+      "published_Hi": 4.5,
+      "published_Pi": 0.5,
+      "reference_score": 13
+     },
+     {
+      "Hi": 56.47279549718574,
+      "Ni": 5330000,
+      "Ni_harm": 3010000,
+      "Pi": 0.7571022727272727,
+      "entity_id": "methadone",
+      "flags": [],
+      "published_Hi": 4.1,
+      "published_Pi": 3.4,
+      "reference_score": 14
+     },
+     {
+      "Hi": 63.07692307692307,
+      "Ni": 10400000,
+      "Ni_harm": 6560000,
+      "Pi": 1.4772727272727273,
+      "entity_id": "methamphetamine",
+      "flags": [],
+      "published_Hi": 5.8,
+      "published_Pi": 2.3,
+      "reference_score": 33
+     }
+    ],
+    "exploratory": [
+     {
+      "excluded": [
+       "alcohol"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 15,
+        "p_two_sided": 0.7870552029412987,
+        "statistic": "pearson",
+        "value": -0.07626373823667977
+       },
+       {
+        "n": 15,
+        "p_two_sided": 0.4188224505505391,
+        "statistic": "spearman",
+        "value": 0.2256051109089123
+       }
+      ],
+      "id": "without_alcohol"
+     },
+     {
+      "excluded": [
+       "khat",
+       "lysergic acid diethylamide"
+      ],
+      "hi_vs_reference": [
+       {
+        "n": 14,
+        "p_two_sided": 0.6417397402301113,
+        "statistic": "pearson",
+        "value": -0.1364886323992523
+       },
+       {
+        "n": 14,
+        "p_two_sided": 0.7476690315403658,
+        "statistic": "spearman",
+        "value": -0.09460951819631991
+       }
+      ],
+      "id": "without_reachable_result_counts"
+     }
+    ],
+    "hi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.7111166564507492,
+      "statistic": "pearson",
+      "value": -0.10050711489129582
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.44993839983311124,
+      "statistic": "spearman",
+      "value": 0.203390327539667
+     }
+    ],
+    "hypothesis_harm": "contradicts",
+    "missing": [],
+    "pi_vs_published": {
+     "n": 16,
+     "p_two_sided": 6.933872276735462e-06,
+     "statistic": "spearman",
+     "value": 0.8800591050693641
+    },
+    "pi_vs_reference": [
+     {
+      "n": 16,
+      "p_two_sided": 0.0012108031055539485,
+      "statistic": "pearson",
+      "value": 0.7338905999439327
+     },
+     {
+      "n": 16,
+      "p_two_sided": 0.34056533466674255,
+      "statistic": "spearman",
+      "value": 0.25497483090117673
+     }
+    ],
+    "quality_flags": [
+     "HI_ABOVE_100",
+     "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+    ],
+    "verdicts": [
+     {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "observed_value": -0.10050711489129582,
+      "verdict": "deviates"
+     },
+     {
+      "claim_key": "popularity_ranking_stability",
+      "observed_value": 0.8800591050693641,
+      "verdict": "reproduced"
+     }
+    ]
+   },
+   "fetch_status": [
+    "SUCCESS"
+   ],
+   "fetches": 32,
+   "git_commit": "64023580775afe0a0b5e68afa499bfb8f504ffa2",
+   "label": "R3-ext-gl-pl",
+   "meaning": "ENHANCED: gl=pl, google.pl",
+   "preset": [
+    "jh2016-serp-extension",
+    "2026-10-25-v1"
+   ],
+   "run_id": "051f9b60-31a4-483b-ab01-9c9c717417aa"
+  },
+  {
+   "counts": [
+    [
+     "alcohol",
+     "d1_harm_only",
+     101000000
+    ],
+    [
+     "alcohol",
+     "d2_harmful_only",
+     72400000
+    ],
+    [
+     "alcohol",
+     "d3_grouped_or",
+     209000000
+    ],
+    [
+     "amphetamine",
+     "d1_harm_only",
+     5020000
+    ],
+    [
+     "amphetamine",
+     "d2_harmful_only",
+     280000
+    ],
+    [
+     "amphetamine",
+     "d3_grouped_or",
+     5890000
+    ],
+    [
+     "buprenorphine",
+     "d1_harm_only",
+     6220000
+    ],
+    [
+     "buprenorphine",
+     "d2_harmful_only",
+     10
+    ],
+    [
+     "buprenorphine",
+     "d3_grouped_or",
+     9740000
+    ],
+    [
+     "cocaine",
+     "d1_harm_only",
+     13800000
+    ],
+    [
+     "cocaine",
+     "d2_harmful_only",
+     3770000
+    ],
+    [
+     "cocaine",
+     "d3_grouped_or",
+     15300000
+    ],
+    [
+     "heroin",
+     "d1_harm_only",
+     13900000
+    ],
+    [
+     "heroin",
+     "d2_harmful_only",
+     2670000
+    ],
+    [
+     "heroin",
+     "d3_grouped_or",
+     15900000
+    ],
+    [
+     "mephedrone",
+     "d1_harm_only",
+     53500
+    ],
+    [
+     "mephedrone",
+     "d2_harmful_only",
+     54200
+    ],
+    [
+     "mephedrone",
+     "d3_grouped_or",
+     4690000
+    ],
+    [
+     "methadone",
+     "d1_harm_only",
+     5630000
+    ],
+    [
+     "methadone",
+     "d2_harmful_only",
+     306000
+    ],
+    [
+     "methadone",
+     "d3_grouped_or",
+     3020000
+    ],
+    [
+     "methamphetamine",
+     "d1_harm_only",
+     10300000
+    ],
+    [
+     "methamphetamine",
+     "d2_harmful_only",
+     467000
+    ],
+    [
+     "methamphetamine",
+     "d3_grouped_or",
+     10500000
+    ]
+   ],
+   "git_commit": "64023580775afe0a0b5e68afa499bfb8f504ffa2",
+   "label": "T3-or-decomposition",
+   "meaning": "diagnostic acquisition: \"X\" \"harm\", \"X\" \"harmful\", \"X\" (\"harm\" OR \"harmful\")",
+   "run_id": "d1bd7e5d-8bef-47ed-9daf-8d4cc6c84cb6"
+  }
+ ]
+}

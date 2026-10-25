@@ -104,8 +104,10 @@ export function providerFields(body: string, countPath: string): Record<string, 
  * disclosed on the observation; it is never corrected or replaced.
  */
 function countEqualsReachableResults(count: number, fields: Record<string, unknown> | null): boolean {
-  const page = fields?.highest_page_offered;
-  return typeof page === 'number' && count <= 10 * (page + 1);
+  if (!fields) return false;
+  // No further pages offered means everything reachable is on this one page.
+  const page = typeof fields.highest_page_offered === 'number' ? fields.highest_page_offered : 0;
+  return count <= 10 * (page + 1);
 }
 
 export class SerpApiAdapter implements SourceAdapter {
