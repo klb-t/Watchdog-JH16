@@ -149,7 +149,10 @@ export class CapabilityRegistry {
     });
     this.registerProvider({
       provider_key: 'google_trends', capability_key: 'trends.interest',
-      display_name: 'Google Trends', status: 'planned',
+      // Served through SerpApi (config/providers/trends_interest.json). As for
+      // serpapi, live availability is derived from the credential by the source
+      // registry; this seed entry stays a plan.
+      display_name: 'Google Trends (via SerpApi)', status: 'planned',
     });
     for (const key of ['pubchem', 'drugbank', 'wikipedia']) {
       this.registerProvider({

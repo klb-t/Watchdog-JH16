@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "capability": "trends.interest",
+  "_note": "Relative search interest, NOT a result count. Each request scales its own terms 0-100, so values from different requests are comparable only through a shared anchor term; that chaining belongs to the analysis method, not to this provider.",
+  "providers": [
+    {
+      "provider_key": "serpapi_google_trends",
+      "display_name": "Google Trends via SerpApi",
+      "endpoint": "https://serpapi.com/search.json",
+      "secret_ref": "env:SERPAPI_API_KEY",
+      "personal_credential_provider": "serpapi",
+      "engine": "google_trends",
+      "api_key_param": "api_key",
+      "max_terms_per_request": 5,
+      "request_params": { "data_type": "TIMESERIES", "tz": "0", "no_cache": true },
+      "run_params_required": ["date"],
+      "run_params_allowed": ["date", "geo", "cat", "gprop"],
+      "pacing": { "min_interval_ms": 1200, "max_attempts": 3, "backoff_ms": [2000, 8000] }
+    }
+  ]
+}

@@ -48,12 +48,17 @@ test('OfflineFixtureAdapter - normalizes to a domain observation', async () => {
   assert.strictEqual(obs[0].isMissing === false && obs[0].numericValue, 1000000);
 });
 
-test('GoogleTrendsAdapter - unimplemented transport never invents a measurement', async () => {
-  const adapter = new GoogleTrendsAdapter();
+test('GoogleTrendsAdapter - without a credential nothing is sent and every term is missing, never invented', async () => {
+  const adapter = new GoogleTrendsAdapter(undefined, null, async () => { throw new Error('must not be called'); });
   assert.deepStrictEqual(adapter.capabilities(), ['interest_over_time']);
-
-  await assert.rejects(() => adapter.fetch(request({ entityId: 'cannabis', renderedQuery: 'cannabis', dimension: 'interest_index' })), NotImplementedError);
-  assert.strictEqual(sourceRegistry.getEntry('trends_interest_index')?.status, 'planned');
+  assert.strictEqual(adapter.validate_params({ provider_params: {} }).valid, false, 'the measurement window is never defaulted');
+  const params = adapter.validate_params({ provider_params: { date: '2012-01-01 2014-06-30' } }).normalized_params;
+  const raw = await adapter.fetch(request({ entityId: 'G1', renderedQuery: 'cannabis,heroin', dimension: 'interest:G1', params }));
+  assert.strictEqual(raw.status, 'CREDENTIAL_UNAVAILABLE');
+  const obs = adapter.normalize(raw);
+  assert.deepStrictEqual(obs.map(o => [o.queryText, o.isMissing]), [['cannabis', true], ['heroin', true]]);
+  assert.ok(obs.every(o => o.qualityFlags.includes('RELATIVE_INTEREST_NOT_A_COUNT')));
+  assert.notStrictEqual(sourceRegistry.getEntry('trends_interest_index')?.status, 'implemented', 'availability is derived from a credential, never a stored flag');
 });
 
 // -------------------------------------------------------------------------

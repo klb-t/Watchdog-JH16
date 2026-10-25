@@ -41,10 +41,12 @@ export interface ExportInput {
 export interface ExportObservation {
   entity_id: string; query_role: string; query_text: string; value_numeric: number | null; is_missing: boolean;
   missing_reason: string | null; provider_id: string | null; retrieved_at: string; quality_flags: readonly string[];
+  /** The period the value describes, for time series; absent for a present-day count. */
+  observed_at?: string | null;
 }
 
 function sortedObservations(input: ExportInput) {
-  return [...(input.observations ?? [])].sort((a, b) => a.entity_id.localeCompare(b.entity_id) || a.query_role.localeCompare(b.query_role));
+  return [...(input.observations ?? [])].sort((a, b) => a.entity_id.localeCompare(b.entity_id) || a.query_role.localeCompare(b.query_role) || (a.observed_at ?? '').localeCompare(b.observed_at ?? ''));
 }
 
 function assertExportable(input: ExportInput) {
@@ -87,9 +89,9 @@ export function exportCsv(input: ExportInput): string {
     // The counts are measurements and the rows above are derived from them, so
     // they are a separate table rather than more metric rows.
     lines.push('', '# OBSERVATIONS (stored provider counts; Ni = popularity, Ni_harm = harm)');
-    lines.push(['run_id', 'entity_id', 'query_role', 'query_text', 'count', 'is_missing', 'missing_reason', 'provider_id', 'retrieved_at', 'quality_flags'].join(','));
+    lines.push(['run_id', 'entity_id', 'query_role', 'query_text', 'count', 'is_missing', 'missing_reason', 'provider_id', 'retrieved_at', 'quality_flags', 'observed_at'].join(','));
     for (const o of sortedObservations(input)) lines.push([input.runId, o.entity_id, o.query_role, o.query_text, o.is_missing ? '' : o.value_numeric,
-      o.is_missing ? 'true' : 'false', o.missing_reason ?? '', o.provider_id ?? '', o.retrieved_at, [...o.quality_flags].sort().join(' ')].map(csvEscape).join(','));
+      o.is_missing ? 'true' : 'false', o.missing_reason ?? '', o.provider_id ?? '', o.retrieved_at, [...o.quality_flags].sort().join(' '), o.observed_at ?? ''].map(csvEscape).join(','));
   }
 
   const ev = input.evaluation;

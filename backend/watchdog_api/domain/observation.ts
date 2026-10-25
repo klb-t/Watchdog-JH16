@@ -44,7 +44,12 @@ export type QualityFlag =
   | 'GEOGRAPHY_DISCONTINUITY'
   // The provider reported a count no larger than the results reachable through
   // its pagination: a reachable-result count, not an estimate of the index.
-  | 'PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS';
+  | 'PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS'
+  // Google Trends: relative search interest (0-100 within one request), never a
+  // result count; 0 is below the provider's resolution; the latest period may be partial.
+  | 'RELATIVE_INTEREST_NOT_A_COUNT'
+  | 'TRENDS_BELOW_RESOLUTION'
+  | 'TRENDS_PARTIAL_PERIOD';
 
 interface ObservationBase {
   readonly seriesId: string;
@@ -66,6 +71,12 @@ interface ObservationBase {
   readonly language: string;
   readonly queryExpansionMode: string;
   readonly retrievedAt: string;
+  /**
+   * The period the value describes (ISO date of its start), for sources that
+   * return a series over time. Absent for a single present-day measurement,
+   * where the value describes the moment it was retrieved.
+   */
+  readonly observedAt?: string;
   readonly sourceId: string;
   readonly sourceAdapterVersion: string;
   readonly providerId?: string;

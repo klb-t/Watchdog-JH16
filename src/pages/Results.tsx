@@ -4,6 +4,7 @@ import { FileText, Download, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { useAccess } from '../lib/access';
 import { automationApi } from '../lib/automation_client';
 import { Jh16EvaluationPanel } from '../components/Jh16EvaluationPanel';
+import { TrendsCalibrationPanel } from '../components/TrendsCalibrationPanel';
 
 /**
  * E1.23 — Results page: charts, the results table, the manifest link, the
@@ -92,10 +93,11 @@ export function Results() {
       </div>
 
       {id && <Jh16EvaluationPanel runId={id} />}
+      {id && <TrendsCalibrationPanel runId={id} />}
 
       {/* Charts ------------------------------------------------------------ */}
       {/* The Hi-vs-reference scatter is drawn by the evaluation panel above. */}
-      {charts.filter(chart => chart.kind === 'bar').map(chart => (
+      {charts.filter(chart => chart.kind === 'bar' && chart.points.length > 0).map(chart => (
         <section key={chart.id} data-testid={`chart-${chart.id}`} className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-semibold text-slate-900">{chart.title}{logScale(chart) && <span className="ml-2 text-xs font-normal text-slate-600" data-testid={`log-scale-${chart.id}`}>skala logarytmiczna</span>}</h2>

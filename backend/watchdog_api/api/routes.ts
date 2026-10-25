@@ -54,7 +54,7 @@ async function readEvaluation(runId: string): Promise<Record<string, any> | null
 function exportObservations(runId: string) {
   return obsRepo.getByRunId(runId).map(o => ({ entity_id: o.entityId, query_role: o.queryRole, query_text: o.queryText,
     value_numeric: o.isMissing ? null : o.numericValue, is_missing: o.isMissing, missing_reason: o.isMissing ? o.missingReason : null,
-    provider_id: o.providerId ?? null, retrieved_at: o.retrievedAt, quality_flags: o.qualityFlags }));
+    provider_id: o.providerId ?? null, retrieved_at: o.retrievedAt, quality_flags: o.qualityFlags, observed_at: o.observedAt ?? null }));
 }
 
 function readConfig(...p: string[]) {

@@ -35,5 +35,7 @@ export type RoutingEvidence = { model: string; benchmark: { suiteHash: string; p
   operations: { calls: number; successes: number; averageLatencyMs: number | null } };
 export const ResearchPlanInputSchema = z.object({ name: z.string().trim().min(1).max(160), settingsHash: z.string().regex(/^[a-f0-9]{64}$/),
   baseline: z.enum(['fixture', 'live_serp', 'live_serp_extension', 'none']), refreshMemory: z.boolean(), scanPapers: z.boolean(), dailyScan: z.boolean(),
-  paperScope: z.enum(['substances', 'all_science']) }).strict();
+  paperScope: z.enum(['substances', 'all_science']),
+  // Exploratory Google Trends calibration of JH16, one run per region id from config/calibration/jh2016-trends.json.
+  trendsRegions: z.array(z.string().regex(/^[A-Z]{2,8}$/)).max(20).optional() }).strict();
 export type ResearchPlanInput = z.infer<typeof ResearchPlanInputSchema>;
