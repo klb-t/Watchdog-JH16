@@ -95,3 +95,9 @@ test('without a compared run, the comparisons that need it are not computable ra
   assert.strictEqual(results.find(r => r.metricKey === 'A3_spearman')!.isMissing, true);
   assert.strictEqual(results.find(r => r.metricKey === 'A1_spearman')!.isMissing, false);
 });
+
+test('rank ties: values equal up to floating-point noise share a rank', () => {
+  const a = 0.61 / 0.784 * (0.784 / 0.61) * (7 / 9), b = 7 / 9;
+  assert.notStrictEqual(a, b, 'the two paths really differ in the last bits');
+  assert.strictEqual(spearman([a, b, 1], [1, 2, 3]), spearman([7 / 9, 7 / 9, 1], [1, 2, 3]));
+});

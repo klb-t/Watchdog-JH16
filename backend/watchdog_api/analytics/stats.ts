@@ -46,6 +46,17 @@ export function pearson(x: number[], y: number[]): number | null {
   return num / den;
 }
 
+/**
+ * Equal for ranking: values that differ only by floating-point noise (relative
+ * 1e-12) are one value. Mathematically equal quantities computed along
+ * different paths (e.g. a ratio after a common scale factor) must tie, or the
+ * rank correlation depends on the order of arithmetic.
+ */
+export const RANK_TIE_RELATIVE_TOLERANCE = 1e-12;
+function sameValue(a: number, b: number): boolean {
+  return a === b || Math.abs(a - b) <= RANK_TIE_RELATIVE_TOLERANCE * Math.max(Math.abs(a), Math.abs(b));
+}
+
 export function spearman(x: number[], y: number[]): number | null {
   if (x.length !== y.length || x.length === 0) throw new Error("Arrays must have same length > 0");
   const rank = (arr: number[]) => {
@@ -54,7 +65,7 @@ export function spearman(x: number[], y: number[]): number | null {
     let i = 0;
     while (i < sorted.length) {
       let j = i;
-      while (j < sorted.length - 1 && sorted[j].val === sorted[j + 1].val) j++;
+      while (j < sorted.length - 1 && sameValue(sorted[i].val, sorted[j + 1].val)) j++;
       const avgRank = (i + j + 2) / 2;
       for (let k = i; k <= j; k++) ranks[sorted[k].i] = avgRank;
       i = j + 1;

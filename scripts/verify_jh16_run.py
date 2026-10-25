@@ -24,7 +24,7 @@ def ranks(v):
     order = sorted(range(len(v)), key=lambda i: v[i]); r = [0.0] * len(v); i = 0
     while i < len(order):
         j = i
-        while j + 1 < len(order) and v[order[j + 1]] == v[order[i]]: j += 1
+        while j + 1 < len(order) and abs(v[order[j + 1]] - v[order[i]]) <= 1e-12 * max(abs(v[order[j + 1]]), abs(v[order[i]])): j += 1  # same tie rule as WatchDog
         for k in range(i, j + 1): r[order[k]] = (i + j) / 2 + 1
         i = j + 1
     return r
