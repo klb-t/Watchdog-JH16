@@ -82,6 +82,8 @@ function Overview({ data }: { data: any }) {
           <td className="font-mono">{fmt(r.evaluation.pi_vs_published.value)}</td><td>{verdict(r, 'harm_index_vs_reference_pearson')}</td><td>{verdict(r, 'popularity_ranking_stability')}</td>
           <td>{READING[r.evaluation.hypothesis_harm.reading]}</td><td><Link className="underline" to={`/runs/${r.run_id}/results`}>wyniki</Link></td></tr>)}</tbody></table></div>}
       <p className="text-xs text-slate-600">„reproduced” = w progu ustalonym przed danymi. Przeliczenie danych z publikacji sprawdza obliczenia, nie jest niezależną replikacją.</p></section>
+    {(data.dossier.assessment ?? []).length > 0 && <section className={card} data-testid="assessment"><h2 className="font-semibold">Ocena</h2>
+      <ul className="text-sm space-y-1">{data.dossier.assessment.map((a: any) => <li key={a.statement}>{a.statement} <span className="text-xs text-slate-500">— {a.author}{(a.evidence ?? []).map((e: any) => <a key={e.path} className="underline ml-1" href={`${data.dossier.evidence_base_url}${e.path}`} target="_blank" rel="noreferrer">{e.label}</a>)}</span></li>)}</ul></section>}
     <section className={card}><h2 className="font-semibold">Odstępstwa od metody oryginalnej</h2>
       <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Element</th><th>Oryginał</th><th>Replikacja</th><th>Powód</th></tr></thead>
         <tbody>{data.dossier.deviations.map((d: any) => <tr key={d.item} className="border-t border-slate-100"><td className="pr-2">{d.item}</td><td className="pr-2">{d.original}</td><td className="pr-2">{d.replication}</td><td>{d.reason}</td></tr>)}</tbody></table></div></section>

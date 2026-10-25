@@ -166,9 +166,11 @@ export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[
   const conclusions: string[] = [];
   if (hist) conclusions.push(hist.evaluation.verdicts.every((v: any) => v.verdict === 'reproduced') ? 'Implementacja metody odtwarza wyniki publikacji na jej własnych danych.' : 'Implementacja nie odtwarza wyników publikacji na jej danych — wymaga sprawdzenia przed interpretacją nowych danych.');
   if (fresh) conclusions.push(`Na nowych danych ${READING[fresh.evaluation.hypothesis_harm.reading]} (reguła ustalona przed danymi).`);
-  if (shown.length) conclusions.push('Wykazane przyczyny dotyczą narzędzia pomiaru; jakość danych nie pozwala traktować tego odczytu jako rozstrzygnięcia hipotezy merytorycznej.');
+  if (shown.length) conclusions.push('Wykazano przyczyny rozbieżności (sekcja „Rozbieżności i ich przyczyny”); odczyt hipotezy trzeba interpretować razem z nimi.');
+  for (const a of dossier?.assessment ?? []) conclusions.push(`Ocena (${a.author}): ${a.statement}`);
   conclusions.push('Wynik negatywny jest wynikiem: praca dokumentuje go w całości, z danymi i ich pochodzeniem.');
-  sec('conclusions', 'Wnioski', [{ type: 'list', items: conclusions, sources: [...(hist ? [{ run_id: hist.run_id }] : []), ...(fresh ? [{ run_id: fresh.run_id }] : [])] }]);
+  sec('conclusions', 'Wnioski', [{ type: 'list', items: conclusions, sources: [...(hist ? [{ run_id: hist.run_id }] : []), ...(fresh ? [{ run_id: fresh.run_id }] : []),
+    ...(dossier?.assessment ?? []).flatMap((a: any) => (a.evidence ?? []).filter((e: any) => e.path).map((e: any) => ({ path: e.path })))] }]);
   sec('appendix', 'Aneks: odtwarzalność', [
     { type: 'table', columns: ['Przebieg', 'Kod', 'Hash konfiguracji', 'Manifest sha256', 'Pobrania'], rows: runs.map(r => [r.run_id, r.git_commit ?? 'nie zapisano', r.effective_config_hash ?? '—', r.manifest_sha256 ?? '—', r.fetches]), sources: runs.map(r => ({ run_id: r.run_id })) },
     { type: 'list', items: [`Kryteria: ${t.hashes.claims}`, ...(t.hashes.interpretation ? [`Interpretacja: ${t.hashes.interpretation}`] : []), ...(t.hashes.dossier ? [`Dossier: ${t.hashes.dossier}`] : []),
