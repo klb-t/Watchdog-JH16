@@ -8,13 +8,13 @@ Wyniki i ocena, które ten test ma sprawdzić: [REPORT.md](REPORT.md).
 |---|---|
 | Adres | https://watchdog.34-158-117-249.sslip.io |
 | Logowanie | użytkownik `marcin`, hasło Caddy: na VM `sudo bash ~/chatadhd/tools/gcp/aliases.sh --show-pass` |
-| Wersja kodu | `e33504e` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
-| Obraz | `watchdog:e33504e…` na VM; poprzedni `watchdog:c3508c16…` zachowany do cofnięcia |
-| Kopia danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz`, sha256 `504e329b…17b8`, oraz `release.env.before-20261025T125242Z` |
+| Wersja kodu | `10744c9` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
+| Obraz | `watchdog:10744c9…` na VM; poprzednie `watchdog:e33504e…` i `watchdog:c3508c16…` zachowane do cofnięcia |
+| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) i `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`), z kopiami `release.env` |
 | Klucz SerpApi | zapisany w Twoim zaszyfrowanym sejfie w WatchDogu (Ustawienia → krok 1 pokazuje „serpapi: zapisany”) |
 
 Każdy nowy pomiar (32 zapytania) zużywa kredyty SerpApi z Twojego konta: darmowy limit
-października jest już wyczerpany, zostało ok. 2700 dokupionych kredytów (stan konta 25.10, 13:00 UTC). Plan z rozszerzeniem
+października jest już wyczerpany, zostało ok. 2660 dokupionych kredytów (stan konta 25.10, 14:30 UTC). Plan z rozszerzeniem
 zużywa 160.
 
 ## Wdrożenie (2026-10-25 12:52 UTC)
@@ -33,12 +33,17 @@ Cofnięcie: `sudo systemctl stop watchdog`, przywróć `release.env.before-…` 
 rozpakuj kopię danych do `/var/lib` (stara wersja nie zna migracji 020–023, więc wymaga starej bazy),
 `sudo systemctl start watchdog`.
 
+Druga aktualizacja (2026-10-25 14:32 UTC) do `10744c9`: Google Trends jako źródło i kalibracja w
+kreatorze (626/626 testów w buildzie). Test dymny: kalibracja „cały świat” `af61af36` porównana z
+`b14ccbaa`, A1 = 0,923, niezależny skrypt bez rozbieżności.
+
 ## Gotowa konfiguracja
 
 - preset wierny: `config/presets/jh2016-faithful.json` (zablokowany, 16 substancji, 32 zapytania);
 - rozszerzenie SERP API: `config/presets/jh2016-serp-extension.json` (2 powtórzenia, gl=us, gl=pl);
 - kryteria oceny: `config/replication/jh2016.json` i `config/replication/jh2016-interpretation.json`;
-- dostawca: `config/providers/search_result_count.json` (Google przez SerpApi, `safe=off`).
+- dostawca: `config/providers/search_result_count.json` (Google przez SerpApi, `safe=off`);
+- kalibracja: `config/calibration/jh2016-trends.json`, dostawca Trends `config/providers/trends_interest.json`.
 
 ## Test (ok. 10 minut, działa z telefonu)
 
