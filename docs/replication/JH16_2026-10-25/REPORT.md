@@ -24,8 +24,9 @@ przez model językowy.
   622/622.
 
 **Uzupełnienie (to samo popołudnie):** niezależne dane historyczne i kalibracja Google Trends /
-Europe PMC — [CALIBRATION.md](CALIBRATION.md). Ranking popularności z 2014 r. zgadza się z
-niezależnym Google Trends (Spearman 0,95); zmiany w czasie z Tabeli 2 — nie; spójny licznik
+Europe PMC — [CALIBRATION.md](CALIBRATION.md). Google Trends jest teraz źródłem WatchDoga, a
+kalibracja przebiega przez produkt. Ranking popularności z 2014 r. zgadza się z niezależnym Google
+Trends (Spearman 0,89–0,95 zależnie od próbki); zmiany w czasie z Tabeli 2 — nie; spójny licznik
 (Europe PMC) nie odtwarza związku Hi z Nuttem.
 
 ## 1. Co replikujemy

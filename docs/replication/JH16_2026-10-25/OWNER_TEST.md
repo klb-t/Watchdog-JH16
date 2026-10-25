@@ -61,9 +61,17 @@ rozpakuj kopię danych do `/var/lib` (stara wersja nie zna migracji 020–023, w
 4. **Rozszerzenie (160 kredytów, opcjonalnie).** Jak w punkcie 2, ale „JH16 + rozszerzenie SERP API”
    (limit dzienny co najmniej 160 + już użyte). Wyniki wiernego przebiegu pokazują tabelę „Inne
    przebiegi tego planu” z wariantami repeat-1, repeat-2, gl-us, gl-pl.
-5. **Eksport.** Na stronie wyników „CSV” lub „JSON”: zawiera liczby Ni/Ni_harm z zapytaniami,
+5. **Kalibracja Google Trends (4 kredyty na region).** Kreator → krok 2: „Punkt odniesienia” → „Bez
+   uruchamiania JH16”, w „Kalibracja przez Google Trends” zaznacz regiony (np. cały świat). Krok 3
+   pokazuje regiony, liczbę zapytań i przebieg JH16, z którym nastąpi porównanie (Twój ostatni nowy
+   pomiar z punktu 2). „Zezwól i uruchom” → „Kalibracja Trends …”. Oczekiwane: tabela A1–A4; A1
+   (czerwiec 2014 vs Tabela 1) ok. 0,85–0,95, A2 bliskie zera. Trends losuje próbkę, więc wartości
+   mogą się różnić o kilka setnych od raportu.
+6. **Eksport.** Na stronie wyników „CSV” lub „JSON”: zawiera liczby Ni/Ni_harm z zapytaniami,
    dostawcą i flagami, Pi/Hi, ocenę z p i werdyktami. Niezależne sprawdzenie (na VM w katalogu
-   repozytorium): `python3 -I scripts/verify_jh16_run.py pobrany.json` → kod wyjścia 0.
+   repozytorium): `python3 -I scripts/verify_jh16_run.py pobrany.json` → kod wyjścia 0; dla
+   kalibracji `python3 -I scripts/verify_trends_calibration.py eksport.json run.json` (run.json z
+   `/api/runs/<id>`).
 
 Ustawienia kroku 2 (języki, geografia, slang, sentyment) zapisują plan eksploracyjny; nie zmieniają
 zablokowanego przebiegu JH16 — kreator mówi to wprost.
