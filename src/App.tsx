@@ -16,6 +16,7 @@ import { Analyzers } from './pages/Analyzers';
 import { Study } from './pages/Study';
 import { MethodReview } from './pages/MethodReview';
 import { Results } from './pages/Results';
+import { Replications, ReplicationTarget } from './pages/Replications';
 import { Diagnostics } from './pages/Diagnostics';
 import { Workbench } from './pages/Workbench';
 import { Responder } from './pages/Responder';
@@ -51,6 +52,8 @@ export default function App() {
         <Route path="study" element={<AccessBoundary capability="run.create"><Study /></AccessBoundary>} />
         <Route path="method" element={<AccessBoundary capability="method.propose"><MethodReview /></AccessBoundary>} />
         <Route path="runs/:id/results" element={<AccessBoundary capability="run.view"><Results /></AccessBoundary>} />
+        <Route path="replications" element={<AccessBoundary capability="run.view"><Replications /></AccessBoundary>} />
+        <Route path="replications/:id" element={<AccessBoundary capability="run.view"><ReplicationTarget /></AccessBoundary>} />
         <Route path="diagnostics" element={<AccessBoundary capability="diagnostics.view"><Diagnostics /></AccessBoundary>} />
         <Route path="workbench" element={<AccessBoundary capability="workbench.view"><Workbench /></AccessBoundary>} />
         <Route path="responder" element={<Responder />} />

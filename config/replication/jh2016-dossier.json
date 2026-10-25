@@ -1,0 +1,61 @@
+{
+  "schema_version": "1.0",
+  "target_id": "jh2016",
+  "dossier_version": "2026-10-25-v1",
+  "_note": "What a reader needs beside the numbers: hypotheses, method, deviations and the diagnosis of discrepancies, each with its evidence. Numbers are never written here; the page and the manuscript take them from stored runs. Pre-registered claims stay in jh2016.json, interpretation rules in jh2016-interpretation.json.",
+  "protocol": { "document": "docs/replication/JH16_2026-10-25/PROTOCOL.md", "registered_in_commit": "3d74e15" },
+  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/claude/jh16-hoffmann-test-20261025/",
+  "runs_match": {
+    "preset_ids": ["jh2016-faithful", "jh2016-serp-extension", "jh2016-trends"],
+    "method_ids": ["jh16_faithful", "jh16_trends_calibration"],
+    "method_spec_ids": ["jh2016-faithful"]
+  },
+  "provenance_labels": {
+    "recomputation_of_published_data": "Przeliczenie danych z publikacji",
+    "new_fetch": "Nowe pobranie (metoda wierna)",
+    "enhanced_variant": "Nowe pobranie — wariant rozszerzenia (nie replikacja)",
+    "recomputation_of_stored_data": "Przeliczenie zapisanych danych (bez pobierania)",
+    "exploratory_calibration": "Kalibracja eksploracyjna (Google Trends)"
+  },
+  "hypotheses": [
+    { "id": "H-harm", "statement": "Wskaźnik szkodliwości Hi = Ni_harm / Ni × 100% z liczby wyników Google koreluje dodatnio i istotnie z ekspercką oceną szkodliwości Nutt i in. 2010.", "tested_by": ["harm_index_vs_reference_pearson"], "kind": "primary" },
+    { "id": "H-pop", "statement": "Liczba wyników Ni daje ranking popularności Pi = Ni / max(Ni) × 100%; publikacja weryfikuje go jakościowo, WatchDog — stabilnością rankingu względem Tabeli 1.", "tested_by": ["popularity_ranking_stability"], "kind": "descriptive" }
+  ],
+  "original_method": [
+    "Google, nazwa substancji w cudzysłowie, SafeSearch wyłączony, 16 substancji z pracy Nutt i in. 2010 (bez nazw wielowyrazowych, tytoniu i grzybów).",
+    "Zapytanie szkodliwości: \"nazwa\" \"harm\" OR \"harmful\".",
+    "Pomiar 2014-06-20; korelacja Hi z oceną Nutta (z przeliczenia Tabel 1 i 3 wynika współczynnik Pearsona)."
+  ],
+  "replication_method": [
+    "Zablokowany preset jh2016-faithful: te same 32 zapytania, wzory i odniesienie, wykonywane przez zatwierdzony MethodSpec.",
+    "Nowe liczby: Google przez SerpApi (search_information.total_results), safe=off, hl=en; surowe odpowiedzi archiwizowane z sha256.",
+    "Kryteria oceny i reguła odczytu hipotezy ustalone przed danymi (commit 3d74e15)."
+  ],
+  "deviations": [
+    { "item": "Dostęp do Google", "original": "przeglądarka", "replication": "SerpApi (API pośrednika)", "reason": "jedyny dostępny, powtarzalny dostęp do liczby wyników" },
+    { "item": "Region i domena Google", "original": "nie podano", "replication": "domyślne ustawienie dostawcy (google.com, bez gl); w rozszerzeniu gl=us i gl=pl", "reason": "publikacja tego nie określa" },
+    { "item": "Data", "original": "2014-06-20", "replication": "data pobrania zapisana w każdym przebiegu", "reason": "danych z 2014 r. nie da się pobrać ponownie" },
+    { "item": "Test istotności", "original": "nie podano (p = 0,000143)", "replication": "t dla współczynnika korelacji, n − 2 stopni swobody", "reason": "podane p nie wynika ze standardowego testu" }
+  ],
+  "diagnosis": [
+    { "cause": "Błąd obliczeń lub implementacji", "test": "przeliczenie danych z publikacji; niezależny skrypt dla każdego przebiegu", "status": "excluded",
+      "evidence": [{ "label": "weryfikator", "path": "scripts/verify_jh16_run.py" }] },
+    { "cause": "Szacunki Google dla zapytań złożonych łamią logikę zbiorów (podzbiór większy od całości; OR większe od sumy części lub mniejsze od jednej z nich)", "test": "rozbicie zapytania OR na składniki dla 8 substancji", "status": "shown",
+      "evidence": [{ "label": "wyniki testu T3", "path": "docs/history/evidence/2026-10-25-jh16/T3_or_decomposition_results.json" }] },
+    { "cause": "Liczby „zapadnięte” do liczby wyników osiągalnych przez stronicowanie (w części zapytań każdego przebiegu, za każdym razem innych)", "test": "powtórzenia i głębokość stronicowania; flaga PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS", "status": "shown",
+      "evidence": [{ "label": "analiza krzyżowa przebiegów", "path": "docs/history/evidence/2026-10-25-jh16/cross_runs.txt" }] },
+    { "cause": "Region Google", "test": "warianty gl=us i gl=pl", "status": "excluded", "evidence": [{ "label": "warianty w tabeli przebiegów", "runs_kind": "enhanced_variant" }] },
+    { "cause": "Losowa zmienność szacunku", "test": "powtórzenia w tych samych warunkach", "status": "excluded", "evidence": [{ "label": "analiza krzyżowa przebiegów", "path": "docs/history/evidence/2026-10-25-jh16/cross_runs.txt" }] },
+    { "cause": "Zmiana sposobu szacowania przez Google od 2014 r.", "test": "brak dostępu do dawnego narzędzia; dane 2014 są wewnętrznie spójne", "status": "probable", "evidence": [] },
+    { "cause": "Zmiana badanego zjawiska (treści w sieci)", "test": "nie do oddzielenia przy niespójnym narzędziu", "status": "unresolved", "evidence": [] },
+    { "cause": "Ograniczenia metody pierwotnej (korelacja zależna od alkoholu, n = 16)", "test": "analiza bez alkoholu na danych publikacji; ten sam wskaźnik w Europe PMC", "status": "shown",
+      "evidence": [{ "label": "kalibracja i Europe PMC", "path": "docs/replication/JH16_2026-10-25/CALIBRATION.md" }] },
+    { "cause": "Rodzaj testu istotności w publikacji", "test": "przeliczenie p", "status": "unresolved", "evidence": [] }
+  ],
+  "limitations": [
+    "Pomiar z jednego dnia; stabilność szacunków Google w czasie nie jest znana.",
+    "Reguła flagi „osiągalne wyniki” jest heurystyczna.",
+    "Google Trends to względne zainteresowanie wyszukiwaniem, nie liczba wyników; kalibracja porównuje wyłącznie rangi.",
+    "Dawne narzędzie Google z 2014 r. jest niedostępne; danych autorów nie zachowano."
+  ]
+}

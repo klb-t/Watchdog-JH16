@@ -26,6 +26,8 @@ import * as path from 'node:path';
 import type { AssistantService } from '../services/assistant';
 import { sameOriginMutation } from './automation_routes';
 import { jh16PlanItems, readJh16Preset } from '../services/jh16_plan';
+import { listReplicationTargets, collectRuns, buildManuscript, manuscriptMarkdown, manuscriptHtml, primaryRuns } from '../services/replication_dossier';
+import { buildInfo } from '../utils/build_info';
 
 export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService) {
 const apiRouter = Router();
@@ -111,6 +113,49 @@ apiRouter.post('/studies/jh2016', requireCapability('run.create'), async (req, r
       method_params: { reference_scores: reference.scores }, attempt_meaning: JH16_SOURCES[source_id].attempt_meaning };
     const runId = orchestrator.submitJob('PIPELINE', config, req.principal!.id);
     res.status(202).json({ run_id: runId, status: 'QUEUED' });
+  } catch (e) { next(e); }
+});
+
+// --------------------------------------------------------------------------
+// Replications: every registered target, its stored runs and the manuscript.
+// --------------------------------------------------------------------------
+
+apiRouter.get('/replications', requireCapability('run.view'), async (req, res, next) => {
+  try {
+    const targets = await Promise.all(listReplicationTargets().map(async t => ({ target_id: t.target.target_id, title: t.target.title, citation: t.target.citation,
+      identifier: t.target.identifier, has_dossier: !!t.dossier, runs: t.dossier ? (await collectRuns(db, store, req.principal!.id, t.dossier)).length : 0 })));
+    res.setHeader('Cache-Control', 'no-store'); res.json({ targets });
+  } catch (e) { next(e); }
+});
+
+async function replicationContext(id: string, owner: string) {
+  const t = listReplicationTargets().find(x => x.target.target_id === id);
+  if (!t || !t.dossier) return null;
+  const runs = await collectRuns(db, store, owner, t.dossier);
+  const published = t.interpretation?.published_values_ref ? readConfig(t.interpretation.published_values_ref) : null;
+  return { t, runs, published };
+}
+
+apiRouter.get('/replications/:id', requireCapability('run.view'), async (req, res, next) => {
+  try {
+    const c = await replicationContext(req.params.id, req.principal!.id);
+    if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ target: c.t.target, interpretation: c.t.interpretation, dossier: c.t.dossier, hashes: c.t.hashes, runs: c.runs,
+      primary_run_ids: primaryRuns(c.runs).map(r => r.run_id), published: c.published });
+  } catch (e) { next(e); }
+});
+
+apiRouter.get('/replications/:id/manuscript', requireCapability('run.view'), async (req, res, next) => {
+  try {
+    const c = await replicationContext(req.params.id, req.principal!.id);
+    if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
+    const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit);
+    const format = String(req.query.format ?? 'json');
+    res.setHeader('Cache-Control', 'no-store');
+    if (format === 'md') { res.setHeader('Content-Type', 'text/markdown; charset=utf-8'); res.setHeader('Content-Disposition', `attachment; filename="replication-${req.params.id}.md"`); return res.send(manuscriptMarkdown(m)); }
+    if (format === 'html') { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.setHeader('Content-Disposition', `attachment; filename="replication-${req.params.id}.html"`); return res.send(manuscriptHtml(m)); }
+    res.json({ manuscript: m });
   } catch (e) { next(e); }
 });
 

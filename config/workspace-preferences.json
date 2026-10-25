@@ -62,6 +62,10 @@
     "/evidence": {
       "en": "Evidence review",
       "advanced": false
+    },
+    "/replications": {
+      "en": "Replications",
+      "advanced": false
     }
   },
   "presets": {
@@ -127,6 +131,7 @@
             "/research",
             "/study",
             "/method",
+            "/replications",
             "/runs"
           ]
         },
@@ -178,6 +183,7 @@
             "/workbench",
             "/analyzers",
             "/method",
+            "/replications",
             "/runs"
           ]
         },
