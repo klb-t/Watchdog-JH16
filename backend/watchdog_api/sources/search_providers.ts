@@ -22,6 +22,10 @@ const ProviderSchema = z.object({
   count_path: z.string().min(1),
   zero_result_policy: z.enum(['treat_as_missing', 'treat_as_measurement']),
   request_params: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
+  // Provider parameters a run may set (for a declared variant such as an
+  // explicit Google country). Anything else in a run's source_params is refused,
+  // so a setting can never look accepted while having no effect.
+  run_params_allowed: z.array(z.string().regex(/^[a-z_]+$/)).default([]),
   pacing: z.object({
     min_interval_ms: z.number().int().nonnegative(),
     // Unbounded retries against an exhausted quota is a hung study, not resilience.

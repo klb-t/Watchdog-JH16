@@ -32,6 +32,9 @@ FROM node:24-bookworm-slim AS runtime
 
 WORKDIR /app
 ENV NODE_ENV=production
+# The commit this image was built from, stamped on every run and manifest.
+ARG WATCHDOG_GIT_COMMIT=
+ENV WATCHDOG_GIT_COMMIT=$WATCHDOG_GIT_COMMIT
 
 # Runs unprivileged. The node image already provides this user.
 RUN mkdir -p /mnt/watchdog && chown -R node:node /mnt/watchdog

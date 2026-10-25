@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0",
+  "interpretation_id": "jh2016-interpretation",
+  "version": "2026-10-25-v1",
+  "_pre_registration": {
+    "protocol": "docs/replication/JH16_2026-10-25/PROTOCOL.md",
+    "registered_in_commit": "3d74e15",
+    "registered_before_data": true,
+    "note": "Rules for reading a run against hypothesis H-harm, fixed before any 2026-10-25 data. The claim tolerances themselves stay in jh2016.json and are not changed here."
+  },
+  "claims_ref": "config/replication/jh2016.json",
+  "reference_ref": "config/reference/nutt-2010.json",
+  "published_values_ref": "fixtures/jh2016/paper_reported.json",
+  "required_complete_n": 16,
+  "significance_alpha": 0.01,
+  "hypothesis_harm": {
+    "supports": { "pearson_min": 0.70, "p_two_sided_below": 0.01 },
+    "contradicts": { "pearson_below": 0.62, "spearman_below": 0.50 },
+    "otherwise": "undecided"
+  },
+  "exploratory_sensitivity": [
+    { "id": "without_alcohol", "exclude_entities": ["alcohol"], "reason": "alcohol dominates Pearson in the published data" },
+    { "id": "without_reachable_result_counts", "exclude_flag": "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS", "reason": "added after the first live run showed such counts; post hoc, never a verdict" }
+  ],
+  "entity_flags": {
+    "hi_above_percent": 100
+  }
+}

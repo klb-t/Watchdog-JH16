@@ -34,6 +34,6 @@ export const BenchmarkSchema = z.object({ provider: z.string().regex(/^[a-z][a-z
 export type RoutingEvidence = { model: string; benchmark: { suiteHash: string; passed: number; total: number; source: string; observedAt: string; hash: string } | null;
   operations: { calls: number; successes: number; averageLatencyMs: number | null } };
 export const ResearchPlanInputSchema = z.object({ name: z.string().trim().min(1).max(160), settingsHash: z.string().regex(/^[a-f0-9]{64}$/),
-  baseline: z.enum(['fixture', 'live_serp', 'none']), refreshMemory: z.boolean(), scanPapers: z.boolean(), dailyScan: z.boolean(),
+  baseline: z.enum(['fixture', 'live_serp', 'live_serp_extension', 'none']), refreshMemory: z.boolean(), scanPapers: z.boolean(), dailyScan: z.boolean(),
   paperScope: z.enum(['substances', 'all_science']) }).strict();
 export type ResearchPlanInput = z.infer<typeof ResearchPlanInputSchema>;

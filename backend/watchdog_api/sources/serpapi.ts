@@ -35,6 +35,7 @@ export interface SerpApiProviderConfig {
   readonly count_path: string;
   readonly zero_result_policy: 'treat_as_missing' | 'treat_as_measurement';
   readonly request_params: Readonly<Record<string, string | number | boolean>>;
+  readonly run_params_allowed?: readonly string[];
   readonly pacing: { min_interval_ms: number; max_attempts: number; backoff_ms: number[] };
 }
 
@@ -62,6 +63,44 @@ function readPath(obj: any, dotted: string): unknown {
   return dotted.split('.').reduce((acc, k) => (acc == null ? acc : acc[k]), obj);
 }
 
+/**
+ * What the provider's fields actually say, kept beside the count for audit.
+ *
+ * `total_results` is Google's estimate of all matching documents; the number
+ * of `organic_results` is how many records this one page returned (about ten).
+ * They measure different things and only the first is Ni. The highest page
+ * Google offers bounds how many results are actually reachable.
+ */
+export function providerFields(body: string, countPath: string): Record<string, unknown> | null {
+  let d: any;
+  try { d = JSON.parse(body); } catch { return null; }
+  const pages = Object.keys(d?.serpapi_pagination?.other_pages ?? d?.pagination?.other_pages ?? {})
+    .map(Number).filter(Number.isFinite);
+  const sp = d?.search_parameters ?? {}, sm = d?.search_metadata ?? {}, si = d?.search_information ?? {};
+  return {
+    count_path: countPath,
+    reported_count: readPath(d, countPath) ?? null,
+    returned_records: Array.isArray(d?.organic_results) ? d.organic_results.length : null,
+    highest_page_offered: pages.length ? Math.max(...pages) : null,
+    organic_results_state: si.organic_results_state ?? null,
+    query_displayed: si.query_displayed ?? null,
+    google_domain: sp.google_domain ?? null, gl: sp.gl ?? null, hl: sp.hl ?? null,
+    location_used: sp.location_used ?? null, device: sp.device ?? null, safe: sp.safe ?? null,
+    provider_search_id: sm.id ?? null, provider_created_at: sm.created_at ?? null,
+  };
+}
+
+/**
+ * Google sometimes reports, instead of an index estimate, a count no larger
+ * than the results reachable through its own pagination (e.g. 74 for "heroin"
+ * with eight pages offered). That number is a different quantity, so it is
+ * disclosed on the observation; it is never corrected or replaced.
+ */
+function countEqualsReachableResults(count: number, fields: Record<string, unknown> | null): boolean {
+  const page = fields?.highest_page_offered;
+  return typeof page === 'number' && count <= 10 * (page + 1);
+}
+
 export class SerpApiAdapter implements SourceAdapter {
   readonly adapter_id = 'serpapi';
   readonly adapter_version = '1.0.0';
@@ -78,13 +117,17 @@ export class SerpApiAdapter implements SourceAdapter {
   capabilities(): SourceCapability[] { return ['result_count']; }
 
   validate_params(params: Record<string, any>): ValidatedParams {
-    return {
-      valid: true,
-      normalized_params: {
-        locale: params.locale ? String(params.locale) : 'en',
-        safe_search: params.safe_search !== undefined ? Boolean(params.safe_search) : false,
-      },
-    };
+    const allowed = new Set(this.config.run_params_allowed ?? []);
+    const errors: string[] = [];
+    for (const key of Object.keys(params ?? {}).sort())
+      if (key !== 'provider_params') errors.push(`'${key}' has no effect on ${this.config.provider_key}; provider behaviour is set in its configuration or in provider_params`);
+    const provider_params: Record<string, string> = {};
+    for (const [key, value] of Object.entries(params?.provider_params ?? {}).sort(([a], [b]) => a.localeCompare(b))) {
+      if (!allowed.has(key)) errors.push(`provider parameter '${key}' is not allowed for a run (allowed: ${[...allowed].sort().join(', ') || 'none'})`);
+      else if (typeof value !== 'string' || !/^[A-Za-z0-9 ,._-]{1,80}$/.test(value)) errors.push(`provider parameter '${key}' must be a short plain string`);
+      else provider_params[key] = value;
+    }
+    return errors.length ? { valid: false, normalized_params: {}, errors } : { valid: true, normalized_params: { provider_params } };
   }
 
   /** The URL actually sent. Never logged, never stored, never returned. */
@@ -96,6 +139,8 @@ export class SerpApiAdapter implements SourceAdapter {
     // by the provider's IP geolocation.
     u.searchParams.set('hl', request.language.split('-')[0]);
     for (const [k, v] of Object.entries(this.config.request_params)) u.searchParams.set(k, String(v));
+    // Run-level variant parameters, already restricted to the configured list.
+    for (const [k, v] of Object.entries((request.params?.provider_params ?? {}) as Record<string, string>)) u.searchParams.set(k, v);
     u.searchParams.set(this.config.api_key_param, key);
     return u.toString();
   }
@@ -165,7 +210,7 @@ export class SerpApiAdapter implements SourceAdapter {
           break;
         }
         return { ...base, payload: Buffer.from(body, 'utf-8'), status: 'SUCCESS', http_status: res.status,
-          metadata: { ...base.metadata, attempts: attempt } };
+          metadata: { ...base.metadata, attempts: attempt, provider_fields: providerFields(body, this.config.count_path) } };
       }
 
       if (res.status === 429) {
@@ -258,6 +303,8 @@ export class SerpApiAdapter implements SourceAdapter {
 
     const flags: QualityFlag[] = ['PROVIDER_ESTIMATE'];
     if (count.approximate || count.grouped) flags.push('COUNT_PARSE_UNCERTAIN');
+    if (countEqualsReachableResults(count.count, raw.metadata?.provider_fields ?? providerFields(raw.payload.toString('utf-8'), this.config.count_path)))
+      flags.push('PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS');
     if (this.config.request_params.safe === undefined) flags.push('SAFESEARCH_UNKNOWN');
 
     return [{

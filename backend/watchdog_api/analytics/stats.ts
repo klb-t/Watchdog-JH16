@@ -63,3 +63,52 @@ export function spearman(x: number[], y: number[]): number | null {
   };
   return pearson(rank(x), rank(y));
 }
+
+/** Natural log of the gamma function (Lanczos, g = 7). */
+function logGamma(z: number): number {
+  const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313,
+    -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+  if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - logGamma(1 - z);
+  z -= 1;
+  let x = c[0];
+  for (let i = 1; i < 9; i++) x += c[i] / (z + i);
+  const t = z + 7.5;
+  return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+}
+
+/** Continued fraction for the regularized incomplete beta function. */
+function betaContinuedFraction(a: number, b: number, x: number): number {
+  let c = 1, d = 1 - (a + b) * x / (a + 1);
+  d = 1 / d; let h = d;
+  for (let m = 1; m <= 300; m++) {
+    const m2 = 2 * m;
+    let aa = m * (b - m) * x / ((a - 1 + m2) * (a + m2));
+    d = 1 + aa * d; c = 1 + aa / c; d = 1 / d; h *= d * c;
+    aa = -(a + m) * (a + b + m) * x / ((a + m2) * (a + 1 + m2));
+    d = 1 + aa * d; c = 1 + aa / c; d = 1 / d;
+    const delta = d * c; h *= delta;
+    if (Math.abs(delta - 1) < 1e-15) break;
+  }
+  return h;
+}
+
+/** Regularized incomplete beta I_x(a, b). */
+export function regularizedIncompleteBeta(x: number, a: number, b: number): number {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const front = Math.exp(logGamma(a + b) - logGamma(a) - logGamma(b) + a * Math.log(x) + b * Math.log(1 - x));
+  return x < (a + 1) / (a + b + 2)
+    ? front * betaContinuedFraction(a, b, x) / a
+    : 1 - front * betaContinuedFraction(b, a, 1 - x) / b;
+}
+
+/**
+ * Two-sided p-value of a correlation coefficient under H0: rho = 0, from the
+ * t statistic with n - 2 degrees of freedom. Null when it is undefined
+ * (fewer than three pairs, or |r| = 1).
+ */
+export function correlationPValueTwoSided(r: number | null, n: number): number | null {
+  if (r === null || !Number.isFinite(r) || n < 3 || Math.abs(r) >= 1) return null;
+  const df = n - 2, t = r * Math.sqrt(df / (1 - r * r));
+  return regularizedIncompleteBeta(df / (df + t * t), df / 2, 0.5);
+}

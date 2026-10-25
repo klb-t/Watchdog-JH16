@@ -30,6 +30,21 @@ export interface ExportInput {
   narrativeApprovable?: Approvable | null;
   missingObservations?: readonly { entity_id: string; query_role: string; missing_reason: string }[];
   qualityFlags?: readonly string[];
+  /** The stored counts the results were computed from, with their provenance. */
+  observations?: readonly ExportObservation[];
+  /** The stored JH16 evaluation artifact, exported as recorded. */
+  evaluation?: Record<string, any> | null;
+  run?: { preset_id: string | null; preset_version: string | null; source_id: string | null; effective_config_hash: string | null;
+    manifest_sha256: string | null; git_commit: string | null; app_version: string | null } | null;
+}
+
+export interface ExportObservation {
+  entity_id: string; query_role: string; query_text: string; value_numeric: number | null; is_missing: boolean;
+  missing_reason: string | null; provider_id: string | null; retrieved_at: string; quality_flags: readonly string[];
+}
+
+function sortedObservations(input: ExportInput) {
+  return [...(input.observations ?? [])].sort((a, b) => a.entity_id.localeCompare(b.entity_id) || a.query_role.localeCompare(b.query_role));
 }
 
 function assertExportable(input: ExportInput) {
@@ -68,6 +83,30 @@ export function exportCsv(input: ExportInput): string {
 
   const lines = [header.join(','), ...rows];
 
+  if (input.observations?.length) {
+    // The counts are measurements and the rows above are derived from them, so
+    // they are a separate table rather than more metric rows.
+    lines.push('', '# OBSERVATIONS (stored provider counts; Ni = popularity, Ni_harm = harm)');
+    lines.push(['run_id', 'entity_id', 'query_role', 'query_text', 'count', 'is_missing', 'missing_reason', 'provider_id', 'retrieved_at', 'quality_flags'].join(','));
+    for (const o of sortedObservations(input)) lines.push([input.runId, o.entity_id, o.query_role, o.query_text, o.is_missing ? '' : o.value_numeric,
+      o.is_missing ? 'true' : 'false', o.missing_reason ?? '', o.provider_id ?? '', o.retrieved_at, [...o.quality_flags].sort().join(' ')].map(csvEscape).join(','));
+  }
+
+  const ev = input.evaluation;
+  if (ev) {
+    lines.push('', `# JH16 EVALUATION (${ev.attempt_kind}; reference ${ev.reference?.set_key} ${ev.reference?.version}; complete=${ev.complete})`);
+    lines.push(['run_id', 'comparison', 'statistic', 'value', 'p_two_sided', 'n'].join(','));
+    const stat = (name: string, s: any) => lines.push([input.runId, name, s.statistic, s.value ?? '', s.p_two_sided ?? '', s.n].map(csvEscape).join(','));
+    for (const s of ev.hi_vs_reference ?? []) stat('Hi_vs_reference', s);
+    for (const s of ev.pi_vs_reference ?? []) stat('Pi_vs_reference', s);
+    if (ev.pi_vs_published) stat('Pi_vs_published_table1', ev.pi_vs_published);
+    for (const x of ev.exploratory ?? []) for (const s of x.hi_vs_reference) stat(`EXPLORATORY_${x.id}_Hi_vs_reference`, s);
+    lines.push(['run_id', 'claim_key', 'verdict', 'observed', 'rationale'].join(','));
+    for (const v of ev.verdicts ?? []) lines.push([input.runId, v.claim_key, v.verdict, v.observed_value ?? '', v.rationale].map(csvEscape).join(','));
+    lines.push(['run_id', 'hypothesis', 'reading', 'rule'].join(','));
+    lines.push([input.runId, 'H-harm', ev.hypothesis_harm?.reading, ev.hypothesis_harm?.rule].map(csvEscape).join(','));
+  }
+
   if (input.narrative) {
     // CSV has no styling, so the distinction is carried in the data itself.
     lines.push('');
@@ -96,6 +135,9 @@ export function exportJson(input: ExportInput): string {
     missing_observations: [...(input.missingObservations ?? [])]
       .sort((a, b) => a.entity_id.localeCompare(b.entity_id) || a.query_role.localeCompare(b.query_role)),
     quality_flags: [...new Set(input.qualityFlags ?? [])].sort(),
+    run: input.run ?? null,
+    observations: sortedObservations(input).map(o => ({ ...o, quality_flags: [...o.quality_flags].sort() })),
+    evaluation: input.evaluation ?? null,
     narrative: input.narrative
       ? {
           // Machine-written content is labelled as such in the structure, not

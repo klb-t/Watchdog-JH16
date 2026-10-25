@@ -103,10 +103,10 @@ test('Orchestrator - graceful failure retains evidence and records state', async
 
   const runId = runRepo.createRun({
     runType: 'PIPELINE',
-    config: { ...PIPELINE_CONFIG, source_id: 'serp_generic', entities: ['alcohol'] },
+    config: { ...PIPELINE_CONFIG, entities: ['alcohol'] },
   });
 
-  const adapter = sourceRegistry.getAdapter('serp_generic');
+  const adapter = sourceRegistry.getAdapter('offline_fixture');
   const originalNormalize = adapter.normalize;
   adapter.normalize = () => { throw new Error('Injected Normalization Crash'); };
 

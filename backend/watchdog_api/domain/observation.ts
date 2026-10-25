@@ -39,7 +39,10 @@ export type QualityFlag =
   // PROVIDER_DISCONTINUITY, applied to the rest of the query plan's identity.
   | 'QUERY_PLAN_DISCONTINUITY'
   | 'ALIAS_SET_DISCONTINUITY'
-  | 'GEOGRAPHY_DISCONTINUITY';
+  | 'GEOGRAPHY_DISCONTINUITY'
+  // The provider reported a count no larger than the results reachable through
+  // its pagination: a reachable-result count, not an estimate of the index.
+  | 'PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS';
 
 interface ObservationBase {
   readonly seriesId: string;

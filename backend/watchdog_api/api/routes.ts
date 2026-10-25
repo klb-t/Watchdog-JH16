@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { requireCapability } from './auth_routes';
 import { sourceRegistry } from '../sources/registry';
 import { analyzerRegistry } from '../analytics/registry';
-import { RunOrchestrator } from '../services/run_orchestrator';
+import { RunOrchestrator, JH16_EVALUATION_ROLE } from '../services/run_orchestrator';
 import { RunRepository } from '../db/repositories/runs';
 import { ObservationRepository, AnalysisResultRepository } from '../db/repositories/data';
 import { ArtifactRepository } from '../db/repositories/artifacts';
@@ -25,6 +25,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import type { AssistantService } from '../services/assistant';
 import { sameOriginMutation } from './automation_routes';
+import { jh16PlanItems, readJh16Preset } from '../services/jh16_plan';
 
 export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService) {
 const apiRouter = Router();
@@ -44,13 +45,25 @@ apiRouter.use('/runs/:id', (req, res, next) => {
   next();
 });
 
+/** The run's stored JH16 evaluation, read as recorded (never recomputed on read). */
+async function readEvaluation(runId: string): Promise<Record<string, any> | null> {
+  const artifact = artRepo.getArtifacts(runId).find(a => a.kind === 'analysis' && JSON.parse(a.metadata_json ?? '{}').role === JH16_EVALUATION_ROLE);
+  return artifact ? JSON.parse((await store.get(artifact.object_uri)).toString('utf-8')) : null;
+}
+
+function exportObservations(runId: string) {
+  return obsRepo.getByRunId(runId).map(o => ({ entity_id: o.entityId, query_role: o.queryRole, query_text: o.queryText,
+    value_numeric: o.isMissing ? null : o.numericValue, is_missing: o.isMissing, missing_reason: o.isMissing ? o.missingReason : null,
+    provider_id: o.providerId ?? null, retrieved_at: o.retrievedAt, quality_flags: o.qualityFlags }));
+}
+
 function readConfig(...p: string[]) {
   return JSON.parse(fs.readFileSync(path.join(process.cwd(), ...p), 'utf-8'));
 }
 
-apiRouter.get('/sources', requireCapability('run.view'), (req, res) => {
-  const sources = sourceRegistry.listSources();
-  res.json({ sources });
+apiRouter.get('/sources', requireCapability('run.view'), async (req, res, next) => {
+  // Live status: a credentialled source is offered only while its key resolves.
+  try { res.json({ sources: await sourceRegistry.listWithLiveStatus() }); } catch (e) { next(e); }
 });
 
 apiRouter.get('/analyzers', requireCapability('run.view'), (req, res) => {
@@ -72,6 +85,33 @@ apiRouter.post('/runs', requireCapability('run.create'), (req, res, next) => {
   } catch (e) {
     next(e);
   }
+});
+
+/** Sources a JH16 run can be measured with, and what such a run means. */
+const JH16_SOURCES: Record<string, { source_params: Record<string, unknown>; attempt_meaning: string }> = {
+  fixture_jh2016: { source_params: { fixture_set: 'faithful_2014-06-20' }, attempt_meaning: 'pipeline_self_check: published 2014 counts; not an independent replication' },
+  serp_result_count: { source_params: {}, attempt_meaning: 'temporal_reassessment: new counts cannot reproduce the historic data collection' },
+};
+
+/**
+ * Starts the locked JH16 preset (all sixteen substances) on a chosen source.
+ * The configuration is built here from the preset and the reference set, so
+ * no client can submit a narrowed or edited "JH16" run.
+ */
+apiRouter.post('/studies/jh2016', requireCapability('run.create'), async (req, res, next) => {
+  try {
+    const { source_id } = z.object({ source_id: z.enum(Object.keys(JH16_SOURCES) as [string, ...string[]]) }).strict().parse(req.body);
+    const live = await sourceRegistry.describe(source_id);
+    if (live.status !== 'implemented' && live.status !== 'fixture')
+      return res.status(409).json({ error: 'source_unavailable', message: `${source_id} is ${live.status}. ${live.remediation}`.trim() });
+    const preset = readJh16Preset(), reference = readConfig('config', 'reference', 'nutt-2010.json');
+    const config = { source_id, source_params: JH16_SOURCES[source_id].source_params, method_id: 'jh16_faithful',
+      preset_id: preset.preset_id, preset_version: preset.preset_version, language: preset.language,
+      query_expansion_mode: preset.query_expansion_mode, plan: jh16PlanItems(preset),
+      method_params: { reference_scores: reference.scores }, attempt_meaning: JH16_SOURCES[source_id].attempt_meaning };
+    const runId = orchestrator.submitJob('PIPELINE', config, req.principal!.id);
+    res.status(202).json({ run_id: runId, status: 'QUEUED' });
+  } catch (e) { next(e); }
 });
 
 apiRouter.get('/runs/:id', requireCapability('run.view'), (req, res) => {
@@ -202,11 +242,33 @@ apiRouter.get('/runs/:id/narrative', requireCapability('run.view'), (req, res, n
   } catch (e) { next(e); }
 });
 
-apiRouter.get('/runs/:id/export', requireCapability('export.download'), (req, res, next) => {
+apiRouter.get('/runs/:id/evaluation', requireCapability('run.view'), async (req, res, next) => {
+  try {
+    const run = runRepo.getRun(req.params.id)!, evaluation = await readEvaluation(req.params.id);
+    // Runs launched from the same research plan (e.g. repeated or regional
+    // variants) are listed beside this one with their stored summaries.
+    const planId = JSON.parse(run.effective_config ?? '{}').research_plan_id ?? null;
+    const siblings = planId ? await Promise.all(runRepo.getRuns(200, req.principal!.id)
+      .filter(r => r.id !== run.id && JSON.parse(r.effective_config ?? '{}').research_plan_id === planId)
+      .sort((a, b) => a.created_at.localeCompare(b.created_at))
+      .map(async r => { const e = await readEvaluation(r.id), c = JSON.parse(r.effective_config ?? '{}');
+        return { run_id: r.id, status: r.status, created_at: r.created_at, variant: c.variant_id ?? null, preset_id: r.preset_id,
+          complete: e?.complete ?? null, hi_vs_reference: e?.hi_vs_reference ?? null, pi_vs_published: e?.pi_vs_published ?? null,
+          reading: e?.hypothesis_harm?.reading ?? null, quality_flags: e?.quality_flags ?? [] }; })) : [];
+    const config = JSON.parse(run.effective_config ?? '{}');
+    res.json({ evaluation, run: { id: run.id, preset_id: run.preset_id, preset_version: run.preset_version, source_id: config.source_id ?? null,
+      variant_id: config.variant_id ?? null, variant_differences: config.variant_differences ?? [], attempt_meaning: config.attempt_meaning ?? null,
+      provider_params: config.source_params?.provider_params ?? {} }, plan_runs: siblings });
+  } catch (e) { next(e); }
+});
+
+apiRouter.get('/runs/:id/export', requireCapability('export.download'), async (req, res, next) => {
   try {
     const format = String(req.query.format ?? 'json');
     const results = anRepo.getByRunId(req.params.id);
     const observations = obsRepo.getByRunId(req.params.id);
+    const run = runRepo.getRun(req.params.id)!, manifest = artRepo.getManifest(req.params.id);
+    const config = JSON.parse(run.effective_config ?? '{}');
     const input = {
       runId: req.params.id, results,
       missingObservations: observations.filter(o => o.isMissing).map(o => ({
@@ -214,6 +276,12 @@ apiRouter.get('/runs/:id/export', requireCapability('export.download'), (req, re
         missing_reason: (o as any).missingReason,
       })),
       qualityFlags: [...new Set(observations.flatMap(o => [...o.qualityFlags]))].sort(),
+      // An analysis run reads counts from its source run; they are exported from there.
+      observations: exportObservations(config.source_run_id ?? req.params.id),
+      evaluation: await readEvaluation(req.params.id),
+      run: { preset_id: run.preset_id ?? null, preset_version: run.preset_version ?? null, source_id: config.source_id ?? null,
+        effective_config_hash: run.effective_config_hash ?? null, manifest_sha256: manifest?.sha256 ?? null,
+        git_commit: run.git_commit ?? null, app_version: run.app_version ?? null },
     };
 
     if (format === 'csv') {

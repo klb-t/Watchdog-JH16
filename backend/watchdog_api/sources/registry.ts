@@ -1,6 +1,5 @@
 import { SourceAdapter } from './base';
 import { OfflineFixtureAdapter } from './offline_fixture';
-import { SerpAdapter } from './serp';
 import { FixtureSourceAdapter } from './fixture_source';
 import { NotImplementedError } from '../utils/errors';
 import type { Source } from '../../../src/types';
@@ -44,11 +43,14 @@ export class SourceRegistry {
       description: 'Frozen offline data for reproducibility testing'
     });
 
+    // Formerly a 'fixture' adapter that answered every query with the same
+    // invented count (42000) and could be selected for a run. A constant that
+    // ignores its input is a fabricated measurement, so it is no longer
+    // executable. Live counts come from serp_result_count.
     this.register('serp_generic', {
-      adapter: new SerpAdapter(),
-      status: 'fixture',
+      status: 'planned',
       capabilities: ['result_count'],
-      description: 'SERP API fixture (mocked until real HTTP fetch is implemented)'
+      description: 'Generic SERP adapter: not implemented. Live search result counts are the serp_result_count source.'
     });
 
     // Named for what is measured, not for who serves it: 'google_trends' is a
