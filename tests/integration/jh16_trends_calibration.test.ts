@@ -26,7 +26,8 @@ afterEach(() => { sqlite.close(); fs.rmSync(STORE, { recursive: true, force: tru
 
 const provider = loadTrendsProviderConfig().provider;
 const credential = () => new SecretStore([new EnvSecretProvider({ SERPAPI_API_KEY: 'test-key-trends-000001' })]).resolve(provider.secret_ref);
-const MONTHS = ['2012-05', '2014-06', '2025-11', '2025-12', '2026-01', '2026-02', '2026-03', '2026-04', '2026-05', '2026-06', '2026-07', '2026-08', '2026-09', '2026-10'];
+// The real window: every month from 2012-01 to 2026-10 (178), which also exceeds SQLite's per-statement variable limit in one insert.
+const MONTHS = Array.from({ length: 178 }, (_, i) => `${2012 + Math.floor(i / 12)}-${String(i % 12 + 1).padStart(2, '0')}`);
 /** Interest on one common scale; each group's response is divided by its own factor, as Trends would rescale it. */
 const TRUE: Record<string, number> = { alcohol: 400, cannabis: 120, cocaine: 60, heroin: 50, LSD: 45, ecstasy: 40, GHB: 20, methadone: 12, butane: 10, khat: 9, amphetamine: 8,
   methamphetamine: 7, ketamine: 6, buprenorphine: 3, benzodiazepines: 2, mephedrone: 1 };
@@ -51,7 +52,7 @@ test('Trends observations carry the period, the entity and the not-a-count flag;
   const obs = adapter.normalize(raw);
   const cocaine = obs.filter(o => o.queryText === 'cocaine');
   assert.strictEqual(cocaine.length, MONTHS.length);
-  assert.strictEqual(cocaine[1].observedAt, '2014-06-01');
+  assert.ok(cocaine.some(o => o.observedAt === '2014-06-01'));
   assert.ok(cocaine.every(o => o.qualityFlags.includes('RELATIVE_INTEREST_NOT_A_COUNT')));
   assert.ok(cocaine[MONTHS.length - 1].qualityFlags.includes('TRENDS_PARTIAL_PERIOD'));
   const lsd = obs.filter(o => o.queryText === 'LSD');

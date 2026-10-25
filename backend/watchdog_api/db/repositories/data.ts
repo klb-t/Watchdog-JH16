@@ -15,6 +15,9 @@ export interface SeriesKey {
   unit?: string;
 }
 
+/** Rows per INSERT, well under SQLite's bound-variable limit at ~20 columns. */
+const INSERT_CHUNK = 500;
+
 export class ObservationRepository {
   constructor(private db: BetterSQLite3Database<any>) {}
 
@@ -74,7 +77,10 @@ export class ObservationRepository {
       };
     });
 
-    this.db.insert(observations).values(values).run();
+    // SQLite caps bound variables per statement; a time series (e.g. 16 terms x
+    // 178 months) exceeds it in one insert. Chunks inside one transaction keep
+    // the write all-or-nothing.
+    this.db.transaction(tx => { for (let i = 0; i < values.length; i += INSERT_CHUNK) tx.insert(observations).values(values.slice(i, i + INSERT_CHUNK)).run(); });
   }
 
   /**
@@ -157,7 +163,7 @@ export class AnalysisResultRepository {
       statistic_metadata_json: r.statisticMetadata ? JSON.stringify(r.statisticMetadata) : null,
       created_at: now,
     }));
-    this.db.insert(analysisResults).values(values).run();
+    this.db.transaction(tx => { for (let i = 0; i < values.length; i += INSERT_CHUNK) tx.insert(analysisResults).values(values.slice(i, i + INSERT_CHUNK)).run(); });
   }
 
   listAnalysisRuns(runId: string) {
