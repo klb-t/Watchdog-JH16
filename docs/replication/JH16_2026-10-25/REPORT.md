@@ -209,6 +209,9 @@ Surowe odpowiedzi SerpApi (warunki dostawcy) i baza instancji audytowej są na V
 
 ### Czego jeszcze nie zweryfikowano
 
+- redakcji projektu pracy przez model językowy (np. Vertex): praca jest składana deterministycznie
+  z zapisanych wyników; opcja z modelem nie jest jeszcze zrobiona;
+
 - stabilności szacunków Google w kolejnych dniach (tylko 25.10.2026);
 - czy flaga „osiągalne wyniki” wyłapuje wszystkie zapadnięte liczby (reguła heurystyczna,
   sprawdzona na 192 odpowiedziach);

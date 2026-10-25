@@ -27,6 +27,8 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
 
 - [x] **E3.19 — Google Trends as a source; observations with a period.** `trends_interest_index` via SerpApi (`config/providers/trends_interest.json`), `observedAt` stored in `observed_at`, exploratory `jh16_trends_calibration` (`config/calibration/jh2016-trends.json`) launched from the wizard and checked by `scripts/verify_trends_calibration.py`. Real runs found and fixed: SQLite variable limit on long series, near-tie ranking, panel crash on recomputation. Test: `tests/integration/jh16_trends_calibration.test.ts`; gate **626/626**. Results: `../replication/JH16_2026-10-25/CALIBRATION.md`.
 
+- [x] **E5.12 — Replications in the app and the manuscript.** `/replications` lists every target in `config/replication/`; a target with a dossier gets overview/verdicts, runs with provenance, filters, comparison, drill-down to queries and raw responses, discrepancies, calibration, criteria, and a manuscript assembled deterministically from stored results (Markdown/HTML, sources per block). Tests: `tests/integration/replication_dossier.test.ts`, browser test in `tests/e2e/ui_flow.test.ts`; gate **629/629**. Language-model editing of the manuscript is not implemented.
+
 ## Completed resumed acceptance — 2026-10-02
 
 - [x] **E4.7 follow-up:** explicit OIDC fails closed without its audience; legacy-managed addresses cannot receive conflicting new grants through invitations/applications. Recheck inside all three grant transactions rejects intervening legacy writes without consuming evidence.

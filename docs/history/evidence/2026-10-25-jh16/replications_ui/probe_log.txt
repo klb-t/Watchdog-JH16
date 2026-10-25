@@ -1,0 +1,6 @@
+desktop list: Can Google Searches Predict the Popularity and Harm of Psychoactive Agents? | Jankowski, Wojciech, Hoffmann, Marcin · J Med Internet Res 2016 · doi:10.2196/jmir.4033 | 7 przebiegów w tej instalacji
+desktop runs rows with compare box: 2
+desktop drill rows: 4
+phone list: Can Google Searches Predict the Popularity and Harm of Psychoactive Agents? | Jankowski, Wojciech, Hoffmann, Marcin · J Med Internet Res 2016 · doi:10.2196/jmir.4033 | 7 przebiegów w tej instalacji
+phone runs rows with compare box: 2
+phone drill rows: 4
