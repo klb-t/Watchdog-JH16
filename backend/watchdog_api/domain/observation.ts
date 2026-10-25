@@ -28,7 +28,9 @@ export type MissingReason =
   // indistinguishable from a genuinely unanswerable query.
   | 'RATE_LIMITED'
   | 'QUOTA_EXHAUSTED'
-  | 'CREDENTIAL_UNAVAILABLE';
+  | 'CREDENTIAL_UNAVAILABLE'
+  // The installation's configured request limit was reached; nothing was sent.
+  | 'REQUEST_LIMIT_SETTING';
 
 export type QualityFlag =
   | 'PROVIDER_DISCONTINUITY'

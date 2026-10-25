@@ -2,7 +2,7 @@ import { UserVault } from '../secrets/user_vault';
 import { SettingsRepository } from '../db/repositories/settings';
 import type { AssistantProfile } from '../config/assistant';
 import { loadSearchProviderConfig } from '../sources/search_providers';
-import { SerpApiAdapter } from '../sources/serpapi';
+import { SerpApiAdapter, RequestLimitReachedError } from '../sources/serpapi';
 import { sourceRegistry } from '../sources/registry';
 import { AutomationError } from '../db/repositories/automation';
 export class PersonalSearch {
@@ -14,7 +14,9 @@ export class PersonalSearch {
     if (!credential.isPresent) throw new AutomationError(credential.detail);
     return new SerpApiAdapter(config, credential, async url => {
       if (!this.vault.resolve(owner, 'serpapi').isPresent) throw new AutomationError('The personal SERP key was removed');
-      this.repo.reserveSearch(owner, this.repo.get(owner, this.profile.defaults).value.searchDailyRequestLimit);
+      const limit = this.repo.get(owner, this.profile.defaults).value.searchDailyRequestLimit;
+      try { this.repo.reserveSearch(owner, limit); }
+      catch (e) { throw new RequestLimitReachedError(`WatchDog daily SERP request limit reached (${limit} per day, a personal setting); nothing was sent`); }
       const response = await this.transport(url, { redirect: 'error', signal: AbortSignal.timeout(20000) });
       const reader = response.body?.getReader(), chunks: Uint8Array[] = []; let bytes = 0;
       if (reader) while (true) { const { done, value } = await reader.read(); if (done) break; bytes += value.length;

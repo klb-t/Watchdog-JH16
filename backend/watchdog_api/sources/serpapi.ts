@@ -48,7 +48,7 @@ export type Sleep = (ms: number) => Promise<void>;
 
 export type FetchStatus =
   | 'SUCCESS' | 'PROVIDER_ZERO' | 'RATE_LIMIT' | 'QUOTA_EXHAUSTED'
-  | 'CREDENTIAL_UNAVAILABLE' | 'FETCH_FAILED';
+  | 'CREDENTIAL_UNAVAILABLE' | 'FETCH_FAILED' | 'REQUEST_LIMIT';
 
 /** One place, so a new status cannot be added without deciding its missingness. */
 const MISSING_REASON_FOR: Record<Exclude<FetchStatus, 'SUCCESS'>, MissingReason> = {
@@ -57,7 +57,14 @@ const MISSING_REASON_FOR: Record<Exclude<FetchStatus, 'SUCCESS'>, MissingReason>
   QUOTA_EXHAUSTED: 'QUOTA_EXHAUSTED',
   CREDENTIAL_UNAVAILABLE: 'CREDENTIAL_UNAVAILABLE',
   FETCH_FAILED: 'FETCH_FAILED',
+  REQUEST_LIMIT: 'REQUEST_LIMIT_SETTING',
 };
+
+/** Thrown by a transport that refuses to send because of the installation's own request limit. */
+export class RequestLimitReachedError extends Error {
+  readonly requestLimit = true;
+  constructor(message: string) { super(message); this.name = 'RequestLimitReachedError'; }
+}
 
 function readPath(obj: any, dotted: string): unknown {
   return dotted.split('.').reduce((acc, k) => (acc == null ? acc : acc[k]), obj);
@@ -189,6 +196,8 @@ export class SerpApiAdapter implements SourceAdapter {
       try {
         res = await this.httpGet(url);
       } catch (e) {
+        // The installation's own limit: nothing was sent, so nothing is retried.
+        if ((e as any)?.requestLimit === true) { last = { status: 'REQUEST_LIMIT', http: 0, detail: redact((e as Error).message) }; break; }
         // A transport error is scrubbed too: an agent or proxy can echo the URL.
         last = { status: 'FETCH_FAILED', http: 0, detail: redact(e instanceof Error ? e.message : String(e)) };
         if (attempt < max_attempts) { await this.sleep(backoff_ms[attempt - 1] ?? 0); continue; }

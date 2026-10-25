@@ -96,6 +96,11 @@ export class SettingsRepository {
     const r = this.db.prepare('SELECT COALESCE(SUM(charged_micro_usd),0) AS used,COUNT(*) AS calls FROM assistant_reservations WHERE owner_principal_id=? AND day_utc=?').get(owner, day) as any;
     return { dayUtc: day, reservedOrEstimatedUsd: r.used / 1000000, calls: r.calls };
   }
+  /** SERP requests already reserved today (UTC), against the personal daily limit. */
+  searchesToday(owner: string): number {
+    const day = new Date().toISOString().slice(0, 10);
+    return (this.db.prepare('SELECT COUNT(*) n FROM personal_search_requests WHERE owner_principal_id=? AND day_utc=?').get(owner, day) as any).n;
+  }
   reserveSearch(owner: string, limit: number) {
     this.db.transaction(() => {
       const day = new Date().toISOString().slice(0, 10);

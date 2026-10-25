@@ -60,13 +60,13 @@ export function Results() {
   };
 
   return (
-    <div className="p-8 max-w-5xl mx-auto space-y-8" data-testid="results-page">
-      <div className="flex items-start justify-between gap-4">
+    <div className="p-4 sm:p-8 max-w-5xl mx-auto space-y-8 min-w-0" data-testid="results-page">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Results</h1>
-          <p className="text-slate-500 mt-1 text-sm font-mono">{id}</p>
+          <p className="text-slate-500 mt-1 text-sm font-mono break-all">{id}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <a
             data-testid="export-csv"
             href={`/api/runs/${id}/export?format=csv`}
@@ -96,13 +96,13 @@ export function Results() {
       {/* Charts ------------------------------------------------------------ */}
       {/* The Hi-vs-reference scatter is drawn by the evaluation panel above. */}
       {charts.filter(chart => chart.kind === 'bar').map(chart => (
-        <section key={chart.id} data-testid={`chart-${chart.id}`} className="bg-white rounded-xl border border-slate-200 p-5">
-          <div className="flex items-center justify-between">
+        <section key={chart.id} data-testid={`chart-${chart.id}`} className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-semibold text-slate-900">{chart.title}{logScale(chart) && <span className="ml-2 text-xs font-normal text-slate-600" data-testid={`log-scale-${chart.id}`}>skala logarytmiczna</span>}</h2>
-            <div className="flex gap-1">
+            <div className="flex flex-wrap gap-1 min-w-0">
               {chart.legendFlags.map(f => (
                 <span key={f} data-testid={`legend-flag-${f}`}
-                  className="text-xs px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200">
+                  className="text-xs px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 break-all">
                   {f}
                 </span>
               ))}
@@ -114,7 +114,7 @@ export function Results() {
               <div key={p.entityId} className="flex items-center gap-3 text-sm"
                    data-testid={`point-${chart.id}-${p.entityId}`}
                    data-missing={p.missing ? 'true' : 'false'}>
-                <span className="w-40 shrink-0 truncate text-slate-700">{p.entityId}</span>
+                <span className="w-28 sm:w-40 shrink-0 truncate text-slate-700" title={p.entityId}>{p.entityId}</span>
                 {p.missing ? (
                   // Missing is drawn, labelled, and visually distinct — not a
                   // blank that a reader could take for zero.
@@ -141,7 +141,7 @@ export function Results() {
       ))}
 
       {/* Results table ----------------------------------------------------- */}
-      <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <section className="bg-white rounded-xl border border-slate-200 overflow-x-auto">
         <table className="w-full text-sm" data-testid="results-table">
           <thead className="bg-slate-50 text-slate-500">
             <tr>

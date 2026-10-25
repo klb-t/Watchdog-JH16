@@ -14,7 +14,7 @@ import { RunRepository } from '../../backend/watchdog_api/db/repositories/runs';
 import { ObservationRepository } from '../../backend/watchdog_api/db/repositories/data';
 import { ArtifactRepository } from '../../backend/watchdog_api/db/repositories/artifacts';
 import { runMigrations } from '../../backend/watchdog_api/db/migrations';
-import { SerpApiAdapter } from '../../backend/watchdog_api/sources/serpapi';
+import { SerpApiAdapter, RequestLimitReachedError } from '../../backend/watchdog_api/sources/serpapi';
 import { FixtureSourceAdapter } from '../../backend/watchdog_api/sources/fixture_source';
 import { loadSearchProviderConfig } from '../../backend/watchdog_api/sources/search_providers';
 import { SecretStore, EnvSecretProvider } from '../../backend/watchdog_api/secrets';
@@ -178,4 +178,18 @@ test('the export carries the stored counts and the evaluation, not only Pi and H
   assert.match(csv, /H-harm,not_computable/);
   assert.strictEqual(json.observations[0].value_numeric, 74);
   assert.strictEqual(json.evaluation.complete, false);
+});
+
+test('the personal daily request limit is its own missing reason and stops the run without retries', async () => {
+  let sent = 0, refused = 0;
+  const adapter = new SerpApiAdapter(serpConfig, await credential(), async url => {
+    if (sent >= 4) { refused++; throw new RequestLimitReachedError('WatchDog daily SERP request limit reached (4 per day, a personal setting); nothing was sent'); }
+    sent++; return { ok: true, status: 200, text: async () => serpBody(new URL(url).searchParams.get('q')!) };
+  }, async () => {});
+  const { id, run } = await runWith(adapter, liveConfig());
+  assert.strictEqual(run.status, 'COMPLETED');
+  const reasons = new ObservationRepository(db).getByRunId(id).filter(o => o.isMissing).map(o => (o as any).missingReason);
+  assert.strictEqual(refused, 1, 'one refusal stops the run; it is not retried');
+  assert.strictEqual(reasons.filter(r => r === 'REQUEST_LIMIT_SETTING').length, 1);
+  assert.strictEqual(reasons.filter(r => r === 'NOT_FETCHED').length, 32 - 4 - 1);
 });

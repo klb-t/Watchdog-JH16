@@ -50,6 +50,11 @@ export class ResearchPlans {
     const baseline = plan.body.baseline;
     if (baseline && approvedMethodHash !== baseline.methodHash) throw new AutomationError('Review the displayed baseline method and confirm its exact hash');
     if ((baseline?.mode === 'live_serp' || baseline?.mode === 'live_serp_extension') && !this.vault.resolve(owner, 'serpapi').isPresent) throw new AutomationError('Add your personal SerpApi key before launching live counts');
+    if (baseline && baseline.mode !== 'fixture') {
+      // A plan that cannot fit today's request limit would end incomplete; say so before anything is sent.
+      const limit = this.repo.get(owner, this.assistantProfile.defaults).value.searchDailyRequestLimit, left = Math.max(0, limit - this.repo.searchesToday(owner));
+      if (baseline.plannedQueries > left) throw new AutomationError(`This plan needs at least ${baseline.plannedQueries} SERP requests, but your daily limit (${limit}) leaves ${left} today. Raise the daily SerpApi limit in step 1 or launch after 00:00 UTC.`);
+    }
     return this.repo.launchPlan(owner, id, expectedHash, () => {
       let runId: string | null = null; const extensionRunIds: string[] = [];
       if (baseline) {

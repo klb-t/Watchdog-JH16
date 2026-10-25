@@ -25,6 +25,7 @@ import type { TypedSeries } from '../domain/method_spec';
 const MISSING_REASON_FOR_STATUS: Record<string, MissingReason> = {
   RATE_LIMIT: 'RATE_LIMITED', RATE_LIMITED: 'RATE_LIMITED', QUOTA_EXHAUSTED: 'QUOTA_EXHAUSTED',
   CREDENTIAL_UNAVAILABLE: 'CREDENTIAL_UNAVAILABLE', FETCH_FAILED: 'FETCH_FAILED', PROVIDER_ZERO: 'PROVIDER_ZERO_RESULTS_UNRELIABLE',
+  REQUEST_LIMIT: 'REQUEST_LIMIT_SETTING',
 };
 export const JH16_EVALUATION_ROLE = 'jh16_evaluation';
 
@@ -34,7 +35,7 @@ export function isJh16Run(config: any): boolean {
 }
 
 /** After these, no later request in the same run can succeed. */
-const STOPPING_STATUSES = new Set(['QUOTA_EXHAUSTED', 'CREDENTIAL_UNAVAILABLE']);
+const STOPPING_STATUSES = new Set(['QUOTA_EXHAUSTED', 'CREDENTIAL_UNAVAILABLE', 'REQUEST_LIMIT']);
 
 /**
  * One (entity, dimension) pair to acquire. The preset decides both; the

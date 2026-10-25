@@ -22,7 +22,7 @@ export function buildSettingsRouter(repo: SettingsRepository, service: Assistant
     providers: service.providers,
     credentials: can(req.principal!.roles, 'provider.view') ? [...service.providers.providers.map(p => p.id), 'serpapi'].map(p => vault.status(req.principal!.id, p)) : [],
     modelCeilings: repo.ceilings(req.principal!.id, service.provider(req.principal!.id).id),
-    budget: repo.budget(req.principal!.id), routes: service.preview(req.principal!.id), catalog: service.catalog(req.principal!.id) })));
+    budget: repo.budget(req.principal!.id), searchUsage: { usedToday: repo.searchesToday(req.principal!.id) }, routes: service.preview(req.principal!.id), catalog: service.catalog(req.principal!.id) })));
   router.post('/', route((req, res) => {
     const body = z.object({ value: SettingsSchema, expectedHash: z.string() }).strict().parse(req.body);
     if ([body.value.assistant.provider, ...Object.values(body.value.assistant.taskProviders ?? {})].some(id => !service.providers.providers.some(p => p.id === id))) throw new AutomationError('Unknown provider profile');
