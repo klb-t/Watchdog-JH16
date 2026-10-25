@@ -193,6 +193,10 @@ test('wizard launches one owned JH16 fixture run through the approved MethodSpec
     assert.throws(() => h.plans.launch('another', plan.id, plan.hash, plan.body.baseline.methodHash), /not found/);
     const launch = h.plans.launch(h.owner, plan.id, plan.hash, plan.body.baseline.methodHash);
     assert.deepEqual(h.plans.launch(h.owner, plan.id, plan.hash, plan.body.baseline.methodHash), launch, 'repeated click does not double-launch');
+    await new Promise(r => setTimeout(r, 2));
+    const again = h.plans.prepare(h.owner, { name: 'Study fixture', settingsHash: settings.hash, baseline: 'fixture', refreshMemory: false, scanPapers: false, dailyScan: false, paperScope: 'substances' });
+    assert.notEqual(again.id, plan.id, 'preparing the same configuration again is a new measurement, not the old launch');
+    assert.equal(again.launch, null);
     const runs = new RunRepository(h.orm); let run;
     for (let n = 0; n < 100; n++) { run = runs.getRun(launch.runId); if (['COMPLETED', 'FAILED'].includes(run!.status)) break; await new Promise(r => setTimeout(r, 20)); }
     assert.equal(run!.status, 'COMPLETED', run!.error_details ?? '');

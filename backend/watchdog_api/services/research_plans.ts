@@ -31,7 +31,10 @@ export class ResearchPlans {
       plannedQueries: preset.substances.length * 2 * (1 + (extension?.variants.length ?? 0)), retryPolicy: 'Finite provider retries also consume the daily SERP request limit' };
     const jobs = [ ...(input.refreshMemory ? [this.automationProfile.defaults.substanceJob] : []),
       ...(input.scanPapers ? [{ ...this.automationProfile.defaults.paperJob, scope: input.paperScope }] : []) ];
-    const body = { version: 'research-plan-1', name: input.name, settings: settings.value, settingsHash: settings.hash, baseline,
+    // Each preparation is its own reviewed plan. Without the timestamp an
+    // identical configuration resolved to an earlier, already launched plan, so
+    // a repeated measurement silently showed the old runs instead of new ones.
+    const body = { version: 'research-plan-1', name: input.name, preparedAt: new Date().toISOString(), settings: settings.value, settingsHash: settings.hash, baseline,
       sourceProfileHash: this.automationProfile.contentHash, assistantProfileHash: this.assistantProfile.contentHash,
       jobs, dailyScan: input.dailyScan ? { request: { ...this.automationProfile.defaults.paperJob, scope: input.paperScope }, recurrence: this.automationProfile.defaults.recurrence } : null,
       extensions: { status: 'EXPLORATORY_PLAN', ...settings.value.research, baselineChanges: 'none',
