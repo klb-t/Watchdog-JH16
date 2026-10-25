@@ -1,0 +1,42 @@
+[WORLD] terms below Trends resolution in Jun 2014: []
+  Trends (scaled, cocaine-anchored) Jun 2014 / last 12 months to Oct 2026:
+    alcohol            40.00   79.58   Pi2014=  100  Pi2026=100.00
+    cannabis           12.00   21.83   Pi2014= 15.2  Pi2026=19.18
+    cocaine             6.00    7.50   Pi2014= 15.1  Pi2026=6.80
+    heroin              6.00    2.92   Pi2014= 12.0  Pi2026=3.65
+    LSD                 5.00    3.50   Pi2014= 12.5  Pi2026=5.74 (reachable-count)
+    khat                1.68    1.31   Pi2014=  2.7  Pi2026=1.86
+    ecstasy             1.50    1.19   Pi2014= 11.0  Pi2026=7.86
+    methadone           1.50    1.69   Pi2014=  3.4  Pi2026=0.75
+    GHB                 1.13    1.07   Pi2014=  6.0  Pi2026=1.16
+    methamphetamine     1.12    1.04   Pi2014=  2.3  Pi2026=1.48
+    butane              0.94    2.32   Pi2014=  3.0  Pi2026=0.00 (reachable-count)
+    amphetamine         0.93    1.18   Pi2014=  2.3  Pi2026=0.86
+    ketamine            0.93    3.62   Pi2014=  2.2  Pi2026=1.61
+    benzodiazepines     0.40    1.49   Pi2014=  1.2  Pi2026=0.66 (reachable-count)
+    buprenorphine       0.28    0.98   Pi2014=  1.6  Pi2026=1.19
+    mephedrone          0.12    0.10   Pi2014=  0.5  Pi2026=0.09
+  A1 Trends Jun2014 vs published Pi (Table 1): n=16 spearman=0.948 pearson(log10)=0.949
+  A2 change May2012->Jun2014: Trends vs Table 2 Pi: n=16 spearman=0.157 pearson(log10)=-0.230
+  A3 Trends last 12 months vs our 2026 Pi (R3): n=16 spearman=0.594 pearson(log10)=0.408
+  A3b same, without reachable-count Pi: n=13 spearman=0.742 pearson(log10)=0.922
+  A4 change 2014->2026: Trends vs Pi: n=13 spearman=0.544 pearson(log10)=0.511
+[US] terms below Trends resolution in Jun 2014: []
+  A1 Trends Jun2014 vs published Pi (Table 1): n=16 spearman=0.850 pearson(log10)=0.915
+  A2 change May2012->Jun2014: Trends vs Table 2 Pi: n=16 spearman=0.063 pearson(log10)=-0.207
+  A3 Trends last 12 months vs our 2026 Pi (R3): n=16 spearman=0.538 pearson(log10)=0.374
+  A3b same, without reachable-count Pi: n=13 spearman=0.599 pearson(log10)=0.865
+  A4 change 2014->2026: Trends vs Pi: n=13 spearman=0.516 pearson(log10)=0.474
+[GB] terms below Trends resolution in Jun 2014: []
+  A1 Trends Jun2014 vs published Pi (Table 1): n=16 spearman=0.754 pearson(log10)=0.814
+  A2 change May2012->Jun2014: Trends vs Table 2 Pi: n=16 spearman=-0.195 pearson(log10)=-0.029
+  A3 Trends last 12 months vs our 2026 Pi (R3): n=16 spearman=0.624 pearson(log10)=0.359
+  A3b same, without reachable-count Pi: n=13 spearman=0.698 pearson(log10)=0.859
+  A4 change 2014->2026: Trends vs Pi: n=13 spearman=0.209 pearson(log10)=0.014
+[PL] terms below Trends resolution in Jun 2014: ['benzodiazepines', 'buprenorphine', 'butane', 'ketamine', 'methadone']
+  A1 Trends Jun2014 vs published Pi (Table 1): n=16 spearman=0.818 pearson(log10)=0.852
+  A2 change May2012->Jun2014: Trends vs Table 2 Pi: n=10 spearman=0.496 pearson(log10)=0.458
+  A3 Trends last 12 months vs our 2026 Pi (R3): n=16 spearman=0.750 pearson(log10)=0.471
+  A3b same, without reachable-count Pi: n=13 spearman=0.747 pearson(log10)=0.886
+  A4 change 2014->2026: Trends vs Pi: n=10 spearman=0.345 pearson(log10)=0.439
+sampling noise, G1 world repeated: mean |diff| = 0.00 points (0-100 scale), max 0

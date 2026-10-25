@@ -23,6 +23,11 @@ przez model językowy.
   oceny hipotezy w produkcie, przerwanie całego badania po jednym błędzie). Pełny zestaw testów:
   622/622.
 
+**Uzupełnienie (to samo popołudnie):** niezależne dane historyczne i kalibracja Google Trends /
+Europe PMC — [CALIBRATION.md](CALIBRATION.md). Ranking popularności z 2014 r. zgadza się z
+niezależnym Google Trends (Spearman 0,95); zmiany w czasie z Tabeli 2 — nie; spójny licznik
+(Europe PMC) nie odtwarza związku Hi z Nuttem.
+
 ## 1. Co replikujemy
 
 Szczegóły i braki metody: [PROTOCOL.md §1](PROTOCOL.md). Streszczenie:
