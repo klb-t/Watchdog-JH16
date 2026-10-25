@@ -1,0 +1,63 @@
+query                                              R1          R3f         R3r1         R3r2         R3us         R3pl         2014
+alcohol                    harm           211,000,000  212,000,000  208,000,000  211,000,000           *4  247,000,000  107,000,000
+alcohol                    popularity     704,000,000  704,000,000  704,000,000  705,000,000  705,000,000  704,000,000  389,000,000
+amphetamine                harm             5,850,000    5,900,000    5,900,000    5,900,000   14,900,000    1,290,000      465,000
+amphetamine                popularity       6,020,000    6,020,000    6,040,000    6,020,000    6,030,000    6,040,000    9,070,000
+benzodiazepines            harm                   *58          *58    3,430,000    4,660,000    4,660,000    3,330,000      467,000
+benzodiazepines            popularity       4,640,000    4,640,000          *63    4,680,000    4,660,000          *84    4,520,000
+buprenorphine              harm             6,340,000    6,400,000    6,340,000    6,460,000    6,420,000    1,860,000      374,000
+buprenorphine              popularity       8,380,000    8,410,000    8,330,000    8,370,000    8,430,000    3,850,000    6,400,000
+butane                     harm             1,400,000          *67    1,360,000    1,370,000   20,900,000    1,390,000      386,000
+butane                     popularity             *57          *56   20,500,000          *57   20,400,000   20,600,000   11,800,000
+cannabis                   harm            21,500,000  134,000,000   21,700,000   21,600,000  134,000,000   22,000,000    2,710,000
+cannabis                   popularity     134,000,000  135,000,000  135,000,000  135,000,000  135,000,000  135,000,000   59,100,000
+cocaine                    harm            19,900,000   19,600,000           *1   20,100,000   20,000,000   15,700,000   15,000,000
+cocaine                    popularity      48,000,000   47,900,000   47,800,000   47,900,000   47,900,000   47,900,000   58,600,000
+ecstasy                    harm             9,100,000    9,160,000    9,180,000    9,070,000    9,010,000   77,100,000      669,000
+ecstasy                    popularity      55,300,000   55,300,000   55,300,000   55,300,000          *65   55,100,000   42,900,000
+gamma-hydroxybutyric acid  harm               409,000      409,000      409,000      409,000      411,000      413,000      291,000
+gamma-hydroxybutyric acid  popularity       8,140,000    8,170,000    8,140,000    8,140,000    7,980,000    8,020,000   23,500,000
+heroin                     harm            15,900,000   15,900,000   15,900,000   16,000,000   15,900,000   11,400,000   11,700,000
+heroin                     popularity             *74   25,700,000   25,700,000   25,700,000   25,700,000   25,700,000   46,800,000
+ketamine                   harm             4,320,000    4,410,000          *73  582,000,000    4,320,000    4,270,000      411,000
+ketamine                   popularity      11,300,000   11,300,000   11,300,000          *73   11,300,000   11,200,000    8,400,000
+khat                       harm               485,000      481,000      480,000      486,000  581,000,000          *78      711,000
+khat                       popularity      13,100,000   13,100,000   13,000,000   13,100,000   13,200,000   13,100,000   10,600,000
+lysergic acid diethylamide harm             3,350,000          *72    3,350,000    3,350,000    3,350,000          *72      580,000
+lysergic acid diethylamide popularity      40,900,000   40,400,000   40,400,000   42,000,000   40,400,000   40,900,000   48,600,000
+mephedrone                 harm             4,690,000    4,620,000    4,620,000    4,690,000    4,620,000      117,000       92,000
+mephedrone                 popularity         672,000      664,000      664,000      664,000          *65      661,000    2,050,000
+methadone                  harm             3,070,000    3,070,000    3,070,000    3,070,000    3,070,000    3,010,000      543,000
+methadone                  popularity       5,340,000    5,300,000    5,380,000    5,300,000    5,340,000    5,330,000   13,400,000
+methamphetamine            harm            10,300,000   10,600,000   10,500,000   10,600,000   10,600,000    6,560,000      513,000
+methamphetamine            popularity      10,400,000   10,400,000   10,400,000   10,300,000   10,400,000   10,400,000    8,780,000
+
+* = reachable-result count (flagged, or < 1000 in R1 which predates the flag)
+R1 collapsed: ['benzodiazepines/harm', 'butane/popularity', 'heroin/popularity']
+R3f collapsed: ['benzodiazepines/harm', 'butane/harm', 'butane/popularity', 'lysergic acid diethylamide/harm']
+R3r1 collapsed: ['benzodiazepines/popularity', 'cocaine/harm', 'ketamine/harm']
+R3r2 collapsed: ['butane/popularity', 'ketamine/popularity']
+R3us collapsed: ['alcohol/harm', 'ecstasy/popularity', 'mephedrone/popularity']
+R3pl collapsed: ['benzodiazepines/popularity', 'khat/harm', 'lysergic acid diethylamide/harm']
+
+Between-request variability (default condition: R1,R3f,R3r1,R3r2; collapsed values excluded):
+  benzodiazepines/harm: ['3,430,000', '4,660,000'] cv=0.15
+  cannabis/harm: ['21,500,000', '134,000,000', '21,700,000', '21,600,000'] cv=0.98
+  ketamine/harm: ['4,320,000', '4,410,000', '582,000,000'] cv=1.38
+  median CV 0.004, max 1.38, n=31
+
+Ni_harm > Ni (the harm query is a subset of the popularity query, so this is incoherent):
+  R1 ['butane', 'heroin', 'mephedrone']
+  R3f ['butane', 'mephedrone', 'methamphetamine']
+  R3r1 ['benzodiazepines', 'mephedrone', 'methamphetamine']
+  R3r2 ['butane', 'ketamine', 'mephedrone', 'methamphetamine']
+  R3us ['amphetamine', 'butane', 'ecstasy', 'khat', 'mephedrone', 'methamphetamine']
+  R3pl ['benzodiazepines', 'ecstasy']
+
+Hi vs Nutt with non-collapsed pairs only (exploratory):
+  R1: n=13 pearson=-0.105 spearman=0.240  max Hi=698% (mephedrone)
+  R3f: n=13 pearson=-0.160 spearman=0.171  max Hi=696% (mephedrone)
+  R3r1: n=13 pearson=-0.094 spearman=0.328  max Hi=696% (mephedrone)
+  R3r2: n=14 pearson=-0.124 spearman=0.225  max Hi=706% (mephedrone)
+  R3us: n=13 pearson=-0.237 spearman=0.025  max Hi=4402% (khat)
+  R3pl: n=13 pearson=-0.092 spearman=-0.049  max Hi=140% (ecstasy)
