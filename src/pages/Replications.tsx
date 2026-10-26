@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 /**
@@ -34,7 +34,9 @@ export function Replications() {
   </div>;
 }
 
-type Tab = 'overview' | 'runs' | 'protocol' | 'discrepancies' | 'calibration' | 'registry' | 'manuscript';
+type Tab = 'overview' | 'measure' | 'runs' | 'protocol' | 'discrepancies' | 'calibration' | 'registry' | 'manuscript';
+// A target evaluated by the general reference-correlation path (any target besides the JH16 special case).
+const isGeneric = (data: any) => data.dossier?.evaluation_kind === 'reference_correlation';
 
 export function ReplicationTarget() {
   const { id } = useParams<{ id: string }>();
@@ -42,19 +44,22 @@ export function ReplicationTarget() {
   useEffect(() => { fetch(`/api/replications/${id}`).then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(setData).catch(e => setError(e.message)); }, [id]);
   if (error) return <div className="p-8" role="alert">Nie można wczytać replikacji: {error}</div>;
   if (!data) return <div className="p-8">Wczytywanie…</div>;
-  const tabs: [Tab, string][] = [['overview', 'Przegląd'], ['runs', `Przebiegi (${data.runs.length})`], ['protocol', `Protokół (${data.protocols.length})`], ['discrepancies', 'Rozbieżności'], ['calibration', 'Kalibracja'], ['registry', 'Rejestr kryteriów'], ['manuscript', 'Projekt pracy']];
+  const generic = isGeneric(data), reload = () => fetch(`/api/replications/${id}`).then(r => r.json()).then(setData);
+  const tabs: [Tab, string][] = [['overview', 'Przegląd'], ...(generic && data.dossier.measurement ? [['measure', 'Nowy pomiar'] as [Tab, string]] : []), ['runs', `Przebiegi (${data.runs.length})`], ['protocol', `Protokół (${data.protocols.length})`], ['discrepancies', 'Rozbieżności'],
+    ...(generic ? [] : [['calibration', 'Kalibracja'] as [Tab, string]]), ['registry', 'Rejestr kryteriów'], ['manuscript', 'Projekt pracy']];
   return <div className="p-4 sm:p-8 max-w-6xl mx-auto space-y-5 min-w-0" data-testid="replication-target">
     <div className="text-sm text-slate-500"><Link to="/replications" className="underline">Replikacje</Link> / {data.target.target_id}</div>
     <div><h1 className="text-xl sm:text-2xl font-semibold">{data.target.title}</h1>
       <p className="text-sm text-slate-600">{data.target.citation.authors.join(', ')} · {data.target.citation.journal} {data.target.citation.year} · doi:{data.target.identifier}</p></div>
     <div className="flex flex-wrap gap-2" role="tablist">{tabs.map(([k, l]) => <button key={k} role="tab" aria-selected={tab === k} data-testid={`tab-${k}`}
       className={`rounded px-3 py-2 text-sm ${tab === k ? 'bg-indigo-100 text-indigo-900' : 'bg-slate-100'}`} onClick={() => setTab(k)}>{l}</button>)}</div>
-    {tab === 'overview' && <Overview data={data} />}
-    {tab === 'runs' && <Runs data={data} />}
-    {tab === 'protocol' && <Protocols data={data} reload={() => fetch(`/api/replications/${id}`).then(r => r.json()).then(setData)} />}
+    {tab === 'overview' && (generic ? <GenericOverview data={data} /> : <Overview data={data} />)}
+    {tab === 'measure' && <Measurement data={data} reload={reload} />}
+    {tab === 'runs' && (generic ? <GenericRuns data={data} /> : <Runs data={data} />)}
+    {tab === 'protocol' && <Protocols data={data} reload={reload} />}
     {tab === 'discrepancies' && <Discrepancies data={data} />}
     {tab === 'calibration' && <Calibration data={data} />}
-    {tab === 'registry' && <Registry data={data} />}
+    {tab === 'registry' && (generic ? <GenericRegistry data={data} /> : <Registry data={data} />)}
     {tab === 'manuscript' && <ManuscriptView id={id!} />}
   </div>;
 }
@@ -241,6 +246,112 @@ function Registry({ data }: { data: any }) {
         <td>{c.tolerance_kind === 'interval' ? `[${c.tolerance_value}; ${c.interval_upper}]` : `≥ ${c.tolerance_value}`}</td></tr>)}</tbody></table></div>
     <p className="text-sm">Pasma zarejestrowano w commicie <code>{data.target._pre_registration?.bands_proposed_in_commit?.slice(0, 7)}</code>; reguła odczytu hipotezy: {data.interpretation?.version} (commit <code>{data.interpretation?._pre_registration?.registered_in_commit}</code>); protokół: <a className="underline" href={`${data.dossier.evidence_base_url}${data.dossier.protocol.document}`} target="_blank" rel="noreferrer">{data.dossier.protocol.document}</a>.</p>
     {data.interpretation && <p className="text-sm">Odczyt H-harm: wspierają, gdy Pearson ≥ {data.interpretation.hypothesis_harm.supports.pearson_min} i p &lt; {data.interpretation.hypothesis_harm.supports.p_two_sided_below}; przeczą, gdy Pearson &lt; {data.interpretation.hypothesis_harm.contradicts.pearson_below} i Spearman &lt; {data.interpretation.hypothesis_harm.contradicts.spearman_below}; wymagane n = {data.interpretation.required_complete_n}.</p>}
+    <p className="text-xs font-mono break-all">sha256 kryteriów {data.hashes.claims} · interpretacji {data.hashes.interpretation} · dossier {data.hashes.dossier}</p></section>;
+}
+
+// ---------------------------------------------------------------- general targets
+const claimFor = (data: any, comparison: string) => (data.dossier.endpoints ?? []).find((e: any) => e.p_value === `comparisons.${comparison}`)?.claim_key ?? null;
+const reading = (r: any, comparison: string) => r.evaluation?.readings?.find((x: any) => x.comparison === comparison)?.reading;
+const pubFor = (data: any, id: string) => (data.published?.reported_statistics ?? []).find((x: any) => x.id === id);
+const pubText = (x: any) => x ? `r = ${fmt(x.value, 2)} (n = ${x.n}${x.p !== undefined ? `, p = ${x.p}` : x.p_below !== undefined ? `, p < ${x.p_below}` : ''})` : '—';
+
+function GenericOverview({ data }: { data: any }) {
+  const primary = data.runs.filter((r: any) => data.primary_run_ids.includes(r.run_id) && r.evaluation?.comparisons);
+  return <div className="space-y-4">
+    <section className={card}><h2 className="font-semibold">Hipotezy</h2>
+      <ul className="text-sm space-y-1">{data.dossier.hypotheses.map((h: any) => <li key={h.id}><b>{h.id}</b> ({h.kind === 'primary' ? 'główna' : 'opisowa'}): {h.statement}</li>)}</ul></section>
+    <section className={card} data-testid="overview-verdicts"><h2 className="font-semibold">Werdykty i zgodność z publikacją</h2>
+      {primary.length === 0 ? <p className="text-sm">Brak kompletnych przebiegów. Nowy pomiar uruchomisz w zakładce „Nowy pomiar”.</p> :
+      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Przebieg</th><th>Porównanie</th><th>Publikacja</th><th>Nowy pomiar</th><th>n</th><th>Werdykt</th><th>Odczyt hipotezy</th></tr></thead>
+        <tbody>{primary.flatMap((r: any) => r.evaluation.comparisons.map((c: any) => { const k = claimFor(data, c.id); return <tr key={r.run_id + c.id} className="border-t border-slate-100" data-testid={`overview-row-${r.run_id}`}>
+          <td className="py-1.5 pr-2"><ProvenanceBadge r={r} /> <Link className="underline font-mono text-xs" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td><td className="pr-2">{c.label}</td><td className="pr-2">{pubText(pubFor(data, c.id))}</td>
+          <td className="font-mono pr-2">{c.statistic} {fmt(c.value)} (p {fmtP(c.p_two_sided)})</td><td className="font-mono">{c.n}{c.required_n ? `/${c.required_n}` : ''}</td>
+          <td>{k ? verdict(r, k) : '—'}</td><td>{READING[reading(r, c.id)] ?? '—'}</td></tr>; }))}</tbody></table></div>}
+      <p className="text-xs text-slate-600">„reproduced” = wartość w paśmie ustalonym przed danymi (zakładka „Rejestr kryteriów”).</p></section>
+    {(data.dossier.not_replicated ?? []).length > 0 && <section className={card} data-testid="not-replicated"><h2 className="font-semibold">Czego nie powtórzono</h2>
+      <ul className="text-sm space-y-1">{data.dossier.not_replicated.map((x: any) => <li key={x.endpoint}><b>{x.endpoint}</b>: {x.reason}</li>)}</ul></section>}
+    {(data.dossier.assessment ?? []).length > 0 && <section className={card} data-testid="assessment"><h2 className="font-semibold">Ocena</h2>
+      <ul className="text-sm space-y-1">{data.dossier.assessment.map((a: any) => <li key={a.statement}>{a.statement} <span className="text-xs text-slate-500">— {a.author}</span></li>)}</ul></section>}
+    <section className={card}><h2 className="font-semibold">Odstępstwa od metody oryginalnej</h2>
+      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Element</th><th>Oryginał</th><th>Replikacja</th><th>Powód</th></tr></thead>
+        <tbody>{data.dossier.deviations.map((d: any) => <tr key={d.item} className="border-t border-slate-100"><td className="pr-2">{d.item}</td><td className="pr-2">{d.original}</td><td className="pr-2">{d.replication}</td><td>{d.reason}</td></tr>)}</tbody></table></div></section>
+  </div>;
+}
+
+function Measurement({ data, reload }: { data: any; reload: () => void }) {
+  const [m, setM] = useState<any>(null), [error, setError] = useState(''), [approved, setApproved] = useState(false), [role, setRole] = useState('exploratory'), [msg, setMsg] = useState(''), [runId, setRunId] = useState(''), [status, setStatus] = useState('');
+  const id = data.target.target_id;
+  useEffect(() => { fetch(`/api/replications/${id}/measurement`).then(async r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(d => setM(d.measurement)).catch(e => setError(e.message)); }, [id]);
+  useEffect(() => { if (!runId) return; const t = setInterval(async () => { const r = (await (await fetch(`/api/runs/${runId}`)).json()).run; setStatus(r.status);
+    if (['COMPLETED', 'FAILED'].includes(r.status)) { clearInterval(t); reload(); } }, 1500); return () => clearInterval(t); }, [runId]);
+  if (error) return <p role="alert">{error}</p>;
+  if (!m) return <p>Wczytywanie…</p>;
+  const launch = async () => { setMsg(''); const protocolId = role.startsWith('protocol:') ? role.slice('protocol:'.length) : undefined;
+    const r = await fetch(`/api/replications/${id}/measurement`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ consent: true, expectedPresetHash: m.preset_hash, dataRole: protocolId ? 'confirmation' : 'exploratory', ...(protocolId ? { protocolId } : {}) }) });
+    const d = await r.json(); if (!r.ok) setMsg(d.message ?? `HTTP ${r.status}`); else { setRunId(d.runId); setStatus('QUEUED'); } };
+  return <section className={card} data-testid="measurement"><h2 className="font-semibold">Nowy pomiar: {m.label}</h2>
+    <dl className="text-sm grid grid-cols-1 sm:grid-cols-[12rem_1fr] gap-x-3 gap-y-1">
+      <dt className="text-slate-500">Źródło</dt><dd>{m.source_id} · {Object.entries(m.provider_params).map(([k, v]) => `${k}=${v}`).join(', ')}</dd>
+      {m.queries.map((q: any) => <Fragment key={q.dimension}><dt className="text-slate-500">Zapytanie „{q.dimension}”</dt><dd className="break-words">{q.terms.join(' + ')}</dd></Fragment>)}
+      <dt className="text-slate-500">Metoda</dt><dd>{m.method_id}: {m.comparisons.map((c: any) => `${c.label} (${c.statistic}; referencja ${c.reference_ref}, sha256 ${c.reference_hash.slice(0, 12)})`).join('; ')}</dd>
+      <dt className="text-slate-500">Koszt</dt><dd data-testid="measurement-cost">{m.requests} zapytanie SerpApi; limit dzienny {m.daily_limit}, dziś zostało {m.left_today}</dd>
+      <dt className="text-slate-500">Preset</dt><dd className="font-mono text-xs break-all">{m.preset_id} {m.preset_version} · sha256 {m.preset_hash}</dd></dl>
+    <label className="block text-sm">Rola nowych danych <select className="border rounded" value={role} onChange={e => setRole(e.target.value)} data-testid="measurement-role">
+      <option value="exploratory">eksploracyjne (domyślnie)</option>{data.protocols.map((p: any) => <option key={p.id} value={`protocol:${p.id}`}>potwierdzające wg protokołu „{p.name}” ({p.frozen_at.slice(0, 16).replace('T', ' ')})</option>)}</select></label>
+    <label className="flex gap-2 text-sm"><input type="checkbox" checked={approved} onChange={e => setApproved(e.target.checked)} data-testid="approve-preset" />Zatwierdzam ten preset (hash powyżej) i jego metodę dla tego pomiaru</label>
+    {m.blocked && <p className="text-sm text-amber-900" data-testid="measurement-blocked">{m.blocked}</p>}
+    <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!approved || !!m.blocked || !!runId} onClick={launch} data-testid="launch-measurement">Uruchom pomiar</button>
+    {msg && <p role="alert" className="text-sm">{msg}</p>}
+    {runId && <p role="status" className="text-sm" data-testid="measurement-status">Przebieg <Link className="underline font-mono" to={`/runs/${runId}/results`}>{short(runId)}</Link>: {status}</p>}</section>;
+}
+
+function GenericRuns({ data }: { data: any }) {
+  const [selected, setSelected] = useState<string | null>(null), [entity, setEntity] = useState<string | null>(null);
+  const ids: string[] = [...new Set<string>(data.runs.flatMap((r: any) => (r.evaluation?.comparisons ?? []).map((c: any) => c.id)))];
+  const chosen = data.runs.find((r: any) => r.run_id === selected && r.evaluation?.comparisons);
+  return <div className="space-y-4"><section className={card}>
+    <div className={scroll}><table className="w-full text-sm" data-testid="runs-table"><thead className="text-left text-slate-500"><tr><th></th><th>Przebieg</th><th>Pochodzenie</th><th>Pobranie (UTC)</th><th>Kod</th>{ids.map(i => <th key={i}>{i}</th>)}<th>Stan</th></tr></thead>
+      <tbody>{data.runs.map((r: any) => <tr key={r.run_id} className="border-t border-slate-100" data-testid={`run-row-${r.run_id}`}>
+        <td>{r.evaluation?.comparisons && <input type="radio" name="run" aria-label={`pokaż ${short(r.run_id)}`} checked={selected === r.run_id} onChange={() => { setSelected(r.run_id); setEntity(null); }} />}</td>
+        <td className="font-mono py-1.5"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td>
+        <td><ProvenanceBadge r={r} />{r.data_role?.role === 'confirmation' && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-emerald-50 text-emerald-900 border-emerald-200" data-testid={`role-${r.run_id}`}>potwierdzające</span>}
+          {r.role_config?.data_role === 'confirmation' && r.data_role?.role !== 'confirmation' && <span className="ml-1 text-xs text-red-800">nieuznane jako potwierdzające: {r.data_role?.reason}</span>}</td>
+        <td className="text-xs">{r.acquired_utc ? r.acquired_utc[0].slice(0, 16).replace('T', ' ') : '—'}</td><td className="font-mono text-xs">{r.git_commit?.slice(0, 7) ?? 'brak'}</td>
+        {ids.map(i => { const c = r.evaluation?.comparisons?.find((x: any) => x.id === i); return <td key={i} className="font-mono">{c ? `${fmt(c.value)} · n${c.n}` : '—'}</td>; })}
+        <td className="text-xs">{r.status}{r.evaluation && !r.evaluation.complete ? ' · niekompletny' : ''}</td></tr>)}</tbody></table></div>
+    <p className="text-xs text-slate-600">Wybierz przebieg, aby zobaczyć pomiar i referencję dla każdego podmiotu; kliknięcie podmiotu pokazuje zapytanie i surową odpowiedź.</p></section>
+    {chosen && chosen.evaluation.comparisons.map((c: any) => <Scatter key={c.id} c={c} onEntity={setEntity} />)}
+    {chosen && entity && <Drill runs={[chosen]} entity={entity} />}</div>;
+}
+
+/** Measured vs reference for one comparison: the evidence behind a correlation, drawn from the stored evaluation. */
+function Scatter({ c, onEntity }: { c: any; onEntity: (e: string) => void }) {
+  const W = 360, H = 240, P = 36, xs = c.entities.map((e: any) => e.measured), ys = c.entities.map((e: any) => e.reference);
+  const [x0, x1] = [Math.min(...xs), Math.max(...xs)], [y0, y1] = [Math.min(...ys), Math.max(...ys)];
+  const sx = (v: number) => P + (x1 === x0 ? 0.5 : (v - x0) / (x1 - x0)) * (W - P - 8), sy = (v: number) => H - P - (y1 === y0 ? 0.5 : (v - y0) / (y1 - y0)) * (H - P - 8);
+  return <section className={card} data-testid={`scatter-${c.id}`}><h2 className="font-semibold">{c.label}</h2>
+    <p className="text-sm">{c.statistic} {fmt(c.value)} (p {fmtP(c.p_two_sided)}), n = {c.n}{c.missing_entities.length ? `; brak pomiaru: ${c.missing_entities.join(', ')}` : ''}</p>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-md" role="img" aria-label={`${c.label}: pomiar wobec referencji, ${c.n} punktów`}>
+      <line x1={P} y1={H - P} x2={W - 4} y2={H - P} stroke="currentColor" opacity={0.4} /><line x1={P} y1={4} x2={P} y2={H - P} stroke="currentColor" opacity={0.4} />
+      <text x={W / 2} y={H - 6} fontSize={10} textAnchor="middle" className="fill-slate-600">pomiar ({fmt(x0, 0)}–{fmt(x1, 0)})</text>
+      <text x={10} y={H / 2} fontSize={10} textAnchor="middle" transform={`rotate(-90 10 ${H / 2})`} className="fill-slate-600">referencja ({fmt(y0, 1)}–{fmt(y1, 1)})</text>
+      {c.entities.map((e: any) => <g key={e.entity_id} className="cursor-pointer" onClick={() => onEntity(e.entity_id)}><circle cx={sx(e.measured)} cy={sy(e.reference)} r={4} className="fill-indigo-500" opacity={0.8} />
+        <title>{`${e.entity_id}: pomiar ${e.measured}, referencja ${e.reference}`}</title></g>)}</svg>
+    <details className="text-xs"><summary className="cursor-pointer">Tabela ({c.entities.length})</summary><div className={scroll}><table className="min-w-full"><thead className="text-left text-slate-500"><tr><th className="pr-2">Podmiot</th><th className="pr-2">Pomiar</th><th>Referencja</th></tr></thead>
+      <tbody>{c.entities.map((e: any) => <tr key={e.entity_id} className="border-t border-slate-100 cursor-pointer hover:bg-indigo-50" onClick={() => onEntity(e.entity_id)} data-testid={`entity-${e.entity_id}`}><td className="pr-2 underline">{e.entity_id}</td><td className="pr-2 font-mono">{e.measured}</td><td className="font-mono">{e.reference}</td></tr>)}</tbody></table></div></details></section>;
+}
+
+function GenericRegistry({ data }: { data: any }) {
+  const i = data.interpretation;
+  return <section className={card} data-testid="registry"><h2 className="font-semibold">Rejestr kryteriów (ustalone przed danymi)</h2>
+    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Twierdzenie</th><th>Statystyka</th><th>Wartość w publikacji</th><th>Kryterium</th></tr></thead>
+      <tbody>{data.target.claims.map((c: any) => <tr key={c.claim_key} className="border-t border-slate-100"><td className="py-1.5 pr-2 font-mono">{c.claim_key}</td><td>{c.statistic}</td><td className="font-mono">{c.claimed_value_numeric}</td>
+        <td>{c.tolerance_kind === 'interval' ? `[${c.tolerance_value}; ${c.interval_upper}]` : `≥ ${c.tolerance_value}`}</td></tr>)}</tbody></table></div>
+    <ul className="text-sm list-disc ml-5">{data.target.claims.map((c: any) => <li key={c.claim_key}>{c.notes}</li>)}</ul>
+    {(i?.hypotheses ?? []).map((h: any) => <p key={h.id} className="text-sm">Odczyt {h.id}: wspierają, gdy {h.statistic} &gt; {h.supports.value_above} i p &lt; {h.supports.p_two_sided_below}; przeczą, gdy {h.statistic} ≤ {h.contradicts.value_at_most}; inaczej nie rozstrzygają; wymagane n = {i.required_complete_n?.[h.comparison] ?? '—'}.</p>)}
+    {(i?.exploratory_sensitivity ?? []).map((x: any) => <p key={x.id} className="text-sm">Eksploracyjnie (bez werdyktu): {x.id}: {x.reason}.</p>)}
+    <p className="text-sm">Prerejestracja: <a className="underline" href={`${data.dossier.evidence_base_url}${data.dossier.protocol.document}`} target="_blank" rel="noreferrer">{data.dossier.protocol.document}</a>{data.dossier.protocol.registered_in_commit && <> (commit <code>{data.dossier.protocol.registered_in_commit}</code>)</>}.</p>
     <p className="text-xs font-mono break-all">sha256 kryteriów {data.hashes.claims} · interpretacji {data.hashes.interpretation} · dossier {data.hashes.dossier}</p></section>;
 }
 

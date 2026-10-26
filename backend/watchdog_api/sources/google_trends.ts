@@ -32,10 +32,11 @@ const ProviderSchema = z.object({
   run_params_required: z.array(z.string()), run_params_allowed: z.array(z.string()),
   pacing: z.object({ min_interval_ms: z.number().int().nonnegative(), max_attempts: z.number().int().min(1).max(10), backoff_ms: z.array(z.number().int().nonnegative()) }),
 });
-const ConfigSchema = z.object({ schema_version: z.string(), capability: z.literal('trends.interest'), providers: z.array(ProviderSchema).min(1) });
+const ConfigSchema = z.object({ schema_version: z.string(), capability: z.enum(['trends.interest', 'trends.interest_by_region']), providers: z.array(ProviderSchema).min(1) });
 export type TrendsProviderConfig = z.infer<typeof ProviderSchema>;
 
 export const DEFAULT_TRENDS_CONFIG_PATH = path.join(process.cwd(), 'config', 'providers', 'trends_interest.json');
+export const TRENDS_BY_REGION_CONFIG_PATH = path.join(process.cwd(), 'config', 'providers', 'trends_interest_by_region.json');
 export function loadTrendsProviderConfig(file = DEFAULT_TRENDS_CONFIG_PATH) {
   const config = ConfigSchema.parse(JSON.parse(fs.readFileSync(file, 'utf-8')));
   return { provider: config.providers[0], hash: hashConfig(config) };
@@ -48,8 +49,11 @@ const MISSING: Record<Exclude<Status, 'SUCCESS'>, MissingReason> = {
 };
 
 export class GoogleTrendsAdapter implements SourceAdapter {
-  readonly adapter_id = 'google_trends_adapter';
-  readonly adapter_version = '4.0.0';
+  // Interest by region (GEO_MAP_0, one query, one value per region) is a separate
+  // adapter identity, so the time-series adapter's version and history are untouched.
+  readonly adapter_id: string;
+  readonly adapter_version: string;
+  private readonly byRegion: boolean;
   private lastRequestAt = 0;
 
   constructor(
@@ -58,9 +62,13 @@ export class GoogleTrendsAdapter implements SourceAdapter {
     private readonly httpGet: HttpGet = (url) => fetch(url) as any,
     private readonly sleep: Sleep = (ms) => new Promise(r => setTimeout(r, ms)),
     private readonly now: () => number = () => Date.now(),
-  ) {}
+  ) {
+    this.byRegion = config.request_params.data_type === 'GEO_MAP_0';
+    this.adapter_id = this.byRegion ? 'google_trends_region_adapter' : 'google_trends_adapter';
+    this.adapter_version = this.byRegion ? '1.0.0' : '4.0.0';
+  }
 
-  capabilities(): SourceCapability[] { return ['interest_over_time']; }
+  capabilities(): SourceCapability[] { return [this.byRegion ? 'interest_by_region' : 'interest_over_time']; }
 
   /**
    * `provider_params` must name the measurement window (`date`) — it is never
@@ -143,6 +151,7 @@ export class GoogleTrendsAdapter implements SourceAdapter {
     const missing = (reason: MissingReason, flags: QualityFlag[] = []): Observation[] => this.terms(raw.request).sort().map(term => ({
       ...base, entityId: entity(term), queryText: term, isMissing: true, numericValue: null, missingReason: reason, qualityFlags: ['RELATIVE_INTEREST_NOT_A_COUNT', ...flags] }));
     if (raw.status !== 'SUCCESS' || !raw.payload) return missing(MISSING[raw.status as Exclude<Status, 'SUCCESS'>] ?? 'FETCH_FAILED');
+    if (this.byRegion) return this.normalizeByRegion(raw, base, missing);
     let timeline: any[];
     try { timeline = JSON.parse(raw.payload.toString('utf-8'))?.interest_over_time?.timeline_data; } catch { return missing('PARSE_FAILED', ['COUNT_PARSE_UNCERTAIN']); }
     if (!Array.isArray(timeline) || timeline.length === 0) return missing('PARSE_FAILED', ['COUNT_PARSE_UNCERTAIN']);
@@ -159,6 +168,33 @@ export class GoogleTrendsAdapter implements SourceAdapter {
         if (p.partial_data === true) flags.push('TRENDS_PARTIAL_PERIOD');
         out.push({ ...base, entityId: entity(term), queryText: term, observedAt, isMissing: false, numericValue: value, qualityFlags: flags });
       }
+    }
+    return out;
+  }
+
+  /**
+   * One observation per region for the request's single query. The entity is the
+   * region code Trends returns (ISO 3166-2, e.g. US-FL); the period is the start of
+   * the requested window. A region Trends does not list is not invented here: the
+   * analysis decides what an absent region means.
+   */
+  private normalizeByRegion(raw: RawFetchResult, base: any, missing: (reason: MissingReason, flags?: QualityFlag[]) => Observation[]): Observation[] {
+    let regions: any[];
+    try { regions = JSON.parse(raw.payload!.toString('utf-8'))?.interest_by_region; } catch { return missing('PARSE_FAILED', ['COUNT_PARSE_UNCERTAIN']); }
+    if (!Array.isArray(regions) || regions.length === 0) return missing('PARSE_FAILED', ['COUNT_PARSE_UNCERTAIN']);
+    const window = String((raw.request.params?.provider_params ?? {}).date ?? '');
+    const observedAt = /^\d{4}-\d{2}-\d{2}/.test(window) ? window.slice(0, 10) : undefined;
+    const term = this.terms(raw.request)[0];
+    const out: Observation[] = [], seen = new Set<string>();
+    for (const r of [...regions].sort((a, b) => String(a?.geo).localeCompare(String(b?.geo)))) {
+      const geo = typeof r?.geo === 'string' && /^[A-Z]{2}(-[A-Z0-9]{1,3})?$/.test(r.geo) ? r.geo : null, value = Number(r?.extracted_value);
+      if (!geo || seen.has(geo)) return missing('PARSE_FAILED', ['COUNT_PARSE_UNCERTAIN']);
+      seen.add(geo);
+      const common = { ...base, entityId: geo, queryText: term, ...(observedAt ? { observedAt } : {}) };
+      if (!Number.isFinite(value) || value < 0 || value > 100) { out.push({ ...common, isMissing: true, numericValue: null, missingReason: 'PARSE_FAILED', qualityFlags: ['RELATIVE_INTEREST_NOT_A_COUNT', 'COUNT_PARSE_UNCERTAIN'] }); continue; }
+      const flags: QualityFlag[] = ['RELATIVE_INTEREST_NOT_A_COUNT'];
+      if (value === 0) flags.push('TRENDS_BELOW_RESOLUTION');
+      out.push({ ...common, isMissing: false, numericValue: value, qualityFlags: flags });
     }
     return out;
   }

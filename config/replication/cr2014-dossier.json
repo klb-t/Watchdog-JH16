@@ -6,7 +6,7 @@
   "evaluation_kind": "reference_correlation",
   "protocol": {
     "document": "docs/replication/CR2014_2026-10-26/PROTOCOL.md",
-    "registered_in_commit": null
+    "registered_in_commit": "aa7e2ea"
   },
   "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/claude/second-replication-target-20261026/",
   "measurement": {

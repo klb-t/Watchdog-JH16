@@ -79,6 +79,25 @@ export class SourceRegistry {
       },
     });
 
+    this.register('trends_interest_by_region', {
+      status: 'blocked',
+      capabilities: ['interest_by_region'],
+      description: 'Google Trends interest by region (one query per request) via SerpApi. Relative search interest scaled 0-100 within the request, never a count.',
+      resolve: async () => {
+        const { GoogleTrendsAdapter, loadTrendsProviderConfig, TRENDS_BY_REGION_CONFIG_PATH } = await import('./google_trends');
+        const { secretStore } = await import('../secrets');
+        const provider = loadTrendsProviderConfig(TRENDS_BY_REGION_CONFIG_PATH).provider;
+        return new GoogleTrendsAdapter(provider, await secretStore.resolve(provider.secret_ref));
+      },
+      liveStatus: async () => {
+        const { loadTrendsProviderConfig, TRENDS_BY_REGION_CONFIG_PATH } = await import('./google_trends');
+        const { secretStore } = await import('../secrets');
+        const provider = loadTrendsProviderConfig(TRENDS_BY_REGION_CONFIG_PATH).provider, cred = await secretStore.resolve(provider.secret_ref);
+        return cred.isPresent ? { status: 'implemented' as const, remediation: '' }
+          : { status: 'blocked' as const, remediation: `Set ${provider.secret_ref} for the installation, or use a personal SerpApi key (replication measurements use it).` };
+      },
+    });
+
     // Honest status for planned/blocked sources
     // Again named for the measurement, not the vendor: PubChem, DrugBank and
     // Wikipedia are interchangeable PROVIDERS of this one source.

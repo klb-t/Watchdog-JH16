@@ -65,6 +65,7 @@ export function adjustPValues(ps: (number | null)[], procedure: string): (number
 
 function pAt(evaluation: any, ref: string): number | null {
   if (ref === 'pi_vs_published') return evaluation.pi_vs_published?.p_two_sided ?? null;
+  if (ref.startsWith('comparisons.')) return evaluation.comparisons?.find((c: any) => c.id === ref.slice('comparisons.'.length))?.p_two_sided ?? null;
   const [series, statistic] = ref.split('.');
   return evaluation[series]?.find((s: any) => s.statistic === statistic)?.p_two_sided ?? null;
 }

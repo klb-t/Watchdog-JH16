@@ -329,6 +329,29 @@ test('E5.7b: a protocol is frozen from the Replications page and confirmation da
   assert.deepStrictEqual(protocols[0].evaluation.confirmation_runs, []);
 });
 
+test('second replication target (cr2014): general pages, measurement gated by key and approval, manuscript without JH16 fields', async () => {
+  await page.goto(`${baseUrl}/replications`);
+  await page.locator('[data-testid="replication-cr2014"]').click();
+  await page.locator('[data-testid="overview-verdicts"]').waitFor();
+  assert.match(await page.locator('[data-testid="overview-verdicts"]').innerText(), /Brak kompletnych przebiegów/);
+  assert.match(await page.locator('[data-testid="not-replicated"]').innerText(), /NSDUH/);
+  assert.strictEqual(await page.locator('[data-testid="tab-calibration"]').count(), 0, 'calibration belongs to JH16 only');
+  await page.click('[data-testid="tab-measure"]');
+  await page.locator('[data-testid="measurement"]').waitFor();
+  assert.match(await page.locator('[data-testid="measurement-cost"]').innerText(), /1 zapytanie SerpApi/);
+  assert.match(await page.locator('[data-testid="measurement-blocked"]').innerText(), /personal serpapi key/);
+  await page.check('[data-testid="approve-preset"]');
+  assert.strictEqual(await page.locator('[data-testid="launch-measurement"]').isDisabled(), true, 'no key: nothing can be sent');
+  await page.click('[data-testid="tab-registry"]');
+  assert.match(await page.locator('[data-testid="registry"]').innerText(), /\[0\.07; 0\.64\][\s\S]*aa7e2ea/);
+  await page.click('[data-testid="tab-manuscript"]');
+  await page.locator('[data-testid="ms-not_replicated"]').waitFor();
+  const text = await page.locator('[data-testid="manuscript"]').innerText();
+  assert.match(text, /Nie ma jeszcze ukończonego, kompletnego nowego pomiaru/); assert.ok(!/undefined|NaN|Nutt/.test(text));
+  const m = await (await fetch(`${baseUrl}/api/replications/cr2014/measurement`)).json();
+  assert.strictEqual(m.measurement.source_id, 'trends_interest_by_region');
+});
+
 test('E5.7b-2: two prioritised families with serial gating are frozen from the form', async () => {
   await page.goto(`${baseUrl}/replications/jh2016`);
   await page.click('[data-testid="tab-protocol"]');

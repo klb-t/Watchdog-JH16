@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0.0",
+  "capability": "trends.interest_by_region",
+  "_note": "Relative search interest by region for ONE query (SerpApi GEO_MAP_0), NOT a result count. Each request scales its regions 0-100 to its own maximum, so values are comparable only within one request.",
+  "providers": [
+    {
+      "provider_key": "serpapi_google_trends_by_region",
+      "display_name": "Google Trends by region via SerpApi",
+      "endpoint": "https://serpapi.com/search.json",
+      "secret_ref": "env:SERPAPI_API_KEY",
+      "personal_credential_provider": "serpapi",
+      "engine": "google_trends",
+      "api_key_param": "api_key",
+      "max_terms_per_request": 1,
+      "request_params": { "data_type": "GEO_MAP_0", "tz": "0", "no_cache": true },
+      "run_params_required": ["date", "geo", "region"],
+      "run_params_allowed": ["date", "geo", "region", "cat", "gprop", "include_low_search_volume"],
+      "pacing": { "min_interval_ms": 1200, "max_attempts": 3, "backoff_ms": [2000, 8000] }
+    }
+  ]
+}

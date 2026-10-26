@@ -7,6 +7,7 @@ import { ArtifactRepository } from '../db/repositories/artifacts';
 import { AcquisitionRepository } from '../db/repositories/acquisition';
 import type { ObjectStore } from '../storage/object_store';
 import { JH16_EVALUATION_ROLE } from './run_orchestrator';
+import { REPLICATION_EVALUATION_ROLE } from './replication_evaluation';
 
 /**
  * Replication targets as an in-app object (any study registered in
@@ -65,7 +66,7 @@ export async function collectRuns(db: Db, store: ObjectStore, owner: string, dos
     if (!matches(config, dossier.runs_match) && !(sourceCfg && matches(sourceCfg, dossier.runs_match))) continue;
     const provenance = classify(config, sourceCfg);
     const events = acq.getFetchEvents(source ? source.id : run.id), times = events.map(e => e.requested_at).filter(Boolean).sort() as string[];
-    const evalArtifact = artifacts.getArtifacts(run.id).find(a => a.kind === 'analysis' && JSON.parse(a.metadata_json ?? '{}').role === JH16_EVALUATION_ROLE);
+    const evalArtifact = artifacts.getArtifacts(run.id).find(a => a.kind === 'analysis' && [JH16_EVALUATION_ROLE, REPLICATION_EVALUATION_ROLE].includes(JSON.parse(a.metadata_json ?? '{}').role));
     const evaluation = evalArtifact ? JSON.parse((await store.get(evalArtifact.object_uri)).toString('utf-8')) : null;
     let calibration: RunSummary['calibration'] = null;
     if ((config.method_id ?? sourceCfg?.method_id) === 'jh16_trends_calibration') {
@@ -120,7 +121,41 @@ export function primaryRuns(runs: readonly RunSummary[]): RunSummary[] {
 const NOT_TESTED: Record<string, string> = { gate: 'bramka zamknięta (wcześniejsza rodzina nie w pełni odrzucona)',
   'p-value not available': 'brak wartości p', 'sequence stopped at an earlier hypothesis': 'sekwencja zatrzymana na wcześniejszej hipotezie' };
 
+type Sec = (id: string, title: string, blocks: Block[]) => void;
+function discrepancySections(dossier: any, sec: Sec) {
+  sec('discrepancies', 'Rozbieżności i ich przyczyny', [{ type: 'table', columns: ['Możliwa przyczyna', 'Test', 'Status', 'Dowód'],
+    rows: (dossier?.diagnosis ?? []).map((d: any) => [d.cause, d.test, STATUS[d.status] ?? d.status, (d.evidence ?? []).map((e: any) => e.path ?? e.label).join('; ') || '—']), sources: [{ config: 'dossier' }] }]);
+  sec('limitations', 'Ograniczenia', [{ type: 'list', items: dossier?.limitations ?? [] }]);
+}
+function appendixSection(t: ReplicationTarget, runs: readonly RunSummary[], codeVersion: string | null, sec: Sec) {
+  const dossier = t.dossier;
+  sec('appendix', 'Aneks: odtwarzalność', [
+    { type: 'table', columns: ['Przebieg', 'Kod', 'Hash konfiguracji', 'Manifest sha256', 'Pobrania'], rows: runs.map(r => [r.run_id, r.git_commit ?? 'nie zapisano', r.effective_config_hash ?? '—', r.manifest_sha256 ?? '—', r.fetches]), sources: runs.map(r => ({ run_id: r.run_id })) },
+    { type: 'list', items: [`Kryteria: ${t.hashes.claims}`, ...(t.hashes.interpretation ? [`Interpretacja: ${t.hashes.interpretation}`] : []), ...(t.hashes.dossier ? [`Dossier: ${t.hashes.dossier}`] : []),
+      `Prerejestracja: ${dossier?.protocol?.document ?? '—'} (commit ${dossier?.protocol?.registered_in_commit ?? '—'})`, `Wersja kodu generującego: ${codeVersion ?? 'nie zapisano'}`] }]);
+}
+const manuscriptInputHash = (t: ReplicationTarget, runs: readonly RunSummary[]) =>
+  canonicalHash({ hashes: t.hashes, runs: runs.map(r => ({ id: r.run_id, m: r.manifest_sha256, e: r.evaluation ? canonicalHash(r.evaluation) : null, c: r.calibration })) });
+
+function protocolBlocks(protocols: readonly any[]): Block[] {
+  const blocks: Block[] = [];
+  for (const p of protocols) {
+    const design = p.body.families
+      ? `rodziny porównań w kolejności priorytetu: ${p.body.families.map((f: any) => `${f.id} „${f.label}” (${f.endpoints.map((e: any) => e.claim_key).join(' → ')}; korekta ${f.multiplicity})`).join('; ')}; bramkowanie ${p.body.gating === 'serial' ? 'szeregowe (rodzina testowana tylko po odrzuceniu wszystkich hipotez wcześniejszych rodzin)' : 'niezależne (każda rodzina osobno)'}`
+      : `rodzina porównań ${p.body.family.map((f: any) => f.claim_key).join(', ')}; korekta ${p.body.multiplicity}`;
+    blocks.push({ type: 'p', text: `Protokół „${p.name}” zamrożony ${p.frozen_at.slice(0, 16).replace('T', ' ')} UTC (sha256 ${p.content_hash.slice(0, 16)}): punkty główne ${p.body.primary.join(', ')}; ${design}, alfa ${String(p.body.alpha).replace('.', ',')}. Uzasadnienie: ${p.body.rationale}`, sources: [{ config: `protocol ${p.id}` }] });
+    const conf = p.evaluation?.confirmation_runs ?? [];
+    if (!conf.length) blocks.push({ type: 'p', text: `Brak przebiegów potwierdzających po zamrożeniu tego protokołu; przebiegi eksploracyjne: ${p.evaluation?.exploratory_runs ?? 0}. Wyniki potwierdzające nie są dostępne.` });
+    else blocks.push({ type: 'table', columns: ['Przebieg', 'Rodzina, priorytet', 'Porównanie', 'Główne', 'Werdykt', 'p', 'p skorygowane', `< alfa`],
+      rows: conf.flatMap((r: any) => r.endpoints.map((e: any) => [short(r.run_id), e.priority === null ? e.family_id : `${e.family_id}.${e.priority}`, e.label, e.primary ? 'tak' : 'nie', e.verdict, p3(e.p_raw), p3(e.p_adjusted),
+        e.tested === false ? `nietestowane: ${NOT_TESTED[e.not_tested_reason?.startsWith('gate closed') ? 'gate' : e.not_tested_reason] ?? e.not_tested_reason}` : e.significant ? 'tak' : 'nie'])),
+      sources: conf.map((r: any) => ({ run_id: r.run_id })) });
+  }
+  return blocks;
+}
+
 export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[], published: any, codeVersion: string | null, now = new Date().toISOString(), protocols: readonly any[] = []): Manuscript {
+  if (t.dossier?.evaluation_kind === 'reference_correlation') return buildCorrelationManuscript(t, runs, published, codeVersion, now, protocols);
   const { target, dossier } = t, cite = target.citation;
   const primary = primaryRuns(runs), jh = primary.filter(r => r.evaluation), cal = primary.filter(r => r.calibration);
   const hist = jh.find(r => r.provenance === 'recomputation_of_published_data'), fresh = jh.find(r => r.provenance === 'new_fetch');
@@ -167,25 +202,8 @@ export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[
       { type: 'p', text: 'Google Trends to względne zainteresowanie wyszukiwaniem, nie liczba wyników; porównywane są tylko rangi, bez werdyktów. Próbka Trends zmienia się między pobraniami.' },
       { type: 'table', columns: ['Region (przebieg)', ...ids], rows: cal.map(r => [`${r.variant ?? '—'} (${short(r.run_id)})`, ...ids.map(id => r.calibration![id].spearman === null ? 'nieobliczalne' : n3(r.calibration![id].spearman))]), sources: cal.map(r => ({ run_id: r.run_id })) }]);
   }
-  if (protocols.length) {
-    const blocks: Block[] = [];
-    for (const p of protocols) {
-      const design = p.body.families
-        ? `rodziny porównań w kolejności priorytetu: ${p.body.families.map((f: any) => `${f.id} „${f.label}” (${f.endpoints.map((e: any) => e.claim_key).join(' → ')}; korekta ${f.multiplicity})`).join('; ')}; bramkowanie ${p.body.gating === 'serial' ? 'szeregowe (rodzina testowana tylko po odrzuceniu wszystkich hipotez wcześniejszych rodzin)' : 'niezależne (każda rodzina osobno)'}`
-        : `rodzina porównań ${p.body.family.map((f: any) => f.claim_key).join(', ')}; korekta ${p.body.multiplicity}`;
-      blocks.push({ type: 'p', text: `Protokół „${p.name}” zamrożony ${p.frozen_at.slice(0, 16).replace('T', ' ')} UTC (sha256 ${p.content_hash.slice(0, 16)}): punkty główne ${p.body.primary.join(', ')}; ${design}, alfa ${String(p.body.alpha).replace('.', ',')}. Uzasadnienie: ${p.body.rationale}`, sources: [{ config: `protocol ${p.id}` }] });
-      const conf = p.evaluation?.confirmation_runs ?? [];
-      if (!conf.length) blocks.push({ type: 'p', text: `Brak przebiegów potwierdzających po zamrożeniu tego protokołu; przebiegi eksploracyjne: ${p.evaluation?.exploratory_runs ?? 0}. Wyniki potwierdzające nie są dostępne.` });
-      else blocks.push({ type: 'table', columns: ['Przebieg', 'Rodzina, priorytet', 'Porównanie', 'Główne', 'Werdykt', 'p', 'p skorygowane', `< alfa`],
-        rows: conf.flatMap((r: any) => r.endpoints.map((e: any) => [short(r.run_id), e.priority === null ? e.family_id : `${e.family_id}.${e.priority}`, e.label, e.primary ? 'tak' : 'nie', e.verdict, p3(e.p_raw), p3(e.p_adjusted),
-          e.tested === false ? `nietestowane: ${NOT_TESTED[e.not_tested_reason?.startsWith('gate closed') ? 'gate' : e.not_tested_reason] ?? e.not_tested_reason}` : e.significant ? 'tak' : 'nie'])),
-        sources: conf.map((r: any) => ({ run_id: r.run_id })) });
-    }
-    sec('protocol', 'Protokół potwierdzający i rodzina porównań', blocks);
-  }
-  sec('discrepancies', 'Rozbieżności i ich przyczyny', [{ type: 'table', columns: ['Możliwa przyczyna', 'Test', 'Status', 'Dowód'],
-    rows: (dossier?.diagnosis ?? []).map((d: any) => [d.cause, d.test, STATUS[d.status] ?? d.status, (d.evidence ?? []).map((e: any) => e.path ?? e.label).join('; ') || '—']), sources: [{ config: 'dossier' }] }]);
-  sec('limitations', 'Ograniczenia', [{ type: 'list', items: dossier?.limitations ?? [] }]);
+  if (protocols.length) sec('protocol', 'Protokół potwierdzający i rodzina porównań', protocolBlocks(protocols));
+  discrepancySections(dossier, sec);
   const conclusions: string[] = [];
   if (hist) conclusions.push(hist.evaluation.verdicts.every((v: any) => v.verdict === 'reproduced') ? 'Implementacja metody odtwarza wyniki publikacji na jej własnych danych.' : 'Implementacja nie odtwarza wyników publikacji na jej danych — wymaga sprawdzenia przed interpretacją nowych danych.');
   if (fresh) conclusions.push(`Na nowych danych ${READING[fresh.evaluation.hypothesis_harm.reading]} (reguła ustalona przed danymi).`);
@@ -194,12 +212,69 @@ export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[
   conclusions.push('Wynik negatywny jest wynikiem: praca dokumentuje go w całości, z danymi i ich pochodzeniem.');
   sec('conclusions', 'Wnioski', [{ type: 'list', items: conclusions, sources: [...(hist ? [{ run_id: hist.run_id }] : []), ...(fresh ? [{ run_id: fresh.run_id }] : []),
     ...(dossier?.assessment ?? []).flatMap((a: any) => (a.evidence ?? []).filter((e: any) => e.path).map((e: any) => ({ path: e.path })))] }]);
-  sec('appendix', 'Aneks: odtwarzalność', [
-    { type: 'table', columns: ['Przebieg', 'Kod', 'Hash konfiguracji', 'Manifest sha256', 'Pobrania'], rows: runs.map(r => [r.run_id, r.git_commit ?? 'nie zapisano', r.effective_config_hash ?? '—', r.manifest_sha256 ?? '—', r.fetches]), sources: runs.map(r => ({ run_id: r.run_id })) },
-    { type: 'list', items: [`Kryteria: ${t.hashes.claims}`, ...(t.hashes.interpretation ? [`Interpretacja: ${t.hashes.interpretation}`] : []), ...(t.hashes.dossier ? [`Dossier: ${t.hashes.dossier}`] : []),
-      `Prerejestracja: ${dossier?.protocol?.document ?? '—'} (commit ${dossier?.protocol?.registered_in_commit ?? '—'})`, `Wersja kodu generującego: ${codeVersion ?? 'nie zapisano'}`] }]);
-  const input_hash = canonicalHash({ hashes: t.hashes, runs: runs.map(r => ({ id: r.run_id, m: r.manifest_sha256, e: r.evaluation ? canonicalHash(r.evaluation) : null, c: r.calibration })) });
+  appendixSection(t, runs, codeVersion, sec);
+  const input_hash = manuscriptInputHash(t, runs);
   return { title: `Replikacja: ${target.title}`, target_id: target.target_id, dossier_version: dossier?.dossier_version ?? null, input_hash, generated_at: now, code_version: codeVersion, sections };
+}
+
+/**
+ * Manuscript for a target evaluated by replication_evaluation.ts (correlation of a
+ * measurement with a reference table). Same discipline as the JH16 text: every
+ * number is read from a stored evaluation and names its run or file.
+ */
+function buildCorrelationManuscript(t: ReplicationTarget, runs: readonly RunSummary[], published: any, codeVersion: string | null, now: string, protocols: readonly any[]): Manuscript {
+  const { target, dossier } = t, cite = target.citation;
+  const evaluated = primaryRuns(runs).filter(r => r.evaluation?.comparisons);
+  const fresh = evaluated.find(r => r.provenance === 'new_fetch') ?? null;
+  const reported = new Map<string, any>((published?.reported_statistics ?? []).map((x: any) => [x.id, x]));
+  const verdictOf = (r: RunSummary, key: string) => r.evaluation.verdicts.find((v: any) => v.claim_key === key)?.verdict ?? '—';
+  const readingOf = (r: RunSummary, comparison: string) => r.evaluation.readings.find((x: any) => x.comparison === comparison)?.reading;
+  const claimFor = (comparison: string) => (dossier.endpoints ?? []).find((e: any) => e.p_value === `comparisons.${comparison}`)?.claim_key ?? null;
+  const pubText = (x: any) => x ? `r = ${n3(x.value)} (n = ${x.n}${x.p !== undefined ? `, p = ${p3(x.p)}` : x.p_below !== undefined ? `, p < ${p3(x.p_below)}` : ''})` : '—';
+  const sections: Manuscript['sections'] = [];
+  const sec = (id: string, title: string, blocks: Block[]) => sections.push({ id, title, blocks });
+
+  const summary: Block[] = [];
+  for (const c of fresh?.evaluation.comparisons ?? []) {
+    const key = claimFor(c.id);
+    summary.push({ type: 'p', text: `${c.label}: praca podała ${pubText(reported.get(c.id))}. Nowy pomiar (${fresh!.acquired_utc?.[0].slice(0, 10) ?? '—'}) daje ${c.statistic} ${n3(c.value)} (p ${p3(c.p_two_sided)}, n = ${c.n}); werdykt względem pasma ustalonego przed danymi: ${key ? verdictOf(fresh!, key) : '—'}; odczyt hipotezy: ${READING[readingOf(fresh!, c.id)] ?? '—'}.`, sources: [{ run_id: fresh!.run_id }, { path: t.interpretation?.published_values_ref ?? '' }] });
+  }
+  if (!fresh) summary.push({ type: 'p', text: 'Nie ma jeszcze ukończonego, kompletnego nowego pomiaru; wyniki nowych danych nie są dostępne.' });
+  if ((dossier.not_replicated ?? []).length) summary.push({ type: 'p', text: `Nie powtórzono ${dossier.not_replicated.length} z wyników pracy z powodu braku otwartych danych referencyjnych (sekcja „Czego nie powtórzono”).`, sources: [{ config: 'dossier' }] });
+  sec('summary', 'Streszczenie', summary);
+  sec('introduction', 'Wprowadzenie i hipotezy', [
+    { type: 'p', text: `Replikowana praca: „${target.title}”, ${cite.authors.join(', ')}, ${cite.journal} ${cite.year};${cite.volume}(${cite.issue}):${cite.pages ?? cite.elocation ?? ''}, doi:${target.identifier}.` },
+    { type: 'list', items: (dossier.hypotheses ?? []).map((h: any) => `${h.id} (${h.kind === 'primary' ? 'główna' : 'opisowa'}): ${h.statement}`), sources: [{ config: 'dossier' }] }]);
+  sec('method_original', 'Metoda pracy oryginalnej', [{ type: 'list', items: dossier.original_method ?? [] }]);
+  sec('method_replication', 'Metoda replikacji i odstępstwa', [
+    { type: 'list', items: dossier.replication_method ?? [], sources: [{ path: dossier.protocol?.document ?? '' }] },
+    { type: 'table', columns: ['Element', 'Oryginał', 'Replikacja', 'Powód'], rows: (dossier.deviations ?? []).map((d: any) => [d.item, d.original, d.replication, d.reason]) },
+    { type: 'list', items: target.claims.map((c: any) => `Kryterium ${c.claim_key}: ${c.statistic}, ${c.tolerance_kind} ${c.tolerance_kind === 'interval' ? `[${c.tolerance_value}; ${c.interval_upper}]` : `≥ ${c.tolerance_value}`} — ustalone przed danymi (commit ${dossier.protocol?.registered_in_commit ?? '—'}).`), sources: [{ config: 'claims' }] }]);
+  sec('not_replicated', 'Czego nie powtórzono', [{ type: 'table', columns: ['Wynik pracy', 'Powód'], rows: (dossier.not_replicated ?? []).map((x: any) => [x.endpoint, x.reason]), sources: [{ config: 'dossier' }] }]);
+  sec('data', 'Dane i ich pochodzenie', [{ type: 'table', columns: ['Przebieg', 'Pochodzenie', 'Pobranie (UTC)', 'Kod', 'Stan'],
+    rows: runs.map(r => [short(r.run_id), r.provenance_label, r.acquired_utc ? `${r.acquired_utc[0].slice(0, 16)}–${r.acquired_utc[1].slice(11, 16)}` : '—', r.git_commit?.slice(0, 7) ?? 'nie zapisano',
+      r.evaluation?.comparisons ? (r.evaluation.complete ? 'kompletny' : `niekompletny (braki: ${r.evaluation.comparisons.reduce((k: number, c: any) => k + c.missing_entities.length, 0)})`) : r.status]),
+    sources: runs.map(r => ({ run_id: r.run_id })) }]);
+  const results: Block[] = [{ type: 'table', columns: ['Przebieg', 'Pochodzenie', 'Porównanie', 'Statystyka', 'Wartość', 'p', 'n', 'Werdykt', 'Odczyt hipotezy'],
+    rows: evaluated.flatMap(r => r.evaluation.comparisons.map((c: any) => { const key = claimFor(c.id); return [short(r.run_id), r.provenance_label, c.label, c.statistic, n3(c.value), p3(c.p_two_sided), `${c.n}${c.required_n ? `/${c.required_n}` : ''}`, key ? verdictOf(r, key) : '—', READING[readingOf(r, c.id)] ?? '—']; })),
+    sources: evaluated.map(r => ({ run_id: r.run_id })) }];
+  if (fresh) {
+    for (const x of fresh.evaluation.exploratory ?? []) results.push({ type: 'p', text: `Eksploracyjnie (bez werdyktu), ${x.reason}: wykluczone ${x.excluded.join(', ') || '—'}; r ${n3(x.value)}, p ${p3(x.p_two_sided)}, n = ${x.n}; praca: ${pubText(reported.get(`${x.comparison}_${x.id}`))}.`, sources: [{ run_id: fresh.run_id }] });
+    for (const c of fresh.evaluation.comparisons) results.push({ type: 'table', columns: ['Podmiot', 'Pomiar', 'Referencja'], rows: c.entities.map((e: any) => [e.entity_id, e.measured, e.reference]), sources: [{ run_id: fresh.run_id }] });
+  }
+  sec('results', 'Wyniki', results);
+  sec('comparison', 'Porównanie z pracą oryginalną', [{ type: 'table', columns: ['Porównanie', 'Praca', 'Nowy pomiar', 'Pasmo (przed danymi)'],
+    rows: (fresh?.evaluation.comparisons ?? []).map((c: any) => { const claim = target.claims.find((x: any) => x.claim_key === claimFor(c.id)); return [c.label, pubText(reported.get(c.id)), `r = ${n3(c.value)} (n = ${c.n}, p = ${p3(c.p_two_sided)})`, claim ? `[${claim.tolerance_value}; ${claim.interval_upper}]` : '—']; }),
+    sources: [...(fresh ? [{ run_id: fresh.run_id }] : []), { path: t.interpretation?.published_values_ref ?? '' }] }]);
+  if (protocols.length) sec('protocol', 'Protokół potwierdzający i rodzina porównań', protocolBlocks(protocols));
+  discrepancySections(dossier, sec);
+  const conclusions: string[] = [];
+  for (const c of fresh?.evaluation.comparisons ?? []) { const key = claimFor(c.id); conclusions.push(`${c.label}: ${key ? `werdykt ${verdictOf(fresh!, key)}` : 'bez werdyktu'}; ${READING[readingOf(fresh!, c.id)] ?? '—'} (reguła ustalona przed danymi).`); }
+  for (const a of dossier.assessment ?? []) conclusions.push(`Ocena (${a.author}): ${a.statement}`);
+  conclusions.push('Wynik negatywny jest wynikiem: praca dokumentuje go w całości, z danymi i ich pochodzeniem.');
+  sec('conclusions', 'Wnioski', [{ type: 'list', items: conclusions, sources: [...(fresh ? [{ run_id: fresh.run_id }] : []), ...(dossier.assessment ?? []).flatMap((a: any) => (a.evidence ?? []).filter((e: any) => e.path).map((e: any) => ({ path: e.path })))] }]);
+  appendixSection(t, runs, codeVersion, sec);
+  return { title: `Replikacja: ${target.title}`, target_id: target.target_id, dossier_version: dossier.dossier_version ?? null, input_hash: manuscriptInputHash(t, runs), generated_at: now, code_version: codeVersion, sections };
 }
 
 const esc = (s: unknown) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
