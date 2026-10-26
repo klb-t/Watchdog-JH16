@@ -38,7 +38,7 @@ export class ResearchPlans {
         if (!protocol || protocol.target_id !== 'jh2016') throw new AutomationError('Choose one of your frozen JH16 protocols');
         if (input.baseline === 'fixture') throw new AutomationError('The paper\'s own counts cannot be confirmation data; choose a new measurement');
         return { role: 'confirmation' as const, protocolId: protocol.id, protocolHash: protocol.content_hash, protocolName: protocol.name,
-          scope: 'Only the faithful run is confirmation data; extension variants stay exploratory.' };
+          scope: 'Danymi potwierdzającymi jest tylko przebieg metodą wierną; warianty rozszerzenia pozostają eksploracyjne.' };
       })() };
     // The calibration runs are built now, so the reviewed plan body names every
     // request, region and compared value; launch submits exactly these.
