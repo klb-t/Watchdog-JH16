@@ -1,6 +1,7 @@
 {
   "version": "goal-navigation-1",
   "goals": [
+    { "id": "replication", "label": "Zobacz replikację JH16 i projekt pracy", "description": "Hipotezy i werdykty, zgodność z publikacją, rozbieżności z przyczynami, kalibracja, protokół i projekt pracy z wyników.", "href": "/replications", "capability": "run.view", "contexts": ["naukowiec", "replikacja", "wyniki", "praca", "hoffmann", "jh16"] },
     { "id": "project", "label": "Zbierz pracę w projekcie badawczym", "description": "Zapisz pytanie badawcze i połącz konkretne wersje tekstów, danych, metod, uruchomień i harmonogramów.", "href": "/projects", "capability": "method.propose", "contexts": ["naukowiec", "projekt", "badanie", "pakiet", "zadanie", "wznów"] },
     { "id": "search", "label": "Przeszukaj zapisane dane", "description": "Nazwy, identyfikatory i opisy w dostępnych kartotekach, pracach, zbiorach danych oraz historii badań.", "href": "/search", "capability": "run.view|run.create|workbench.view|responder.lookup|evidence.review|method.propose", "contexts": ["szukaj", "baza", "substancja", "objawy", "interakcje", "artykuł", "dane", "historia"] },
     { "id": "emergency", "label": "Sprawdź objawy lub rozpoznanie próbki", "description": "Interfejs ratownika: dopasowania z podaniem źródeł i ograniczeń identyfikacji.", "href": "/responder", "capability": "responder.lookup", "contexts": ["ratownik", "objawy", "tabletka", "skład", "interakcje", "zatrucie"] },

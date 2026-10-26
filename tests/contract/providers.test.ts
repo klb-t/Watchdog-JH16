@@ -76,7 +76,7 @@ test('E1.10: the UI never renders a provider as an available source', () => {
   // the Sources view is provider-free keeps D5's boundary from eroding.
   assert.deepStrictEqual(capabilityRegistry.listForSourcesPage(), []);
 
-  const sourceIds = new Set(sourceRegistry.listSources().map(s => s.source_id));
+  const sourceIds = new Set(sourceRegistry.listSources(true).map(s => s.source_id));
   for (const p of capabilityRegistry.listProviders()) {
     assert.ok(!sourceIds.has(p.provider_key),
       `provider '${p.provider_key}' must not appear in the source list the UI renders`);
@@ -84,7 +84,7 @@ test('E1.10: the UI never renders a provider as an available source', () => {
 });
 
 test('E1.10: non-executable sources are marked so the UI can refuse to offer them', () => {
-  const sources = sourceRegistry.listSources();
+  const sources = sourceRegistry.listSources(true);
   const runnable = sources.filter(s => s.status === 'implemented' || s.status === 'fixture');
   const notRunnable = sources.filter(s => s.status === 'planned' || s.status === 'blocked-by-license/auth');
 

@@ -5,6 +5,7 @@ import { useAccess } from '../lib/access';
 import { automationApi } from '../lib/automation_client';
 import { Jh16EvaluationPanel } from '../components/Jh16EvaluationPanel';
 import { TrendsCalibrationPanel } from '../components/TrendsCalibrationPanel';
+import { useLlmReadiness } from '../lib/llm_readiness';
 
 /**
  * E1.23 — Results page: charts, the results table, the manifest link, the
@@ -30,7 +31,7 @@ export function Results() {
   const [charts, setCharts] = useState<ChartSpec[]>([]);
   const [narrative, setNarrative] = useState<any>(null);
   const [manifest, setManifest] = useState<any>(null);
-  const access = useAccess(), [generationBusy, setGenerationBusy] = useState(false), [generationError, setGenerationError] = useState('');
+  const access = useAccess(), [generationBusy, setGenerationBusy] = useState(false), [generationError, setGenerationError] = useState(''), llm = useLlmReadiness();
 
   useEffect(() => {
     if (!id) return;
@@ -194,7 +195,8 @@ export function Results() {
             </span>
           </div>
           <p className="text-sm text-slate-800">{narrative.content}</p>
-          {access.capabilities.includes('narrative.approve') && <button className="mt-3 text-sm underline disabled:opacity-50" disabled={generationBusy}
+          {access.capabilities.includes('narrative.approve') && !llm.ready && <p className="mt-3 text-xs text-slate-600" data-testid="narrative-llm-unavailable">Redakcja przez model niedostępna: {llm.reason}</p>}
+          {access.capabilities.includes('narrative.approve') && <button className="mt-3 text-sm underline disabled:opacity-50" disabled={generationBusy || !llm.ready}
             onClick={async () => { setGenerationBusy(true); setGenerationError(''); try {
               const result = await automationApi(`/api/runs/${id}/narrative/automatic`, { consent: true }); setNarrative(result.narrative);
             } catch (e) { setGenerationError((e as Error).message); } finally { setGenerationBusy(false); } }}>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchSources, submitRun } from '../lib/api';
+import { fetchSources } from '../lib/api';
 import { Source } from '../types';
 import { Database, Play } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -22,17 +22,19 @@ export function Sources() {
     return () => { active = false; };
   }, [access.principalId]);
 
+  // Every action here does what it says: the paper's counts go through the locked
+  // JH16 study; a live source is started from the settings wizard, which carries
+  // the method review, the request limit and the personal key.
   const handleAcquire = async (source: Source) => {
-    if (!access.capabilities.includes('run.create') || !isSourceRunnable(source)) return;
+    if (!access.capabilities.includes('run.create')) return;
+    if (source.source_id !== 'fixture_jh2016') { navigate('/setup'); return; }
     try {
       setSubmitting(true); setError(null);
-      const res = await submitRun({
-        type: 'ACQUISITION',
-        config: { source_id: source.source_id }
-      });
-      navigate(`/runs/${res.run_id}`);
+      const r = await fetch('/api/studies/jh2016', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ source_id: 'fixture_jh2016' }) });
+      const d = await r.json(); if (!r.ok) throw new Error(d.message ?? d.error ?? `HTTP ${r.status}`);
+      navigate(`/runs/${d.run_id}/results`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Nie udało się uruchomić pobrania.');
+      setError(e instanceof Error ? e.message : 'Nie udało się uruchomić przeliczenia.');
     } finally {
       setSubmitting(false);
     }
@@ -42,7 +44,7 @@ export function Sources() {
     <div className="p-4 sm:p-8 max-w-5xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Źródła pomiarów</h1>
-        <p className="text-slate-500 mt-1 text-sm">Adaptery używane przez badania. Źródła testowe zawierają zamrożone dane, a ich uruchomienie nie pobiera nowych obserwacji.</p>
+        <p className="text-slate-500 mt-1 text-sm">Źródła liczb używanych przez badania i ich stan. Nowe pomiary uruchamiasz w kreatorze (Ustawienia); dane z publikacji JH16 można przeliczyć bez kosztu.</p>
         {access.capabilities.includes('provider.view') && <Link to="/source-access" className="inline-block mt-2 text-sm text-indigo-700 underline">Pełny katalog integracji i warunków dostępu</Link>}
       </div>
 
@@ -54,7 +56,7 @@ export function Sources() {
           submitting={submitting} onAcquire={() => void handleAcquire(source)} />)}
         {!loading && !error && sources.length === 0 && (
           <div className="col-span-full p-12 text-center bg-white rounded-xl border border-dashed border-slate-300">
-            <p className="text-slate-500">No sources configured.</p>
+            <p className="text-slate-500">Brak skonfigurowanych źródeł.</p>
           </div>
         )}
       </div>
@@ -86,14 +88,11 @@ export function SourceCard({ source, canAcquire, submitting, onAcquire }: {
             {source.remediation && <p className="mt-2 text-sm text-amber-800">{source.remediation}</p>}
             
             {canAcquire && <div className="mt-6 pt-4 border-t border-slate-100 flex justify-end">
-              <button
-                onClick={onAcquire}
-                disabled={submitting || !isSourceRunnable(source)}
-                className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
-              >
-                <Play className="w-4 h-4" />
-                <span>{source.status === 'fixture' ? 'Uruchom źródło testowe' : 'Pobierz dane'}</span>
-              </button>
+              {source.source_id === 'fixture_jh2016' ? <button onClick={onAcquire} disabled={submitting}
+                className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50">
+                <Play className="w-4 h-4" /><span>Przelicz JH16 z danych publikacji</span></button>
+              : ['serp_result_count', 'trends_interest_index'].includes(source.source_id) ? <Link to="/setup" className="px-4 py-2 rounded-lg text-sm font-medium border border-indigo-300 text-indigo-800" data-testid={`source-wizard-${source.source_id}`}>Nowy pomiar w kreatorze (Ustawienia)</Link>
+              : <span className="text-sm text-slate-500" data-testid={`source-unavailable-${source.source_id}`}>Niedostępne: {source.status === 'planned' ? 'jeszcze niezaimplementowane' : source.status}</span>}
             </div>}
           </div>;
 }

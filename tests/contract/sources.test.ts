@@ -82,7 +82,7 @@ async function stubbedSerpApi(): Promise<SourceAdapter> {
 }
 
 async function executableAdapters(): Promise<[string, SourceAdapter][]> {
-  return [...sourceRegistry.listSources()
+  return [...sourceRegistry.listSources(true)
     .filter(s => s.status === 'implemented' || s.status === 'fixture')
     .map(s => [s.source_id, sourceRegistry.getAdapter(s.source_id)] as [string, SourceAdapter]),
     ['serp_result_count', await stubbedSerpApi()]];
