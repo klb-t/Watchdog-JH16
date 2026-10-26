@@ -3,6 +3,7 @@ import { CopyPlanSchema, type CopyPlan } from '../../../shared/research';
 import { parseCsv } from '../../../shared/csv_import';
 import { AutomationError } from '../db/repositories/automation';
 import { canonicalHash } from '../domain/canonical';
+import { htmlTableRecords, htmlTableStructure } from './document_conversion';
 type Node = { start: number; end: number; kind: 'object' | 'array' | 'string' | 'literal'; children?: Map<string, Node> };
 
 /** JSON syntax parser retaining exact numeric lexemes and source spans. Numbers
@@ -56,6 +57,18 @@ export function copySource(input: string, rawPlan: unknown) {
       }
       records.push(out); provenance.push(source);
     }
+  } else if (plan.format === 'html') {
+    // Cell text as the HTML parser reads it (whitespace collapsed), with the cell's source span.
+    const { headers, rows } = htmlTableRecords(input, plan.table!.index, plan.table!.headerRowIndex);
+    for (const row of rows) {
+      const out: Record<string,string|null> = Object.create(null), source: any = Object.create(null);
+      for (const f of plan.fields) { const index = headers.indexOf(f.selector); if (index < 0 && f.required) throw new AutomationError(`Required table column ${f.selector} is missing`);
+        const cell = index < 0 ? null : row.cells[index];
+        out[f.name] = cell === null || cell.text === '' ? null : cell.text;
+        source[f.name] = { tableIndex: plan.table!.index, rowIndex: row.rowIndex, column: f.selector, columnIndex: index < 0 ? null : index, missing: index < 0 || cell?.text === '',
+          startUtf16: cell?.start ?? null, endUtf16: cell?.end ?? null, fromSpannedCell: cell?.spanned ?? false }; }
+      records.push(out); provenance.push(source);
+    }
   } else {
     const rows = parseCsv(input, ',', true), headers = rows.shift() ?? [];
     if (!headers.length || headers.some(h=>!h) || new Set(headers).size !== headers.length || rows.length > 10000) throw new AutomationError('CSV needs unique headers and at most 10000 records');
@@ -74,6 +87,8 @@ export function copySource(input: string, rawPlan: unknown) {
 export function sourceStructure(input: string, format: CopyPlan['format']) {
   if (Buffer.byteLength(input) > 2000000) throw new AutomationError('Extraction input exceeds 2 MB');
   if (format === 'csv') return { format, headers: parseCsv(input)[0] ?? [], valuesIncluded: false };
+  if (format === 'html') return { format, tables: htmlTableStructure(input).map(t => ({ index: t.index, caption: t.caption, rows: t.rows, columns: t.columns, firstRow: t.firstRow })),
+    valuesIncluded: false, scope: 'first row of each table only (normally the headers)' };
   const tree = jsonTree(input), paths: { pointer: string; type: string }[] = [];
   const walk = (n: Node, pointer: string) => { if (paths.length >= 500) return; paths.push({ pointer, type: n.kind });
     for (const [k,v] of n.children ?? []) { walk(v, `${pointer}/${k.replace(/~/g,'~0').replace(/\//g,'~1')}`); if (n.kind === 'array') break; } };

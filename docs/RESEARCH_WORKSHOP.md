@@ -135,7 +135,16 @@ Limits: 2,000,000 source bytes, 10,000 output rows, 30 fields, 64 JSON levels an
 Model structure discovery visits at most 500 paths and the first member of each array.
 The HTTP JSON body limit is 2 MiB including expected output and encoding, so practical input
 size can be lower; oversized requests return 413. A fixture test validates that fixture,
-not all future pages. HTML, PDF tables and arbitrary generated adapters are not implemented.
+not all future pages. Arbitrary generated adapters and PDF tables are not implemented.
+
+**HTML and PDF (E5.8b-1).** „Wczytaj HTML lub PDF” converts a file to the document text in code:
+HTML with parse5 7.3.0 (the WHATWG parsing algorithm; scripts, styles and templates dropped),
+PDF with pdf.js 4.10.38 (script evaluation off, page boundaries kept). The saved document records
+the format, parser and version, the sha256 of the file and of the text; text edited after
+conversion is saved without that record. A scanned PDF without a text layer yields a warning,
+not OCR. In the extractor, „HTML (tabele)” copies cells of one table (0-based, document order;
+colspan/rowspan expanded and marked) by header text, with each cell's source span. Limits:
+HTML 2 MB, PDF 20 MB and 500 pages, 200 tables, 10,000 rows, 60 columns.
 
 ## Repeated reviews and interrupted work
 
