@@ -8,9 +8,9 @@ Wyniki i ocena, które ten test ma sprawdzić: [REPORT.md](REPORT.md).
 |---|---|
 | Adres | https://watchdog.34-158-117-249.sslip.io |
 | Logowanie | użytkownik `marcin`, hasło Caddy: na VM `sudo bash ~/chatadhd/tools/gcp/aliases.sh --show-pass` |
-| Wersja kodu | `05e2fdc` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
-| Obraz | `watchdog:05e2fdc…` na VM; poprzednie (`0ce79a4`, `6b7e63e`, `84a9e71`, `10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
-| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`) `…before-6b7e63e…-20261026T173110Z.tar.gz` (sha256 `a3c6407f…1182`) `…before-0ce79a4…-20261026T175225Z.tar.gz` (sha256 `d1d56d53…2e1c`) i `…before-05e2fdc…-20261026T182117Z.tar.gz` (sha256 `e7bbeccd…b4f4`), z kopiami `release.env` |
+| Wersja kodu | `5364332` (czoło stosu PR #13–#22, gałąź `claude/e5-7b-evidence-graph-20261026`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
+| Obraz | `watchdog:5364332…` na VM; poprzednie (`05e2fdc`, `0ce79a4`, `6b7e63e`, `84a9e71`, `10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
+| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`) `…before-6b7e63e…-20261026T173110Z.tar.gz` (sha256 `a3c6407f…1182`) `…before-0ce79a4…-20261026T175225Z.tar.gz` (sha256 `d1d56d53…2e1c`) `…before-05e2fdc…-20261026T182117Z.tar.gz` (sha256 `e7bbeccd…b4f4`) i `…before-5364332…-20261026T194907Z.tar.gz` (sha256 `839eab61…3cbc`), z kopiami `release.env` |
 | Klucz SerpApi | zapisany w Twoim zaszyfrowanym sejfie w WatchDogu (Ustawienia → krok 1 pokazuje „serpapi: zapisany”) |
 
 Każdy nowy pomiar (32 zapytania) zużywa kredyty SerpApi z Twojego konta: darmowy limit
@@ -41,6 +41,32 @@ Trzecia aktualizacja (16:24 UTC) do `84a9e71`: „Replikacje” w aplikacji i pr
 (629/629 testów w buildzie). Na VM dodano kalibrację dla US, GB i PL (`32c2c4be`, `8e45b9f9`,
 `08701e76`; skrypt bez rozbieżności) i przejrzano wszystkie zakładki na komputerze i telefonie
 (bez błędów strony i przewijania w bok).
+
+## Aktualizacja do `5364332` (2026-10-26 19:49 UTC)
+
+Do instalacji trafiły:
+- rodziny porównań z priorytetem i bramkowaniem;
+- projekt PostgreSQL, tylko kod: baza zostaje na SQLite;
+- kod okresowej kopii poza maszynę, niezainstalowany, bo czeka na Twoją zgodę;
+- druga replikacja CR2014;
+- zakładka „Dowody”.
+
+Przebieg wdrożenia:
+1. Obraz zbudowano z testami: 667/667.
+2. Przed przełączeniem zrobiono kopię danych (powyżej).
+3. Migracji nie przybyło (25).
+
+Po wdrożeniu:
+- **Drugie przejście audytu:** 28 stron, bez błędów strony, nieudanych żądań i śladów danych testowych.
+- **Test dymny nowych ekranów, tylko do odczytu** (nic nie zamrożono ani nie uruchomiono w Twoich danych):
+  - wszystkie zakładki CR2014 oraz „Dowody” i „Protokół” JH16 działają na komputerze i telefonie, bez przewijania w bok;
+  - panel pomiaru CR2014 pokazuje koszt 1 zapytania, limit 100/100 i Twój zapisany klucz;
+  - przycisk jest nieaktywny do zatwierdzenia presetu.
+
+Luki w zakładce „Dowody” na Twojej instalacji:
+- **CR2014:** brak przebiegu (uruchomisz go w kroku A3).
+- **JH16, „Region Google”:** dowodem są przebiegi wariantów gl=us i gl=pl, a na Twojej instalacji ich nie ma. Uruchomienie rozszerzenia w kreatorze (160 kredytów) usuwa tę lukę.
+- **JH16, „Zmiana sposobu szacowania…”:** pytanie do Ciebie w kroku A4.
 
 ## Audyt interfejsu przed testem (2026-10-26)
 
