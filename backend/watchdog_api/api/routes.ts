@@ -32,6 +32,7 @@ import { editManuscript, applyEdition, readEditingSettings } from '../services/m
 import { ManuscriptEditionRepository } from '../db/repositories/manuscript_editions';
 import { evaluateProtocol, dataRole, readProtocolOptions, ProtocolError } from '../services/study_protocols';
 import { StudyProtocolRepository } from '../db/repositories/study_protocols';
+import { buildEvidenceGraph } from '../services/evidence_graph';
 
 export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService) {
 const apiRouter = Router();
@@ -187,6 +188,16 @@ apiRouter.post('/replications/:id/protocols', requireCapability('method.approve'
     audit.append(req.principal!.id, 'protocol.freeze', 'replication', req.params.id, tracer.getContext()?.request_id ?? 'protocol-freeze', { protocol: p.id, hash: p.content_hash });
     res.status(201).json({ protocol: p });
   } catch (e) { if (e instanceof ProtocolError) return res.status(409).json({ error: 'protocol_refused', message: e.message }); next(e); }
+});
+
+apiRouter.get('/replications/:id/evidence-graph', requireCapability('run.view'), async (req, res, next) => {
+  try {
+    const c = await replicationContext(req.params.id, req.principal!.id);
+    if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
+    const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit, undefined, c.protocols);
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ graph: buildEvidenceGraph(c.t, c.runs, c.protocols, m) });
+  } catch (e) { next(e); }
 });
 
 apiRouter.post('/replications/:id/manuscript/edit', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {

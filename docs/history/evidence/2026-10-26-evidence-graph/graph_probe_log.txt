@@ -1,0 +1,8 @@
+jh2016 gaps: Luki w dowodach (1) | Zmiana sposobu szacowania przez Google od 2014 r.: wpis diagnozy ze statusem „prawdopodobna” nie wskazuje dowodu |  | sha256 grafu 3a983ca3254dbf6b85277a824c8688f788b69f4b821db112ee9e5da2406e24dc · węzły 87 · krawędzie 182
+jh2016 node: harm_index_vs_reference_pearson |  | pearson, [0.7; 1] |  | ← prerejestracja ustala (3d74e15) | ← H-harm testowana przez | ← JH16 — potwierdzenie ustala | ← 051f9b60 ocenia (deviates) | ← 2e701755 ocenia (deviates) | ← 4369e19e ocenia (not_computable) | ← 4e8ff376 ocenia (deviates) | ← 8d97fefd ocenia (not_computable) | ← 9d80efca ocenia (deviates) | ← a0d88a49 ocenia (reproduced) | ← a6f35b44 ocenia (not_computable) | ← c17d1147 ocenia (deviates) | ← cf1b454a ocenia (not_computable) | ← d5b9a571 ocenia (not_computable) | ← d935c03b ocenia (deviates) | ← f4c9d3d5 ocenia (deviates)
+jh2016 desktop page overflow px: 0
+jh2016 phone page overflow px: 0
+cr2014 gaps: Luki w dowodach (0) |  | Każde kryterium ma kompletny przebieg, każda przyczyna — plik z dowodem, każda tabela pracy — źródło. |  | sha256 grafu 3adec7187db75a44146e64d60c9b679277ea413e79e8dc3966437812b14856c5 · węzły 33 · krawędzie 33
+cr2014 node: cigar_youth_pearson |  | pearson, [0.07; 0.64] |  | ← prerejestracja ustala (aa7e2ea) | ← H-cigar-youth testowana przez | ← JH16 — potwierdzenie ustala | ← JH16 — potwierdzenie ustala | ← 7aa42db5 ocenia (not_computable) | ← fcf2ed4a ocenia (reproduced)
+cr2014 desktop page overflow px: 0
+cr2014 phone page overflow px: 0

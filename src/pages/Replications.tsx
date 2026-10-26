@@ -34,7 +34,7 @@ export function Replications() {
   </div>;
 }
 
-type Tab = 'overview' | 'measure' | 'runs' | 'protocol' | 'discrepancies' | 'calibration' | 'registry' | 'manuscript';
+type Tab = 'overview' | 'measure' | 'runs' | 'protocol' | 'discrepancies' | 'calibration' | 'registry' | 'evidence' | 'manuscript';
 // A target evaluated by the general reference-correlation path (any target besides the JH16 special case).
 const isGeneric = (data: any) => data.dossier?.evaluation_kind === 'reference_correlation';
 
@@ -46,7 +46,7 @@ export function ReplicationTarget() {
   if (!data) return <div className="p-8">Wczytywanie…</div>;
   const generic = isGeneric(data), reload = () => fetch(`/api/replications/${id}`).then(r => r.json()).then(setData);
   const tabs: [Tab, string][] = [['overview', 'Przegląd'], ...(generic && data.dossier.measurement ? [['measure', 'Nowy pomiar'] as [Tab, string]] : []), ['runs', `Przebiegi (${data.runs.length})`], ['protocol', `Protokół (${data.protocols.length})`], ['discrepancies', 'Rozbieżności'],
-    ...(generic ? [] : [['calibration', 'Kalibracja'] as [Tab, string]]), ['registry', 'Rejestr kryteriów'], ['manuscript', 'Projekt pracy']];
+    ...(generic ? [] : [['calibration', 'Kalibracja'] as [Tab, string]]), ['registry', 'Rejestr kryteriów'], ['evidence', 'Dowody'], ['manuscript', 'Projekt pracy']];
   return <div className="p-4 sm:p-8 max-w-6xl mx-auto space-y-5 min-w-0" data-testid="replication-target">
     <div className="text-sm text-slate-500"><Link to="/replications" className="underline">Replikacje</Link> / {data.target.target_id}</div>
     <div><h1 className="text-xl sm:text-2xl font-semibold">{data.target.title}</h1>
@@ -60,6 +60,7 @@ export function ReplicationTarget() {
     {tab === 'discrepancies' && <Discrepancies data={data} />}
     {tab === 'calibration' && <Calibration data={data} />}
     {tab === 'registry' && (generic ? <GenericRegistry data={data} /> : <Registry data={data} />)}
+    {tab === 'evidence' && <EvidenceGraphView id={id!} base={data.dossier.evidence_base_url} />}
     {tab === 'manuscript' && <ManuscriptView id={id!} />}
   </div>;
 }
@@ -354,6 +355,53 @@ function GenericRegistry({ data }: { data: any }) {
     {(i?.exploratory_sensitivity ?? []).map((x: any) => <p key={x.id} className="text-sm">Eksploracyjnie (bez werdyktu): {x.id}: {x.reason}.</p>)}
     <p className="text-sm">Prerejestracja: <a className="underline" href={`${data.dossier.evidence_base_url}${data.dossier.protocol.document}`} target="_blank" rel="noreferrer">{data.dossier.protocol.document}</a>{data.dossier.protocol.registered_in_commit && <> (commit <code>{data.dossier.protocol.registered_in_commit}</code>)</>}.</p>
     <p className="text-xs font-mono break-all">sha256 kryteriów {data.hashes.claims} · interpretacji {data.hashes.interpretation} · dossier {data.hashes.dossier}</p></section>;
+}
+
+// ---------------------------------------------------------------- evidence graph
+const KIND: [string, string][] = [['hypothesis', 'Hipotezy'], ['claim', 'Kryteria'], ['protocol', 'Protokoły'], ['run', 'Przebiegi'], ['file', 'Pliki i odniesienia'], ['cause', 'Przyczyny rozbieżności'], ['section', 'Sekcje pracy']];
+const EDGE: Record<string, string> = { tested_by: 'testowana przez', fixes: 'ustala', evaluates: 'ocenia', confirms: 'potwierdza wg', uses: 'używane przez', supports: 'popiera', cited_in: 'cytowane w' };
+const GAP: Record<string, string> = { 'no complete run evaluates this claim yet': 'żaden kompletny przebieg jeszcze nie ocenia tego kryterium',
+  'no pre-registered claim tests this hypothesis': 'żadne wcześniej zarejestrowane kryterium nie testuje tej hipotezy', };
+const gapText = (p: string) => GAP[p] ?? (p.match(/^a diagnosis marked '(\w+)' names no evidence$/) ? `wpis diagnozy ze statusem „${STATUS[p.match(/'(\w+)'/)![1]]?.[0] ?? p}” nie wskazuje dowodu` : p);
+
+function EvidenceGraphView({ id, base }: { id: string; base: string }) {
+  const [g, setG] = useState<any>(null), [error, setError] = useState(''), [sel, setSel] = useState<string | null>(null), [manifests, setManifests] = useState(false);
+  useEffect(() => { fetch(`/api/replications/${id}/evidence-graph`).then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(d => setG(d.graph)).catch(e => setError(e.message)); }, [id]);
+  if (error) return <p role="alert">{error}</p>;
+  if (!g) return <p>Składanie grafu dowodów…</p>;
+  const shown = g.nodes.filter((n: any) => manifests || !n.id.startsWith('file:manifest:')), ids = new Set(shown.map((n: any) => n.id));
+  const edges = g.edges.filter((e: any) => ids.has(e.from) && ids.has(e.to));
+  const COLW = 170, ROWH = 30, TOP = 28, NW = 150, NH = 22;
+  const cols = KIND.map(([k]) => shown.filter((n: any) => n.kind === k)).filter(c => c.length);
+  const pos = new Map<string, { x: number; y: number }>();
+  cols.forEach((c, i) => c.forEach((n: any, j: number) => pos.set(n.id, { x: 8 + i * COLW, y: TOP + j * ROWH })));
+  const W = 16 + cols.length * COLW, H = TOP + Math.max(...cols.map(c => c.length)) * ROWH + 8;
+  const near = sel ? new Set([sel, ...edges.filter((e: any) => e.from === sel || e.to === sel).flatMap((e: any) => [e.from, e.to])]) : null;
+  const node = sel ? g.nodes.find((n: any) => n.id === sel) : null, label = (nid: string) => g.nodes.find((n: any) => n.id === nid)?.label ?? nid;
+  const link = (n: any) => n?.ref?.run_id ? <Link className="underline" to={`/runs/${n.ref.run_id}/results`}>wyniki przebiegu</Link> : n?.ref?.path ? <a className="underline" href={`${base}${n.ref.path}`} target="_blank" rel="noreferrer">otwórz plik</a> : null;
+  return <div className="space-y-4">
+    <section className={card} data-testid="evidence-gaps"><h2 className="font-semibold">Luki w dowodach ({g.gaps.length})</h2>
+      {g.gaps.length === 0 ? <p className="text-sm">Każde kryterium ma kompletny przebieg, każda przyczyna wykazana, prawdopodobna lub wykluczona wskazuje dowód, każda tabela pracy — źródło.</p> :
+      <ul className="text-sm list-disc ml-5">{g.gaps.map((x: any) => <li key={x.node + x.problem}><button className="underline" onClick={() => setSel(x.node)}>{label(x.node)}</button>: {gapText(x.problem)}</li>)}</ul>}
+      <p className="text-xs text-slate-500 font-mono break-all">sha256 grafu {g.graph_hash} · węzły {g.nodes.length} · krawędzie {g.edges.length}</p></section>
+    <section className={card} data-testid="evidence-graph"><div className="flex flex-wrap gap-3 items-center"><h2 className="font-semibold">Graf dowodów</h2>
+      <label className="text-sm flex gap-1"><input type="checkbox" checked={manifests} onChange={e => setManifests(e.target.checked)} data-testid="show-manifests" />pokaż manifesty przebiegów</label></div>
+      <p className="text-xs text-slate-600">Kliknij węzeł, aby zobaczyć jego połączenia. Graf powstaje z konfiguracji, zapisanych przebiegów i źródeł podanych w projekcie pracy; nie liczy żadnej statystyki.</p>
+      <div className={scroll}><svg width={W} height={H} role="img" aria-label={`Graf dowodów: ${shown.length} węzłów, ${edges.length} krawędzi`}>
+        {cols.map((c, i) => <text key={i} x={8 + i * COLW} y={14} fontSize={11} className="fill-slate-500">{KIND.find(([k]) => k === c[0].kind)![1]}</text>)}
+        {edges.map((e: any, i: number) => { const a = pos.get(e.from)!, b = pos.get(e.to)!, fwd = a.x <= b.x;
+          const x1 = fwd ? a.x + NW : a.x, x2 = fwd ? b.x : b.x + NW, y1 = a.y + NH / 2, y2 = b.y + NH / 2, mx = (x1 + x2) / 2, on = !near || (near.has(e.from) && near.has(e.to) && (e.from === sel || e.to === sel));
+          return <path key={i} d={`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`} fill="none" stroke="currentColor" className={on ? 'text-indigo-400' : 'text-slate-200'} strokeWidth={on && near ? 1.6 : 0.8} />; })}
+        {shown.map((n: any) => { const p = pos.get(n.id)!, gap = g.gaps.some((x: any) => x.node === n.id), dim = near && !near.has(n.id);
+          return <g key={n.id} className="cursor-pointer" onClick={() => setSel(n.id === sel ? null : n.id)} data-testid={`node-${n.id}`} opacity={dim ? 0.3 : 1}>
+            <rect x={p.x} y={p.y} width={NW} height={NH} rx={5} className={n.id === sel ? 'fill-indigo-100 stroke-indigo-600' : gap ? 'fill-amber-50 stroke-amber-500' : 'fill-white stroke-slate-300'} />
+            <text x={p.x + 6} y={p.y + 15} fontSize={10} className="fill-slate-800">{n.label.length > 24 ? n.label.slice(0, 23) + '…' : n.label}</text><title>{`${n.label}${n.detail ? ` — ${n.detail}` : ''}`}</title></g>; })}
+      </svg></div></section>
+    {node && <section className={card} data-testid="evidence-node"><h2 className="font-semibold">{node.label}</h2>
+      {node.detail && <p className="text-sm break-words">{node.detail}</p>}{link(node)}
+      <ul className="text-sm space-y-1">{edges.filter((e: any) => e.from === sel || e.to === sel).map((e: any, i: number) => <li key={i}>
+        {e.from === sel ? <>→ {EDGE[e.kind]} <button className="underline" onClick={() => setSel(e.to)}>{label(e.to)}</button></> : <>← <button className="underline" onClick={() => setSel(e.from)}>{label(e.from)}</button> {EDGE[e.kind]}</>}{e.label ? <span className="text-slate-500"> ({e.label})</span> : null}</li>)}</ul></section>}
+  </div>;
 }
 
 function ManuscriptView({ id }: { id: string }) {

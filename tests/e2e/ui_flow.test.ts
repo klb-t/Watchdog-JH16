@@ -350,6 +350,11 @@ test('second replication target (cr2014): general pages, measurement gated by ke
   assert.match(text, /Nie ma jeszcze ukończonego, kompletnego nowego pomiaru/); assert.ok(!/undefined|NaN|Nutt/.test(text));
   const m = await (await fetch(`${baseUrl}/api/replications/cr2014/measurement`)).json();
   assert.strictEqual(m.measurement.source_id, 'trends_interest_by_region');
+  await page.click('[data-testid="tab-evidence"]');
+  await page.locator('[data-testid="evidence-gaps"]').waitFor();
+  assert.match(await page.locator('[data-testid="evidence-gaps"]').innerText(), /cigar_youth_pearson: żaden kompletny przebieg jeszcze nie ocenia tego kryterium/);
+  await page.locator('[data-testid="node-hypothesis:H-cigar-youth"]').click();
+  assert.match(await page.locator('[data-testid="evidence-node"]').innerText(), /testowana przez cigar_youth_pearson/);
 });
 
 test('E5.7b-2: two prioritised families with serial gating are frozen from the form', async () => {
