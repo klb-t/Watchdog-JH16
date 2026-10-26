@@ -7,6 +7,14 @@ import * as assert from 'node:assert';
 import { editManuscript, verifyUnit, applyEdition, protectedTokens } from '../../backend/watchdog_api/services/manuscript_editing';
 import { manuscriptMarkdown, type Manuscript } from '../../backend/watchdog_api/services/replication_dossier';
 import { redact } from '../../backend/watchdog_api/utils/redaction';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+
+// The shipped setting is disabled until a real call is verified; tests use an enabled copy.
+const ROOT = fs.mkdtempSync(path.join(os.tmpdir(), 'editing-'));
+fs.mkdirSync(path.join(ROOT, 'config/manuscript'), { recursive: true });
+fs.writeFileSync(path.join(ROOT, 'config/manuscript/editing.json'), JSON.stringify({ ...JSON.parse(fs.readFileSync('config/manuscript/editing.json', 'utf8')), enabled: true }));
 
 const M: Manuscript = { title: 'T', target_id: 'jh2016', dossier_version: 'v', input_hash: 'a'.repeat(64), generated_at: '2026-10-26T00:00:00Z', code_version: 'abc1234',
   sections: [{ id: 'summary', title: 'Streszczenie', blocks: [
@@ -39,7 +47,7 @@ test('protected tokens: wording may change, numbers, ids and dates may not', () 
 
 test('editing keeps verified sentences, rejects changed or missing ones, and never touches tables or sources', async () => {
   const urls: string[] = [];
-  const e = await editManuscript(M, { spentTodayUsd: 0, transport: stub(sent => sent.filter((u: any) => u.id !== 'summary.2.1').map((u: any) =>
+  const e = await editManuscript(M, { root: ROOT, spentTodayUsd: 0, transport: stub(sent => sent.filter((u: any) => u.id !== 'summary.2.1').map((u: any) =>
     u.id === 'summary.0' ? { id: u.id, text: 'W nowym pomiarze (2026-10-25) współczynnik Pearsona wynosi -0,104 (p 0,7015); werdykt: deviates.' }
     : u.id === 'summary.1' ? { id: u.id, text: 'Przeliczenie daje Pearson 0,82.' } : u), urls) });
   assert.match(urls[2], /aiplatform\.googleapis\.com\/v1\/projects\/test-project\/locations\/global\/publishers\/google\/models\/gemini-3\.5-flash:generateContent/);
@@ -57,6 +65,12 @@ test('editing keeps verified sentences, rejects changed or missing ones, and nev
 
 test('the daily budget is checked before anything is sent', async () => {
   const urls: string[] = [];
-  await assert.rejects(() => editManuscript(M, { spentTodayUsd: 0.9999, transport: stub(s => s, urls) }), /daily budget/);
+  await assert.rejects(() => editManuscript(M, { root: ROOT, spentTodayUsd: 0.9999, transport: stub(s => s, urls) }), /daily budget/);
+  assert.deepStrictEqual(urls, []);
+});
+
+test('with the shipped setting editing is refused before anything is sent', async () => {
+  const urls: string[] = [];
+  await assert.rejects(() => editManuscript(M, { spentTodayUsd: 0, transport: stub(s => s, urls) }), /disabled/);
   assert.deepStrictEqual(urls, []);
 });

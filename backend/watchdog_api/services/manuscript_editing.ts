@@ -78,6 +78,7 @@ async function metadata(base: string, p: string, transport: Transport) {
 
 export async function editManuscript(m: Manuscript, opts: { transport?: Transport; spentTodayUsd: number; root?: string }): Promise<Edition> {
   const { settings, hash } = readEditingSettings(opts.root), transport = opts.transport ?? (fetch as unknown as Transport), p = settings.provider;
+  if (settings.enabled !== true) throw Object.assign(new Error(`Language editing is disabled in config/manuscript/editing.json: ${settings._why_disabled ?? 'enabled is false'}`), { status: 409 });
   if (p.kind !== 'vertex') throw new Error(`Unsupported editing provider '${p.kind}'`);
   const list = units(m);
   // Budget is checked before sending, on a generous estimate (4 characters per token, output as long as input).
