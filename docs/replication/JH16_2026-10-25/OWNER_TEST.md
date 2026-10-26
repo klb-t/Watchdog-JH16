@@ -116,6 +116,38 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
   H-harm p 0,71 (nieodrzucona), więc H-pop „nietestowane: bramka zamknięta”, mimo surowego p 1,25e-4.
   Protokoły zamrożone wcześniej liczą się jak dotąd (jedna rodzina, bez priorytetu).
 
+**A3. Druga replikacja: CR2014 (1 kredyt SerpApi)**
+- Replikacje → **„Monitoring of non-cigarette tobacco use using Google Trends”** (Cavazos-Rehg i wsp. 2014).
+  Sprawdza, czy mechanizm replikacji nie jest szyty pod JH16: Google Trends dla cygar w 2011 r.
+  według stanów USA wobec odsetka uczniów palących cygara (YRBS 2011, otwarte dane CDC).
+- Na Twojej instalacji nie ma jeszcze przebiegu CR2014. Wynik z kopii danych audytowych z 26.10:
+  Pearson 0,358 (p 0,032, n 36) wobec 0,39 (p 0,018) w pracy, „reproduced”, odczyt „wspierają”.
+  Raport: `docs/replication/CR2014_2026-10-26/REPORT.md`.
+- Ścieżka:
+  - **Protokół** (opcjonalnie): zamroź protokół z jedną rodziną.
+  - **Nowy pomiar**: panel pokazuje terminy, parametry, koszt (1 zapytanie), limit dzienny i hash
+    presetu. Zaznacz „Zatwierdzam ten preset”, wybierz rolę danych, potem „Uruchom pomiar”.
+  - Po kilku sekundach przebieg jest w **Przeglądzie** i w **Przebiegach**. Wybierz przebieg: zobaczysz
+    wykres rozrzutu stan po stanie, a kliknięcie stanu pokaże zapytanie i surową odpowiedź.
+  - **Projekt pracy** ma sekcję „Czego nie powtórzono”. Trzech z czterech wyników pracy nie da się
+    sprawdzić na otwartych danych.
+- Twój wynik może się trochę różnić od tego z 26.10, bo Trends ponownie próbkuje dane.
+
+**A4. Dowody (bez kosztu)**
+- W każdej replikacji zakładka **„Dowody”** pokazuje graf, który łączy:
+  - hipotezy, kryteria i prerejestrację;
+  - protokoły i przebiegi (werdykt na krawędzi);
+  - pliki i przyczyny rozbieżności;
+  - sekcje projektu pracy.
+- Kliknięcie węzła pokazuje jego połączenia i odnośniki. Nad grafem są **luki**: kryterium bez
+  kompletnego przebiegu, przyczyna bez dowodu, tabela pracy bez źródła.
+- **Pytanie do Ciebie (JH16):** jedyna luka w JH16 to przyczyna „Zmiana sposobu szacowania przez Google
+  od 2014 r.”. Ma status „prawdopodobna”, ale nie wskazuje żadnego dowodu (dawnego narzędzia Google nie
+  da się już uruchomić). Masz trzy wyjścia:
+  - zostawić ją jako prawdopodobną bez dowodu, a luka zostaje widoczna;
+  - zmienić status na „nierozstrzygnięta”;
+  - wskazać źródło, np. dokumentację Google o zmianie szacunków, jeśli takie znasz.
+
 **B. Nowe pomiary (kredyty SerpApi)**
 6. Ustawienia → kreator. Krok 1: „serpapi: zapisany” i, w trybie „Standardowy”, dzienny limit
    SerpApi. Krok 2: „Punkt odniesienia” → „JH16: nowe pomiary przez własny SerpApi” (32 kredyty)
