@@ -8,9 +8,9 @@ Wyniki i ocena, które ten test ma sprawdzić: [REPORT.md](REPORT.md).
 |---|---|
 | Adres | https://watchdog.34-158-117-249.sslip.io |
 | Logowanie | użytkownik `marcin`, hasło Caddy: na VM `sudo bash ~/chatadhd/tools/gcp/aliases.sh --show-pass` |
-| Wersja kodu | `0ce79a4` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
-| Obraz | `watchdog:0ce79a4…` na VM; poprzednie (`6b7e63e`, `84a9e71`, `10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
-| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`) `…before-6b7e63e…-20261026T173110Z.tar.gz` (sha256 `a3c6407f…1182`) i `…before-0ce79a4…-20261026T175225Z.tar.gz` (sha256 `d1d56d53…2e1c`), z kopiami `release.env` |
+| Wersja kodu | `05e2fdc` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
+| Obraz | `watchdog:05e2fdc…` na VM; poprzednie (`0ce79a4`, `6b7e63e`, `84a9e71`, `10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
+| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`) `…before-6b7e63e…-20261026T173110Z.tar.gz` (sha256 `a3c6407f…1182`) `…before-0ce79a4…-20261026T175225Z.tar.gz` (sha256 `d1d56d53…2e1c`) i `…before-05e2fdc…-20261026T182117Z.tar.gz` (sha256 `e7bbeccd…b4f4`), z kopiami `release.env` |
 | Klucz SerpApi | zapisany w Twoim zaszyfrowanym sejfie w WatchDogu (Ustawienia → krok 1 pokazuje „serpapi: zapisany”) |
 
 Każdy nowy pomiar (32 zapytania) zużywa kredyty SerpApi z Twojego konta: darmowy limit
@@ -41,6 +41,34 @@ Trzecia aktualizacja (16:24 UTC) do `84a9e71`: „Replikacje” w aplikacji i pr
 (629/629 testów w buildzie). Na VM dodano kalibrację dla US, GB i PL (`32c2c4be`, `8e45b9f9`,
 `08701e76`; skrypt bez rozbieżności) i przejrzano wszystkie zakładki na komputerze i telefonie
 (bez błędów strony i przewijania w bok).
+
+## Audyt interfejsu przed testem (2026-10-26)
+
+Przegląd wszystkich 28 stron na VM: komputer, zbieranie błędów strony, nieudanych żądań, widocznych
+słów typu „test/fixture/mock/demo/planned” i stanu każdego przycisku. Raport:
+`docs/history/evidence/2026-10-25-jh16/ui_audit/`.
+
+Znalezione i poprawione (`05e2fdc`):
+- źródło `offline_fixture` (dane wyłącznie do testów) było widoczne w „Źródłach pomiarów”, „Ustawieniach”,
+  wyszukiwaniu i kartotece — usunięte z interfejsu (zostaje w testach);
+- przycisk „Uruchom źródło testowe” wysyłał przebieg bez języka i planu, więc zawsze kończył się
+  błędem — teraz każde źródło ma tylko działającą akcję („Przelicz JH16 z danych publikacji”, „Nowy
+  pomiar w kreatorze”) albo napis „Niedostępne” z powodem;
+- przyciski wymagające modelu językowego (redakcja narracji, ocena metodologii pracy, propozycja
+  parsera) były aktywne bez klucza i kończyły się błędem — teraz są wyłączone z podanym powodem;
+- opisy źródeł po polsku zamiast żargonu; przełącznik „Język” nazywa się „Język menu” (zmienia tylko
+  menu); pulpit ma kafel „Zobacz replikację JH16 i projekt pracy”.
+
+Znane ograniczenia, które zostają (oznaczone w interfejsie):
+- część ekranów ma nagłówki po angielsku (np. „Results”, lista uruchomień); przełącznik języka nie
+  tłumaczy treści;
+- redakcja projektu pracy przez Vertex jest wyłączona w konfiguracji do czasu sprawdzenia
+  prawdziwego wywołania;
+- na Twojej instalacji nie ma zamrożonego protokołu — to Twoja decyzja (zakładka „Protokół”);
+- źródła „planned” (np. PubChem przez katalog referencyjny, Erowid) są widoczne jako plan, bez akcji.
+
+Nie sprawdzono w audycie: klikania przycisków zapisujących (zaproszenia, role, harmonogramy) na Twojej
+instalacji, żeby nie zmieniać Twoich danych; są pokryte testami przeglądarkowymi na osobnej bazie.
 
 ## Gotowa konfiguracja
 
@@ -100,6 +128,11 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
 - Zakładka „Ekstraktory danych” → format „HTML (tabele)” → wczytaj stronę z tabelą → „Pokaż tabele
   w tym HTML” → wpisz numer tabeli i nagłówki kolumn w „Zdefiniuj kopiowanie”: wartości są kopiowane
   dokładnie, z pozycją komórki w pliku. Tabele z PDF nie są jeszcze obsługiwane.
+
+**B3. Tabele z PDF (E5.8b, bez kosztu)**
+- „Ekstraktory danych” → „PDF (tabela, odczyt jawny)” → wczytaj PDF → ustaw stronę i zakres → „Pokaż
+  wiersze tekstu i proponowane granice kolumn” → granice wpisują się do planu jako propozycja; dopisz
+  nazwy kolumn. Każda wartość zapisuje stronę, fragmenty i prostokąt w pliku.
 
 **C. Kontrola niezależna (opcjonalnie, na VM)**
 9. Z wyników przebiegu pobierz „JSON” i uruchom

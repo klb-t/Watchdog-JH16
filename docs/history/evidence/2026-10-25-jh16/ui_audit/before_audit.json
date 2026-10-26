@@ -1,0 +1,540 @@
+[
+ {
+  "route": "/",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [],
+  "empty": false
+ },
+ {
+  "route": "/data",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "Odśwież",
+   "Pobierz przegląd JSON",
+   "arXiv",
+   "BindingDB",
+   "Bluelight",
+   "Bluesky",
+   "ChEMBL",
+   "ClinicalTrials.gov",
+   "Crossref",
+   "DMT-Nexus",
+   "DrugBank",
+   "Drugs-Forum",
+   "DrugsData",
+   "Energy Control",
+   "Erowid",
+   "EUDA",
+   "Europe PMC",
+   "Google Trends",
+   "Hyperreal",
+   "IUPHAR / Guide to Pharmacology",
+   "Mastodon · wybrana instancja",
+   "OpenAlex",
+   "PsychonautWiki",
+   "PubChem",
+   "PubMed / NCBI Entrez",
+   "Reddit",
+   "Semantic Scholar",
+   "Shroomery",
+   "Stack Exchange",
+   "TripSit",
+   "UNODC",
+   "WEDINOS",
+   "WHO",
+   "Wikidata",
+   "Wikipedia",
+   "Zenodo",
+   ""
+  ],
+  "empty": false
+ },
+ {
+  "route": "/analysis",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [
+   "sample:  sentiment views need sourced data imports; no live feed or sample trend is fabricated. Restore figure JSON or package "
+  ],
+  "buttons": [
+   "Refresh data and saved figures",
+   "[disabled] ",
+   "[disabled] ",
+   "[disabled] ",
+   "",
+   "[disabled] "
+  ],
+  "empty": false
+ },
+ {
+  "route": "/collection",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Uruchom ten plan teraz",
+   "Zapisz i włącz harmonogram",
+   "Odśwież"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/papers",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Prace i warianty",
+   "Ekstraktory danych",
+   "Analizy prac",
+   "Odśwież kolejkę",
+   "[disabled] Zapisz tę wersję pracy"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/knowledge",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [
+   "planned: amość zapisanej wersji chemical_reference Źródła Unknown · planned chemical_reference · planned · registry drug_check",
+   "planned: l_reference Źródła Unknown · planned chemical_reference · planned · registry drug_checking Źródła Unknown · planned ",
+   "planned: rence · planned · registry drug_checking Źródła Unknown · planned drug_checking · planned · registry erowid Źródła ",
+   "planned: y drug_checking Źródła Unknown · planned drug_checking · planned · registry erowid Źródła Unknown · blocked-by-lice",
+   "fixture_jh2016: -license/auth erowid · blocked-by-license/auth · registry fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixtu",
+   "fixturesourceadapter:  blocked-by-license/auth · registry fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · r",
+   "fixture: h · registry fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · registry manual_dataset",
+   "fixture_jh2016: try fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · registry manual_dataset Źródła ",
+   "fixture: 16 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · registry manual_dataset Źródła Unknown · planned",
+   "planned: 2016 · fixture · registry manual_dataset Źródła Unknown · planned manual_dataset · planned · registry offline_fixtur",
+   "planned:  manual_dataset Źródła Unknown · planned manual_dataset · planned · registry offline_fixture Źródła OfflineFixtureAd",
+   "fixture: · registry offline_fixture Źródła OfflineFixtureAdapter · fixture offline_fixture · fixture · registry scientific_li",
+   "fixture:  Źródła OfflineFixtureAdapter · fixture offline_fixture · fixture · registry scientific_literature Źródła Unknown · ",
+   "planned: fixture · registry scientific_literature Źródła Unknown · planned scientific_literature · planned · registry serp_ge",
+   "planned: terature Źródła Unknown · planned scientific_literature · planned · registry serp_generic Źródła Unknown · planned ",
+   "planned: rature · planned · registry serp_generic Źródła Unknown · planned serp_generic · planned · registry serp_result_coun",
+   "planned: try serp_generic Źródła Unknown · planned serp_generic · planned · registry serp_result_count Źródła Unknown · bloc"
+  ],
+  "buttons": [
+   "Szukaj"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/sources",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [
+   "fixture_jh2016: ch obserwacji. Pełny katalog integracji i warunków dostępu fixture_jh2016 Adapter: FixtureSourceAdapter fixture Froz",
+   "fixturesourceadapter: alog integracji i warunków dostępu fixture_jh2016 Adapter: FixtureSourceAdapter fixture Frozen JH2016 fixtures read f",
+   "fixture: nków dostępu fixture_jh2016 Adapter: FixtureSourceAdapter fixture Frozen JH2016 fixtures read from fixtures/jh2016/ —",
+   "fixtures: 2016 Adapter: FixtureSourceAdapter fixture Frozen JH2016 fixtures read from fixtures/jh2016/ — the E1 offline source ",
+   "fixtures: ureSourceAdapter fixture Frozen JH2016 fixtures read from fixtures/jh2016/ — the E1 offline source Uruchom źródło tes",
+   "fixture: ło testowe offline_fixture Adapter: OfflineFixtureAdapter fixture Frozen offline data for reproducibility testing Ur",
+   "planned: ing Uruchom źródło testowe serp_generic Adapter: Unknown planned Generic SERP adapter: not implemented. Live search ",
+   "not implemented: p_generic Adapter: Unknown planned Generic SERP adapter: not implemented. Live search result counts are the serp_resu",
+   "planned: wizard. Pobierz dane chemical_reference Adapter: Unknown planned Chemical and pharmacological reference record for a",
+   "planned: Api. Pobierz dane scientific_literature Adapter: Unknown planned DOI/Crossref bibliographic metadata Pobierz dane e",
+   "planned: rized access Pobierz dane drug_checking Adapter: Unknown planned Laboratory drug checking results Pobierz dane manu",
+   "planned: ing results Pobierz dane manual_dataset Adapter: Unknown planned User uploaded CSV/Parquet data Pobierz dane"
+  ],
+  "buttons": [
+   "Uruchom źródło testowe",
+   "Uruchom źródło testowe",
+   "[disabled] Pobierz dane",
+   "[disabled] Pobierz dane",
+   "[disabled] Pobierz dane",
+   "[disabled] Pobierz dane",
+   "[disabled] Pobierz dane",
+   "[disabled] Pobierz dane",
+   "[disabled] Pobierz dane",
+   "[disabled] Pobierz dane"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/source-access",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "",
+   "Odśwież",
+   "Pobierz przegląd JSON",
+   "arXiv",
+   "BindingDB",
+   "Bluelight",
+   "Bluesky",
+   "ChEMBL",
+   "ClinicalTrials.gov",
+   "Crossref",
+   "DMT-Nexus",
+   "DrugBank",
+   "Drugs-Forum",
+   "DrugsData",
+   "Energy Control",
+   "Erowid",
+   "EUDA",
+   "Europe PMC",
+   "Google Trends",
+   "Hyperreal",
+   "IUPHAR / Guide to Pharmacology",
+   "Mastodon · wybrana instancja",
+   "OpenAlex",
+   "PsychonautWiki",
+   "PubChem",
+   "PubMed / NCBI Entrez",
+   "Reddit",
+   "Semantic Scholar",
+   "Shroomery",
+   "Stack Exchange",
+   "TripSit",
+   "UNODC",
+   "WEDINOS",
+   "WHO",
+   "Wikidata",
+   "Wikipedia",
+   "Zenodo",
+   ""
+  ],
+  "empty": false
+ },
+ {
+  "route": "/runs",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [],
+  "empty": false
+ },
+ {
+  "route": "/runs/32c2c4be-37a7-4f09-bbda-2ab38095300f",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "",
+   "Overview",
+   "Data & Results",
+   "Provenance"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/runs/32c2c4be-37a7-4f09-bbda-2ab38095300f/results",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Zredaguj przez mój LLM w zapisanym budżecie"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/analyzers",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Run Analysis",
+   "Run Analysis"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/study",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [
+   "fixture_jh2016: cji, 32 zapytania). Wybierz, skąd pochodzą liczby wyników. fixture_jh2016 fixture Frozen JH2016 fixtures read from fix",
+   "fixture: ia). Wybierz, skąd pochodzą liczby wyników. fixture_jh2016 fixture Frozen JH2016 fixtures read from fixtures/jh2016/ —",
+   "fixtures: odzą liczby wyników. fixture_jh2016 fixture Frozen JH2016 fixtures read from fixtures/jh2016/ — the E1 offline source ",
+   "fixtures: . fixture_jh2016 fixture Frozen JH2016 fixtures read from fixtures/jh2016/ — the E1 offline source Liczby z Tabel 1 i",
+   "fixture: 014) — kontrola obliczeń, nie nowy pomiar. offline_fixture fixture not a JH16 source Frozen offline data for reproduci",
+   "planned: ozen offline data for reproducibility testing serp_generic planned not a JH16 source Generic SERP adapter: not impleme",
+   "not implemented: rp_generic planned not a JH16 source Generic SERP adapter: not implemented. Live search result counts are the serp_resu",
+   "planned: nal SerpApi key in the settings wizard. chemical_reference planned not a JH16 source Chemical and pharmacological refe",
+   "planned: v:SERPAPI_API_KEY to enable SerpApi. scientific_literature planned not a JH16 source DOI/Crossref bibliographic metada",
+   "planned: wid trip reports - pending authorized access drug_checking planned not a JH16 source Laboratory drug checking results ",
+   "planned: 16 source Laboratory drug checking results manual_dataset planned not a JH16 source User uploaded CSV/Parquet data S"
+  ],
+  "buttons": [
+   "Start JH16 run"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/method",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "[disabled] Approved"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/replications",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [],
+  "empty": false
+ },
+ {
+  "route": "/replications/jh2016",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Przegląd",
+   "Przebiegi (7)",
+   "Protokół (0)",
+   "Rozbieżności",
+   "Kalibracja",
+   "Rejestr kryteriów",
+   "Projekt pracy"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/diagnostics",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Refresh traces",
+   "93092450-f191-4101-928c-5c2d2bae364d",
+   "a536b004-cd7d-4366-be41-380257da7a44",
+   "0daf3ade-9c07-4a41-864c-bd8f1352afec",
+   "90b99e9d-7a7f-4634-93ab-e8b5827d78e9"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/workbench",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [
+   "sample:  sentiment views need sourced data imports; no live feed or sample trend is fabricated. Restore figure JSON or package "
+  ],
+  "buttons": [
+   "Refresh data and saved figures",
+   "[disabled] ",
+   "[disabled] ",
+   "[disabled] ",
+   "",
+   "[disabled] "
+  ],
+  "empty": false
+ },
+ {
+  "route": "/responder",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Synchronize offline references",
+   "Appearance",
+   "Market name",
+   "Symptoms",
+   "Find references"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/evidence",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Import for individual review",
+   "Import for individual review",
+   "Import for individual review",
+   "Import for individual review",
+   "Import for individual review",
+   "Import as proposed"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/setup",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [
+   "fixture_jh2016: LOCKED Set env:SERPAPI_API_KEY to enable SerpApi. SOURCES fixture_jh2016 Frozen JH2016 fixtures read from fixtures/jh2",
+   "fixtures: EY to enable SerpApi. SOURCES fixture_jh2016 Frozen JH2016 fixtures read from fixtures/jh2016/ — the E1 offline source ",
+   "fixtures: i. SOURCES fixture_jh2016 Frozen JH2016 fixtures read from fixtures/jh2016/ — the E1 offline source FIXTURE offline_fix",
+   "fixture: fixtures read from fixtures/jh2016/ — the E1 offline source FIXTURE offline_fixture Frozen offline data for reproducibil",
+   "fixture: ine_fixture Frozen offline data for reproducibility testing FIXTURE serp_generic Generic SERP adapter: not implemented. ",
+   "not implemented: cibility testing FIXTURE serp_generic Generic SERP adapter: not implemented. Live search result counts are the serp_resu",
+   "planned: Live search result counts are the serp_result_count source. PLANNED trends_interest_index Google Trends interest over ti",
+   "planned: emical and pharmacological reference record for a substance PLANNED serp_result_count Live estimated result counts from ",
+   "planned: D scientific_literature DOI/Crossref bibliographic metadata PLANNED erowid Erowid trip reports - pending authorized acce",
+   "planned: LICENSE/AUTH drug_checking Laboratory drug checking results PLANNED manual_dataset User uploaded CSV/Parquet data PLANNE",
+   "planned: sults PLANNED manual_dataset User uploaded CSV/Parquet data PLANNED"
+  ],
+  "buttons": [
+   "1 · Połączenia i koszt",
+   "2 · Zakres badań",
+   "3 · Plan i uruchomienie",
+   "[disabled] Zapisz klucz i włącz LLM w ramach budżetu",
+   "Usuń",
+   "Zapisz ustawienia",
+   "Odśwież katalog modeli i cen",
+   "Dalej: zakres badań"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/access",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Save",
+   "Invite",
+   "Requests",
+   "Access",
+   "Invitations",
+   "Claim local-user data"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/settings/access",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Create invitation",
+   "Grant selected profiles"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/automation",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Uruchom ten plan teraz",
+   "Zapisz i włącz harmonogram",
+   "Odśwież"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/memory",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Sprawdź zapisane zmiany"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/research",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Prace i warianty",
+   "Ekstraktory danych",
+   "Analizy prac",
+   "Odśwież kolejkę",
+   "[disabled] Zapisz tę wersję pracy"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/projects",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [],
+  "buttons": [
+   "Nowy pakiet",
+   "[disabled] Poprzednie 50",
+   "[disabled] Następne 50",
+   "[disabled] Poprzednie 50",
+   "[disabled] Następne 50",
+   "[disabled] Dołącz wybraną wersję",
+   "[disabled] Zapisz nową niezmienną wersję"
+  ],
+  "empty": false
+ },
+ {
+  "route": "/search",
+  "pageErrors": [],
+  "consoleErrors": [],
+  "failed": [],
+  "words": [
+   "planned: amość zapisanej wersji chemical_reference Źródła Unknown · planned chemical_reference · planned · registry drug_check",
+   "planned: l_reference Źródła Unknown · planned chemical_reference · planned · registry drug_checking Źródła Unknown · planned ",
+   "planned: rence · planned · registry drug_checking Źródła Unknown · planned drug_checking · planned · registry erowid Źródła ",
+   "planned: y drug_checking Źródła Unknown · planned drug_checking · planned · registry erowid Źródła Unknown · blocked-by-lice",
+   "fixture_jh2016: -license/auth erowid · blocked-by-license/auth · registry fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixtu",
+   "fixturesourceadapter:  blocked-by-license/auth · registry fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · r",
+   "fixture: h · registry fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · registry manual_dataset",
+   "fixture_jh2016: try fixture_jh2016 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · registry manual_dataset Źródła ",
+   "fixture: 16 Źródła FixtureSourceAdapter · fixture fixture_jh2016 · fixture · registry manual_dataset Źródła Unknown · planned",
+   "planned: 2016 · fixture · registry manual_dataset Źródła Unknown · planned manual_dataset · planned · registry offline_fixtur",
+   "planned:  manual_dataset Źródła Unknown · planned manual_dataset · planned · registry offline_fixture Źródła OfflineFixtureAd",
+   "fixture: · registry offline_fixture Źródła OfflineFixtureAdapter · fixture offline_fixture · fixture · registry scientific_li",
+   "fixture:  Źródła OfflineFixtureAdapter · fixture offline_fixture · fixture · registry scientific_literature Źródła Unknown · ",
+   "planned: fixture · registry scientific_literature Źródła Unknown · planned scientific_literature · planned · registry serp_ge",
+   "planned: terature Źródła Unknown · planned scientific_literature · planned · registry serp_generic Źródła Unknown · planned ",
+   "planned: rature · planned · registry serp_generic Źródła Unknown · planned serp_generic · planned · registry serp_result_coun",
+   "planned: try serp_generic Źródła Unknown · planned serp_generic · planned · registry serp_result_count Źródła Unknown · bloc"
+  ],
+  "buttons": [
+   "Szukaj"
+  ],
+  "empty": false
+ }
+]
