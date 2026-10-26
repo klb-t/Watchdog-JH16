@@ -182,8 +182,10 @@ export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[
 const esc = (s: unknown) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const srcText = (s: Source[] | undefined) => s?.length ? s.map(x => 'run_id' in x ? `przebieg ${short(x.run_id)}` : 'path' in x ? x.path : `konfiguracja ${x.config}`).join(', ') : '';
 
+const editedNote = (m: any) => m.edition ? `redakcja językowa: ${m.edition.model}, zmienione zdania ${m.edition.edited}, odrzucone ${m.edition.rejected}; liczby w każdym zdaniu sprawdzone względem oryginału (edycja ${m.edition.id})` : 'tekst nie był redagowany przez model językowy';
+
 export function manuscriptMarkdown(m: Manuscript): string {
-  const out = [`# ${m.title}`, '', `_Wygenerowano ${m.generated_at} z zapisanych wyników WatchDoga (kod ${m.code_version ?? '—'}, dane wejściowe ${m.input_hash.slice(0, 16)}). Liczby pochodzą z wymienionych przebiegów; tekst nie był redagowany przez model językowy._`, ''];
+  const out = [`# ${m.title}`, '', `_Wygenerowano ${m.generated_at} z zapisanych wyników WatchDoga (kod ${m.code_version ?? '—'}, dane wejściowe ${m.input_hash.slice(0, 16)}). Liczby pochodzą z wymienionych przebiegów; ${editedNote(m)}._`, ''];
   for (const s of m.sections) {
     out.push(`## ${s.title}`, '');
     for (const b of s.blocks) {
@@ -206,5 +208,5 @@ export function manuscriptHtml(m: Manuscript): string {
   }).join('')}</section>`).join('');
   return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(m.title)}</title>
 <style>body{font:15px/1.5 system-ui,sans-serif;max-width:60rem;margin:2rem auto;padding:0 1rem;color:#1e293b}table{border-collapse:collapse;width:100%;font-size:13px;display:block;overflow-x:auto}td,th{border:1px solid #cbd5e1;padding:4px 6px;text-align:left}.src,.meta{color:#64748b;font-size:12px}</style></head>
-<body><h1>${esc(m.title)}</h1><p class="meta">Wygenerowano ${esc(m.generated_at)} z zapisanych wyników WatchDoga (kod ${esc(m.code_version ?? '—')}, dane wejściowe ${esc(m.input_hash.slice(0, 16))}). Tekst nie był redagowany przez model językowy.</p>${body}</body></html>`;
+<body><h1>${esc(m.title)}</h1><p class="meta">Wygenerowano ${esc(m.generated_at)} z zapisanych wyników WatchDoga (kod ${esc(m.code_version ?? '—')}, dane wejściowe ${esc(m.input_hash.slice(0, 16))}); ${esc(editedNote(m))}.</p>${body}</body></html>`;
 }

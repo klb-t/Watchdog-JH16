@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 /**
@@ -182,15 +182,34 @@ function Registry({ data }: { data: any }) {
 }
 
 function ManuscriptView({ id }: { id: string }) {
-  const [m, setM] = useState<any>(null), [error, setError] = useState('');
-  useEffect(() => { fetch(`/api/replications/${id}/manuscript`).then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(d => setM(d.manuscript)).catch(e => setError(e.message)); }, [id]);
-  const srcLabel = useMemo(() => (s: any) => s.run_id ? <Link key={s.run_id} className="underline mr-2" to={`/runs/${s.run_id}/results`}>przebieg {short(s.run_id)}</Link> : <span key={s.path ?? s.config} className="mr-2">{s.path ?? `konfiguracja ${s.config}`}</span>, []);
+  const [data, setData] = useState<any>(null), [error, setError] = useState(''), [edition, setEdition] = useState<string>(''), [busy, setBusy] = useState(false), [note, setNote] = useState('');
+  const load = (ed = edition) => fetch(`/api/replications/${id}/manuscript${ed ? `?edition=${ed}` : ''}`).then(async r => r.ok ? r.json() : Promise.reject(new Error((await r.json().catch(() => ({}))).message ?? `HTTP ${r.status}`)))
+    .then(d => { setData(d); setError(''); }).catch(e => setError(e.message));
+  useEffect(() => { load(); }, [id]);
+  const srcLabel = (s: any) => s.run_id ? <Link key={s.run_id} className="underline mr-2" to={`/runs/${s.run_id}/results`}>przebieg {short(s.run_id)}</Link> : <span key={s.path ?? s.config} className="mr-2">{s.path ?? `konfiguracja ${s.config}`}</span>;
+  const edit = async () => { setBusy(true); setNote(''); try {
+    const r = await fetch(`/api/replications/${id}/manuscript/edit`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ consent: true }) });
+    const d = await r.json(); if (!r.ok) throw new Error(d.message ?? `HTTP ${r.status}`);
+    setNote(`Redakcja ${d.edition.model}: zmienione ${d.edition.edited}, odrzucone ${d.edition.rejected}, koszt ok. ${d.edition.estimated_cost_usd.toFixed(4)} USD.`);
+    setEdition(d.edition.id); await load(d.edition.id);
+  } catch (e) { setNote((e as Error).message); } finally { setBusy(false); } };
   if (error) return <p role="alert">{error}</p>;
-  if (!m) return <p>Składanie pracy z zapisanych wyników…</p>;
+  if (!data) return <p>Składanie pracy z zapisanych wyników…</p>;
+  const m = data.manuscript, q = edition ? `&edition=${edition}` : '';
+  const changed = (data.edition?.units ?? []).filter((u: any) => u.status !== 'unchanged');
   return <article className={`${card} space-y-4`} data-testid="manuscript">
-    <div className="flex flex-wrap gap-2"><a className="underline text-sm" href={`/api/replications/${id}/manuscript?format=md`} data-testid="manuscript-md">Pobierz Markdown</a><a className="underline text-sm" href={`/api/replications/${id}/manuscript?format=html`} data-testid="manuscript-html">Pobierz HTML</a></div>
+    <div className="flex flex-wrap gap-3 items-center"><a className="underline text-sm" href={`/api/replications/${id}/manuscript?format=md${q}`} data-testid="manuscript-md">Pobierz Markdown</a>
+      <a className="underline text-sm" href={`/api/replications/${id}/manuscript?format=html${q}`} data-testid="manuscript-html">Pobierz HTML</a>
+      <label className="text-sm">Wersja <select className="border rounded px-1" value={edition} data-testid="edition-select" onChange={e => { setEdition(e.target.value); load(e.target.value); }}>
+        <option value="">bez redakcji (z wyników)</option>{data.editions.map((e: any) => <option key={e.id} value={e.id}>{e.created_at.slice(0, 16).replace('T', ' ')} · {e.model}</option>)}</select></label></div>
+    <details className="text-sm" data-testid="editing"><summary className="cursor-pointer">Redakcja językowa przez model ({data.editing.model}, region {data.editing.location})</summary>
+      <p className="mt-2">Model dostaje tylko zdania (tabele nie są wysyłane) i może zmienić styl, nie fakty. Każde zdanie musi zachować te same liczby, identyfikatory i hashe; inaczej zostaje oryginał. Dzienny limit {data.editing.daily_budget_usd} USD, dziś wydano {data.editing.spent_today_usd.toFixed(4)} USD (ceny z konfiguracji: {data.editing.pricing.input}/{data.editing.pricing.output} USD za mln tokenów).</p>
+      <button className="mt-2 px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={busy} onClick={edit} data-testid="edit-manuscript">{busy ? 'Redagowanie…' : 'Zezwól i zredaguj'}</button>
+      {note && <p role="status" className="mt-2">{note}</p>}</details>
     <h2 className="text-xl font-semibold">{m.title}</h2>
-    <p className="text-xs text-slate-600">Złożone {m.generated_at} z zapisanych wyników (kod {m.code_version?.slice(0, 7) ?? '—'}, dane wejściowe {m.input_hash.slice(0, 16)}). Każdy blok wskazuje źródło. Tekst nie był redagowany przez model językowy.</p>
+    <p className="text-xs text-slate-600">Złożone {m.generated_at} z zapisanych wyników (kod {m.code_version?.slice(0, 7) ?? '—'}, dane wejściowe {m.input_hash.slice(0, 16)}). Każdy blok wskazuje źródło. {m.edition ? <b data-testid="edition-label">Redakcja językowa: {m.edition.model}, zmienione zdania {m.edition.edited}, odrzucone {m.edition.rejected} (propozycja modelu; liczby sprawdzone).</b> : 'Tekst nie był redagowany przez model językowy.'}</p>
+    {changed.length > 0 && <details className="text-xs" data-testid="edition-changes"><summary className="cursor-pointer">Zmiany redakcji ({changed.length})</summary>
+      <ul className="space-y-2 mt-2">{changed.map((u: any) => <li key={u.id} className="border-t pt-1"><b>{u.status === 'edited' ? 'zmienione' : `odrzucone: ${u.reason}`}</b><div className="text-slate-500">przed: {u.original}</div>{u.status === 'edited' && <div>po: {u.edited}</div>}</li>)}</ul></details>}
     {m.sections.map((s: any) => <section key={s.id} data-testid={`ms-${s.id}`} className="space-y-2"><h3 className="font-semibold">{s.title}</h3>
       {s.blocks.map((b: any, i: number) => <div key={i}>
         {b.type === 'p' && <p className="text-sm">{b.text}</p>}
