@@ -3,10 +3,12 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { runMigrations } from './migrations';
+import { resolveDbBackend } from './backend_setting';
 
 const DB_PATH = process.env.DB_PATH || path.join(process.cwd(), 'data', 'watchdog.sqlite');
 
 function initDb() {
+  resolveDbBackend();
   const dbDir = path.dirname(DB_PATH);
   if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
