@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "interpretation_id": "cr2014-interpretation",
+  "version": "2026-10-26-v1",
+  "_pre_registration": {
+    "protocol": "docs/replication/CR2014_2026-10-26/PROTOCOL.md",
+    "registered_before_data": true,
+    "note": "Rules for reading a run, fixed before any Google Trends request for this target. Claim bands stay in cr2014.json."
+  },
+  "claims_ref": "config/replication/cr2014.json",
+  "preset_ref": "config/presets/cr2014-faithful.json",
+  "published_values_ref": "fixtures/cr2014/paper_reported.json",
+  "required_complete_n": {
+    "cigar_youth": 36
+  },
+  "significance_alpha": 0.05,
+  "hypotheses": [
+    {
+      "id": "H-cigar-youth",
+      "comparison": "cigar_youth",
+      "statistic": "pearson",
+      "supports": {
+        "value_above": 0,
+        "p_two_sided_below": 0.05
+      },
+      "contradicts": {
+        "value_at_most": 0
+      },
+      "otherwise": "undecided"
+    }
+  ],
+  "exploratory_sensitivity": [
+    {
+      "id": "without_UT_RI",
+      "comparison": "cigar_youth",
+      "exclude_entities": [
+        "US-RI",
+        "US-UT"
+      ],
+      "reason": "the paper's own influence check (published r=0.26, p=.130, n=34); descriptive, never a verdict"
+    }
+  ]
+}

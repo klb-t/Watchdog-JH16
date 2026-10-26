@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "target_id": "cr2014",
+  "dossier_version": "2026-10-26-v1",
+  "_note": "Second replication target (generality check). Pre-data parts written before any Google Trends request; diagnosis and assessment entries after the data carry their date.",
+  "evaluation_kind": "reference_correlation",
+  "protocol": {
+    "document": "docs/replication/CR2014_2026-10-26/PROTOCOL.md",
+    "registered_in_commit": null
+  },
+  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/claude/second-replication-target-20261026/",
+  "measurement": {
+    "preset_ref": "config/presets/cr2014-faithful.json",
+    "credential": "serpapi",
+    "requests_per_run": 1
+  },
+  "runs_match": {
+    "preset_ids": [
+      "cr2014-faithful"
+    ]
+  },
+  "provenance_labels": {
+    "new_fetch": "Nowe pobranie (metoda wierna)",
+    "recomputation_of_stored_data": "Przeliczenie zapisanych danych (bez pobierania)"
+  },
+  "hypotheses": [
+    {
+      "id": "H-cigar-youth",
+      "statement": "Stany z większym względnym zainteresowaniem wyszukiwaniem cygar w Google (2011) mają wyższy odsetek uczniów szkół średnich palących cygara (YRBS 2011).",
+      "tested_by": [
+        "cigar_youth_pearson"
+      ],
+      "kind": "primary"
+    }
+  ],
+  "original_method": [
+    "Google Trends, USA, rok 2011, względne zainteresowanie według stanów dla 15 terminów dotyczących cygar (lista z pracy).",
+    "Odniesienie: odsetek uczniów klas 9–12 palących cygara w ostatnich 30 dniach, YRBS 2011, 36 stanów z danymi ważonymi.",
+    "Współczynnik Pearsona (SAS 9.3); p < 0,05 uznane za istotne. Dodatkowo: wrażliwość bez stanów wpływowych (UT, RI) i wersja ważona populacją."
+  ],
+  "replication_method": [
+    "Zablokowany preset cr2014-faithful: ta sama lista terminów połączona operatorem + w jednym zapytaniu Trends (interest by region), geo=US, region=REGION, 2011-01-01…2011-12-31, low-volume włączone.",
+    "Google Trends przez SerpApi (GEO_MAP_0); surowa odpowiedź archiwizowana z sha256 przed obliczeniami.",
+    "Odniesienie: otwarty zbiór CDC YRBSS (data.cdc.gov svam-8dhg), pytanie H38, ogółem; plik surowy przypięty sha256, przekształcenie deterministyczne (scripts/reference_from_yrbss.py).",
+    "Pearson i p (t z n − 2 stopniami swobody) liczone deterministycznie; pasmo i reguła odczytu ustalone przed danymi."
+  ],
+  "deviations": [
+    {
+      "item": "Dostęp do Google Trends",
+      "original": "przeglądarka (2012–2013)",
+      "replication": "SerpApi, data pobrania zapisana w przebiegu",
+      "reason": "jedyny powtarzalny dostęp; Trends dziś ponownie próbkuje dane z 2011 r."
+    },
+    {
+      "item": "Łączenie terminów",
+      "original": "„dane dla dowolnego z terminów” (do 30 słów)",
+      "replication": "jedno zapytanie z operatorem + między 15 terminami",
+      "reason": "praca nie podaje mechanizmu; operator + to udokumentowany sposób Trends na sumę terminów"
+    },
+    {
+      "item": "Stany o małym wolumenie",
+      "original": "wartość 0",
+      "replication": "include_low_search_volume=true",
+      "reason": "aby stany o małym wolumenie miały wartość, a nie znikały"
+    },
+    {
+      "item": "Wersja ważona populacją",
+      "original": "r ważone = 0,47",
+      "replication": "nie powtarzana",
+      "reason": "wymaga szacunków populacji ze spisu; poza zakresem tej próby"
+    }
+  ],
+  "not_replicated": [
+    {
+      "endpoint": "Pearson RSV cygara vs dorośli (NSDUH 2010–2011), r = 0,49",
+      "reason": "dane stanowe NSDUH pochodzą z R-DAS o ograniczonym dostępie; brak otwartej tabeli"
+    },
+    {
+      "endpoint": "Pearson RSV tytoń bezdymny vs dorośli (NSDUH), r = 0,48",
+      "reason": "jak wyżej"
+    },
+    {
+      "endpoint": "Pearson RSV tytoń bezdymny vs młodzież (YRBS 2011), r = 0,46",
+      "reason": "otwarty zbiór YRBSS ma to pytanie dopiero od 2017 r.; nie znaleziono otwartej tabeli stanowej za 2011 r."
+    }
+  ],
+  "diagnosis": [
+    {
+      "cause": "Inne dane referencyjne niż w pracy",
+      "test": "porównanie skrajnych wartości YRBS 2011 podanych w pracy (SC 18,3; GA 17,8; KY 17,5; LA 17; UT 5; HI 6,8; NE 9,6; AK 10,3) i liczby stanów (36) z otwartym zbiorem",
+      "status": "excluded",
+      "evidence": [
+        {
+          "label": "surowe dane YRBSS",
+          "path": "fixtures/cr2014/yrbss_2011_current_cigar_use.json"
+        },
+        {
+          "label": "wartości z pracy",
+          "path": "fixtures/cr2014/paper_reported.json"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Google Trends to względny indeks z próby; wartości dla 2011 r. pobrane dziś mogą się różnić od tych, które widzieli autorzy.",
+    "Jeden pomiar Trends; zmienność między pobraniami nie jest znana bez powtórzeń.",
+    "Powtórzony jest jeden z czterech głównych wyników pracy (pozostałe: brak otwartych danych referencyjnych).",
+    "Dystrykt Kolumbii nie ma danych YRBS 2011, więc nie wchodzi do porównania."
+  ],
+  "assessment": [],
+  "endpoints": [
+    {
+      "claim_key": "cigar_youth_pearson",
+      "hypothesis": "H-cigar-youth",
+      "p_value": "comparisons.cigar_youth",
+      "label": "Pearson RSV cygar vs YRBS 2011"
+    }
+  ],
+  "confirmation_sources": [
+    "trends_interest_by_region"
+  ]
+}

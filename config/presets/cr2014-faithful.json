@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "preset_id": "cr2014-faithful",
+  "preset_version": "2014-faithful-v1",
+  "label": "Cavazos-Rehg et al. 2014 — Google Trends cigar searches vs youth cigar use by state (faithful)",
+  "locked": true,
+  "_locked_note": "Fixed before the first measurement (protocol docs/replication/CR2014_2026-10-26/PROTOCOL.md). A change produces a new preset version.",
+  "citation": {
+    "doi": "10.1136/tobaccocontrol-2013-051276",
+    "journal": "Tobacco Control",
+    "year": 2014,
+    "volume": "23",
+    "issue": "5",
+    "pages": "445-447",
+    "pmid": "24500269",
+    "pmcid": "PMC4122644",
+    "authors": [
+      "Cavazos-Rehg, Patricia A",
+      "Krauss, Melissa J",
+      "Spitznagel, Edward L",
+      "Lowery, Ashley",
+      "Grucza, Richard A",
+      "Chaloupka, Frank J",
+      "Bierut, Laura Jean"
+    ]
+  },
+  "language": "en",
+  "query_expansion_mode": "STRICT_CANONICAL",
+  "source_id": "trends_interest_by_region",
+  "provider_params": {
+    "date": "2011-01-01 2011-12-31",
+    "geo": "US",
+    "region": "REGION",
+    "include_low_search_volume": "true"
+  },
+  "_why_provider_params": "The paper limits results to the United States and to 2011 and maps states; include_low_search_volume keeps low-volume states as values (2011 Trends showed them as 0) instead of dropping them.",
+  "queries": [
+    {
+      "dimension": "cigar",
+      "terms": [
+        "cigars",
+        "cigar",
+        "little cigars",
+        "cigarillo",
+        "cigarillos",
+        "flavored cigars",
+        "Black and Mild",
+        "Black and Milds",
+        "Phillies cigars",
+        "Swisher Sweet",
+        "Swisher Sweets",
+        "sweet cigars",
+        "JR cigars",
+        "Dutch Master cigars",
+        "White Owl cigars"
+      ],
+      "_source": "PMC4122644, Methods, 'Google Trends data': the paper's exact list for cigars, combined with Google Trends' + (OR) operator in one query."
+    }
+  ],
+  "method_id": "reference_correlation",
+  "comparisons": [
+    {
+      "id": "cigar_youth",
+      "label": "RSV „cigar” (2011) vs odsetek uczniów palących cygara (YRBS 2011)",
+      "dimension": "cigar",
+      "statistic": "pearson",
+      "reference_ref": "config/reference/yrbss-2011-hs-current-cigar.json"
+    }
+  ]
+}
