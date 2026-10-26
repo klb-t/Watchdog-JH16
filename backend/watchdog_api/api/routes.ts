@@ -170,7 +170,7 @@ apiRouter.get('/replications/:id/manuscript', requireCapability('run.view'), asy
     if (format === 'md') { res.setHeader('Content-Type', 'text/markdown; charset=utf-8'); res.setHeader('Content-Disposition', `attachment; filename="replication-${req.params.id}.md"`); return res.send(manuscriptMarkdown(m)); }
     if (format === 'html') { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.setHeader('Content-Disposition', `attachment; filename="replication-${req.params.id}.html"`); return res.send(manuscriptHtml(m)); }
     res.json({ manuscript: m, edition, editions: editions.list(req.principal!.id, req.params.id),
-      editing: (({ settings }) => ({ model: `${settings.provider.kind}:${settings.provider.model}`, location: settings.provider.location,
+      editing: (({ settings }) => ({ enabled: settings.enabled === true, disabled_reason: settings._why_disabled ?? null, model: `${settings.provider.kind}:${settings.provider.model}`, location: settings.provider.location,
         daily_budget_usd: settings.daily_budget_usd, spent_today_usd: editions.spentToday(req.principal!.id), pricing: settings.pricing_usd_per_million_tokens }))(readEditingSettings()) });
   } catch (e) { next(e); }
 });

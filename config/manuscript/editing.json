@@ -1,7 +1,9 @@
 {
   "schema_version": "1.0",
   "editing_id": "manuscript-language-editing",
-  "version": "2026-10-26-v1",
+  "version": "2026-10-26-v2",
+  "enabled": false,
+  "_why_disabled": "The real Vertex call has not been verified on this installation; set enabled to true once a call has been checked.",
   "_note": "Optional language editing of a manuscript assembled from stored results. The model sees sentences only (tables are never sent) and may change wording, never facts. Every edited sentence must keep exactly the same numbers, identifiers and hashes as the original, or the original is kept. All values below are settings.",
   "provider": {
     "kind": "vertex",
@@ -9,10 +11,20 @@
     "location": "global",
     "project": "from_metadata",
     "metadata_base": "http://metadata.google.internal/computeMetadata/v1",
-    "generation": { "temperature": 0.2, "maxOutputTokens": 16384, "thinkingConfig": { "thinkingBudget": 0 } },
+    "generation": {
+      "temperature": 0.2,
+      "maxOutputTokens": 16384,
+      "thinkingConfig": {
+        "thinkingBudget": 0
+      }
+    },
     "timeout_ms": 120000
   },
-  "pricing_usd_per_million_tokens": { "input": 1.5, "output": 9.0, "_source": "third-party trackers 2026-10-26 (getmaxim.ai, llmreference.com); verify on the Vertex AI pricing page" },
+  "pricing_usd_per_million_tokens": {
+    "input": 1.5,
+    "output": 9.0,
+    "_source": "third-party trackers 2026-10-26 (getmaxim.ai, llmreference.com); verify on the Vertex AI pricing page"
+  },
   "daily_budget_usd": 1.0,
   "language": "pl",
   "instruction": "Jesteś redaktorem tekstu naukowego po polsku. Dostajesz listę zdań z raportu replikacji. Popraw styl i płynność każdego zdania osobno. Nie dodawaj, nie usuwaj i nie zmieniaj żadnych faktów, liczb, wartości, identyfikatorów przebiegów, hashy, nazw substancji, nazw zmiennych ani cytowań. Liczby zapisuj dokładnie tak jak w oryginale. Zwróć JSON: tablicę obiektów {\"id\": ..., \"text\": ...} w tej samej kolejności i z tymi samymi id."
