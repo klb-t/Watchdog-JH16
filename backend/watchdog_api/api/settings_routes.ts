@@ -15,7 +15,8 @@ import { redact, registerSecretValue } from '../utils/redaction';
 const route = (fn: (req: Request, res: Response) => unknown) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve().then(() => fn(req, res)).catch(e => e instanceof AutomationError ? res.status(e.status).json(redact({ error: e.code, message: e.message })) : next(e));
 };
-export function buildSettingsRouter(repo: SettingsRepository, service: AssistantService, vault: UserVault, plans: ResearchPlans) {
+export function buildSettingsRouter(repo: SettingsRepository, service: AssistantService, vault: UserVault, plans: ResearchPlans,
+  listProtocols: (owner: string) => { id: string; name: string; frozen_at: string }[] = () => []) {
   const router = Router(); router.use((req, res, next) => {
     res.setHeader('Cache-Control', 'no-store'); if (!req.principal) return res.status(401).json({ error: 'UNAUTHENTICATED' }); next();
   }); router.use(sameOriginMutation);
@@ -24,6 +25,7 @@ export function buildSettingsRouter(repo: SettingsRepository, service: Assistant
     credentials: can(req.principal!.roles, 'provider.view') ? [...service.providers.providers.map(p => p.id), 'serpapi'].map(p => vault.status(req.principal!.id, p)) : [],
     modelCeilings: repo.ceilings(req.principal!.id, service.provider(req.principal!.id).id),
     budget: repo.budget(req.principal!.id), searchUsage: { usedToday: repo.searchesToday(req.principal!.id) },
+    protocols: listProtocols(req.principal!.id).map(p => ({ id: p.id, name: p.name, frozen_at: p.frozen_at })),
     trendsCalibration: (({ calibration }) => ({ id: calibration.calibration_id, version: calibration.version, regions: calibration.regions.map((r: any) => r.id), requestsPerRegion: calibration.groups.length }))(readTrendsCalibration()), routes: service.preview(req.principal!.id), catalog: service.catalog(req.principal!.id) })));
   router.post('/', route((req, res) => {
     const body = z.object({ value: SettingsSchema, expectedHash: z.string() }).strict().parse(req.body);

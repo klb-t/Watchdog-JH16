@@ -52,6 +52,7 @@ import { AssistantService } from './backend/watchdog_api/services/assistant';
 import { ResearchPlans } from './backend/watchdog_api/services/research_plans';
 import { PersonalSearch } from './backend/watchdog_api/services/personal_search';
 import { latestLiveJh16Run } from './backend/watchdog_api/services/jh16_trends';
+import { StudyProtocolRepository } from './backend/watchdog_api/db/repositories/study_protocols';
 import { RunOrchestrator } from './backend/watchdog_api/services/run_orchestrator';
 import { MethodSpecRepository } from './backend/watchdog_api/db/repositories/method_specs';
 import { buildSettingsRouter } from './backend/watchdog_api/api/settings_routes';
@@ -133,13 +134,13 @@ export async function configureApp() {
   const research = new ResearchRepository(sqlite), papers = new PaperIntakeService(research, assistant, automationRepository), extraction = new ExtractionWorkshop(research, assistant);
   const plans = new ResearchPlans(settings, automationRepository, assistantProfile, automation.profile,
     new RunOrchestrator(db, store, (id, owner, personal) => search.resolve(id, owner, personal)), new MethodSpecRepository(db), vault,
-    owner => latestLiveJh16Run(db, owner));
+    owner => latestLiveJh16Run(db, owner), (owner, id) => new StudyProtocolRepository(db).get(owner, id));
   automation.handlers.set('catalog_refresh', async (job, checkpoint) => { checkpoint(); const catalog = await assistant.refreshCatalog(job.ownerId, 'openrouter'); checkpoint(); return { requests: 1, catalogHash: catalog.hash, models: catalog.models.length }; });
   automation.handlers.set('paper_review', (job, checkpoint) => papers.reviewJob(job,checkpoint));
   const paperOperations = new PaperOperationService(new PaperOperationsRepository(sqlite),research,workbenchService);
   const paperComparisons = new PaperComparisonService(new PaperComparisonsRepository(sqlite),paperOperations);
   app.use('/api/research', buildResearchRouter(research, papers, extraction, automationRepository, automation,new ExtractionDatasetService(research,workbench),paperOperations,paperComparisons));
-  app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans));
+  app.use('/api/settings', buildSettingsRouter(settings, assistant, vault, plans, owner => new StudyProtocolRepository(db).list(owner, 'jh2016')));
   app.use('/api/automation', buildAutomationRouter(automationRepository, automation));
   app.use('/api/memory', buildMemoryRouter(automationRepository));
   app.use('/api/source-access',buildSourceAccessRouter(new SourceAccessService(automationRepository.access,loadSourceAccessProfile(),automation.profile)));

@@ -34,7 +34,7 @@ export function Replications() {
   </div>;
 }
 
-type Tab = 'overview' | 'runs' | 'discrepancies' | 'calibration' | 'registry' | 'manuscript';
+type Tab = 'overview' | 'runs' | 'protocol' | 'discrepancies' | 'calibration' | 'registry' | 'manuscript';
 
 export function ReplicationTarget() {
   const { id } = useParams<{ id: string }>();
@@ -42,7 +42,7 @@ export function ReplicationTarget() {
   useEffect(() => { fetch(`/api/replications/${id}`).then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(setData).catch(e => setError(e.message)); }, [id]);
   if (error) return <div className="p-8" role="alert">Nie można wczytać replikacji: {error}</div>;
   if (!data) return <div className="p-8">Wczytywanie…</div>;
-  const tabs: [Tab, string][] = [['overview', 'Przegląd'], ['runs', `Przebiegi (${data.runs.length})`], ['discrepancies', 'Rozbieżności'], ['calibration', 'Kalibracja'], ['registry', 'Rejestr kryteriów'], ['manuscript', 'Projekt pracy']];
+  const tabs: [Tab, string][] = [['overview', 'Przegląd'], ['runs', `Przebiegi (${data.runs.length})`], ['protocol', `Protokół (${data.protocols.length})`], ['discrepancies', 'Rozbieżności'], ['calibration', 'Kalibracja'], ['registry', 'Rejestr kryteriów'], ['manuscript', 'Projekt pracy']];
   return <div className="p-4 sm:p-8 max-w-6xl mx-auto space-y-5 min-w-0" data-testid="replication-target">
     <div className="text-sm text-slate-500"><Link to="/replications" className="underline">Replikacje</Link> / {data.target.target_id}</div>
     <div><h1 className="text-xl sm:text-2xl font-semibold">{data.target.title}</h1>
@@ -51,6 +51,7 @@ export function ReplicationTarget() {
       className={`rounded px-3 py-2 text-sm ${tab === k ? 'bg-indigo-100 text-indigo-900' : 'bg-slate-100'}`} onClick={() => setTab(k)}>{l}</button>)}</div>
     {tab === 'overview' && <Overview data={data} />}
     {tab === 'runs' && <Runs data={data} />}
+    {tab === 'protocol' && <Protocols data={data} reload={() => fetch(`/api/replications/${id}`).then(r => r.json()).then(setData)} />}
     {tab === 'discrepancies' && <Discrepancies data={data} />}
     {tab === 'calibration' && <Calibration data={data} />}
     {tab === 'registry' && <Registry data={data} />}
@@ -104,7 +105,8 @@ function Runs({ data }: { data: any }) {
         <tbody>{rows.map((r: any) => <tr key={r.run_id} className="border-t border-slate-100" data-testid={`run-row-${r.run_id}`}>
           <td>{r.evaluation && <input type="checkbox" aria-label={`porównaj ${short(r.run_id)}`} checked={selected.includes(r.run_id)} onChange={e => setSelected(e.target.checked ? [...selected, r.run_id] : selected.filter(x => x !== r.run_id))} />}</td>
           <td className="font-mono py-1.5"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link>{r.source_run_id && <span className="text-xs"> ← {short(r.source_run_id)}</span>}</td>
-          <td><ProvenanceBadge r={r} /></td><td className="text-xs">{r.acquired_utc ? `${r.acquired_utc[0].slice(0, 16).replace('T', ' ')}` : '—'}</td>
+          <td><ProvenanceBadge r={r} />{r.data_role?.role === 'confirmation' && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-emerald-50 text-emerald-900 border-emerald-200" data-testid={`role-${r.run_id}`}>potwierdzające</span>}
+            {r.role_config?.data_role === 'confirmation' && r.data_role?.role !== 'confirmation' && <span className="ml-1 text-xs text-red-800" title={r.data_role?.reason}>nieuznane jako potwierdzające: {r.data_role?.reason}</span>}</td><td className="text-xs">{r.acquired_utc ? `${r.acquired_utc[0].slice(0, 16).replace('T', ' ')}` : '—'}</td>
           <td className="font-mono text-xs">{r.git_commit?.slice(0, 7) ?? 'brak'}</td><td className="font-mono">{fmt(hi(r, 'pearson')?.value)}</td>
           <td className="font-mono">{fmt(r.evaluation?.pi_vs_published?.value)}</td><td className="font-mono">{fmt(r.calibration?.A1?.spearman)}</td>
           <td className="text-xs">{r.status}{r.evaluation && !r.evaluation.complete ? ` · braki: ${r.evaluation.missing_entities.length}` : ''}</td></tr>)}</tbody></table></div>
@@ -146,6 +148,39 @@ function Drill({ runs, entity }: { runs: any[]; entity: string }) {
         <td className="pr-2">{o.isMissing ? o.missingReason : o.qualityFlags.join(', ')}</td>
         <td>{o.rawArtifactId ? <a className="underline" href={`/api/artifacts/${o.rawArtifactId}`} target="_blank" rel="noreferrer">pobierz</a> : '—'}</td></tr>))}</tbody></table></div>
     <p className="text-xs text-slate-600">Surowa odpowiedź to bajty zapisane przed obliczeniami (sha256 w manifeście przebiegu); klucz dostawcy nie jest w niej zapisany.</p></section>;
+}
+
+function Protocols({ data, reload }: { data: any; reload: () => void }) {
+  const endpoints = data.dossier.endpoints ?? [], opts = data.protocol_options;
+  const [family, setFamily] = useState<string[]>(endpoints.map((e: any) => e.claim_key)), [primary, setPrimary] = useState<string[]>(endpoints.slice(0, 1).map((e: any) => e.claim_key));
+  const [name, setName] = useState('JH16 — potwierdzenie'), [multiplicity, setMultiplicity] = useState(opts.default_multiplicity), [alpha, setAlpha] = useState(opts.default_alpha), [rationale, setRationale] = useState(''), [msg, setMsg] = useState('');
+  const freeze = async () => { setMsg(''); const r = await fetch(`/api/replications/${data.target.target_id}/protocols`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ consent: true, name, primary, family, multiplicity, alpha: Number(alpha), rationale, expectedDossierHash: data.hashes.dossier }) });
+    const d = await r.json(); if (!r.ok) setMsg(d.message ?? `HTTP ${r.status}`); else { setMsg(`Zamrożono: ${d.protocol.content_hash.slice(0, 16)}`); reload(); } };
+  const toggle = (list: string[], set: (x: string[]) => void, k: string, on: boolean) => set(on ? [...new Set([...list, k])] : list.filter(x => x !== k));
+  return <div className="space-y-4">
+    <section className={card}><h2 className="font-semibold">Protokoły zamrożone przed danymi potwierdzającymi</h2>
+      <p className="text-sm">Przebieg jest potwierdzający tylko wtedy, gdy: jest nowym pomiarem metodą wierną, powstał po zamrożeniu protokołu i cytuje go w swojej konfiguracji (id i hash). Wszystkie inne przebiegi są eksploracyjne. Wybierzesz to w kreatorze, w kroku 2 („Rola nowych danych JH16”).</p>
+      {data.protocols.length === 0 && <p className="text-sm">Brak protokołów.</p>}
+      {data.protocols.map((p: any) => <div key={p.id} className="border-t pt-2 space-y-1" data-testid={`protocol-${p.id}`}>
+        <div className="text-sm"><b>{p.name}</b> · zamrożony {p.frozen_at.slice(0, 16).replace('T', ' ')} UTC · sha256 <code>{p.content_hash.slice(0, 16)}</code></div>
+        <div className="text-xs">Główne: {p.body.primary.join(', ')} · rodzina: {p.body.family.map((f: any) => f.label).join('; ')} · korekta {p.body.multiplicity}, alfa {p.body.alpha} · {p.body.rationale}</div>
+        {p.evaluation.confirmation_runs.length === 0 ? <p className="text-sm" data-testid="no-confirmation">Brak przebiegów potwierdzających (eksploracyjnych: {p.evaluation.exploratory_runs}).</p> :
+        <div className={scroll}><table className="w-full text-sm" data-testid="protocol-results"><thead className="text-left text-slate-500"><tr><th>Przebieg</th><th>Porównanie</th><th>Główne</th><th>Werdykt</th><th>p</th><th>p skorygowane</th><th>&lt; alfa</th></tr></thead>
+          <tbody>{p.evaluation.confirmation_runs.flatMap((r: any) => r.endpoints.map((e: any) => <tr key={r.run_id + e.claim_key} className="border-t border-slate-100"><td className="font-mono"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td>
+            <td>{e.label}</td><td>{e.primary ? 'tak' : 'nie'}</td><td>{e.verdict}</td><td className="font-mono">{fmtP(e.p_raw)}</td><td className="font-mono">{fmtP(e.p_adjusted)}</td><td>{e.significant === null ? '—' : e.significant ? 'tak' : 'nie'}</td></tr>))}</tbody></table></div>}
+      </div>)}</section>
+    <section className={card} data-testid="protocol-form"><h2 className="font-semibold">Zamroź nowy protokół</h2>
+      <label className="block text-sm">Nazwa<input className="border rounded px-2 py-1 w-full" value={name} onChange={e => setName(e.target.value)} /></label>
+      <fieldset className="text-sm"><legend className="font-medium">Rodzina porównań i punkty główne</legend>{endpoints.map((e: any) => <div key={e.claim_key} className="flex flex-wrap gap-3">
+        <label className="flex gap-1"><input type="checkbox" checked={family.includes(e.claim_key)} onChange={x => toggle(family, setFamily, e.claim_key, x.target.checked)} />{e.label} ({e.hypothesis})</label>
+        <label className="flex gap-1"><input type="checkbox" checked={primary.includes(e.claim_key)} onChange={x => toggle(primary, setPrimary, e.claim_key, x.target.checked)} />główny</label></div>)}</fieldset>
+      <div className="flex flex-wrap gap-3 text-sm"><label>Korekta wielokrotności <select className="border rounded" value={multiplicity} onChange={e => setMultiplicity(e.target.value)}>{opts.multiplicity_procedures.map((m: any) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+        <label>Alfa <input className="border rounded w-20 px-1" type="number" step="0.001" min="0" max="1" value={alpha} onChange={e => setAlpha(e.target.value)} /></label></div>
+      <label className="block text-sm">Uzasadnienie (wymagane)<textarea className="border rounded w-full px-2 py-1" rows={3} value={rationale} onChange={e => setRationale(e.target.value)} data-testid="protocol-rationale" /></label>
+      <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!rationale.trim() || !family.length || !primary.length} onClick={freeze} data-testid="freeze-protocol">Zamroź protokół (nieodwracalne)</button>
+      {msg && <p role="status" className="text-sm">{msg}</p>}</section>
+  </div>;
 }
 
 function Discrepancies({ data }: { data: any }) {

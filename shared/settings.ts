@@ -37,5 +37,7 @@ export const ResearchPlanInputSchema = z.object({ name: z.string().trim().min(1)
   baseline: z.enum(['fixture', 'live_serp', 'live_serp_extension', 'none']), refreshMemory: z.boolean(), scanPapers: z.boolean(), dailyScan: z.boolean(),
   paperScope: z.enum(['substances', 'all_science']),
   // Exploratory Google Trends calibration of JH16, one run per region id from config/calibration/jh2016-trends.json.
-  trendsRegions: z.array(z.string().regex(/^[A-Z]{2,8}$/)).max(20).optional() }).strict();
+  trendsRegions: z.array(z.string().regex(/^[A-Z]{2,8}$/)).max(20).optional(),
+  // E5.7b: a new faithful measurement may be confirmation data under a frozen protocol.
+  confirmationProtocolId: z.string().uuid().optional() }).strict();
 export type ResearchPlanInput = z.infer<typeof ResearchPlanInputSchema>;

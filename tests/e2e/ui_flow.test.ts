@@ -317,6 +317,18 @@ test('E3.18: Replications shows the JH16 target, its runs with provenance, drill
   assert.match(md, /^# Replikacja:/); assert.ok(!/undefined|NaN/.test(md));
 });
 
+test('E5.7b: a protocol is frozen from the Replications page and confirmation data are empty until a later run cites it', async () => {
+  await page.goto(`${baseUrl}/replications/jh2016`);
+  await page.click('[data-testid="tab-protocol"]');
+  assert.strictEqual(await page.locator('[data-testid="freeze-protocol"]').isDisabled(), true, 'a rationale is required');
+  await page.fill('[data-testid="protocol-rationale"]', 'Browser test: family fixed before confirmation data.');
+  await page.click('[data-testid="freeze-protocol"]');
+  await page.locator('[data-testid="no-confirmation"]').first().waitFor();
+  const protocols = (await (await fetch(`${baseUrl}/api/replications/jh2016`)).json()).protocols;
+  assert.strictEqual(protocols.length, 1); assert.strictEqual(protocols[0].body.multiplicity, 'holm');
+  assert.deepStrictEqual(protocols[0].evaluation.confirmation_runs, []);
+});
+
 // -------------------------------------------------------------------------
 // E1.22 — Method review page.
 // -------------------------------------------------------------------------

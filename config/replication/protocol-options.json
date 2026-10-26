@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "options_id": "study-protocol-options",
+  "version": "2026-10-26-v1",
+  "_note": "Choices offered when freezing a study protocol (E5.7b). These are presets, not rules: the frozen protocol records what was chosen.",
+  "multiplicity_procedures": [
+    { "id": "holm", "label": "Holm (kontrola FWER, krokowa)" },
+    { "id": "bonferroni", "label": "Bonferroni (kontrola FWER)" },
+    { "id": "none", "label": "Bez korekty (każde porównanie osobno)" }
+  ],
+  "default_multiplicity": "holm",
+  "default_alpha": 0.01,
+  "_why_default_alpha": "The paper's own significance level for JH16; any value can be chosen when freezing."
+}
