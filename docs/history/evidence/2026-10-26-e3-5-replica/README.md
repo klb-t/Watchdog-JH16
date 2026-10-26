@@ -13,7 +13,7 @@
 
 **Results:**
 - Writes: 20 × HTTP 201 (`writes_status.txt`).
-- Pushes: 4 snapshots (`push.log`).
+- Pushes: 4 snapshots (`push.jsonl`).
 - Restore: `restore.json`, with 408 raw blobs verified.
 - Logical equality with the source: `compare.json`.
 - Both instances showed the same run count, protocol count and p-values (`apps.txt`), and the same run export hash (`export_hashes.txt`).
