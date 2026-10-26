@@ -116,6 +116,43 @@
           "path": "config/presets/cr2014-faithful.json"
         }
       ]
+    },
+    {
+      "cause": "Inna próbka Google Trends niż ta, którą widzieli autorzy",
+      "test": "porównanie 9 skrajnych wartości RSV podanych w pracy z pomiarem fcf2ed4a (FL 100→100, RI 98→99, PA 91→94, NY 90→82, DC 90→95; UT 34→33, ID 41→44, IA 49→47, ND 51→52)",
+      "status": "probable",
+      "evidence": [
+        {
+          "label": "niezależne sprawdzenie",
+          "path": "docs/history/evidence/2026-10-26-cr2014/independent_check.jsonl"
+        }
+      ]
+    },
+    {
+      "cause": "Zbiór 8 terminów (v2) obejmuje inne wyszukiwania niż 15 terminów pracy",
+      "test": "te same skrajne wartości: różnice do 8 punktów, zgodne kolejności skrajnych stanów; nie da się oddzielić od ponownego próbkowania Trends",
+      "status": "unresolved",
+      "evidence": [
+        {
+          "label": "wersja v2 presetu",
+          "path": "config/presets/cr2014-faithful.json"
+        }
+      ]
+    },
+    {
+      "cause": "Błąd obliczeń",
+      "test": "niezależny skrypt bez kodu WatchDoga z surowych plików Trends i CDC",
+      "status": "excluded",
+      "evidence": [
+        {
+          "label": "skrypt",
+          "path": "scripts/verify_cr2014_run.py"
+        },
+        {
+          "label": "wynik",
+          "path": "docs/history/evidence/2026-10-26-cr2014/independent_check.jsonl"
+        }
+      ]
     }
   ],
   "limitations": [
@@ -124,7 +161,18 @@
     "Powtórzony jest jeden z czterech głównych wyników pracy (pozostałe: brak otwartych danych referencyjnych).",
     "Dystrykt Kolumbii nie ma danych YRBS 2011, więc nie wchodzi do porównania."
   ],
-  "assessment": [],
+  "assessment": [
+    {
+      "statement": "Wynik główny pracy powtarza się na danych pobranych dziś: Pearson 0,358 (p 0,032, n 36) wobec 0,39 (p 0,018); wartość mieści się w paśmie (przedział ufności pracy). Wrażliwość bez UT i RI także odtwarza kierunek i brak istotności (0,194 wobec 0,26). Powtórzono jeden z czterech wyników; trzech nie da się sprawdzić na otwartych danych.",
+      "author": "analiza z 2026-10-26, po danych",
+      "evidence": [
+        {
+          "label": "raport",
+          "path": "docs/replication/CR2014_2026-10-26/REPORT.md"
+        }
+      ]
+    }
+  ],
   "endpoints": [
     {
       "claim_key": "cigar_youth_pearson",

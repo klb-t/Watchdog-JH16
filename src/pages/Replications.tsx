@@ -169,7 +169,7 @@ function Protocols({ data, reload }: { data: any; reload: () => void }) {
   const [assign, setAssign] = useState<Record<string, { family: number; priority: number }>>(Object.fromEntries(endpoints.map((e: any, i: number) => [e.claim_key, { family: 1, priority: i + 1 }])));
   const [meta, setMeta] = useState<{ label: string; multiplicity: string }[]>(endpoints.map((_: any, i: number) => ({ label: i === 0 ? 'Główna' : `Rodzina ${i + 1}`, multiplicity: opts.default_multiplicity })));
   const [primary, setPrimary] = useState<string[]>(endpoints.slice(0, 1).map((e: any) => e.claim_key));
-  const [name, setName] = useState('JH16 — potwierdzenie'), [gating, setGating] = useState(opts.default_gating), [alpha, setAlpha] = useState(opts.default_alpha), [rationale, setRationale] = useState(''), [msg, setMsg] = useState('');
+  const [name, setName] = useState(`${data.target.target_id.toUpperCase()} — potwierdzenie`), [gating, setGating] = useState(opts.default_gating), [alpha, setAlpha] = useState(opts.default_alpha), [rationale, setRationale] = useState(''), [msg, setMsg] = useState('');
   const used = [...new Set(Object.values(assign).map(a => a.family).filter(f => f > 0))].sort((a, b) => a - b);
   const families = used.map(n => ({ label: meta[n - 1].label, multiplicity: meta[n - 1].multiplicity,
     endpoints: endpoints.map((e: any) => e.claim_key).filter((k: string) => assign[k].family === n).sort((a: string, b: string) => assign[a].priority - assign[b].priority || a.localeCompare(b)) }));
@@ -329,7 +329,8 @@ function GenericRuns({ data }: { data: any }) {
 function Scatter({ c, onEntity }: { c: any; onEntity: (e: string) => void }) {
   const W = 360, H = 240, P = 36, xs = c.entities.map((e: any) => e.measured), ys = c.entities.map((e: any) => e.reference);
   const [x0, x1] = [Math.min(...xs), Math.max(...xs)], [y0, y1] = [Math.min(...ys), Math.max(...ys)];
-  const sx = (v: number) => P + (x1 === x0 ? 0.5 : (v - x0) / (x1 - x0)) * (W - P - 8), sy = (v: number) => H - P - (y1 === y0 ? 0.5 : (v - y0) / (y1 - y0)) * (H - P - 8);
+  // Points sit inside a margin so the extremes are not drawn on the axes.
+  const sx = (v: number) => P + 8 + (x1 === x0 ? 0.5 : (v - x0) / (x1 - x0)) * (W - P - 24), sy = (v: number) => H - P - 8 - (y1 === y0 ? 0.5 : (v - y0) / (y1 - y0)) * (H - P - 24);
   return <section className={card} data-testid={`scatter-${c.id}`}><h2 className="font-semibold">{c.label}</h2>
     <p className="text-sm">{c.statistic} {fmt(c.value)} (p {fmtP(c.p_two_sided)}), n = {c.n}{c.missing_entities.length ? `; brak pomiaru: ${c.missing_entities.join(', ')}` : ''}</p>
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-md" role="img" aria-label={`${c.label}: pomiar wobec referencji, ${c.n} punktów`}>
