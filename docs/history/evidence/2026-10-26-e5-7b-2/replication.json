@@ -1,0 +1,666 @@
+{
+  "protocols": [
+    {
+      "id": "f4eabbbf-9ede-4f6e-8487-e1aab1f29e2d",
+      "target_id": "jh2016",
+      "name": "JH16 — potwierdzenie",
+      "frozen_at": "2026-10-26T17:23:12.577Z",
+      "content_hash": "d8f5f1dbb8ef1edb81677144a44871c8e9147ca2852bc09c31e91818c051970c",
+      "body": {
+        "name": "JH16 — potwierdzenie",
+        "target_id": "jh2016",
+        "hypotheses": [
+          {
+            "id": "H-harm",
+            "statement": "Wskaźnik szkodliwości Hi = Ni_harm / Ni × 100% z liczby wyników Google koreluje dodatnio i istotnie z ekspercką oceną szkodliwości Nutt i in. 2010.",
+            "tested_by": [
+              "harm_index_vs_reference_pearson"
+            ],
+            "kind": "primary"
+          },
+          {
+            "id": "H-pop",
+            "statement": "Liczba wyników Ni daje ranking popularności Pi = Ni / max(Ni) × 100%; publikacja weryfikuje go jakościowo, WatchDog — stabilnością rankingu względem Tabeli 1.",
+            "tested_by": [
+              "popularity_ranking_stability"
+            ],
+            "kind": "descriptive"
+          }
+        ],
+        "primary": [
+          "harm_index_vs_reference_pearson"
+        ],
+        "family": [
+          {
+            "claim_key": "harm_index_vs_reference_pearson",
+            "label": "Pearson Hi vs Nutt 2010",
+            "hypothesis": "H-harm",
+            "p_value": "hi_vs_reference.pearson",
+            "claim": {
+              "claim_key": "harm_index_vs_reference_pearson",
+              "claim_type": "correlation",
+              "statistic": "pearson",
+              "claimed_value_numeric": 0.8162,
+              "unit": "coefficient",
+              "tolerance_kind": "interval",
+              "tolerance_value": 0.7,
+              "interval_upper": 1,
+              "notes": "The paper reports 'correlation coefficient between the harm score ranking and the harm index was 81.6%', p=0.000143, alpha=0.01, n=16. The word 'ranking' reads as a rank correlation but is loose: recomputing from the paper's own Tables 1 and 3 gives Pearson r=0.8162 (matching) and Spearman rho=0.5668 (not matching). Registered as Pearson with a floor of 0.70 expressed as the interval [0.70, 1.0]. 0.70 is the conventional strong-correlation threshold, below the published 0.816 to allow drift, and above the ~0.62 needed for significance at n=16 under the authors' own alpha."
+            }
+          },
+          {
+            "claim_key": "popularity_ranking_stability",
+            "label": "Spearman Pi vs Tabela 1",
+            "hypothesis": "H-pop",
+            "p_value": "pi_vs_published",
+            "claim": {
+              "claim_key": "popularity_ranking_stability",
+              "claim_type": "rank_correlation",
+              "statistic": "spearman",
+              "claimed_value_numeric": 1,
+              "unit": "coefficient",
+              "tolerance_kind": "rank_correlation_floor",
+              "tolerance_value": 0.6,
+              "notes": "Spearman of the observed Pi ranking against the paper's published Table 1 ranking. Floor anchored in the paper's own data rather than convention: Table 2 gives Pi at six dates over 25 months, and the ranking's Spearman between first and last is 0.785 — how much the authors' own ranking moved against itself in two years. A 2014-to-2026 gap is roughly six times longer, so the floor sits meaningfully below 0.785."
+            }
+          }
+        ],
+        "multiplicity": "holm",
+        "alpha": 0.01,
+        "rationale": "Rodzina: H-harm (główne) i H-pop; Holm, alfa 0,01 jak w publikacji. Zamrożone przed nowym pomiarem 2026-10-26.",
+        "claims_hash": "210e12ba1087e19a805960de4653d4cb9fe6fda7bb1c9c89e00b5c3a33a7e778",
+        "interpretation_hash": "ff543fed8a1024521847cfddff2756de60d17119ea9cbcc4601c20e123ed68c1",
+        "dossier_hash": "2a5806a500bca3cc9fb833fd8c90964ed218da0d0c1a6c1747bfa0088cf07be2",
+        "confirmation_sources": [
+          "serp_result_count"
+        ],
+        "frozen_at": "2026-10-26T17:23:12.577Z"
+      },
+      "evaluation": {
+        "protocol_id": "f4eabbbf-9ede-4f6e-8487-e1aab1f29e2d",
+        "gating": "independent",
+        "confirmation_runs": [
+          {
+            "run_id": "c17d1147-c4c9-44f5-8c78-e966593ea97a",
+            "created_at": "2026-10-26T17:23:13.503Z",
+            "complete": true,
+            "endpoints": [
+              {
+                "claim_key": "harm_index_vs_reference_pearson",
+                "label": "Pearson Hi vs Nutt 2010",
+                "primary": true,
+                "family_id": "F1",
+                "priority": null,
+                "verdict": "deviates",
+                "p_raw": 0.74643793736478,
+                "p_adjusted": 0.74643793736478,
+                "significant": false,
+                "tested": true,
+                "not_tested_reason": null
+              },
+              {
+                "claim_key": "popularity_ranking_stability",
+                "label": "Spearman Pi vs Tabela 1",
+                "primary": false,
+                "family_id": "F1",
+                "priority": null,
+                "verdict": "reproduced",
+                "p_raw": 5.1861460773650765e-05,
+                "p_adjusted": 0.00010372292154730153,
+                "significant": true,
+                "tested": true,
+                "not_tested_reason": null
+              }
+            ]
+          }
+        ],
+        "exploratory_runs": 28
+      }
+    },
+    {
+      "id": "6a538c64-d52c-4f8e-82bd-ce7424917c4c",
+      "target_id": "jh2016",
+      "name": "JH16 — potwierdzenie",
+      "frozen_at": "2026-10-26T18:41:25.236Z",
+      "content_hash": "d7c3f0e50d7639b9cafa678ed172f2a8d052d53ecbbf8b355b616240a2568797",
+      "body": {
+        "name": "JH16 — potwierdzenie",
+        "target_id": "jh2016",
+        "hypotheses": [
+          {
+            "id": "H-harm",
+            "statement": "Wskaźnik szkodliwości Hi = Ni_harm / Ni × 100% z liczby wyników Google koreluje dodatnio i istotnie z ekspercką oceną szkodliwości Nutt i in. 2010.",
+            "tested_by": [
+              "harm_index_vs_reference_pearson"
+            ],
+            "kind": "primary"
+          },
+          {
+            "id": "H-pop",
+            "statement": "Liczba wyników Ni daje ranking popularności Pi = Ni / max(Ni) × 100%; publikacja weryfikuje go jakościowo, WatchDog — stabilnością rankingu względem Tabeli 1.",
+            "tested_by": [
+              "popularity_ranking_stability"
+            ],
+            "kind": "descriptive"
+          }
+        ],
+        "primary": [
+          "harm_index_vs_reference_pearson"
+        ],
+        "family": [
+          {
+            "claim_key": "harm_index_vs_reference_pearson",
+            "label": "Pearson Hi vs Nutt 2010",
+            "hypothesis": "H-harm",
+            "p_value": "hi_vs_reference.pearson",
+            "claim": {
+              "claim_key": "harm_index_vs_reference_pearson",
+              "claim_type": "correlation",
+              "statistic": "pearson",
+              "claimed_value_numeric": 0.8162,
+              "unit": "coefficient",
+              "tolerance_kind": "interval",
+              "tolerance_value": 0.7,
+              "interval_upper": 1,
+              "notes": "The paper reports 'correlation coefficient between the harm score ranking and the harm index was 81.6%', p=0.000143, alpha=0.01, n=16. The word 'ranking' reads as a rank correlation but is loose: recomputing from the paper's own Tables 1 and 3 gives Pearson r=0.8162 (matching) and Spearman rho=0.5668 (not matching). Registered as Pearson with a floor of 0.70 expressed as the interval [0.70, 1.0]. 0.70 is the conventional strong-correlation threshold, below the published 0.816 to allow drift, and above the ~0.62 needed for significance at n=16 under the authors' own alpha."
+            }
+          },
+          {
+            "claim_key": "popularity_ranking_stability",
+            "label": "Spearman Pi vs Tabela 1",
+            "hypothesis": "H-pop",
+            "p_value": "pi_vs_published",
+            "claim": {
+              "claim_key": "popularity_ranking_stability",
+              "claim_type": "rank_correlation",
+              "statistic": "spearman",
+              "claimed_value_numeric": 1,
+              "unit": "coefficient",
+              "tolerance_kind": "rank_correlation_floor",
+              "tolerance_value": 0.6,
+              "notes": "Spearman of the observed Pi ranking against the paper's published Table 1 ranking. Floor anchored in the paper's own data rather than convention: Table 2 gives Pi at six dates over 25 months, and the ranking's Spearman between first and last is 0.785 — how much the authors' own ranking moved against itself in two years. A 2014-to-2026 gap is roughly six times longer, so the floor sits meaningfully below 0.785."
+            }
+          }
+        ],
+        "multiplicity": "per_family",
+        "alpha": 0.01,
+        "rationale": "H-harm najpierw (rodzina 1); H-pop testowane tylko, gdy H-harm odrzucona (bramkowanie szeregowe). Holm w każdej rodzinie, alfa 0,01. Zamrożone przed nowym pomiarem.",
+        "claims_hash": "210e12ba1087e19a805960de4653d4cb9fe6fda7bb1c9c89e00b5c3a33a7e778",
+        "interpretation_hash": "ff543fed8a1024521847cfddff2756de60d17119ea9cbcc4601c20e123ed68c1",
+        "dossier_hash": "2a5806a500bca3cc9fb833fd8c90964ed218da0d0c1a6c1747bfa0088cf07be2",
+        "confirmation_sources": [
+          "serp_result_count"
+        ],
+        "frozen_at": "2026-10-26T18:41:25.236Z",
+        "protocol_version": 2,
+        "families": [
+          {
+            "id": "F1",
+            "label": "Główna",
+            "multiplicity": "holm",
+            "endpoints": [
+              {
+                "claim_key": "harm_index_vs_reference_pearson",
+                "label": "Pearson Hi vs Nutt 2010",
+                "hypothesis": "H-harm",
+                "p_value": "hi_vs_reference.pearson",
+                "claim": {
+                  "claim_key": "harm_index_vs_reference_pearson",
+                  "claim_type": "correlation",
+                  "statistic": "pearson",
+                  "claimed_value_numeric": 0.8162,
+                  "unit": "coefficient",
+                  "tolerance_kind": "interval",
+                  "tolerance_value": 0.7,
+                  "interval_upper": 1,
+                  "notes": "The paper reports 'correlation coefficient between the harm score ranking and the harm index was 81.6%', p=0.000143, alpha=0.01, n=16. The word 'ranking' reads as a rank correlation but is loose: recomputing from the paper's own Tables 1 and 3 gives Pearson r=0.8162 (matching) and Spearman rho=0.5668 (not matching). Registered as Pearson with a floor of 0.70 expressed as the interval [0.70, 1.0]. 0.70 is the conventional strong-correlation threshold, below the published 0.816 to allow drift, and above the ~0.62 needed for significance at n=16 under the authors' own alpha."
+                }
+              }
+            ]
+          },
+          {
+            "id": "F2",
+            "label": "Rodzina 2",
+            "multiplicity": "holm",
+            "endpoints": [
+              {
+                "claim_key": "popularity_ranking_stability",
+                "label": "Spearman Pi vs Tabela 1",
+                "hypothesis": "H-pop",
+                "p_value": "pi_vs_published",
+                "claim": {
+                  "claim_key": "popularity_ranking_stability",
+                  "claim_type": "rank_correlation",
+                  "statistic": "spearman",
+                  "claimed_value_numeric": 1,
+                  "unit": "coefficient",
+                  "tolerance_kind": "rank_correlation_floor",
+                  "tolerance_value": 0.6,
+                  "notes": "Spearman of the observed Pi ranking against the paper's published Table 1 ranking. Floor anchored in the paper's own data rather than convention: Table 2 gives Pi at six dates over 25 months, and the ranking's Spearman between first and last is 0.785 — how much the authors' own ranking moved against itself in two years. A 2014-to-2026 gap is roughly six times longer, so the floor sits meaningfully below 0.785."
+                }
+              }
+            ]
+          }
+        ],
+        "gating": "serial"
+      },
+      "evaluation": {
+        "protocol_id": "6a538c64-d52c-4f8e-82bd-ce7424917c4c",
+        "gating": "serial",
+        "confirmation_runs": [
+          {
+            "run_id": "51a9567b-8d47-497d-ad68-8eb62d455678",
+            "created_at": "2026-10-26T18:41:26.548Z",
+            "complete": true,
+            "endpoints": [
+              {
+                "claim_key": "harm_index_vs_reference_pearson",
+                "label": "Pearson Hi vs Nutt 2010",
+                "primary": true,
+                "family_id": "F1",
+                "priority": 1,
+                "verdict": "deviates",
+                "p_raw": 0.7105981323603163,
+                "p_adjusted": 0.7105981323603163,
+                "significant": false,
+                "tested": true,
+                "not_tested_reason": null
+              },
+              {
+                "claim_key": "popularity_ranking_stability",
+                "label": "Spearman Pi vs Tabela 1",
+                "primary": false,
+                "family_id": "F2",
+                "priority": 1,
+                "verdict": "reproduced",
+                "p_raw": 0.00012505290867213193,
+                "p_adjusted": null,
+                "significant": null,
+                "tested": false,
+                "not_tested_reason": "gate closed: family F1 not fully rejected"
+              }
+            ]
+          }
+        ],
+        "exploratory_runs": 28
+      }
+    }
+  ],
+  "run": {
+    "run_id": "51a9567b-8d47-497d-ad68-8eb62d455678",
+    "created_at": "2026-10-26T18:41:26.548Z",
+    "status": "COMPLETED",
+    "git_commit": "aba3eb91aac8edfea7326b88a7c65a01eec38be4-dirty",
+    "provenance": "new_fetch",
+    "provenance_label": "Nowe pobranie (metoda wierna)",
+    "variant": null,
+    "source_run_id": null,
+    "acquired_utc": [
+      "2026-10-26T18:41:26.659Z",
+      "2026-10-26T18:42:17.530Z"
+    ],
+    "fetches": 32,
+    "manifest_sha256": "0057cbdc81d1cf30284da20ad55ca22e8eabf5a68b3b71eb1613bdcf2fecaf99",
+    "effective_config_hash": "db58d308fc95b6acf27ad83ad40c886caa177fb3741de792ff96775734c20359",
+    "preset": "jh2016-faithful",
+    "role_config": {
+      "data_role": "confirmation",
+      "protocol_id": "6a538c64-d52c-4f8e-82bd-ce7424917c4c",
+      "protocol_hash": "d7c3f0e50d7639b9cafa678ed172f2a8d052d53ecbbf8b355b616240a2568797",
+      "source_id": "serp_result_count"
+    },
+    "evaluation": {
+      "attempt_kind": "independent_attempt",
+      "attempt_meaning": "Inputs were acquired independently of the paper. Verdicts here speak to whether the published finding holds against this new data.",
+      "claims_version": "2e417c66514b3ac24aef6cc067d435168089f852",
+      "complete": true,
+      "entities": [
+        {
+          "Hi": 29.88826815642458,
+          "Ni": 716000000,
+          "Ni_harm": 214000000,
+          "Pi": 100,
+          "entity_id": "alcohol",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 27.5,
+          "published_Pi": 100,
+          "reference_score": 72
+        },
+        {
+          "Hi": 98.65771812080537,
+          "Ni": 5960000,
+          "Ni_harm": 5880000,
+          "Pi": 0.8324022346368716,
+          "entity_id": "amphetamine",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 5.1,
+          "published_Pi": 2.3,
+          "reference_score": 23
+        },
+        {
+          "Hi": 73.92241379310344,
+          "Ni": 4640000,
+          "Ni_harm": 3430000,
+          "Pi": 0.6480446927374302,
+          "entity_id": "benzodiazepines",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 10.3,
+          "published_Pi": 1.2,
+          "reference_score": 15
+        },
+        {
+          "Hi": 78.1021897810219,
+          "Ni": 8220000,
+          "Ni_harm": 6420000,
+          "Pi": 1.1480446927374302,
+          "entity_id": "buprenorphine",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 5.8,
+          "published_Pi": 1.6,
+          "reference_score": 7
+        },
+        {
+          "Hi": 6.509433962264151,
+          "Ni": 21200000,
+          "Ni_harm": 1380000,
+          "Pi": 2.9608938547486034,
+          "entity_id": "butane",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 3.3,
+          "published_Pi": 3,
+          "reference_score": 11
+        },
+        {
+          "Hi": 16.417910447761194,
+          "Ni": 134000000,
+          "Ni_harm": 22000000,
+          "Pi": 18.71508379888268,
+          "entity_id": "cannabis",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 4.6,
+          "published_Pi": 15.2,
+          "reference_score": 20
+        },
+        {
+          "Hi": 42.55765199161425,
+          "Ni": 47700000,
+          "Ni_harm": 20300000,
+          "Pi": 6.662011173184358,
+          "entity_id": "cocaine",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 25.6,
+          "published_Pi": 15.1,
+          "reference_score": 27
+        },
+        {
+          "Hi": 16.54054054054054,
+          "Ni": 55500000,
+          "Ni_harm": 9180000,
+          "Pi": 7.751396648044692,
+          "entity_id": "ecstasy",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 1.6,
+          "published_Pi": 11,
+          "reference_score": 9
+        },
+        {
+          "Hi": 5.164141414141414,
+          "Ni": 7920000,
+          "Ni_harm": 409000,
+          "Pi": 1.106145251396648,
+          "entity_id": "gamma-hydroxybutyric acid",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 1.2,
+          "published_Pi": 6,
+          "reference_score": 19
+        },
+        {
+          "Hi": 61.71875,
+          "Ni": 25600000,
+          "Ni_harm": 15800000,
+          "Pi": 3.5754189944134076,
+          "entity_id": "heroin",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 25,
+          "published_Pi": 12,
+          "reference_score": 55
+        },
+        {
+          "Hi": 818309859.1549296,
+          "Ni": 71,
+          "Ni_harm": 581000000,
+          "Pi": 9.916201117318435e-06,
+          "entity_id": "ketamine",
+          "flags": [
+            "HI_ABOVE_100",
+            "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+          ],
+          "missing": [],
+          "published_Hi": 4.9,
+          "published_Pi": 2.2,
+          "reference_score": 15
+        },
+        {
+          "Hi": 779032.2580645161,
+          "Ni": 62,
+          "Ni_harm": 483000,
+          "Pi": 8.659217877094971e-06,
+          "entity_id": "khat",
+          "flags": [
+            "HI_ABOVE_100",
+            "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+          ],
+          "missing": [],
+          "published_Hi": 6.7,
+          "published_Pi": 2.7,
+          "reference_score": 9
+        },
+        {
+          "Hi": 99.00990099009901,
+          "Ni": 40400000,
+          "Ni_harm": 40000000,
+          "Pi": 5.64245810055866,
+          "entity_id": "lysergic acid diethylamide",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 1.2,
+          "published_Pi": 12.5,
+          "reference_score": 7
+        },
+        {
+          "Hi": 689.5522388059701,
+          "Ni": 670000,
+          "Ni_harm": 4620000,
+          "Pi": 0.0935754189944134,
+          "entity_id": "mephedrone",
+          "flags": [
+            "HI_ABOVE_100"
+          ],
+          "missing": [],
+          "published_Hi": 4.5,
+          "published_Pi": 0.5,
+          "reference_score": 13
+        },
+        {
+          "Hi": 57.1969696969697,
+          "Ni": 5280000,
+          "Ni_harm": 3020000,
+          "Pi": 0.7374301675977654,
+          "entity_id": "methadone",
+          "flags": [],
+          "missing": [],
+          "published_Hi": 4.1,
+          "published_Pi": 3.4,
+          "reference_score": 14
+        },
+        {
+          "Hi": 101.94174757281553,
+          "Ni": 10300000,
+          "Ni_harm": 10500000,
+          "Pi": 1.4385474860335197,
+          "entity_id": "methamphetamine",
+          "flags": [
+            "HI_ABOVE_100"
+          ],
+          "missing": [],
+          "published_Hi": 5.8,
+          "published_Pi": 2.3,
+          "reference_score": 33
+        }
+      ],
+      "evaluation_version": "1.0.0",
+      "expected_entities": [
+        "alcohol",
+        "amphetamine",
+        "benzodiazepines",
+        "buprenorphine",
+        "butane",
+        "cannabis",
+        "cocaine",
+        "ecstasy",
+        "gamma-hydroxybutyric acid",
+        "heroin",
+        "ketamine",
+        "khat",
+        "lysergic acid diethylamide",
+        "mephedrone",
+        "methadone",
+        "methamphetamine"
+      ],
+      "exploratory": [
+        {
+          "excluded": [
+            "alcohol"
+          ],
+          "hi_vs_reference": [
+            {
+              "n": 15,
+              "p_two_sided": 0.786492888189064,
+              "statistic": "pearson",
+              "value": -0.0764695083333353
+            },
+            {
+              "n": 15,
+              "p_two_sided": 0.6060526066415641,
+              "statistic": "spearman",
+              "value": -0.1450318570128722
+            }
+          ],
+          "id": "without_alcohol",
+          "reason": "alcohol dominates Pearson in the published data"
+        },
+        {
+          "excluded": [
+            "ketamine",
+            "khat"
+          ],
+          "hi_vs_reference": [
+            {
+              "n": 14,
+              "p_two_sided": 0.5824785821002338,
+              "statistic": "pearson",
+              "value": -0.16097604086887884
+            },
+            {
+              "n": 14,
+              "p_two_sided": 0.7820403629943189,
+              "statistic": "spearman",
+              "value": -0.08140819007590318
+            }
+          ],
+          "id": "without_reachable_result_counts",
+          "reason": "added after the first live run showed such counts; post hoc, never a verdict"
+        }
+      ],
+      "hi_vs_reference": [
+        {
+          "n": 16,
+          "p_two_sided": 0.7105981323603163,
+          "statistic": "pearson",
+          "value": -0.10069505513867912
+        },
+        {
+          "n": 16,
+          "p_two_sided": 0.47028966101280834,
+          "statistic": "spearman",
+          "value": -0.194547269820551
+        }
+      ],
+      "hypothesis_harm": {
+        "reading": "contradicts",
+        "rule": "supports: Pearson >= 0.7 and two-sided p < 0.01; contradicts: Pearson < 0.62 and Spearman < 0.5; otherwise undecided; n must be 16"
+      },
+      "interpretation": {
+        "id": "jh2016-interpretation",
+        "registered_in_commit": "3d74e15",
+        "version": "2026-10-25-v1"
+      },
+      "missing_entities": [],
+      "pi_vs_published": {
+        "n": 16,
+        "p_two_sided": 0.00012505290867213193,
+        "statistic": "spearman",
+        "value": 0.8138339215775223
+      },
+      "pi_vs_reference": [
+        {
+          "n": 16,
+          "p_two_sided": 0.0011577520939427008,
+          "statistic": "pearson",
+          "value": 0.735799831542109
+        },
+        {
+          "n": 16,
+          "p_two_sided": 0.2505525577610743,
+          "statistic": "spearman",
+          "value": 0.30508549130950047
+        }
+      ],
+      "quality_flags": [
+        "HI_ABOVE_100",
+        "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS"
+      ],
+      "reference": {
+        "set_key": "nutt-2010",
+        "version": "2010-mcda-overall-harm"
+      },
+      "verdicts": [
+        {
+          "claim_key": "harm_index_vs_reference_pearson",
+          "claimed_value": 0.8162,
+          "deviation": -0.8006950551386791,
+          "observed_value": -0.10069505513867912,
+          "rationale": "pearson -0.1007 falls outside the pre-registered interval [0.7, 1].",
+          "statistic": "pearson",
+          "verdict": "deviates",
+          "within_tolerance": false
+        },
+        {
+          "claim_key": "popularity_ranking_stability",
+          "claimed_value": 1,
+          "deviation": 0.21383392157752235,
+          "observed_value": 0.8138339215775223,
+          "rationale": "spearman 0.8138 meets the pre-registered floor of 0.6.",
+          "statistic": "spearman",
+          "verdict": "reproduced",
+          "within_tolerance": true
+        }
+      ]
+    },
+    "calibration": null,
+    "data_role": {
+      "role": "confirmation",
+      "protocol_id": "6a538c64-d52c-4f8e-82bd-ce7424917c4c"
+    }
+  }
+}

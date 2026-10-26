@@ -177,8 +177,10 @@ apiRouter.get('/replications/:id/manuscript', requireCapability('run.view'), asy
 
 apiRouter.post('/replications/:id/protocols', requireCapability('method.approve'), sameOriginMutation, (req, res, next) => {
   try {
-    const body = z.object({ consent: z.literal(true), name: z.string().trim().min(1).max(160), primary: z.array(z.string()).min(1).max(50), family: z.array(z.string()).min(1).max(50),
-      multiplicity: z.string(), alpha: z.number(), rationale: z.string().trim().min(1).max(4000), expectedDossierHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().parse(req.body);
+    const body = z.object({ consent: z.literal(true), name: z.string().trim().min(1).max(160), primary: z.array(z.string()).min(1).max(50),
+      family: z.array(z.string()).min(1).max(50).optional(), multiplicity: z.string().optional(),
+      families: z.array(z.object({ label: z.string().max(160), endpoints: z.array(z.string()).min(1).max(50), multiplicity: z.string() }).strict()).min(1).max(10).optional(),
+      gating: z.string().optional(), alpha: z.number(), rationale: z.string().trim().min(1).max(4000), expectedDossierHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().parse(req.body);
     const t = listReplicationTargets().find(x => x.target.target_id === req.params.id);
     if (!t) return res.status(404).json({ error: 'NOT_FOUND' });
     const p = protocols.freeze(req.principal!.id, t, body);

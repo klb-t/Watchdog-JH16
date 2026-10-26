@@ -1,14 +1,39 @@
 {
   "schema_version": "1.0",
   "options_id": "study-protocol-options",
-  "version": "2026-10-26-v1",
+  "version": "2026-10-26-v2",
   "_note": "Choices offered when freezing a study protocol (E5.7b). These are presets, not rules: the frozen protocol records what was chosen.",
   "multiplicity_procedures": [
-    { "id": "holm", "label": "Holm (kontrola FWER, krokowa)" },
-    { "id": "bonferroni", "label": "Bonferroni (kontrola FWER)" },
-    { "id": "none", "label": "Bez korekty (każde porównanie osobno)" }
+    {
+      "id": "holm",
+      "label": "Holm (kontrola FWER, krokowa)"
+    },
+    {
+      "id": "bonferroni",
+      "label": "Bonferroni (kontrola FWER)"
+    },
+    {
+      "id": "fixed_sequence",
+      "label": "Sekwencja ustalona (priorytet; kontrola FWER, test w podanej kolejności do pierwszego nieodrzucenia)"
+    },
+    {
+      "id": "none",
+      "label": "Bez korekty (każde porównanie osobno)"
+    }
   ],
   "default_multiplicity": "holm",
   "default_alpha": 0.01,
-  "_why_default_alpha": "The paper's own significance level for JH16; any value can be chosen when freezing."
+  "_why_default_alpha": "The paper's own significance level for JH16; any value can be chosen when freezing.",
+  "gating_procedures": [
+    {
+      "id": "serial",
+      "label": "Szeregowe: rodzina testowana tylko, gdy wszystkie hipotezy wcześniejszych rodzin odrzucono (FWER na cały protokół)"
+    },
+    {
+      "id": "independent",
+      "label": "Niezależne: każda rodzina osobno (FWER tylko w obrębie rodziny)"
+    }
+  ],
+  "default_gating": "serial",
+  "_why_default_gating": "Serial gatekeeping keeps the familywise error at alpha across all families; independent families do not."
 }

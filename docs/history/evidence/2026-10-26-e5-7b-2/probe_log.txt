@@ -1,0 +1,7 @@
+preview: Zostanie zamrożone: 1. Główna: harm_index_vs_reference_pearson (holm); 2. Rodzina 2: popularity_ranking_stability (holm); bramkowanie serial.
+freeze: Zamrożono: d7c3f0e50d7639b9
+role options: ["eksploracyjne (domyślnie)","potwierdzające wg protokołu „JH16 — potwierdzenie” (2026-10-26 17:23)","potwierdzające wg protokołu „JH16 — potwierdzenie” (2026-10-26 18:41)"]
+plan role: Dane potwierdzające wg protokołu „JH16 — potwierdzenie” (d7c3f0e50d76). Danymi potwierdzającymi jest tylko przebieg metodą wierną; warianty rozszerzenia pozostają eksploracyjne.
+run 51a9567b-8d47-497d-ad68-8eb62d455678 COMPLETED aba3eb91aac8edfea7326b88a7c65a01eec38be4-dirty
+protocol results: Przebieg	Rodzina.priorytet	Porównanie	Główne	Werdykt	p	p skorygowane	< alfa | 51a9567b	F1.1	Pearson Hi vs Nutt 2010	tak	deviates	0.7106	0.7106	nie | 51a9567b	F2.1	Spearman Pi vs Tabela 1	nie	reproduced	1.25e-4	—	nietestowane: bramka zamknięta
+phone overflow px: 0

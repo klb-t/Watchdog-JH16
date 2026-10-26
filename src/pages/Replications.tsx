@@ -150,35 +150,63 @@ function Drill({ runs, entity }: { runs: any[]; entity: string }) {
     <p className="text-xs text-slate-600">Surowa odpowiedź to bajty zapisane przed obliczeniami (sha256 w manifeście przebiegu); klucz dostawcy nie jest w niej zapisany.</p></section>;
 }
 
+const NOT_TESTED: Record<string, string> = { 'p-value not available': 'brak wartości p', 'sequence stopped at an earlier hypothesis': 'sekwencja zatrzymana wcześniej' };
+const notTested = (reason: string) => reason.startsWith('gate closed') ? 'bramka zamknięta' : NOT_TESTED[reason] ?? reason;
+
+function protocolDesign(p: any) {
+  if (!p.body.families) return `rodzina: ${p.body.family.map((f: any) => f.label).join('; ')} · korekta ${p.body.multiplicity}`;
+  return `${p.body.families.map((f: any) => `${f.id} „${f.label}”: ${f.endpoints.map((e: any) => e.label).join(' → ')} (${f.multiplicity})`).join(' · ')} · bramkowanie ${p.body.gating === 'serial' ? 'szeregowe' : 'niezależne'}`;
+}
+
 function Protocols({ data, reload }: { data: any; reload: () => void }) {
   const endpoints = data.dossier.endpoints ?? [], opts = data.protocol_options;
-  const [family, setFamily] = useState<string[]>(endpoints.map((e: any) => e.claim_key)), [primary, setPrimary] = useState<string[]>(endpoints.slice(0, 1).map((e: any) => e.claim_key));
-  const [name, setName] = useState('JH16 — potwierdzenie'), [multiplicity, setMultiplicity] = useState(opts.default_multiplicity), [alpha, setAlpha] = useState(opts.default_alpha), [rationale, setRationale] = useState(''), [msg, setMsg] = useState('');
+  // Family 0 = outside the protocol. Within a family, lower priority numbers are tested first.
+  const [assign, setAssign] = useState<Record<string, { family: number; priority: number }>>(Object.fromEntries(endpoints.map((e: any, i: number) => [e.claim_key, { family: 1, priority: i + 1 }])));
+  const [meta, setMeta] = useState<{ label: string; multiplicity: string }[]>(endpoints.map((_: any, i: number) => ({ label: i === 0 ? 'Główna' : `Rodzina ${i + 1}`, multiplicity: opts.default_multiplicity })));
+  const [primary, setPrimary] = useState<string[]>(endpoints.slice(0, 1).map((e: any) => e.claim_key));
+  const [name, setName] = useState('JH16 — potwierdzenie'), [gating, setGating] = useState(opts.default_gating), [alpha, setAlpha] = useState(opts.default_alpha), [rationale, setRationale] = useState(''), [msg, setMsg] = useState('');
+  const used = [...new Set(Object.values(assign).map(a => a.family).filter(f => f > 0))].sort((a, b) => a - b);
+  const families = used.map(n => ({ label: meta[n - 1].label, multiplicity: meta[n - 1].multiplicity,
+    endpoints: endpoints.map((e: any) => e.claim_key).filter((k: string) => assign[k].family === n).sort((a: string, b: string) => assign[a].priority - assign[b].priority || a.localeCompare(b)) }));
+  const inProtocol = (k: string) => assign[k].family > 0;
   const freeze = async () => { setMsg(''); const r = await fetch(`/api/replications/${data.target.target_id}/protocols`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ consent: true, name, primary, family, multiplicity, alpha: Number(alpha), rationale, expectedDossierHash: data.hashes.dossier }) });
+    body: JSON.stringify({ consent: true, name, primary: primary.filter(inProtocol), families, gating, alpha: Number(alpha), rationale, expectedDossierHash: data.hashes.dossier }) });
     const d = await r.json(); if (!r.ok) setMsg(d.message ?? `HTTP ${r.status}`); else { setMsg(`Zamrożono: ${d.protocol.content_hash.slice(0, 16)}`); reload(); } };
-  const toggle = (list: string[], set: (x: string[]) => void, k: string, on: boolean) => set(on ? [...new Set([...list, k])] : list.filter(x => x !== k));
+  const set = (k: string, patch: Partial<{ family: number; priority: number }>) => setAssign({ ...assign, [k]: { ...assign[k], ...patch } });
+  const togglePrimary = (k: string, on: boolean) => setPrimary(on ? [...new Set([...primary, k])] : primary.filter(x => x !== k));
   return <div className="space-y-4">
     <section className={card}><h2 className="font-semibold">Protokoły zamrożone przed danymi potwierdzającymi</h2>
       <p className="text-sm">Przebieg jest potwierdzający tylko wtedy, gdy: jest nowym pomiarem metodą wierną, powstał po zamrożeniu protokołu i cytuje go w swojej konfiguracji (id i hash). Wszystkie inne przebiegi są eksploracyjne. Wybierzesz to w kreatorze, w kroku 2 („Rola nowych danych JH16”).</p>
       {data.protocols.length === 0 && <p className="text-sm">Brak protokołów.</p>}
       {data.protocols.map((p: any) => <div key={p.id} className="border-t pt-2 space-y-1" data-testid={`protocol-${p.id}`}>
         <div className="text-sm"><b>{p.name}</b> · zamrożony {p.frozen_at.slice(0, 16).replace('T', ' ')} UTC · sha256 <code>{p.content_hash.slice(0, 16)}</code></div>
-        <div className="text-xs">Główne: {p.body.primary.join(', ')} · rodzina: {p.body.family.map((f: any) => f.label).join('; ')} · korekta {p.body.multiplicity}, alfa {p.body.alpha} · {p.body.rationale}</div>
+        <div className="text-xs">Główne: {p.body.primary.join(', ')} · {protocolDesign(p)} · alfa {p.body.alpha} · {p.body.rationale}</div>
         {p.evaluation.confirmation_runs.length === 0 ? <p className="text-sm" data-testid="no-confirmation">Brak przebiegów potwierdzających (eksploracyjnych: {p.evaluation.exploratory_runs}).</p> :
-        <div className={scroll}><table className="w-full text-sm" data-testid="protocol-results"><thead className="text-left text-slate-500"><tr><th>Przebieg</th><th>Porównanie</th><th>Główne</th><th>Werdykt</th><th>p</th><th>p skorygowane</th><th>&lt; alfa</th></tr></thead>
+        <div className={scroll}><table className="w-full text-sm" data-testid="protocol-results"><thead className="text-left text-slate-500"><tr><th>Przebieg</th><th>Rodzina.priorytet</th><th>Porównanie</th><th>Główne</th><th>Werdykt</th><th>p</th><th>p skorygowane</th><th>&lt; alfa</th></tr></thead>
           <tbody>{p.evaluation.confirmation_runs.flatMap((r: any) => r.endpoints.map((e: any) => <tr key={r.run_id + e.claim_key} className="border-t border-slate-100"><td className="font-mono"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td>
-            <td>{e.label}</td><td>{e.primary ? 'tak' : 'nie'}</td><td>{e.verdict}</td><td className="font-mono">{fmtP(e.p_raw)}</td><td className="font-mono">{fmtP(e.p_adjusted)}</td><td>{e.significant === null ? '—' : e.significant ? 'tak' : 'nie'}</td></tr>))}</tbody></table></div>}
+            <td className="font-mono">{e.priority === null ? e.family_id : `${e.family_id}.${e.priority}`}</td><td>{e.label}</td><td>{e.primary ? 'tak' : 'nie'}</td><td>{e.verdict}</td><td className="font-mono">{fmtP(e.p_raw)}</td><td className="font-mono">{fmtP(e.p_adjusted)}</td>
+            <td>{e.tested === false ? <span title={e.not_tested_reason}>nietestowane: {notTested(e.not_tested_reason)}</span> : e.significant ? 'tak' : 'nie'}</td></tr>))}</tbody></table></div>}
       </div>)}</section>
     <section className={card} data-testid="protocol-form"><h2 className="font-semibold">Zamroź nowy protokół</h2>
       <label className="block text-sm">Nazwa<input className="border rounded px-2 py-1 w-full" value={name} onChange={e => setName(e.target.value)} /></label>
-      <fieldset className="text-sm"><legend className="font-medium">Rodzina porównań i punkty główne</legend>{endpoints.map((e: any) => <div key={e.claim_key} className="flex flex-wrap gap-3">
-        <label className="flex gap-1"><input type="checkbox" checked={family.includes(e.claim_key)} onChange={x => toggle(family, setFamily, e.claim_key, x.target.checked)} />{e.label} ({e.hypothesis})</label>
-        <label className="flex gap-1"><input type="checkbox" checked={primary.includes(e.claim_key)} onChange={x => toggle(primary, setPrimary, e.claim_key, x.target.checked)} />główny</label></div>)}</fieldset>
-      <div className="flex flex-wrap gap-3 text-sm"><label>Korekta wielokrotności <select className="border rounded" value={multiplicity} onChange={e => setMultiplicity(e.target.value)}>{opts.multiplicity_procedures.map((m: any) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+      <fieldset className="text-sm space-y-1"><legend className="font-medium">Porównania: rodzina, priorytet, punkt główny</legend>
+        <p className="text-xs text-slate-600">Rodziny są testowane w kolejności numerów; w rodzinie mniejszy priorytet idzie pierwszy (znaczenie ma przy korekcie „Sekwencja ustalona” i przy bramkowaniu szeregowym).</p>
+        {endpoints.map((e: any) => <div key={e.claim_key} className="flex flex-wrap items-center gap-3" data-testid={`endpoint-${e.claim_key}`}>
+          <span className="min-w-[12rem]">{e.label} ({e.hypothesis})</span>
+          <label>Rodzina <select className="border rounded" value={assign[e.claim_key].family} onChange={x => set(e.claim_key, { family: Number(x.target.value) })} data-testid={`family-${e.claim_key}`}>
+            <option value={0}>poza protokołem</option>{endpoints.map((_: any, i: number) => <option key={i} value={i + 1}>{i + 1}</option>)}</select></label>
+          <label>Priorytet <input className="border rounded w-14 px-1" type="number" min="1" value={assign[e.claim_key].priority} onChange={x => set(e.claim_key, { priority: Number(x.target.value) })} data-testid={`priority-${e.claim_key}`} /></label>
+          <label className="flex gap-1"><input type="checkbox" disabled={!inProtocol(e.claim_key)} checked={inProtocol(e.claim_key) && primary.includes(e.claim_key)} onChange={x => togglePrimary(e.claim_key, x.target.checked)} />główny</label></div>)}</fieldset>
+      {used.map(n => <div key={n} className="flex flex-wrap gap-3 text-sm" data-testid={`family-settings-${n}`}><b>Rodzina {n}</b>
+        <label>Nazwa <input className="border rounded px-1" value={meta[n - 1].label} onChange={x => setMeta(meta.map((m, i) => i === n - 1 ? { ...m, label: x.target.value } : m))} /></label>
+        <label>Korekta <select className="border rounded" value={meta[n - 1].multiplicity} onChange={x => setMeta(meta.map((m, i) => i === n - 1 ? { ...m, multiplicity: x.target.value } : m))} data-testid={`multiplicity-${n}`}>
+          {opts.multiplicity_procedures.map((m: any) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label></div>)}
+      <div className="flex flex-wrap gap-3 text-sm">
+        {used.length > 1 && <label>Bramkowanie między rodzinami <select className="border rounded" value={gating} onChange={e => setGating(e.target.value)} data-testid="gating">{opts.gating_procedures.map((g: any) => <option key={g.id} value={g.id}>{g.label}</option>)}</select></label>}
         <label>Alfa <input className="border rounded w-20 px-1" type="number" step="0.001" min="0" max="1" value={alpha} onChange={e => setAlpha(e.target.value)} /></label></div>
+      <p className="text-xs text-slate-600" data-testid="protocol-preview">Zostanie zamrożone: {families.length ? families.map((f, i) => `${i + 1}. ${f.label}: ${f.endpoints.join(' → ')} (${f.multiplicity})`).join('; ') : 'brak porównań'}{families.length > 1 ? `; bramkowanie ${gating}` : ''}.</p>
       <label className="block text-sm">Uzasadnienie (wymagane)<textarea className="border rounded w-full px-2 py-1" rows={3} value={rationale} onChange={e => setRationale(e.target.value)} data-testid="protocol-rationale" /></label>
-      <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!rationale.trim() || !family.length || !primary.length} onClick={freeze} data-testid="freeze-protocol">Zamroź protokół (nieodwracalne)</button>
+      <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!rationale.trim() || !families.length || !primary.some(inProtocol)} onClick={freeze} data-testid="freeze-protocol">Zamroź protokół (nieodwracalne)</button>
       {msg && <p role="status" className="text-sm">{msg}</p>}</section>
   </div>;
 }

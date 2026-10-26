@@ -117,6 +117,9 @@ export function primaryRuns(runs: readonly RunSummary[]): RunSummary[] {
   return out;
 }
 
+const NOT_TESTED: Record<string, string> = { gate: 'bramka zamknięta (wcześniejsza rodzina nie w pełni odrzucona)',
+  'p-value not available': 'brak wartości p', 'sequence stopped at an earlier hypothesis': 'sekwencja zatrzymana na wcześniejszej hipotezie' };
+
 export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[], published: any, codeVersion: string | null, now = new Date().toISOString(), protocols: readonly any[] = []): Manuscript {
   const { target, dossier } = t, cite = target.citation;
   const primary = primaryRuns(runs), jh = primary.filter(r => r.evaluation), cal = primary.filter(r => r.calibration);
@@ -167,11 +170,15 @@ export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[
   if (protocols.length) {
     const blocks: Block[] = [];
     for (const p of protocols) {
-      blocks.push({ type: 'p', text: `Protokół „${p.name}” zamrożony ${p.frozen_at.slice(0, 16).replace('T', ' ')} UTC (sha256 ${p.content_hash.slice(0, 16)}): punkty główne ${p.body.primary.join(', ')}; rodzina porównań ${p.body.family.map((f: any) => f.claim_key).join(', ')}; korekta ${p.body.multiplicity}, alfa ${String(p.body.alpha).replace('.', ',')}. Uzasadnienie: ${p.body.rationale}`, sources: [{ config: `protocol ${p.id}` }] });
+      const design = p.body.families
+        ? `rodziny porównań w kolejności priorytetu: ${p.body.families.map((f: any) => `${f.id} „${f.label}” (${f.endpoints.map((e: any) => e.claim_key).join(' → ')}; korekta ${f.multiplicity})`).join('; ')}; bramkowanie ${p.body.gating === 'serial' ? 'szeregowe (rodzina testowana tylko po odrzuceniu wszystkich hipotez wcześniejszych rodzin)' : 'niezależne (każda rodzina osobno)'}`
+        : `rodzina porównań ${p.body.family.map((f: any) => f.claim_key).join(', ')}; korekta ${p.body.multiplicity}`;
+      blocks.push({ type: 'p', text: `Protokół „${p.name}” zamrożony ${p.frozen_at.slice(0, 16).replace('T', ' ')} UTC (sha256 ${p.content_hash.slice(0, 16)}): punkty główne ${p.body.primary.join(', ')}; ${design}, alfa ${String(p.body.alpha).replace('.', ',')}. Uzasadnienie: ${p.body.rationale}`, sources: [{ config: `protocol ${p.id}` }] });
       const conf = p.evaluation?.confirmation_runs ?? [];
       if (!conf.length) blocks.push({ type: 'p', text: `Brak przebiegów potwierdzających po zamrożeniu tego protokołu; przebiegi eksploracyjne: ${p.evaluation?.exploratory_runs ?? 0}. Wyniki potwierdzające nie są dostępne.` });
-      else blocks.push({ type: 'table', columns: ['Przebieg', 'Porównanie', 'Główne', 'Werdykt', 'p', 'p skorygowane', `< alfa`],
-        rows: conf.flatMap((r: any) => r.endpoints.map((e: any) => [short(r.run_id), e.label, e.primary ? 'tak' : 'nie', e.verdict, p3(e.p_raw), p3(e.p_adjusted), e.significant === null ? '—' : e.significant ? 'tak' : 'nie'])),
+      else blocks.push({ type: 'table', columns: ['Przebieg', 'Rodzina, priorytet', 'Porównanie', 'Główne', 'Werdykt', 'p', 'p skorygowane', `< alfa`],
+        rows: conf.flatMap((r: any) => r.endpoints.map((e: any) => [short(r.run_id), e.priority === null ? e.family_id : `${e.family_id}.${e.priority}`, e.label, e.primary ? 'tak' : 'nie', e.verdict, p3(e.p_raw), p3(e.p_adjusted),
+          e.tested === false ? `nietestowane: ${NOT_TESTED[e.not_tested_reason?.startsWith('gate closed') ? 'gate' : e.not_tested_reason] ?? e.not_tested_reason}` : e.significant ? 'tak' : 'nie'])),
         sources: conf.map((r: any) => ({ run_id: r.run_id })) });
     }
     sec('protocol', 'Protokół potwierdzający i rodzina porównań', blocks);
