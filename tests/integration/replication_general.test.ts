@@ -53,7 +53,7 @@ test('interest by region: one query, the paper\'s terms joined with +, one obser
   const u = new URL(urls[0]);
   assert.strictEqual(u.searchParams.get('data_type'), 'GEO_MAP_0'); assert.strictEqual(u.searchParams.get('region'), 'REGION');
   assert.strictEqual(u.searchParams.get('date'), '2011-01-01 2011-12-31'); assert.strictEqual(u.searchParams.get('geo'), 'US');
-  assert.match(u.searchParams.get('q')!, /^cigars \+ cigar \+ little cigars \+ .* \+ White Owl cigars$/);
+  assert.strictEqual(u.searchParams.get('q'), 'cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets');
   const obs = new ObservationRepository(db).getByRunId(id).sort((a, b) => a.entityId.localeCompare(b.entityId));
   assert.strictEqual(obs.length, 36); assert.strictEqual(obs[0].entityId, 'US-AK'); assert.strictEqual(obs[0].observedAt, '2011-01-01'); assert.strictEqual(obs[0].queryRole, 'cigar');
   assert.ok(obs.every(o => o.qualityFlags.includes('RELATIVE_INTEREST_NOT_A_COUNT')));
@@ -114,4 +114,14 @@ test('launching a measurement checks the key, the limit, the preset hash and the
   const c = submitted[0].config;
   assert.strictEqual(c.source_id, 'trends_interest_by_region'); assert.strictEqual(c.personal_credentials, true); assert.strictEqual(c.replication_target_id, 'cr2014');
   assert.strictEqual(c.approved_preset_hash, p.preset_hash); assert.strictEqual(c.method_params.comparisons[0].reference['US-SC'], 18.3121);
+});
+
+test('a query longer than the provider accepts is refused before it is sent', async () => {
+  const provider = loadTrendsProviderConfig(TRENDS_BY_REGION_CONFIG_PATH).provider, urls: string[] = [];
+  const cred = await new SecretStore([new EnvSecretProvider({ SERPAPI_API_KEY: 'general-target-test-key-0001' })]).resolve(provider.secret_ref);
+  const adapter = new GoogleTrendsAdapter(provider, cred, async url => { urls.push(url); return { ok: true, status: 200, text: async () => '{}' }; }, async () => {});
+  const raw = await adapter.fetch({ renderedQuery: 'x'.repeat(101), dimension: 'cigar', entityId: 'cigar', language: 'en', queryExpansionMode: 'STRICT_CANONICAL', presetId: 'p', presetVersion: '1',
+    params: { provider_params: { date: '2011-01-01 2011-12-31', geo: 'US', region: 'REGION' }, term_entities: {} } });
+  assert.strictEqual(raw.status, 'FETCH_FAILED'); assert.match(String(raw.metadata.detail), /at most 100; nothing was sent/); assert.deepStrictEqual(urls, []);
+  assert.ok(measurementPlan(target())!.plan[0].renderedQuery.length <= 100, 'the shipped preset (v2) fits the limit');
 });

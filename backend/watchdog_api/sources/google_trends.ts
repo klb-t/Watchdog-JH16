@@ -28,6 +28,7 @@ const ProviderSchema = z.object({
   provider_key: z.string().min(1), display_name: z.string().min(1), endpoint: z.string().url(),
   secret_ref: z.string().regex(/^[a-z][a-z0-9-]*:.+$/), personal_credential_provider: z.string().min(1),
   engine: z.string().min(1), api_key_param: z.string().min(1), max_terms_per_request: z.number().int().min(1).max(5),
+  max_query_chars: z.number().int().positive().optional(), _why_max_query_chars: z.string().optional(),
   request_params: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
   run_params_required: z.array(z.string()), run_params_allowed: z.array(z.string()),
   pacing: z.object({ min_interval_ms: z.number().int().nonnegative(), max_attempts: z.number().int().min(1).max(10), backoff_ms: z.array(z.number().int().nonnegative()) }),
@@ -113,6 +114,9 @@ export class GoogleTrendsAdapter implements SourceAdapter {
     const n = this.terms(request).length;
     if (n === 0 || n > this.config.max_terms_per_request)
       return { ...base, payload: null, status: 'FETCH_FAILED', metadata: { ...base.metadata, detail: `a Trends request takes 1-${this.config.max_terms_per_request} terms, got ${n}` } };
+    const q = this.terms(request).join(',');
+    if (this.config.max_query_chars && q.length > this.config.max_query_chars)
+      return { ...base, payload: null, status: 'FETCH_FAILED', metadata: { ...base.metadata, detail: `the query has ${q.length} characters; the provider accepts at most ${this.config.max_query_chars}; nothing was sent` } };
     if (!this.credential?.isPresent)
       return { ...base, payload: null, status: 'CREDENTIAL_UNAVAILABLE', metadata: { ...base.metadata, detail: this.credential?.detail ?? 'No credential configured' } };
     const url = this.credential.use(k => this.url(request, k));

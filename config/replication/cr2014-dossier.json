@@ -52,10 +52,16 @@
       "reason": "jedyny powtarzalny dostęp; Trends dziś ponownie próbkuje dane z 2011 r."
     },
     {
+      "item": "Lista terminów",
+      "original": "15 terminów (lista z pracy)",
+      "replication": "8 terminów obejmujących te same wyszukiwania (każdy termin z pracy zawiera wszystkie słowa któregoś z nich), połączone „+”",
+      "reason": "dostawca odrzuca zapytania Trends dłuższe niż 100 znaków; zmiana w wersji v2 presetu przed jakąkolwiek wartością dla cygar"
+    },
+    {
       "item": "Łączenie terminów",
-      "original": "„dane dla dowolnego z terminów” (do 30 słów)",
-      "replication": "jedno zapytanie z operatorem + między 15 terminami",
-      "reason": "praca nie podaje mechanizmu; operator + to udokumentowany sposób Trends na sumę terminów"
+      "original": "„dane dla dowolnego z terminów”",
+      "replication": "operator + bez odstępów w jednym zapytaniu",
+      "reason": "udokumentowany sposób Trends na sumę terminów; zapis bez odstępów sprawdzony na neutralnej parze (identyczne wartości dla 51 regionów)"
     },
     {
       "item": "Stany o małym wolumenie",
@@ -97,6 +103,17 @@
         {
           "label": "wartości z pracy",
           "path": "fixtures/cr2014/paper_reported.json"
+        }
+      ]
+    },
+    {
+      "cause": "Zapytanie dłuższe niż limit dostawcy",
+      "test": "pierwszy przebieg (7aa42db5, kopia testowa): HTTP 400 od SerpApi, brak wartości",
+      "status": "shown",
+      "evidence": [
+        {
+          "label": "wersja v2 presetu (uzasadnienie)",
+          "path": "config/presets/cr2014-faithful.json"
         }
       ]
     }

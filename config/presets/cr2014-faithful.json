@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "preset_id": "cr2014-faithful",
-  "preset_version": "2014-faithful-v1",
+  "preset_version": "2014-faithful-v2",
   "label": "Cavazos-Rehg et al. 2014 — Google Trends cigar searches vs youth cigar use by state (faithful)",
   "locked": true,
-  "_locked_note": "Fixed before the first measurement (protocol docs/replication/CR2014_2026-10-26/PROTOCOL.md). A change produces a new preset version.",
+  "_locked_note": "v2 replaces v1 (commit aa7e2ea) before any Google Trends value was seen: v1 could not be sent (see _v2_change). A change produces a new preset version.",
   "citation": {
     "doi": "10.1136/tobaccocontrol-2013-051276",
     "journal": "Tobacco Control",
@@ -40,6 +40,16 @@
       "terms": [
         "cigars",
         "cigar",
+        "cigarillo",
+        "cigarillos",
+        "Black and Mild",
+        "Black and Milds",
+        "Swisher Sweet",
+        "Swisher Sweets"
+      ],
+      "paper_terms": [
+        "cigars",
+        "cigar",
         "little cigars",
         "cigarillo",
         "cigarillos",
@@ -54,7 +64,7 @@
         "Dutch Master cigars",
         "White Owl cigars"
       ],
-      "_source": "PMC4122644, Methods, 'Google Trends data': the paper's exact list for cigars, combined with Google Trends' + (OR) operator in one query."
+      "_source": "PMC4122644, Methods, 'Google Trends data'. The paper's 15 terms, reduced to the 8 whose words every paper term contains (see _v2_change), joined with Google Trends' + (OR) operator in one query."
     }
   ],
   "method_id": "reference_correlation",
@@ -66,5 +76,13 @@
       "statistic": "pearson",
       "reference_ref": "config/reference/yrbss-2011-hs-current-cigar.json"
     }
-  ]
+  ],
+  "query_joiner": "+",
+  "_v2_change": {
+    "date": "2026-10-26",
+    "why": "SerpApi refuses a Google Trends query longer than 100 characters (HTTP 400, run 7aa42db5 on a test copy; no value was returned). The paper's 15 terms joined with ' + ' are about 220 characters.",
+    "equivalence": "Without quotes, Google Trends matches searches that contain all words of a term. Every paper term contains all words of one of the 8 kept terms (little/flavored/Phillies/sweet/JR/Dutch Master/White Owl cigars -> cigars), so the OR of the 8 covers the same searches as the OR of the 15. This is an argument from Trends' documented matching, not a measurement.",
+    "joiner": "'+' without spaces (93 characters). Checked on neutral terms before any cigar request: 'tennis+squash' and 'tennis + squash' (US, 2011, by region) returned identical values for all 51 regions (docs/history/evidence/2026-10-26-cr2014/plus_check/).",
+    "unchanged": "claim band, reading rule, reference, period, region, statistic"
+  }
 }

@@ -27,3 +27,15 @@ All three stay in the dossier as not replicated, with these reasons.
 - **Exploratory, no verdict:** the same correlation without UT and RI (published r = 0.26, p = .130).
 
 **Not looked at before this commit:** any Google Trends value for these terms. The reference data were looked at; they are not the outcome.
+
+## Amendment v2 (2026-10-26, before any Google Trends value for this target)
+
+**Why the amendment.** The first measurement, run on a test copy (`7aa42db5`), sent nothing usable. SerpApi refuses Trends queries longer than 100 characters, and the paper's 15 terms joined with ` + ` come to about 220 characters. The product recorded the run as missing (`FETCH_FAILED`, not computable); no value was returned.
+
+**What changes (preset v2).**
+- **Terms:** the 15 terms are reduced to the 8 whose words every paper term contains. Google Trends without quotes matches searches containing all of a term's words, so the union covers the same searches.
+- **Joiner:** the terms are joined with `+` without spaces, 93 characters.
+  - Checked first on neutral terms, before any cigar request: `tennis+squash` and `tennis + squash` gave identical values in all 51 regions.
+  - Raw responses: `docs/history/evidence/2026-10-26-cr2014/plus_check/`.
+
+**What does not change:** the claim band, the reading rule, the reference, the period, the region and the statistic.

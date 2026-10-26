@@ -8,6 +8,7 @@ import type { RunOrchestrator, AcquisitionPlanItem } from './run_orchestrator';
 import type { ReplicationTarget } from './replication_dossier';
 import type { Protocol } from './study_protocols';
 import { AutomationError } from '../db/repositories/automation';
+import { loadTrendsProviderConfig, TRENDS_BY_REGION_CONFIG_PATH } from '../sources/google_trends';
 
 /**
  * A new measurement for a replication target whose dossier declares a
@@ -31,7 +32,7 @@ export function measurementPlan(t: ReplicationTarget, root = process.cwd()): Mea
   const preset = read(root, m.preset_ref), interpretation = t.interpretation ?? {};
   const references = Object.fromEntries(preset.comparisons.map((c: any) => [c.id, read(root, c.reference_ref)]));
   const plan = [...preset.queries].sort((a: any, b: any) => a.dimension.localeCompare(b.dimension))
-    .map((q: any) => ({ entityId: q.dimension, dimension: q.dimension, renderedQuery: q.terms.join(' + ') }));
+    .map((q: any) => ({ entityId: q.dimension, dimension: q.dimension, renderedQuery: q.terms.join(preset.query_joiner ?? ' + ') }));
   return {
     target_id: t.target.target_id, preset, preset_hash: canonicalHash(preset), source_id: preset.source_id, provider_params: preset.provider_params,
     plan, requests: plan.length * (m.requests_per_run ?? 1), method_id: preset.method_id, credential: m.credential,
@@ -52,7 +53,10 @@ export class ReplicationMeasurements {
     if (!p) return null;
     const limit = this.settings.get(owner, this.profile.defaults).value.searchDailyRequestLimit, left = Math.max(0, limit - this.settings.searchesToday(owner));
     const keyPresent = this.vault.resolve(owner, p.credential).isPresent;
-    const blocked = !keyPresent ? `Add your personal ${p.credential} key in Settings → wizard, step 1.`
+    const maxChars = p.source_id === 'trends_interest_by_region' ? loadTrendsProviderConfig(TRENDS_BY_REGION_CONFIG_PATH).provider.max_query_chars : undefined;
+    const tooLong = maxChars ? p.plan.find(i => i.renderedQuery.length > maxChars) : undefined;
+    const blocked = tooLong ? `The query for '${tooLong.dimension}' has ${tooLong.renderedQuery.length} characters; the provider accepts at most ${maxChars}. The preset needs a new version.`
+      : !keyPresent ? `Add your personal ${p.credential} key in Settings → wizard, step 1.`
       : p.requests > left ? `This measurement needs ${p.requests} request(s); your daily limit (${limit}) leaves ${left} today.` : null;
     return { preset_id: p.preset.preset_id, preset_version: p.preset.preset_version, preset_hash: p.preset_hash, label: p.preset.label,
       source_id: p.source_id, provider_params: p.provider_params, queries: p.preset.queries.map((q: any) => ({ dimension: q.dimension, terms: q.terms })),

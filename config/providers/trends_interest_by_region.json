@@ -12,10 +12,34 @@
       "engine": "google_trends",
       "api_key_param": "api_key",
       "max_terms_per_request": 1,
-      "request_params": { "data_type": "GEO_MAP_0", "tz": "0", "no_cache": true },
-      "run_params_required": ["date", "geo", "region"],
-      "run_params_allowed": ["date", "geo", "region", "cat", "gprop", "include_low_search_volume"],
-      "pacing": { "min_interval_ms": 1200, "max_attempts": 3, "backoff_ms": [2000, 8000] }
+      "request_params": {
+        "data_type": "GEO_MAP_0",
+        "tz": "0",
+        "no_cache": true
+      },
+      "run_params_required": [
+        "date",
+        "geo",
+        "region"
+      ],
+      "run_params_allowed": [
+        "date",
+        "geo",
+        "region",
+        "cat",
+        "gprop",
+        "include_low_search_volume"
+      ],
+      "pacing": {
+        "min_interval_ms": 1200,
+        "max_attempts": 3,
+        "backoff_ms": [
+          2000,
+          8000
+        ]
+      },
+      "max_query_chars": 100,
+      "_why_max_query_chars": "SerpApi answers HTTP 400 for a Trends query longer than 100 characters (observed 2026-10-26); refusing locally keeps such a request from being sent."
     }
   ]
 }
