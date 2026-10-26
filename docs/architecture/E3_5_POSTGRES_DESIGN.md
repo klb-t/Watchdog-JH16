@@ -102,6 +102,27 @@ which are now covered by tests:
 
 A Cloud SQL instance is paid spending, and needs the owner's yes.
 
+## Option B' — implemented as code, not installed (2026-10-26)
+
+The owner's coordinator accepted B. Downloading and running the external Litestream binary was refused by the
+session's permission policy, so B was replaced by B', which uses only what is on the VM:
+`scripts/watchdog_replica.py` (python3 + `gcloud storage`). B' is **not** continuous: the recovery point equals the
+timer interval. Details and commands: `docs/DEPLOY_GCP_VM.md` → "Okresowa kopia poza maszynę".
+
+A restore drill ran on a copy of the audit data, with a local directory standing in for the bucket. Evidence:
+`docs/history/evidence/2026-10-26-e3-5-replica/`.
+- **Pushes during writes:** 4 pushes ran while 20 HTTP writes went through the running app. Every write succeeded.
+- **Point-in-time snapshots:** each snapshot restored to a consistent state (3, 5, 10 and 22 protocols).
+- **Latest restore:** logically identical to the source. 408 raw blobs were verified.
+- **App on restored data:** a second app instance gave the same runs, protocol values and run export hash.
+  Its vault key came from the separate copy, not from the replica.
+
+Not verified yet:
+- the `gcloud storage` path against a real bucket;
+- the systemd units on the VM.
+
+Both wait for the owner's approval to create the bucket and install the timer.
+
 ## Phased plan for C (each phase is its own PR with tests)
 
 1. **Async repository interface.** Make the repository methods `async` while staying on SQLite. This

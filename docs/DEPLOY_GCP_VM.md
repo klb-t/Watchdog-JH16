@@ -208,6 +208,34 @@ Restore zachowuje prywatne tryby, lecz właścicielem wyniku jest wywołujący u
 nie nadaje automatycznie własności kontenera. Nie uruchamiaj starego obrazu na
 potencjalnie zmigrowanej aktywnej bazie. Ten pakiet nie automatyzuje podmiany instalacji.
 
+### Okresowa kopia poza maszynę (przygotowane, niezainstalowane)
+
+`scripts/watchdog_replica.py` co N minut robi spójną migawkę SQLite (API kopii online, tylko
+odczyt; tryb dziennika bazy się nie zmienia), wysyła ją tylko wtedy, gdy treść się zmieniła,
+i dokopiowuje nowe pliki `object_store`. **To nie jest Litestream ani ciągła replikacja:** punkt
+odtworzenia to odstęp N. Klucz sejfu (`secrets/master.key`) nigdy nie trafia do kubełka; baza
+zawiera tylko zaszyfrowane koperty, więc do odczytu zapisanych kluczy potrzebna jest osobna
+kopia prywatna (`watchdogctl backup`).
+
+Instalacja wymaga zgody właściciela (tworzy kubełek i timer):
+
+```bash
+scripts/watchdog_replica_setup.sh bucket --project PROJEKT --bucket NAZWA           # podgląd poleceń
+scripts/watchdog_replica_setup.sh bucket --project PROJEKT --bucket NAZWA --apply   # europe-west4, uniform, bez dostępu publicznego, wersjonowanie, retencja 30 dni
+sudo scripts/watchdog_replica_setup.sh units --dest gs://NAZWA/watchdog --interval-minutes 15 --apply
+```
+
+Odtworzenie zawsze do nowego katalogu (narzędzie odmawia `/var/lib/watchdog`), ze sprawdzeniem
+hashy pliku i treści, `quick_check` i każdego wskazanego surowego pliku:
+
+```bash
+python3 scripts/watchdog_replica.py restore --src gs://NAZWA/watchdog --out /var/tmp/watchdog-odtworzenie
+```
+
+Koszt przy 8 MB bazy: najgorszy przypadek (zmiana co 15 minut przez 30 dni) ok. 23 GB, czyli
+ok. 0,5 € miesięcznie w europe-west4; przy zwykłym użyciu znacznie mniej. Bez zmian w bazie
+wysyłana jest tylko co 7 dni świeża migawka, aby retencja nie usunęła najnowszej.
+
 ### Model awarii aktualizacji
 
 | Miejsce awarii | Stan usługi i danych | Dalsze działanie |
