@@ -33,6 +33,8 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
 
 - [x] **E5.8b-1 — HTML/PDF parsing.** Deterministic conversion (parse5 7.3.0 for HTML, pdf.js 4.10.38 for PDF text with pages) into paper intake with a recorded conversion (parser, version, file and text sha256), and HTML tables as a copy-plan format with exact cell text and source spans. Found by the real test: the JSON-only mutation guard refused file uploads; a same-origin upload guard accepts only preflighted content types. Tests: `tests/integration/document_conversion.test.ts` (incl. HTTP); gate 643/643. Still open in E5.8b: PDF tables, sandboxed generated modules, compatibility contracts, workflow favourites, natural-language goal planner.
 
+- [x] **E5.8b-2 — PDF tables.** `pdf-layout-1` (pdf.js positions, PDF sha256), proposed column boundaries from shared gaps (review only), and an explicit PDF table plan (page, range, boundaries, names, row tolerance, join gap, raised-text marker and window) with per-cell provenance (page, baseline, fragment indices, bbox). Verified on arXiv 1706.03762 Table 2 through the UI. Tests in `tests/integration/document_conversion.test.ts`; gate 644/644.
+
 ## Completed resumed acceptance — 2026-10-02
 
 - [x] **E4.7 follow-up:** explicit OIDC fails closed without its audience; legacy-managed addresses cannot receive conflicting new grants through invitations/applications. Recheck inside all three grant transactions rejects intervening legacy writes without consuming evidence.

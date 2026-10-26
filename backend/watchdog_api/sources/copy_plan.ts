@@ -3,7 +3,7 @@ import { CopyPlanSchema, type CopyPlan } from '../../../shared/research';
 import { parseCsv } from '../../../shared/csv_import';
 import { AutomationError } from '../db/repositories/automation';
 import { canonicalHash } from '../domain/canonical';
-import { htmlTableRecords, htmlTableStructure } from './document_conversion';
+import { htmlTableRecords, htmlTableStructure, parsePdfLayout, pdfTableRecords } from './document_conversion';
 type Node = { start: number; end: number; kind: 'object' | 'array' | 'string' | 'literal'; children?: Map<string, Node> };
 
 /** JSON syntax parser retaining exact numeric lexemes and source spans. Numbers
@@ -57,6 +57,18 @@ export function copySource(input: string, rawPlan: unknown) {
       }
       records.push(out); provenance.push(source);
     }
+  } else if (plan.format === 'pdf') {
+    // The source is the pdf-layout-1 document of a PDF; the plan states the whole reading.
+    const layout = parsePdfLayout(input), spec = { ...plan.pdfTable!, raisedMarker: plan.pdfTable!.raisedMarker ?? null }, rows = pdfTableRecords(layout, spec);
+    for (const row of rows) {
+      const out: Record<string,string|null> = Object.create(null), source: any = Object.create(null);
+      for (const f of plan.fields) { const index = spec.columnNames.indexOf(f.selector); if (index < 0 && f.required) throw new AutomationError(`Required PDF column ${f.selector} is not named in the plan`);
+        const cell = index < 0 ? null : row.cells[index];
+        out[f.name] = !cell || cell.text === '' ? null : cell.text;
+        source[f.name] = { pdfSha256: layout.rawSha256, parser: `${layout.parser.id}@${layout.parser.version}`, page: spec.page, rowIndex: row.rowIndex, baselineY: row.y,
+          column: f.selector, columnIndex: index < 0 ? null : index, itemIndices: cell?.items ?? [], bbox: cell?.bbox ?? null, raisedText: cell?.raised ?? false, missing: !cell || cell.text === '' }; }
+      records.push(out); provenance.push(source);
+    }
   } else if (plan.format === 'html') {
     // Cell text as the HTML parser reads it (whitespace collapsed), with the cell's source span.
     const { headers, rows } = htmlTableRecords(input, plan.table!.index, plan.table!.headerRowIndex);
@@ -87,6 +99,8 @@ export function copySource(input: string, rawPlan: unknown) {
 export function sourceStructure(input: string, format: CopyPlan['format']) {
   if (Buffer.byteLength(input) > 2000000) throw new AutomationError('Extraction input exceeds 2 MB');
   if (format === 'csv') return { format, headers: parseCsv(input)[0] ?? [], valuesIncluded: false };
+  if (format === 'pdf') { const l = parsePdfLayout(input); return { format, pdfSha256: l.rawSha256, pages: l.pages.map(p => ({ page: p.page, items: p.items.length })), valuesIncluded: false,
+    scope: 'page and item counts only; a PDF table plan states page, range, boundaries and names explicitly' }; }
   if (format === 'html') return { format, tables: htmlTableStructure(input).map(t => ({ index: t.index, caption: t.caption, rows: t.rows, columns: t.columns, firstRow: t.firstRow })),
     valuesIncluded: false, scope: 'first row of each table only (normally the headers)' };
   const tree = jsonTree(input), paths: { pointer: string; type: string }[] = [];

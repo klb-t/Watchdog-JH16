@@ -5,7 +5,7 @@ import { PaperComparisonService } from '../services/paper_comparisons';
 import { researchPackage } from '../workbench/publication';
 import express, { Router, type Request, type Response, type NextFunction } from 'express';
 import { createHash } from 'node:crypto';
-import { htmlToText, htmlTableStructure, pdfToText, LIMITS } from '../sources/document_conversion';
+import { htmlToText, htmlTableStructure, pdfToText, pdfLayout, pdfPageLines, parsePdfLayout, LIMITS } from '../sources/document_conversion';
 import { z } from 'zod';
 import { requireCapability } from './auth_routes';
 import { sameOriginMutation } from './automation_routes';
@@ -84,11 +84,18 @@ export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntake
   router.post('/convert', sameOriginUpload(['text/html', 'application/pdf']), express.raw({ type: ['text/html', 'application/pdf'], limit: LIMITS.pdfBytes }), route(async (req,res) => {
     const format = z.enum(['html', 'pdf']).parse(req.query.format);
     if (!Buffer.isBuffer(req.body) || req.body.length === 0) throw new AutomationError('Send the file as the request body');
+    // ?layout=1: the positioned text of a PDF, the source a PDF table plan reads.
+    if (format === 'pdf' && req.query.layout === '1') { const layout = await pdfLayout(req.body); return res.json({ layout: JSON.stringify(layout), pdfSha256: layout.rawSha256,
+      pages: layout.pages.map(p => ({ page: p.page, items: p.items.length, width: p.width, height: p.height })) }); }
     const result = format === 'pdf' ? await pdfToText(req.body) : htmlToText(req.body.toString('utf8'));
     const conversion = { format, rawSha256: result.rawSha256, parser: result.parser.id, parserVersion: result.parser.version,
       textSha256: createHash('sha256').update(result.text).digest('hex'), pages: result.pages };
     res.json({ text: result.text, title: result.title, conversion, warning: (result as any).warning ?? null,
       tables: format === 'html' ? htmlTableStructure(req.body.toString('utf8')) : null });
+  }));
+  router.post('/pdf-lines', route((req,res) => {
+    const b = z.object({ raw: z.string().max(LIMITS.pdfBytes), page: z.number().int().min(1), tolerance: z.number().min(0).max(50).default(2), top: z.number().optional(), bottom: z.number().optional(), raisedWindow: z.number().min(0).max(50).default(0) }).strict().parse(req.body);
+    res.json(pdfPageLines(parsePdfLayout(b.raw), b.page, b.tolerance, b.top, b.bottom, b.raisedWindow));
   }));
   router.post('/papers', route((req,res) => res.status(201).json({ document: repo.saveDocument(req.principal!.id,req.body) })));
   router.get('/papers/:id', route((req,res) => { const document=repo.document(req.principal!.id,req.params.id);if(!document)throw new AutomationError('Document not found',404);res.json({document}); }));
@@ -119,7 +126,7 @@ export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntake
     if(!datasets)throw new AutomationError('Dataset handoff is not configured');res.status(201).json({template:await datasets.saveTemplate(req.principal!.id,b.datasetId,b.expectedHash,b.name)});
   }));
   router.post('/extractors/propose', route(async (req,res) => {
-    const b = z.object({ raw: z.string().max(2000000),format:z.enum(['json','csv','html']),goal:z.string().trim().min(1).max(2000),consent:z.literal(true) }).strict().parse(req.body);
+    const b = z.object({ raw: z.string().max(2000000),format:z.enum(['json','csv','html','pdf']),goal:z.string().trim().min(1).max(2000),consent:z.literal(true) }).strict().parse(req.body);
     res.status(201).json({ extractor: await extraction.propose(req.principal!.id,b.raw,b.format,b.goal) });
   }));
   router.post('/extractors/:id/test', route((req,res) => {
