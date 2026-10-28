@@ -47,7 +47,7 @@ const deps = (log: string[], extra: any = {}) => ({ fetcher: fetcher(log, extra.
 test('the quote: the work is resolved through open metadata, intents are quoted, the plan comes from the dossier', async () => {
   const log: string[] = [], a = await analyzeText(QUOTE, deps(log));
   assert.deepStrictEqual(a.identifiers, [{ kind: 'url', value: 'https://www.jmir.org/2016/2/e38/' }]);
-  assert.match(a.retrievals[0].note!, /empty body .* not worked around/); assert.ok(log.every(l => /UA=WatchDog research platform/.test(l)), 'honestly identified, never a browser');
+  assert.match(a.retrievals[0].note!, /HTTP 202 \(0 B\) is not the document .* not worked around/); assert.ok(log.every(l => /UA=WatchDog research platform/.test(l)), 'honestly identified, never a browser');
   assert.deepStrictEqual(a.works.map(w => w.doi), ['10.2196/jmir.4033']); assert.match(a.works[0].via, /registered landing page equals/);
   assert.strictEqual(a.target?.target_id, 'jh2016');
   assert.deepStrictEqual(a.intents.map(i => [i.id, i.source]), [['replicate', 'rule'], ['period_update', 'rule'], ['regional', 'rule']]);
@@ -58,6 +58,9 @@ test('the quote: the work is resolved through open metadata, intents are quoted,
   assert.deepStrictEqual(a.questions.map(q => q.id), ['substances', 'countries', 'periods', 'original_data']);
   assert.strictEqual(a.model.status, 'disabled'); assert.strictEqual(a.cost.literal_requests, 32); assert.strictEqual(a.intake, null);
   assert.strictEqual((await analyzeText(QUOTE, deps([]))).plan_hash, a.plan_hash, 'the plan hash does not depend on volatile page bytes');
+  const wrapped = QUOTE.replace('rozwoju sytuacji', 'rozwoju\nsytuacji'), w = await analyzeText(wrapped, deps([]));
+  assert.match(w.intents.find(i => i.id === 'period_update')!.fragment, /^gdzie zaproponowaliśmy sposób oceny/, 'a wrapped line does not cut the sentence');
+  assert.ok(w.intents.every(i => wrapped.includes(i.fragment)));
 });
 
 test('sending starts the literal part within the daily spending cap; proposals need acceptance; answers do not block', async () => {
@@ -97,6 +100,8 @@ test('a work outside the register goes to paper intake with what could be fetche
   const r = await service.submit('owner', text, a.plan_hash);
   assert.strictEqual(intakes[0].coverage, 'full_text'); assert.match(intakes[0].text, /We counted things/);
   assert.deepStrictEqual(r.events.map(e => [e.kind, e.body.action, e.body.documentId]), [['launched', 'intake', 'doc-1']]);
+  const challenge = await analyzeText('Proszę powtórzyć analizę jak w artykule https://example.org/guarded', deps([], { pages: { 'https://example.org/guarded': { status: 202, type: 'text/html', body: '<html><title>Just a moment</title><body>checking your browser</body></html>' } } }));
+  assert.deepStrictEqual(challenge.intake && [challenge.intake.coverage, challenge.intake.title], ['identifier_only', 'https://example.org/guarded'], 'a bot-protection page is never taken as the paper');
   const onlyDoi = await analyzeText('See doi 10.5555/xyz.1 please replicate it.', deps([]));
   assert.deepStrictEqual(onlyDoi.intake && [onlyDoi.intake.source, onlyDoi.intake.coverage], ['doi:10.5555/xyz.1', 'identifier_only']);
 });

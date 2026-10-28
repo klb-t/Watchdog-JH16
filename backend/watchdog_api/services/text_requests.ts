@@ -54,10 +54,13 @@ export interface Analysis {
 }
 
 const normUrl = (u: string) => u.replace(/^https?:\/\//i, '').replace(/\/+$/, '').toLowerCase();
+// The sentence around a match: bounded by sentence punctuation or a blank line. A single
+// line break is wrapping, not a boundary. The fragment stays a verbatim substring of the text.
 const sentenceAt = (text: string, index: number) => {
-  const start = Math.max(text.lastIndexOf('\n', index), ...['.', '!', '?'].map(c => text.lastIndexOf(c, index - 1))) + 1;
-  const ends = ['\n', '.', '!', '?'].map(c => text.indexOf(c, index)).filter(i => i >= 0);
-  return text.slice(start, ends.length ? Math.min(...ends) + 1 : text.length).trim().slice(0, 300);
+  const para = text.lastIndexOf('\n\n', index), start = Math.max(para < 0 ? -1 : para + 1, ...['.', '!', '?'].map(c => text.lastIndexOf(c, index - 1))) + 1;
+  const ends = ['.', '!', '?'].map(c => text.indexOf(c, index)).filter(i => i >= 0), paraEnd = text.indexOf('\n\n', index);
+  const end = Math.min(ends.length ? Math.min(...ends) + 1 : text.length, paraEnd < 0 ? text.length : paraEnd);
+  return text.slice(start, end).trim().slice(0, 300);
 };
 
 export interface AnalyzeDeps { fetcher: Fetcher; store: ObjectStore; root?: string; modelTransport?: Transport }
@@ -67,8 +70,9 @@ async function retrieve(deps: AnalyzeDeps, cfg: any, purpose: string, url: strin
     const res = await deps.fetcher(url, { headers: { 'User-Agent': cfg.fetch.user_agent, Accept: purpose === 'page' ? 'text/html,application/pdf' : 'application/json' }, signal: AbortSignal.timeout(cfg.fetch.timeout_ms) });
     const sha = res.body.length ? createHash('sha256').update(res.body).digest('hex') : null;
     const uri = sha ? await deps.store.put(`raw/${sha}`, res.body) : null;
-    const note = res.body.length === 0 ? `the server answered HTTP ${res.status} with an empty body (e.g. bot protection); recorded, not worked around` : undefined;
-    return { r: { purpose, url, status: res.status, bytes: res.body.length, sha256: sha, object_uri: uri, error: null, ...(note ? { note } : {}) }, body: res.status < 400 && res.body.length ? res.body : null, contentType: res.contentType };
+    // Only a 200 is the document itself; a 202 or similar is typically a bot-protection page and is kept as evidence, not as text.
+    const note = res.status !== 200 && res.status < 400 ? `HTTP ${res.status} (${res.body.length} B) is not the document (e.g. bot protection); recorded, not worked around` : undefined;
+    return { r: { purpose, url, status: res.status, bytes: res.body.length, sha256: sha, object_uri: uri, error: null, ...(note ? { note } : {}) }, body: res.status === 200 && res.body.length ? res.body : null, contentType: res.contentType };
   } catch (e) { return { r: { purpose, url, status: null, bytes: 0, sha256: null, object_uri: null, error: (e as Error).message.slice(0, 200) }, body: null, contentType: '' }; }
 }
 

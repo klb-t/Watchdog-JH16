@@ -1,0 +1,747 @@
+{
+  "search_metadata": {
+    "id": "6ae204a7934695921c6cca35",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/Z0q4nqbkgqWjwYok8PyUkEGDjMGY-_B3q8UBqZDSN84/6ae204a7934695921c6cca35.json",
+    "markdown_endpoint": "https://serpapi.com/searches/Z0q4nqbkgqWjwYok8PyUkEGDjMGY-_B3q8UBqZDSN84/6ae204a7934695921c6cca35.md",
+    "pixel_position_endpoint": "https://serpapi.com/searches/Z0q4nqbkgqWjwYok8PyUkEGDjMGY-_B3q8UBqZDSN84/6ae204a7934695921c6cca35.json_with_pixel_position",
+    "created_at": "2026-10-28 14:20:23 UTC",
+    "processed_at": "2026-10-28 14:20:23 UTC",
+    "google_url": "https://www.google.com/search?q=%22alcohol%22&oq=%22alcohol%22&hl=en&safe=off&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/Z0q4nqbkgqWjwYok8PyUkEGDjMGY-_B3q8UBqZDSN84/6ae204a7934695921c6cca35.html",
+    "total_time_taken": 0.57
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "\"alcohol\"",
+    "google_domain": "google.com",
+    "hl": "en",
+    "safe": "off",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "\"alcohol\"",
+    "total_results": 736000000,
+    "time_taken_displayed": 0.2,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "local_map": {
+    "link": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&udm=local&lsack=pwTiaqTvBqaIp84P3oHD8Q0&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QtgN6BAgoEAM",
+    "image": "https://serpapi.com/searches/6ae204a7934695921c6cca35/images/kDyT6Yy0O1xleyZ-QrzyUw.png",
+    "gps_coordinates": {
+      "latitude": 37.16907157713011,
+      "longitude": -95.6854248046875
+    }
+  },
+  "local_results": {
+    "places": [
+      {
+        "position": 1,
+        "title": "Hallett's Liquor",
+        "type": "Liquor store",
+        "rating": 4.6,
+        "reviews": 210,
+        "description": "\"Wide selection and the owner and staff are always pleasant and welcoming!\"",
+        "thumbnail": "https://lh3.googleusercontent.com/grass-cs/AABkmLc2KhnbVnChWf38RcHO0xkKN1tr65EXMmm7N9-pDQyrUg9yX-gvPCfRfUZRk0TEsRtgTZ66gBL10G7yp846Elq_1rDvBZ5v7MkaJiHRmh3P1s2Hqct6sw0NxNAuoFzRCvHFxzOuOQ=w184-h184-n-k-no",
+        "thumbnail_large": "https://lh3.googleusercontent.com/grass-cs/AABkmLc2KhnbVnChWf38RcHO0xkKN1tr65EXMmm7N9-pDQyrUg9yX-gvPCfRfUZRk0TEsRtgTZ66gBL10G7yp846Elq_1rDvBZ5v7MkaJiHRmh3P1s2Hqct6sw0NxNAuoFzRCvHFxzOuOQ=w1000-h1000-c-n",
+        "links": {
+          "phone": "tel:(620) 331-1483",
+          "website": "https://www.facebook.com/Halletts-Liquor-Independence-KS-582356875146113/"
+        },
+        "place_id": "16989929253488236312",
+        "place_id_search": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&ludocid=16989929253488236312&q=%22alcohol%22&safe=off",
+        "provider_id": "/g/1td1qd7d",
+        "gps_coordinates": {
+          "latitude": 37.23162,
+          "longitude": -95.711054
+        },
+        "address": "407 W Railroad St, Independence, KS 67301",
+        "hours": "Open · Closes 11 PM",
+        "phone": "(620) 331-1483"
+      },
+      {
+        "position": 2,
+        "title": "Borovetz Retail Liquor Store",
+        "type": "Liquor store",
+        "rating": 4.6,
+        "reviews": 66,
+        "description": "\"Low prices and plenty of variety of what you might have a thirst for.\"",
+        "thumbnail": "https://lh3.googleusercontent.com/grass-cs/AABkmLck1K0DKs1R1U9JnCUnld2AVNzB7HJRlhcKAEHPnOALLKuU15O_LdltvZxzvVXT8CPEJQo3oF_jqW00Q66_4HKq2ILIX_NiDLws6-XIgdJoC6UKbe6BBGjgiqd68CwUjGfLW2H8=w184-h184-n-k-no",
+        "thumbnail_large": "https://lh3.googleusercontent.com/grass-cs/AABkmLck1K0DKs1R1U9JnCUnld2AVNzB7HJRlhcKAEHPnOALLKuU15O_LdltvZxzvVXT8CPEJQo3oF_jqW00Q66_4HKq2ILIX_NiDLws6-XIgdJoC6UKbe6BBGjgiqd68CwUjGfLW2H8=w1000-h1000-c-n",
+        "links": {
+          "phone": "tel:(620) 331-2160",
+          "website": "http://www.borovetzliquor.com/"
+        },
+        "place_id": "10507108796177003629",
+        "place_id_search": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&ludocid=10507108796177003629&q=%22alcohol%22&safe=off",
+        "provider_id": "/g/1xg5t5pl",
+        "gps_coordinates": {
+          "latitude": 37.224244,
+          "longitude": -95.728532
+        },
+        "address": "120 N 24th St, Independence, KS 67301",
+        "hours": "Open · Closes 10 PM",
+        "phone": "(620) 331-2160"
+      },
+      {
+        "position": 3,
+        "title": "Mikies Liquor",
+        "type": "Liquor store",
+        "rating": 4.5,
+        "reviews": 184,
+        "description": "\"Really nice selection good prices nice people.\"",
+        "thumbnail": "https://lh3.googleusercontent.com/grass-cs/AABkmLcgOAaZz3o4UPSFim-UKidsqIz0P1z11Qu7m4onWopODlF4kNOuBQ5Sf1TVPorPoLRcq1sTFvzT7fGJlb8DsOEw8hWGtSCiQdVWtxdGuzjGUq0e4XI3eb01Wf4bfLK22DEv5I-C=w184-h184-n-k-no",
+        "thumbnail_large": "https://lh3.googleusercontent.com/grass-cs/AABkmLcgOAaZz3o4UPSFim-UKidsqIz0P1z11Qu7m4onWopODlF4kNOuBQ5Sf1TVPorPoLRcq1sTFvzT7fGJlb8DsOEw8hWGtSCiQdVWtxdGuzjGUq0e4XI3eb01Wf4bfLK22DEv5I-C=w1000-h1000-c-n",
+        "links": {
+          "phone": "tel:(620) 331-5757"
+        },
+        "place_id": "2583522143856049420",
+        "place_id_search": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&ludocid=2583522143856049420&q=%22alcohol%22&safe=off",
+        "provider_id": "/g/1tph27k4",
+        "gps_coordinates": {
+          "latitude": 37.24385,
+          "longitude": -95.706617
+        },
+        "address": "1903 N Pennsylvania Ave, Independence, KS 67301",
+        "hours": "Open · Closes 10 PM",
+        "phone": "(620) 331-5757"
+      }
+    ],
+    "more_locations_link": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&udm=local&lsack=pwTiaqTvBqaIp84P3oHD8Q0&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QjGp6BAgqEAE"
+  },
+  "knowledge_graph": {
+    "place_id": "ChIJOyQNWEIruIcRGBcvuaNayOs"
+  },
+  "inline_images": [
+    {
+      "source": "https://en.wikipedia.org/wiki/Alcoholic_beverage",
+      "thumbnail": "https://serpapi.com/searches/6ae204a7934695921c6cca35/images/mzvr0dwPIiefZ0xwQrcV3arnHXFZaij3Gt5xGFfQWT8.jpeg",
+      "original": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Common_alcoholic_beverages.jpg/1280px-Common_alcoholic_beverages.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "title": "Alcoholic beverage - Wikipedia",
+      "source_name": "Wikipedia"
+    },
+    {
+      "source": "https://talktofrank.com/drug/alcohol",
+      "thumbnail": "https://serpapi.com/searches/6ae204a7934695921c6cca35/images/bzS6FJLUVNkq9jtUha-YW03qvhp_tQrEB1_coH4p1B0.jpeg",
+      "original": "https://images.ctfassets.net/ip74mqmfgvqf/4TBnKGAY1i4guUwyQewusy/e1b86c06f513cfec9162929030dcb410/FRANK_drug_image_alcohol.jpg?fit=scale&f=bottom&q=70&fm=webp&w=3840",
+      "title": "Alcohol | Effects of Alcohol | FRANK",
+      "source_name": "FRANK"
+    },
+    {
+      "source": "https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/nutrition-basics/alcohol-and-heart-health",
+      "thumbnail": "https://serpapi.com/searches/6ae204a7934695921c6cca35/images/Xla3NiDN5Xlu3jCnZDkS9cL1IZr6QPRqiFJbxDM6Qic.jpeg",
+      "original": "https://www.heart.org/-/media/Healthy-Living-Images/Healthy-Eating/woman_shopping_for_a_bottle_of_wine.jpg?sc_lang=en",
+      "title": "Is drinking alcohol part of a healthy lifestyle? | American ...",
+      "source_name": "American Heart Association"
+    },
+    {
+      "source": "https://www.abc.ca.gov/education/licensee-education/alcohol-facts/",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSUjcalfFhEVBEI5xiSEFVfIuwGfuJp1Gm8kcDIrwnDQUgNA7kF6MmQppI&s",
+      "original": "https://cdn-ildlpod.nitrocdn.com/IrAAMiYqNsUiGaDCzsJOckIXIzQdNBHv/assets/images/optimized/rev-6b47065/www.abc.ca.gov/wp-content/uploads/2021/08/Alcohol-Facts-Drink-Equivalencies.png",
+      "title": "Alcohol Facts | Alcoholic Beverage Control",
+      "source_name": "Alcoholic Beverage Control - CA.gov"
+    },
+    {
+      "source": "https://www.healthline.com/health/addiction/alcohol",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1kunnm8cybOOjjrzkMaBW5-Lmqx0TGW7GJlDH2_8e_NeS2lUUXqj-QF0&s",
+      "original": "https://media.post.rvohealth.io/wp-content/uploads/2020/08/Alcohol_Addiction-732x549-thumbnail-1-732x549.jpg",
+      "title": "Alcohol Addiction: Signs, Complications, and Recovery",
+      "source_name": "Healthline"
+    },
+    {
+      "source": "https://www.niaaa.nih.gov/alcohols-effects-health/alcohols-effects-body",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6SnZ7PDo_lnhdY6z4_H8w_u-0bjYWytR09f-POwJxRsQPQtFZVQ4KFVw&s",
+      "original": "https://www.niaaa.nih.gov/sites/default/themes/solstice/images/bodyeffects_05052022.svg",
+      "title": "Alcohol's Effects on the Body | National Institute on ...",
+      "source_name": "National Institute on Alcohol Abuse and Alcoholism (NIAAA) - NIH"
+    },
+    {
+      "source": "https://www.who.int/health-topics/alcohol",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRfbri21qUFnkaqG5aR_iqoOe2uDDc5fPXYTJzuwT-q4tnvEmIKDtnlLg&s",
+      "original": "http://www.who.int/images/default-source/departments/substances-abuse/alcohol/alcohol-bottles.tmb-1024v.jpg?Culture=en&sfvrsn=d4f7b64e_6",
+      "title": "Alcohol",
+      "source_name": "World Health Organization (WHO)"
+    },
+    {
+      "source": "https://www.cdc.gov/alcohol/facts-stats/index.html",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIW8qTgrTWwT7--Iu8zpxDnoXXv-7t_f2Ji4xGLlckg7zn9WDF4hoVxyk&s",
+      "original": "https://www.cdc.gov/alcohol/images/MMWR-Alcohol-Deaths-rise-final.jpg",
+      "title": "Facts About U.S. Deaths from Excessive Alcohol Use | Alcohol ...",
+      "source_name": "CDC"
+    },
+    {
+      "source": "https://science.howstuffworks.com/alcohol.htm",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIRwBeShaM3mrx66VaQLlFUad7BZfdavIQtJBEGd-h4oS8y12Z1FRJaV0&s",
+      "original": "https://cdn.hswstatic.com/gif/alcohol-update.jpg",
+      "title": "What Is Alcohol and What Does It Do to the Human Body ...",
+      "source_name": "Science | HowStuffWorks"
+    }
+  ],
+  "inline_videos": [
+    {
+      "position": 1,
+      "title": "What Alcohol Really Does to Your Body: Short & Long-Term ...",
+      "link": "https://www.youtube.com/watch?v=Mb9jj3WkmqE",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6ddxVXpuI5g0VChcfK_J1a5u8XC1XJcLe5fOqMF2SLABFN_p_wGeMRA&s",
+      "channel": "Doctor O'Donovan",
+      "duration": "6:22",
+      "platform": "YouTube",
+      "date": "Oct 12, 2025",
+      "short_clip": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcRFRBEsZuXek2D4wstelEFWtOpCyjoaEMK0fg"
+    },
+    {
+      "position": 2,
+      "title": "What alcohol does to the body, and why risks are overlooked",
+      "link": "https://www.pbs.org/video/what-alcohol-does-to-the-body-and-why-risks-are-overlooked-tg0qki/",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2J8MqHlcccSLJDdifwqfa3m81AhXrwkt1CT712PtmY_HGE1JDGwcflg&s",
+      "channel": "PBS",
+      "duration": "26:46",
+      "platform": "PBS",
+      "date": "Jul 16, 2026"
+    },
+    {
+      "position": 3,
+      "title": "What alcohol does to our bodies – and why many overlook the ...",
+      "link": "https://www.youtube.com/watch?v=8Nn-C3S6fe0",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAbODo_rM3rH89c95jZIXtPT7HZtJnWjQQil7v0bWm5oRRMBkYVU9HPQ&s",
+      "channel": "PBS NewsHour",
+      "duration": "26:47",
+      "platform": "YouTube",
+      "date": "Jul 17, 2026",
+      "short_clip": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcQ7UuxMadCOsaXtrVXMK2ygjJK3IUJoNkIGag"
+    }
+  ],
+  "related_questions": [
+    {
+      "question": "What does just one alcoholic drink a day do to your body?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiV2hhdCBkb2VzIGp1c3Qgb25lIGFsY29ob2xpYyBkcmluayBhIGRheSBkbyB0byB5b3VyIGJvZHk/IiwibGsiOiJHalYzYUdGMElHcDFjM1FnYjI1bElHRnNZMjlvYjJ4cFl5QmtjbWx1YXlCaElHUmhlU0JrYjJWeklIUnZJSGx2ZFhJZ1ltOWtlUSIsImJzIjoiYzRXTnNRNkNNQlJGNDlySndhQmh1anI0QVJoRG5IQXh4c0hadWRKSHFGWWVhVXRNXzE0Z0VuRmlmZS1jZTRRWGgxc3BQUlNUdzZOeEhsd1JwTW01WktOektLdXJKeVNVREMwRHp3amNXTnhaaFN4SjRfMjdreWU5ZG50c2lxUFk5bFZwQ1NtVUxncXlWSG40VUxjb0Y4TlFsa1R4WWd4ODcwN3N4UExpY0RKYzRkcTR2dFFWeVdiSktvNjBBM1d2MTk5TG5NVzZsYlNIcThrWVVzTWMyUDZLbXhoNkFwclBQZyIsImlkIjoiZmNfcHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTBfNSJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiV2hhdCBkb2VzIGp1c3Qgb25lIGFsY29ob2xpYyBkcmluayBhIGRheSBkbyB0byB5b3VyIGJvZHk%2FIiwibGsiOiJHalYzYUdGMElHcDFjM1FnYjI1bElHRnNZMjlvYjJ4cFl5QmtjbWx1YXlCaElHUmhlU0JrYjJWeklIUnZJSGx2ZFhJZ1ltOWtlUSIsImJzIjoiYzRXTnNRNkNNQlJGNDlySndhQmh1anI0QVJoRG5IQXh4c0hadWRKSHFGWWVhVXRNXzE0Z0VuRmlmZS1jZTRRWGgxc3BQUlNUdzZOeEhsd1JwTW01WktOektLdXJKeVNVREMwRHp3amNXTnhaaFN4SjRfMjdreWU5ZG50c2lxUFk5bFZwQ1NtVUxncXlWSG40VUxjb0Y4TlFsa1R4WWd4ODcwN3N4UExpY0RKYzRkcTR2dFFWeVdiSktvNjBBM1d2MTk5TG5NVzZsYlNIcThrWVVzTWMyUDZLbXhoNkFwclBQZyIsImlkIjoiZmNfcHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTBfNSJ9"
+    },
+    {
+      "question": "What are 7 different types of alcohol?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiV2hhdCBhcmUgNyBkaWZmZXJlbnQgdHlwZXMgb2YgYWxjb2hvbD8iLCJsayI6IkdoUTNJR1JwWm1abGNtVnVkQ0JoYkdOdmFHOXNjdyIsImJzIjoiYzRXTnNRNkNNQlJGNDlySndhQmh1anI0QVJoRG5IQXh4c0hadWRKSHFGWWVhVXRNXzE0Z0VuRmlmZS1jZTRRWGgxc3BQUlNUdzZOeEhsd1JwTW01WktOektLdXJKeVNVREMwRHp3amNXTnhaaFN4SjRfMjdreWU5ZG50c2lxUFk5bFZwQ1NtVUxncXlWSG40VUxjb0Y4TlFsa1R4WWd4ODcwN3N4UExpY0RKYzRkcTR2dFFWeVdiSktvNjBBM1d2MTk5TG5NVzZsYlNIcThrWVVzTWMyUDZLbXhoNkFwclBQZyIsImlkIjoiZmNfcHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTBfNSJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiV2hhdCBhcmUgNyBkaWZmZXJlbnQgdHlwZXMgb2YgYWxjb2hvbD8iLCJsayI6IkdoUTNJR1JwWm1abGNtVnVkQ0JoYkdOdmFHOXNjdyIsImJzIjoiYzRXTnNRNkNNQlJGNDlySndhQmh1anI0QVJoRG5IQXh4c0hadWRKSHFGWWVhVXRNXzE0Z0VuRmlmZS1jZTRRWGgxc3BQUlNUdzZOeEhsd1JwTW01WktOektLdXJKeVNVREMwRHp3amNXTnhaaFN4SjRfMjdreWU5ZG50c2lxUFk5bFZwQ1NtVUxncXlWSG40VUxjb0Y4TlFsa1R4WWd4ODcwN3N4UExpY0RKYzRkcTR2dFFWeVdiSktvNjBBM1d2MTk5TG5NVzZsYlNIcThrWVVzTWMyUDZLbXhoNkFwclBQZyIsImlkIjoiZmNfcHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTBfNSJ9"
+    },
+    {
+      "question": "Is Elon Musk a drinker?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiSXMgRWxvbiBNdXNrIGEgZHJpbmtlcj8iLCJsayI6IkdoWnBjeUJsYkc5dUlHMTFjMnNnWVNCa2NtbHVhMlZ5IiwiYnMiOiJjNFdOc1E2Q01CUkY0OXJKd2FCaHVqcjRBUmhEbkhBeHhzSFp1ZEpIcUZZZWFVdE1fMTRnRW5GaWZlLWNlNFFYaDFzcFBSU1R3Nk54SGx3UnBNbTVaS056S0t1ckp5U1VEQzBEendqY1dOeFpoU3hKNF8yN2t5ZTlkbnRzaXFQWTlsVnBDU21VTGdxeVZIbjRVTGNvRjhOUWxrVHhZZ3g4NzA3c3hQTGljREpjNGRxNHZ0UVZ5V2JKS282MEEzV3YxOTlMbk1XNmxiU0hxOGtZVXNNYzJQNktteGg2QXByUFBnIiwiaWQiOiJmY19wd1RpYXFUdkJxYUlwODRQM29IRDhRMF81In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiSXMgRWxvbiBNdXNrIGEgZHJpbmtlcj8iLCJsayI6IkdoWnBjeUJsYkc5dUlHMTFjMnNnWVNCa2NtbHVhMlZ5IiwiYnMiOiJjNFdOc1E2Q01CUkY0OXJKd2FCaHVqcjRBUmhEbkhBeHhzSFp1ZEpIcUZZZWFVdE1fMTRnRW5GaWZlLWNlNFFYaDFzcFBSU1R3Nk54SGx3UnBNbTVaS056S0t1ckp5U1VEQzBEendqY1dOeFpoU3hKNF8yN2t5ZTlkbnRzaXFQWTlsVnBDU21VTGdxeVZIbjRVTGNvRjhOUWxrVHhZZ3g4NzA3c3hQTGljREpjNGRxNHZ0UVZ5V2JKS282MEEzV3YxOTlMbk1XNmxiU0hxOGtZVXNNYzJQNktteGg2QXByUFBnIiwiaWQiOiJmY19wd1RpYXFUdkJxYUlwODRQM29IRDhRMF81In0%3D"
+    },
+    {
+      "question": "Is it spelled alcohol or alcohol?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiSXMgaXQgc3BlbGxlZCBhbGNvaG9sIG9yIGFsY29ob2w/IiwibGsiOiJjNU5TeUN4V3lDeFJLQzVJemNsSlRWRkl6RW5PejhqUFVjZ3ZnakVCIiwiYnMiOiJjNFdOc1E2Q01CUkY0OXJKd2FCaHVqcjRBUmhEbkhBeHhzSFp1ZEpIcUZZZWFVdE1fMTRnRW5GaWZlLWNlNFFYaDFzcFBSU1R3Nk54SGx3UnBNbTVaS056S0t1ckp5U1VEQzBEendqY1dOeFpoU3hKNF8yN2t5ZTlkbnRzaXFQWTlsVnBDU21VTGdxeVZIbjRVTGNvRjhOUWxrVHhZZ3g4NzA3c3hQTGljREpjNGRxNHZ0UVZ5V2JKS282MEEzV3YxOTlMbk1XNmxiU0hxOGtZVXNNYzJQNktteGg2QXByUFBnIiwiaWQiOiJmY19wd1RpYXFUdkJxYUlwODRQM29IRDhRMF81In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSS01rMUJMWE5aVlhrNGRqTXhUV3hsTUdvM1NsaFVVamh2YTFWdldEZHVNRzVFVkZZNWJtSlJNa2h1ZGpCck9UbGxMVlZIZEVFM055MVFWa2RKYmxaT1QxVlVZMjluZG05MFNrWm5TRVl5UkROSVkxUXdkbkpFWjBRM1VSSVhjSGRVYVdGeFZIWkNjV0ZKY0RnMFVETnZTRVE0VVRBYUlrRkVjM0k1WmxScFNUUTRhMEpIWldwWmRsQkxSazVuYUVkRk1ucG1aVWd4UVVFIiwiZmN2IjoiMyIsImVpIjoicHdUaWFxVHZCcWFJcDg0UDNvSEQ4UTAiLCJxYyI6IkNnZGhiR052YUc5c0VBQVlBVGdCZllRR1lqOCIsInF1ZXN0aW9uIjoiSXMgaXQgc3BlbGxlZCBhbGNvaG9sIG9yIGFsY29ob2w%2FIiwibGsiOiJjNU5TeUN4V3lDeFJLQzVJemNsSlRWRkl6RW5PejhqUFVjZ3ZnakVCIiwiYnMiOiJjNFdOc1E2Q01CUkY0OXJKd2FCaHVqcjRBUmhEbkhBeHhzSFp1ZEpIcUZZZWFVdE1fMTRnRW5GaWZlLWNlNFFYaDFzcFBSU1R3Nk54SGx3UnBNbTVaS056S0t1ckp5U1VEQzBEendqY1dOeFpoU3hKNF8yN2t5ZTlkbnRzaXFQWTlsVnBDU21VTGdxeVZIbjRVTGNvRjhOUWxrVHhZZ3g4NzA3c3hQTGljREpjNGRxNHZ0UVZ5V2JKS282MEEzV3YxOTlMbk1XNmxiU0hxOGtZVXNNYzJQNktteGg2QXByUFBnIiwiaWQiOiJmY19wd1RpYXFUdkJxYUlwODRQM29IRDhRMF81In0%3D"
+    }
+  ],
+  "ai_overview": {
+    "text_blocks": [
+      {
+        "type": "paragraph",
+        "snippet": "Alcohol (ethanol) is a central nervous system depressant and psychoactive substance found in fermented or brewed drinks.",
+        "reference_indexes": [
+          0,
+          1
+        ]
+      },
+      {
+        "type": "heading",
+        "snippet": "Definition and Chemistry"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "Active Ingredient: Ethanol (C₂H₆O) is the consumable chemical compound present in alcoholic beverages."
+          },
+          {
+            "snippet": "Standard Drink (U.S.): Equal to about 14 grams of pure alcohol, found in 12 ounces of regular beer (5%), 5 ounces of wine (12%), or 1.5 ounces of distilled spirits (40%)."
+          },
+          {
+            "snippet": "Metabolism: Processed primarily in the liver by enzymes (alcohol dehydrogenase and ALDH) that convert it into acetaldehyde and then acetate.",
+            "reference_indexes": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "snippet": "Health and Safety Risks"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "Short-Term Effects: Euphoria, sedation, reduced inhibition, impaired judgment, slower reaction times, coordination loss, and risk of alcohol poisoning.",
+            "reference_indexes": [
+              0,
+              3,
+              4
+            ]
+          },
+          {
+            "snippet": "Long-Term Effects: Chronic misuse increases the risk of Alcohol Use Disorder (AUD), liver disease (cirrhosis), high blood pressure, stroke, heart damage, dementia, and several types of cancer (including breast, liver, and colorectal cancers).",
+            "snippet_links": [
+              {
+                "text": "Alcohol Use Disorder (AUD)",
+                "link": "https://medlineplus.gov/alcoholusedisorderaud.html"
+              }
+            ],
+            "reference_indexes": [
+              5,
+              6,
+              7
+            ]
+          },
+          {
+            "snippet": "Guideline Limits: Moderate use is generally defined by the CDC Alcohol Use Guidelines as 1 drink or less per day for women and 2 drinks or less per day for men.",
+            "snippet_links": [
+              {
+                "text": "CDC Alcohol Use Guidelines",
+                "link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html"
+              }
+            ],
+            "reference_indexes": [
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "snippet": "If you are looking for specific guidance, let me know:"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "Are you looking for information on moderate drinking limits, signs of alcohol use disorder, or support resources?"
+          },
+          {
+            "snippet": "Do you have questions about how alcohol interacts with specific medications or health conditions?"
+          }
+        ]
+      }
+    ],
+    "references": [
+      {
+        "index": 0,
+        "title": "Alcohol (drug) - Wikipedia",
+        "link": "https://en.wikipedia.org/wiki/Alcohol_(drug)",
+        "snippet": "Definition: Active ingredient in alcoholic drinks (ethanol, C2H6O, 46.069 g/mol, 0.7893 g/cm3). Effects: Central nervous system depressant producing euphoria, seda...",
+        "source": "Wikipedia",
+        "source_icon": "https://encrypted-tbn1.gstatic.com/faviconV2?url=https://en.wikipedia.org&client=AIM&size=32&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcSGGh5NxDUH17TA984ZVfJx044iENeh71iYr5Y7Y_nN6S0f2Lci4fRCxnMpQaVgS95Awg1Ede6XqXGhMEKJm2Y-kjR4oXXgWcxIA1AJ36pVkRCnbu6LXQeo_U5Hi0K6W6aPdmVPFhlrE9u_a-fKWCM14MQijQ"
+      },
+      {
+        "index": 1,
+        "title": "On this page - Alcohol and Drug Foundation",
+        "link": "https://adf.org.au/drug-facts/alcohol/",
+        "snippet": "Alcohol is a depressant drug, which means it slows down the messages travelling between the brain and body. 1 What does alcohol look like? Alcohol is a colourless ...",
+        "source": "Alcohol and Drug Foundation",
+        "source_icon": "https://encrypted-tbn0.gstatic.com/faviconV2?url=https://adf.org.au&client=AIM&size=32&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQU5H1udHoxPBzPgngBK8nzv-tIYnPSTmRq5YhrkwHxmXVslYEmmXLeDTrr2XCxRN-mSmmlK0c_f-ZUZ0svSK3GChk-GJAiS67e9M78CjowEzbv2rnsZ0EVWjYMaFsAdLhUjJZTJw92Vio7S0MukqXxwoB0Nw"
+      },
+      {
+        "index": 2,
+        "title": "Alcohol | Drinking | MedlinePlus",
+        "link": "https://medlineplus.gov/alcohol.html",
+        "snippet": "In the United States, a standard drink is one that contains about 14 grams of pure alcohol, which is found in: * 12 ounces of regular beer (5% alcohol content) * 5...",
+        "source": "MedlinePlus (.gov)",
+        "source_icon": "https://encrypted-tbn0.gstatic.com/faviconV2?url=https://medlineplus.gov&client=AIM&size=32&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcTmDomU1ttvf90HnyjglqryGis971mj1G_G5gXP-fOGlMCnDCBpDZdMpBP5YytYdglIpF3OF8v913O6dbrJwVvsM5D9iFx8ErFetzkxjhBqe6HhCWCd7oy8y4B-n7DNNaRGPlelw__3dGwS-sEh-r7SvssgwQ"
+      },
+      {
+        "index": 3,
+        "title": "How does alcohol make you drunk? - Judy Grisel",
+        "link": "https://www.youtube.com/watch?v=gCrmFbgT37I&t=7",
+        "snippet": "How does alcohol make you drunk? - Judy Grisel ethanol this molecule made of little more than a few carbon atoms is responsible for drunkenness. often simply refer",
+        "source": "YouTube",
+        "source_icon": "https://encrypted-tbn2.gstatic.com/faviconV2?url=https://www.youtube.com&client=AIM&size=32&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR7YhEL2BeRgoVf8v4A6WvGjPqzbE44X-qH8r4zo13mamKZKhvYGMD-fFiGMkBF9BrM7mW98hdaZfGel-DGuGlUcQ4iPLIsMt_EXIHE12WF3Zlrf0CwYfFFl8FP8d9Jdrjg-K1pX8lOMx6Ao2IG8vx0gfkXXA"
+      },
+      {
+        "index": 4,
+        "title": "What Alcohol Really Does to Your Body: Short & Long-Term Risks ...",
+        "link": "https://www.youtube.com/watch?v=Mb9jj3WkmqE",
+        "snippet": "What Alcohol Really Does to Your Body: Short & Long-Term Risks Explained alcohol is one of the most widely used substances in the world. and for many people having",
+        "source": "YouTube",
+        "source_icon": "https://serpapi.com/images/i/UklGRpwAAABXRUJQVlA4IJAAAAAwBACdASoQABAAAsBMJbACdGsAYQB-gGWAbwASnnx4vADfdr4sQbHuTIgA_vQMxuNgMMWMsmouF7hbZvT51iCqgStGXinCzpYfdY0TLuw8u1p8i-R75HEyG3C9BMJ_SyeGe2BtG_fAxY-0nDUOWQ1YBl__mcybueh2sm_8KPzrhGf-yuX3HjbKaeK8Q3AcwAA.webp",
+        "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQTKI0wZLyx8OCSgcLbEd1XUoddUQ49cE0p-m2164Ef_s_zvl9ygbV3A2MqWvkzdWRs1bsYUZj0KcfBKZn87hWhLKTAtxVoARwb4c8KjB3pXEF_Rrjgk0kHKawgOh_1_s2oRTrE8qTpELRFzjenuss50B6Fcw"
+      },
+      {
+        "index": 5,
+        "title": "Alcohol - World Health Organization (WHO)",
+        "link": "https://www.who.int/news-room/fact-sheets/detail/alcohol",
+        "snippet": "Alcohol is an established carcinogen and alcohol consumption increases the risk of several cancers, including breast, liver, head and neck, oesophageal and colorec...",
+        "source": "World Health Organization (WHO)",
+        "source_icon": "https://encrypted-tbn3.gstatic.com/faviconV2?url=https://www.who.int&client=AIM&size=32&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcT21B2um9VcJ9z3SxDN7o3W1f6y02pYKbBl458R0iJw41-2felyNnQmNUeXTjvWtdXUKUNXM2Mgj4XLMM4ah8Xyo7pi8hXz0-Dryb3SOt-vT7sl9HPI0HuYrZGr3D0Pkn2ZaFRGGH8f9-5s3dEuE0ZZSxK8UA"
+      },
+      {
+        "index": 6,
+        "title": "Alcohol's Effects on the Body",
+        "link": "https://www.niaaa.nih.gov/alcohols-effects-health/alcohols-effects-body",
+        "snippet": "Alcohol interferes with the brain's communication pathways and can affect the way the brain looks and works. These disruptions can change mood and behavior and mak...",
+        "source": "National Institute on Alcohol Abuse and Alcoholism (NIAAA) (.gov)",
+        "source_icon": "https://encrypted-tbn3.gstatic.com/faviconV2?url=https://www.niaaa.nih.gov&client=AIM&size=32&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRNqc-OBkkIrEANnrwNPZ1qFDmpC-KV9kgELxyM2wHri4FzwrlhBvSAi-1tNpDRosUggYTXjFrMgUWKORY4MZ4C4yRmm23aMqVRTqzE5DaFMaRV9Us8ff7YakJeN4_BINXfZAC9Jv_lsLawiMMEyEhUmlPIQQ"
+      },
+      {
+        "index": 7,
+        "title": "Alcohol is AMAZING",
+        "link": "https://www.youtube.com/watch?v=aOwmt39L2IQ",
+        "snippet": "Alcohol is AMAZING alcohol is the most harmful substance on Earth. every year it kills more people than terrorism wars homicides and car accidents combined it inju",
+        "source": "YouTube",
+        "source_icon": "https://serpapi.com/images/i/UklGRpwAAABXRUJQVlA4IJAAAAAwBACdASoQABAAAsBMJbACdGsAYQB-gGWAbwASnnx4vADfdr4sQbHuTIgA_vQMxuNgMMWMsmouF7hbZvT51iCqgStGXinCzpYfdY0TLuw8u1p8i-R75HEyG3C9BMJ_SyeGe2BtG_fAxY-0nDUOWQ1YBl__mcybueh2sm_8KPzrhGf-yuX3HjbKaeK8Q3AcwAA.webp",
+        "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQ-1wRrWPOOb5QRbMdlBS5GZPdEimvDUIDUy3ICMLtHB-jka8X3olO11mDse73i89TXx6jkt3yQ5sk5gQ8D1CfJAMK1GDHzFs_0IfruXs4UbPM11v1ugYX0y5GE13QCqTGwUVv5mlZqQya2FW2Nc0VBnqsH9Q"
+      },
+      {
+        "index": 8,
+        "title": "Alcohol Use and Your Health | Alcohol Use | CDC",
+        "link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html",
+        "snippet": "Excessive alcohol use causes 178,000 US deaths annually and includes binge drinking (4+ drinks/women, 5+/men), heavy drinking (8+/women weekly, 15+/men), underage ...",
+        "source": "Centers for Disease Control and Prevention | CDC (.gov)",
+        "source_icon": "https://encrypted-tbn2.gstatic.com/faviconV2?url=https://www.cdc.gov&client=AIM&size=32&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWiaGzp-aF99LOOC-3si712NoRrtgdnTjVxzKS3yfXwyjO_gEPFqN7VEDxbW5Dh5mWLwVFv7bZcNVTHPyL3ld01NQZGUi5FX-i-G1lQW7bKwPl9NE5KLcG1oBdnxrQSBOq9hny-sn0TjlmnNQyLsEYMycYdw"
+      }
+    ]
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Alcohol (drug)",
+      "link": "https://en.wikipedia.org/wiki/Alcohol_(drug)",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESZwHrOzAVUVIHcUQ1SESMzkvTDDGuYPGHEK3Ei5twkwJ5dxR0S1_yhokOfmlssV3aSGx4CnhBhmttFek4p-3_Xf9CFZZRQthBS4pxrmA9gTw54I7CXOYgaI-uacZQnO2kTRa-pp_Lozw&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QFnoECFgQAQ&uoh=1",
+      "displayed_link": "https://en.wikipedia.org › wiki › Alcohol_(drug)",
+      "thumbnail": "https://serpapi.com/searches/6ae204a7934695921c6cca35/images/hyEgkaqts35_uy-MdthJyxRzoH_AQquEuJeRlS3urNM.jpeg",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAnklEQVR4AeTNIQiDQABG4b-u17X1aF6PK3YEO9iMJqPVau82y4FgMezS0oVLhqsHtrcqeqzDXv3CEz_6L4yTtZM3dnHmPTtjzXZAXKYVo4agkU2GI2Lloc6JDez1-flswMu1EQZ3xlE7lK8eKDkjtwE-crBMV-wesKmCiisGGepZIfQJpMj9SNb2MYWrChjVkULuCyCfRvsdmBieyQQAsoDk_9ryhFMAAAAASUVORK5CYII.png",
+      "snippet": "Alcohol, sometimes referred to by the chemical name ethanol, is the active ingredient in alcoholic drinks such as beer, wine, and distilled spirits (hard ...",
+      "snippet_highlighted_words": [
+        "Alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Alcohol, sometimes referred to by the chemical name ethanol, is the active ingredient in alcoholic drinks such as beer, wine, and distilled spirits (hard ...",
+          "source_info_link": "https://en.wikipedia.org/wiki/Alcohol_(drug)",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAnklEQVR4AeTNIQiDQABG4b-u17X1aF6PK3YEO9iMJqPVau82y4FgMezS0oVLhqsHtrcqeqzDXv3CEz_6L4yTtZM3dnHmPTtjzXZAXKYVo4agkU2GI2Lloc6JDez1-flswMu1EQZ3xlE7lK8eKDkjtwE-crBMV-wesKmCiisGGepZIfQJpMj9SNb2MYWrChjVkULuCyCfRvsdmBieyQQAsoDk_9ryhFMAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpkBL2dvdG8_dXJsPUNBRVNad0hyT3pBVk9Sd216dzkxSTBFMm1tOE5vUTNTLTRJVTZGWGVWcUs3ZnIzeVE2LUJoTFhLOW1aakttSU9GVnl4ZjQyS0M3am9XMGlzT1JNYjlHVTF6N3lSbFY1blV6ekdSY2dPN0laVV9xaXFMcEtTemVFSVN0UjI4ZjhzYjZYanJFRmJ2NHhMZktvEgQaAggAGqsDEgIIARoCCAEiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCDAwgAEAAYACAAKg4KB2FsY29ob2wVBvGcQDKZAS9nb3RvP3VybD1DQUVTWndIck96QVZPUndtenc5MUkwRTJtbThOb1EzUy00SVU2RlhlVnFLN2ZyM3lRNi1CaExYSzltWmpLbUlPRlZ5eGY0MktDN2pvVzBpc09STWI5R1Uxejd5UmxWNW5VenpHUmNnTzdJWlVfcWlxTHBLU3plRUlTdFIyOGY4c2I2WGpyRUZidjR4TGZLbzohPGI-QWxjb2hvbDwvYj4gKGRydWcpIC0gV2lraXBlZGlhQqkBPGI-QWxjb2hvbDwvYj4sIHNvbWV0aW1lcyByZWZlcnJlZCB0byBieSB0aGUgY2hlbWljYWwgbmFtZSBldGhhbm9sLCBpcyB0aGUgYWN0aXZlIGluZ3JlZGllbnQgaW4gYWxjb2hvbGljIGRyaW5rcyBzdWNoIGFzIGJlZXIsIHdpbmUsIGFuZCBkaXN0aWxsZWQgc3Bpcml0cyAoaGFyZCZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpkBL2dvdG8_dXJsPUNBRVNad0hyT3pBVk9Sd216dzkxSTBFMm1tOE5vUTNTLTRJVTZGWGVWcUs3ZnIzeVE2LUJoTFhLOW1aakttSU9GVnl4ZjQyS0M3am9XMGlzT1JNYjlHVTF6N3lSbFY1blV6ekdSY2dPN0laVV9xaXFMcEtTemVFSVN0UjI4ZjhzYjZYanJFRmJ2NHhMZktvEgQaAggAGqsDEgIIARoCCAEiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCDAwgAEAAYACAAKg4KB2FsY29ob2wVBvGcQDKZAS9nb3RvP3VybD1DQUVTWndIck96QVZPUndtenc5MUkwRTJtbThOb1EzUy00SVU2RlhlVnFLN2ZyM3lRNi1CaExYSzltWmpLbUlPRlZ5eGY0MktDN2pvVzBpc09STWI5R1Uxejd5UmxWNW5VenpHUmNnTzdJWlVfcWlxTHBLU3plRUlTdFIyOGY4c2I2WGpyRUZidjR4TGZLbzohPGI-QWxjb2hvbDwvYj4gKGRydWcpIC0gV2lraXBlZGlhQqkBPGI-QWxjb2hvbDwvYj4sIHNvbWV0aW1lcyByZWZlcnJlZCB0byBieSB0aGUgY2hlbWljYWwgbmFtZSBldGhhbm9sLCBpcyB0aGUgYWN0aXZlIGluZ3JlZGllbnQgaW4gYWxjb2hvbGljIGRyaW5rcyBzdWNoIGFzIGJlZXIsIHdpbmUsIGFuZCBkaXN0aWxsZWQgc3Bpcml0cyAoaGFyZCZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "Wikipedia",
+      "read_more_link": "https://en.wikipedia.org/wiki/Alcohol_(drug)#:~:text=Alcohol%2C%20sometimes%20referred%20to%20by,and%20distilled%20spirits%20(hard%20liquor)."
+    },
+    {
+      "position": 2,
+      "title": "Alcohol",
+      "link": "https://www.who.int/news-room/fact-sheets/detail/alcohol",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAEScwHrOzAVCh_vWkS3vwIp44_EOLv03WAY72yTP2SkQ5exIqFYjHlTOY1LKYlemmEcV-8BVIfu4X5mX1bM6QVEEZzpcKRRlI63vIKrYK1heyZbBL3zroP36LecjZqGf7OWOzziOhyu-pW8XAvgCyUGGWsExow&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QFnoECDUQAQ&uoh=1",
+      "displayed_link": "https://www.who.int › Newsroom › Fact sheets › Detail",
+      "thumbnail": "https://serpapi.com/searches/6ae204a7934695921c6cca35/images/hyEgkaqts35_uy-MdthJy15tzSc6p6QXT9aYRF4kRGs.jpeg",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAKlBMVEVHcEwOj88SkM8Kj88Mj88bktAZkdADjs4ek9Efk9EmldILj88WkdArl9J1DC9vAAAADnRSTlMAn4fQtUNW_iIxCehyFKEyppEAAAFHSURBVHgBYyAGMCqgcJkdEOwAhrBA1VQGVgiPvWEaQ6MSVwbrBhCP1YatYXGhSunMAJEAIDfnzNQw54kHXEozdDQZGHhlrAJOql3KNTJhu3xoAQOT0DQ21gM84nuCFSJ9DjAwh0xlY7taLXpC60CYmgMDy6EbAQHJPkeMpnUE-CgwhJkFBIRutBEvT2O9mZ3BMHnyVNUzJo6HynOCMvbuYuAWmxBQFqtzXKSVtUPRgSF1T5NL4ZqV2m5zA0KTMxnYW-4cr56arWgYkJCquoGBrSTy5naHiceLNW9ME5_AwBZ9NOEYa8yh4hi2MzsDGLjKEhetzGK7W3JDwfU00AvdW2QTWHPCJiybtN0KyGWbFsyay7mgLaAiE-RB3u3uDRyhoRfYNheDQ4Mz7ZC1k8oWnbQGMJdLefOJ3LYmaxt44DExcB0gIvgBkKFml-JPe1gAAAAASUVORK5CYII.png",
+      "date": "Jun 28, 2024",
+      "snippet": "Overview. Alcohol and alcoholic beverages contain ethanol, which is a psychoactive and toxic substance with dependence-producing properties.",
+      "snippet_highlighted_words": [
+        "Alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Overview. Alcohol and alcoholic beverages contain ethanol, which is a psychoactive and toxic substance with dependence-producing properties.",
+          "source_info_link": "https://www.who.int/news-room/fact-sheets/detail/alcohol",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAKlBMVEVHcEwOj88SkM8Kj88Mj88bktAZkdADjs4ek9Efk9EmldILj88WkdArl9J1DC9vAAAADnRSTlMAn4fQtUNW_iIxCehyFKEyppEAAAFHSURBVHgBYyAGMCqgcJkdEOwAhrBA1VQGVgiPvWEaQ6MSVwbrBhCP1YatYXGhSunMAJEAIDfnzNQw54kHXEozdDQZGHhlrAJOql3KNTJhu3xoAQOT0DQ21gM84nuCFSJ9DjAwh0xlY7taLXpC60CYmgMDy6EbAQHJPkeMpnUE-CgwhJkFBIRutBEvT2O9mZ3BMHnyVNUzJo6HynOCMvbuYuAWmxBQFqtzXKSVtUPRgSF1T5NL4ZqV2m5zA0KTMxnYW-4cr56arWgYkJCquoGBrSTy5naHiceLNW9ME5_AwBZ9NOEYa8yh4hi2MzsDGLjKEhetzGK7W3JDwfU00AvdW2QTWHPCJiybtN0KyGWbFsyay7mgLaAiE-RB3u3uDRyhoRfYNheDQ4Mz7ZC1k8oWnbQGMJdLefOJ3LYmaxt44DExcB0gIvgBkKFml-JPe1gAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVmcxM2otTGlfN2ZpNEVCN05adTFyUnRnNEpZZjBOM2plTUgyRmlZS2ZGMnhoNGV5Rl84SlprNERucWpaM0hCS0cwY0dZOTU4RzFCSG45TS1Kcy1jWFJXRFRzU3M4WmxROEE4NnRUX2M4UUpzaDc5NTh3Q0ZIMXN6Y2FCMWRjcU1rSVpzRk9iWlhUTnVoX0F4VlUtVRIEGgIIABq0AxICCAEaAggBIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAjAMIABAAGAAgACoOCgdhbGNvaG9sFTjTtUAyqQEvZ290bz91cmw9Q0FFU2N3SHJPekFWZzEzai1MaV83Zmk0RUI3Tlp1MXJSdGc0SllmME4zamVNSDJGaVlLZkYyeGg0ZXlGXzhKWms0RG5xalozSEJLRzBjR1k5NThHMUJIbjlNLUpzLWNYUldEVHNTczhabFE4QTg2dFRfYzhRSnNoNzk1OHdDRkgxc3pjYUIxZGNxTWtJWnNGT2JaWFROdWhfQXhWVS1VOjA8Yj5BbGNvaG9sPC9iPiAtIFdvcmxkIEhlYWx0aCBPcmdhbml6YXRpb24gKFdITylCkwFPdmVydmlldy4gPGI-QWxjb2hvbDwvYj4gYW5kIGFsY29ob2xpYyBiZXZlcmFnZXMgY29udGFpbiBldGhhbm9sLCB3aGljaCBpcyBhIHBzeWNob2FjdGl2ZSBhbmQgdG94aWMgc3Vic3RhbmNlIHdpdGggZGVwZW5kZW5jZS1wcm9kdWNpbmcgcHJvcGVydGllcy4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVmcxM2otTGlfN2ZpNEVCN05adTFyUnRnNEpZZjBOM2plTUgyRmlZS2ZGMnhoNGV5Rl84SlprNERucWpaM0hCS0cwY0dZOTU4RzFCSG45TS1Kcy1jWFJXRFRzU3M4WmxROEE4NnRUX2M4UUpzaDc5NTh3Q0ZIMXN6Y2FCMWRjcU1rSVpzRk9iWlhUTnVoX0F4VlUtVRIEGgIIABq0AxICCAEaAggBIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAjAMIABAAGAAgACoOCgdhbGNvaG9sFTjTtUAyqQEvZ290bz91cmw9Q0FFU2N3SHJPekFWZzEzai1MaV83Zmk0RUI3Tlp1MXJSdGc0SllmME4zamVNSDJGaVlLZkYyeGg0ZXlGXzhKWms0RG5xalozSEJLRzBjR1k5NThHMUJIbjlNLUpzLWNYUldEVHNTczhabFE4QTg2dFRfYzhRSnNoNzk1OHdDRkgxc3pjYUIxZGNxTWtJWnNGT2JaWFROdWhfQXhWVS1VOjA8Yj5BbGNvaG9sPC9iPiAtIFdvcmxkIEhlYWx0aCBPcmdhbml6YXRpb24gKFdITylCkwFPdmVydmlldy4gPGI-QWxjb2hvbDwvYj4gYW5kIGFsY29ob2xpYyBiZXZlcmFnZXMgY29udGFpbiBldGhhbm9sLCB3aGljaCBpcyBhIHBzeWNob2FjdGl2ZSBhbmQgdG94aWMgc3Vic3RhbmNlIHdpdGggZGVwZW5kZW5jZS1wcm9kdWNpbmcgcHJvcGVydGllcy4iAhABSABYAGgA",
+      "source": "World Health Organization (WHO)",
+      "read_more_link": "https://www.who.int/news-room/fact-sheets/detail/alcohol#:~:text=Overview,toxic%20substance%20with%20dependence%2Dproducing%20properties."
+    },
+    {
+      "position": 3,
+      "title": "Alcohol | Drinking",
+      "link": "https://medlineplus.gov/alcohol.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESXwHrOzAV9AiY804OkBBSmKA_UNgGFXrDE2FZVDg7JGHqadC8DTiMzNWwV59zmXJsgFGb56G8vFV4ULEnlgeVNgLtSWoc-tneluYh3XtvlKNOrsm10u09u9TWLGjq2Ruh&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QFnoECDMQAQ&uoh=1",
+      "displayed_link": "https://medlineplus.gov › Health Topics",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSS9oQcEp__Vuhs1WGahJxh9Xj8dYIwmPyLqbH128o&usqp=CAE&s",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAhFBMVEX____d8N_U7NaS0ZkQrS0jsDmKz5Iys0Q4tEkqsT5pw3RhwG3L6M5HuFY_tk96sdsAfscAgcgAgsgAfMaWweO137mu3LMAesVxrdnP4vEAdcP4_P4Ad8TJ3e_l8Pjc6vWO0JaIuN7w-fFLmdF1xn6y0OmlyOUpjMxfotVnqNcAccIzj82W0lcTAAABBUlEQVR4AZSPhaLCMAwAD3fWJkDnw_X_vw-ZPEWv3qskvEmtnlPjDo1mK6fZviM73ZLWM9n79Ga_tJ3BHVlvlReH3GFUXB3zE89Y0QlMe3k4M5g4scYHCEJrbRgBva9w4ttWACROxHikGY2r7c3JUjwj4pJSxikLn2Wz220u8Rak8bc0KzAuYt3p9EEVVqaSt3Hj3JZ6q1Vnq7ohiStpBXZWdjAawU5us10ldUtQfDKd3e5IHLDVXAahwt5I_nP-m5g9aJ4KB4_0qGolTCENxaoeMxZ7fiDWeOAZMfzHWnERKo-kbjfuobSnk30o5dbuSmMlx-od6YcuJzxwhyDJCS4jMg8AADMnGX0WJNKKAAAAAElFTkSuQmCC.png",
+      "date": "Jul 27, 2026",
+      "snippet": "Alcohol is a central nervous system depressant. This means that it is a drug that slows down brain activity. It can change your mood, behavior, ...",
+      "snippet_highlighted_words": [
+        "Alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Alcohol is a central nervous system depressant. This means that it is a drug that slows down brain activity. It can change your mood, behavior, ...",
+          "source_info_link": "https://medlineplus.gov/alcohol.html",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAhFBMVEX____d8N_U7NaS0ZkQrS0jsDmKz5Iys0Q4tEkqsT5pw3RhwG3L6M5HuFY_tk96sdsAfscAgcgAgsgAfMaWweO137mu3LMAesVxrdnP4vEAdcP4_P4Ad8TJ3e_l8Pjc6vWO0JaIuN7w-fFLmdF1xn6y0OmlyOUpjMxfotVnqNcAccIzj82W0lcTAAABBUlEQVR4AZSPhaLCMAwAD3fWJkDnw_X_vw-ZPEWv3qskvEmtnlPjDo1mK6fZviM73ZLWM9n79Ga_tJ3BHVlvlReH3GFUXB3zE89Y0QlMe3k4M5g4scYHCEJrbRgBva9w4ttWACROxHikGY2r7c3JUjwj4pJSxikLn2Wz220u8Rak8bc0KzAuYt3p9EEVVqaSt3Hj3JZ6q1Vnq7ohiStpBXZWdjAawU5us10ldUtQfDKd3e5IHLDVXAahwt5I_nP-m5g9aJ4KB4_0qGolTCENxaoeMxZ7fiDWeOAZMfzHWnERKo-kbjfuobSnk30o5dbuSmMlx-od6YcuJzxwhyDJCS4jMg8AADMnGX0WJNKKAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=Co4BL2dvdG8_dXJsPUNBRVNYd0hyT3pBVkZNaDdzbFA5bFNZZDE1RVZXNnRVZllkTGd5SEhnbFI5b1ZSTGJFakxVWnNDZ2FJUkFzbldUVzUzMzdsMXoxSFZvMDY3M2drWnBIQmJuSURVZFJPRnM1THBpTXNNRU9sM2lEMmNaTFBhQlVGX2pjWlBNOFJWbGJGWBIEGgIIABqcAxICCAEaAggBIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA9AIIABAAGAAgACoOCgdhbGNvaG9sFZjSw0AyjgEvZ290bz91cmw9Q0FFU1h3SHJPekFWRk1oN3NsUDlsU1lkMTVFVlc2dFVmWWRMZ3lISGdsUjlvVlJMYkVqTFVac0NnYUlSQXNuV1RXNTMzN2wxejFIVm8wNjczZ2tacEhCYm5JRFVkUk9GczVMcGlNc01FT2wzaUQyY1pMUGFCVUZfamNaUE04UlZsYkZYOic8Yj5BbGNvaG9sPC9iPiB8IERyaW5raW5nIC0gTWVkbGluZVBsdXNCnwE8Yj5BbGNvaG9sPC9iPiBpcyBhIGNlbnRyYWwgbmVydm91cyBzeXN0ZW0gZGVwcmVzc2FudC4gVGhpcyBtZWFucyB0aGF0IGl0IGlzIGEgZHJ1ZyB0aGF0IHNsb3dzIGRvd24gYnJhaW4gYWN0aXZpdHkuIEl0IGNhbiBjaGFuZ2UgeW91ciBtb29kLCBiZWhhdmlvciwmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=Co4BL2dvdG8_dXJsPUNBRVNYd0hyT3pBVkZNaDdzbFA5bFNZZDE1RVZXNnRVZllkTGd5SEhnbFI5b1ZSTGJFakxVWnNDZ2FJUkFzbldUVzUzMzdsMXoxSFZvMDY3M2drWnBIQmJuSURVZFJPRnM1THBpTXNNRU9sM2lEMmNaTFBhQlVGX2pjWlBNOFJWbGJGWBIEGgIIABqcAxICCAEaAggBIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA9AIIABAAGAAgACoOCgdhbGNvaG9sFZjSw0AyjgEvZ290bz91cmw9Q0FFU1h3SHJPekFWRk1oN3NsUDlsU1lkMTVFVlc2dFVmWWRMZ3lISGdsUjlvVlJMYkVqTFVac0NnYUlSQXNuV1RXNTMzN2wxejFIVm8wNjczZ2tacEhCYm5JRFVkUk9GczVMcGlNc01FT2wzaUQyY1pMUGFCVUZfamNaUE04UlZsYkZYOic8Yj5BbGNvaG9sPC9iPiB8IERyaW5raW5nIC0gTWVkbGluZVBsdXNCnwE8Yj5BbGNvaG9sPC9iPiBpcyBhIGNlbnRyYWwgbmVydm91cyBzeXN0ZW0gZGVwcmVzc2FudC4gVGhpcyBtZWFucyB0aGF0IGl0IGlzIGEgZHJ1ZyB0aGF0IHNsb3dzIGRvd24gYnJhaW4gYWN0aXZpdHkuIEl0IGNhbiBjaGFuZ2UgeW91ciBtb29kLCBiZWhhdmlvciwmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "MedlinePlus (.gov)",
+      "read_more_link": "https://medlineplus.gov/alcohol.html#:~:text=Alcohol%20is%20a%20central%20nervous,your%20mood%2C%20behavior%2C%20and%20self%2Dcontrol."
+    },
+    {
+      "position": 4,
+      "title": "Alcohol's Effects on the Body",
+      "link": "https://www.niaaa.nih.gov/alcohols-effects-health/alcohols-effects-body",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESggEB6zswFUEVa4Pk9xu7JHR1-g0tGZNtN3b5VM2H1-lPvoE8A3na1Lx1-n6N1P5Aon7zakBEVO3IFeVQVogLdhucmSjO9Ndmd6jMk73ka-hDsYyaknuVghhDHFYsGSBZmuwqu5IZGLmLtmFfYRxoar7FLhS3LHkPDSRmK6ciBx0Zw9s7&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QFnoECDQQAQ&uoh=1",
+      "displayed_link": "https://www.niaaa.nih.gov › alcohols-effects-body",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuruGw6ajsrukRzcm7N4Mwbh4rSSNpaAty3JqBMTokKIURMDLaHaJI&usqp=CAE&s",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAflBMVEUAaJcAZ5UAaJUAaJQAZ5QAaZUAapUAaZQAY5AAZJIAapYzd6BQiatWjqxMiahYjKsAaZZDgqUAX47I1uH____S3-cAWIxcj6_Cz9t8o7pOhaholbAAXI4AXIzm7_Osw9Pd6O0ATIZEgqqUsMYlapd7ob8haZ4AV5EAZZiJq8SAz26ZAAABU0lEQVR4AW3OB2IEIQgFUBBQcZvbe0vP_S8YUSf9T-eNAgA6R8RMIt77YKHybo8IUMwSzDq3_4hsJdVIs7Km_ViettKpaowsPnkvQqTKlJJURByNJ9PZDHPypcJQvuachAhyzovlyrLepLKX0619zNkGypIXu1XNPtqMOrb3acUkzrAmMtEnkq10X7jbELEeOnIEIcOeY-Qf6JhPhi0bZR3_wLPhZW-16wYXDeN3vN3XVjwsBuSCOODpwYqX--nwDy5OV6s-3n8gdsynleWp7jCu6HBAOD1beflSUX_gCeD1VtvWbSviN3x7Wg0ZVvKpYQY4vX-hFiTmvhIRYHMbcKFakDqeHWJ-G3U8qGEgOi8bupzz5tpXNgwh9p41b-uKc8WGXpkZy7qUU8ondoisOKBQCJJKsoWZidEZcgFL0yQixOwcoGEMFIjKJb6vFecyAqDqB7OgJ6Bu0vQaAAAAAElFTkSuQmCC.png",
+      "snippet": "Alcohol interferes with the brain's communication pathways and can affect the way the brain looks and works. These disruptions can change mood and behavior and ...",
+      "snippet_highlighted_words": [
+        "Alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Alcohol interferes with the brain's communication pathways and can affect the way the brain looks and works. These disruptions can change mood and behavior and ...",
+          "source_info_link": "https://www.niaaa.nih.gov/alcohols-effects-health/alcohols-effects-body",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAflBMVEUAaJcAZ5UAaJUAaJQAZ5QAaZUAapUAaZQAY5AAZJIAapYzd6BQiatWjqxMiahYjKsAaZZDgqUAX47I1uH____S3-cAWIxcj6_Cz9t8o7pOhaholbAAXI4AXIzm7_Osw9Pd6O0ATIZEgqqUsMYlapd7ob8haZ4AV5EAZZiJq8SAz26ZAAABU0lEQVR4AW3OB2IEIQgFUBBQcZvbe0vP_S8YUSf9T-eNAgA6R8RMIt77YKHybo8IUMwSzDq3_4hsJdVIs7Km_ViettKpaowsPnkvQqTKlJJURByNJ9PZDHPypcJQvuachAhyzovlyrLepLKX0619zNkGypIXu1XNPtqMOrb3acUkzrAmMtEnkq10X7jbELEeOnIEIcOeY-Qf6JhPhi0bZR3_wLPhZW-16wYXDeN3vN3XVjwsBuSCOODpwYqX--nwDy5OV6s-3n8gdsynleWp7jCu6HBAOD1beflSUX_gCeD1VtvWbSviN3x7Wg0ZVvKpYQY4vX-hFiTmvhIRYHMbcKFakDqeHWJ-G3U8qGEgOi8bupzz5tpXNgwh9p41b-uKc8WGXpkZy7qUU8ondoisOKBQCJJKsoWZidEZcgFL0yQixOwcoGEMFIjKJb6vFecyAqDqB7OgJ6Bu0vQaAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=Cr4BL2dvdG8_dXJsPUNBRVNnZ0VCNnpzd0ZVT1VpWU1WZmRsdW43ancxaU1wZlFtVTE5WXVtX3B6ZDBjUDVsQzhCLW95MFZWc1pNNTJOWTlMQjRzajFIdWJkakNzQWJlbUZTRUx2QUw2eFJOcUNKYUphT2JBeTRlSmo5ZlFlZndCR01EV2dLOVAyM0N6SFg2ZEEwZVdTZHpRSHZ5blJmbDRhTENRajdpcDdvcmQ1d3JPdHUzNER5UVFSTXc4MDFCaBIEGgIIABrhAxICCAEaAggBIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAuQMIABAAGAAgACoOCgdhbGNvaG9sFWAFukAyvgEvZ290bz91cmw9Q0FFU2dnRUI2enN3RlVPVWlZTVZmZGx1bjdqdzFpTXBmUW1VMTlZdW1fcHpkMGNQNWxDOEItb3kwVlZzWk01Mk5ZOUxCNHNqMUh1YmRqQ3NBYmVtRlNFTHZBTDZ4Uk5xQ0phSmFPYkF5NGVKajlmUWVmd0JHTURXZ0s5UDIzQ3pIWDZkQTBlV1NkelFIdnluUmZsNGFMQ1FqN2lwN29yZDV3ck90dTM0RHlRUVJNdzgwMUJoOig8Yj5BbGNvaG9sJiMzOTtzPC9iPiBFZmZlY3RzIG9uIHRoZSBCb2R5QrMBPGI-QWxjb2hvbDwvYj4gaW50ZXJmZXJlcyB3aXRoIHRoZSBicmFpbiYjMzk7cyBjb21tdW5pY2F0aW9uIHBhdGh3YXlzIGFuZCBjYW4gYWZmZWN0IHRoZSB3YXkgdGhlIGJyYWluIGxvb2tzIGFuZCB3b3Jrcy4gVGhlc2UgZGlzcnVwdGlvbnMgY2FuIGNoYW5nZSBtb29kIGFuZCBiZWhhdmlvciBhbmQmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=Cr4BL2dvdG8_dXJsPUNBRVNnZ0VCNnpzd0ZVT1VpWU1WZmRsdW43ancxaU1wZlFtVTE5WXVtX3B6ZDBjUDVsQzhCLW95MFZWc1pNNTJOWTlMQjRzajFIdWJkakNzQWJlbUZTRUx2QUw2eFJOcUNKYUphT2JBeTRlSmo5ZlFlZndCR01EV2dLOVAyM0N6SFg2ZEEwZVdTZHpRSHZ5blJmbDRhTENRajdpcDdvcmQ1d3JPdHUzNER5UVFSTXc4MDFCaBIEGgIIABrhAxICCAEaAggBIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAuQMIABAAGAAgACoOCgdhbGNvaG9sFWAFukAyvgEvZ290bz91cmw9Q0FFU2dnRUI2enN3RlVPVWlZTVZmZGx1bjdqdzFpTXBmUW1VMTlZdW1fcHpkMGNQNWxDOEItb3kwVlZzWk01Mk5ZOUxCNHNqMUh1YmRqQ3NBYmVtRlNFTHZBTDZ4Uk5xQ0phSmFPYkF5NGVKajlmUWVmd0JHTURXZ0s5UDIzQ3pIWDZkQTBlV1NkelFIdnluUmZsNGFMQ1FqN2lwN29yZDV3ck90dTM0RHlRUVJNdzgwMUJoOig8Yj5BbGNvaG9sJiMzOTtzPC9iPiBFZmZlY3RzIG9uIHRoZSBCb2R5QrMBPGI-QWxjb2hvbDwvYj4gaW50ZXJmZXJlcyB3aXRoIHRoZSBicmFpbiYjMzk7cyBjb21tdW5pY2F0aW9uIHBhdGh3YXlzIGFuZCBjYW4gYWZmZWN0IHRoZSB3YXkgdGhlIGJyYWluIGxvb2tzIGFuZCB3b3Jrcy4gVGhlc2UgZGlzcnVwdGlvbnMgY2FuIGNoYW5nZSBtb29kIGFuZCBiZWhhdmlvciBhbmQmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "National Institute on Alcohol Abuse and Alcoholism (NIAAA) (.gov)",
+      "read_more_link": "https://www.niaaa.nih.gov/alcohols-effects-health/alcohols-effects-body#:~:text=Alcohol%20interferes%20with%20the%20brain's,clearly%20and%20move%20with%20coordination."
+    },
+    {
+      "position": 5,
+      "title": "Alcohol Use and Your Health",
+      "link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAEScwHrOzAV8eWp06yMb8LSVbyCDiFGJTXzqng3ICoyTebMCCU5ZbztYgOuhVzdCjFUbW5XYnHrbNMkh3PB0LzMbhKdA6KGV0W2DP9UCqBssrkO1foMytlfRMQkxwFt2WKtgulnEdj5sq3m-6BZWmzzgt2AsRY&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QFnoECDIQAQ&uoh=1",
+      "displayed_link": "https://www.cdc.gov › alcohol › about-alcohol-use",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAARVBMVEVHcEwGWbgAV7cAWLcCV7cAV7cAV7cAT7UASLMfYLsCV7eNptb________g5_Tx9Pq2xuSlud7O2OwAPrBvkM1Oe8QAV7d3XXwyAAAAF3RSTlMAZZkbv_84__78-fn7__f49_X2__j17LsicwUAAACsSURBVHgB3Y8FcgMwDAQdUE-GMyr9_1OrMjNnjTdrDL_DZvsMuxD28hwnIcgLcicONCYVdXCTrqXmQtZYCluH6PA0cSWRWXMfwtor6xqs1vO11NIUQORYq_NQ2vIkVzKxq89dAsbhgzg3O-sSgUtVY-ZcAtzIybwO5jJZKVppnnDzlUqyRDrFEBt9vJVqI0fJORtwmZLcSAHgnXOTbuQzfFyGsEunT7PfhSPiDJ1fD1WvIDgAAAAAAElFTkSuQmCC.png",
+      "date": "Jan 14, 2025",
+      "snippet": "Excessive alcohol use can have immediate and long-term effects. Excessive drinking includes binge drinking, heavy drinking, and any drinking ...",
+      "snippet_highlighted_words": [
+        "alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Excessive alcohol use can have immediate and long-term effects. Excessive drinking includes binge drinking, heavy drinking, and any drinking ...",
+          "source_info_link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAARVBMVEVHcEwGWbgAV7cAWLcCV7cAV7cAV7cAT7UASLMfYLsCV7eNptb________g5_Tx9Pq2xuSlud7O2OwAPrBvkM1Oe8QAV7d3XXwyAAAAF3RSTlMAZZkbv_84__78-fn7__f49_X2__j17LsicwUAAACsSURBVHgB3Y8FcgMwDAQdUE-GMyr9_1OrMjNnjTdrDL_DZvsMuxD28hwnIcgLcicONCYVdXCTrqXmQtZYCluH6PA0cSWRWXMfwtor6xqs1vO11NIUQORYq_NQ2vIkVzKxq89dAsbhgzg3O-sSgUtVY-ZcAtzIybwO5jJZKVppnnDzlUqyRDrFEBt9vJVqI0fJORtwmZLcSAHgnXOTbuQzfFyGsEunT7PfhSPiDJ1fD1WvIDgAAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVnFHSUg0X2hVTFR2Tmlwc0JneWVnYzhjSkNyMmdSU1JONE1fNU9pb1dZWWhobzQxQXgyZkMzOWQzeGdPOEVUTGFGZ3ZxZ2VMaTlVYjlBbnJLa2tvOHBnUVlMaC1ocnl0R3czQkhjdDMxcGw5c0J0TXdneWVJVUZTT2ktd2hhUndKYVNXdU44UVNDZ0JiekJNcENsOBIEGgIIABqzAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQI0DCAAQABgAIAAqDgoHYWxjb2hvbBX-tN1AMqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVnFHSUg0X2hVTFR2Tmlwc0JneWVnYzhjSkNyMmdSU1JONE1fNU9pb1dZWWhobzQxQXgyZkMzOWQzeGdPOEVUTGFGZ3ZxZ2VMaTlVYjlBbnJLa2tvOHBnUVlMaC1ocnl0R3czQkhjdDMxcGw5c0J0TXdneWVJVUZTT2ktd2hhUndKYVNXdU44UVNDZ0JiekJNcENsODooPGI-QWxjb2hvbDwvYj4gVXNlIGFuZCBZb3VyIEhlYWx0aCAtIENEQ0KcAUV4Y2Vzc2l2ZSA8Yj5hbGNvaG9sPC9iPiB1c2UgY2FuIGhhdmUgaW1tZWRpYXRlIGFuZCBsb25nLXRlcm0gZWZmZWN0cy4gRXhjZXNzaXZlIGRyaW5raW5nIGluY2x1ZGVzIGJpbmdlIGRyaW5raW5nLCBoZWF2eSBkcmlua2luZywgYW5kIGFueSBkcmlua2luZyZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVnFHSUg0X2hVTFR2Tmlwc0JneWVnYzhjSkNyMmdSU1JONE1fNU9pb1dZWWhobzQxQXgyZkMzOWQzeGdPOEVUTGFGZ3ZxZ2VMaTlVYjlBbnJLa2tvOHBnUVlMaC1ocnl0R3czQkhjdDMxcGw5c0J0TXdneWVJVUZTT2ktd2hhUndKYVNXdU44UVNDZ0JiekJNcENsOBIEGgIIABqzAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQI0DCAAQABgAIAAqDgoHYWxjb2hvbBX-tN1AMqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVnFHSUg0X2hVTFR2Tmlwc0JneWVnYzhjSkNyMmdSU1JONE1fNU9pb1dZWWhobzQxQXgyZkMzOWQzeGdPOEVUTGFGZ3ZxZ2VMaTlVYjlBbnJLa2tvOHBnUVlMaC1ocnl0R3czQkhjdDMxcGw5c0J0TXdneWVJVUZTT2ktd2hhUndKYVNXdU44UVNDZ0JiekJNcENsODooPGI-QWxjb2hvbDwvYj4gVXNlIGFuZCBZb3VyIEhlYWx0aCAtIENEQ0KcAUV4Y2Vzc2l2ZSA8Yj5hbGNvaG9sPC9iPiB1c2UgY2FuIGhhdmUgaW1tZWRpYXRlIGFuZCBsb25nLXRlcm0gZWZmZWN0cy4gRXhjZXNzaXZlIGRyaW5raW5nIGluY2x1ZGVzIGJpbmdlIGRyaW5raW5nLCBoZWF2eSBkcmlua2luZywgYW5kIGFueSBkcmlua2luZyZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "Centers for Disease Control and Prevention | CDC (.gov)",
+      "read_more_link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html#:~:text=Excessive%20alcohol%20use%20can%20have,by%20people%20younger%20than%2021."
+    },
+    {
+      "position": 6,
+      "title": "Alcohol use: Weighing risks and benefits",
+      "link": "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/alcohol/art-20044551",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESogEB6zswFXWBUNOpuNB8SqewARYgkKbIL3BL1kJGORAb7sUAqeV5ro_AfZ8qH-JE8OxEnLZ2VKP8UO0kyNRdluKA4f91kgQ2mcQFe6hWsOADqXSxPCCsM2sYceB4IgOlBXIU9zyFTYFH9FS16OYfKnW9jg24lrnj0TiuOX3zZXOpQJrLKb16Kgmk2hfgFcRdOYNLHiJe-opYpVzuaHqlyypjh54&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QFnoECDEQAQ&uoh=1",
+      "displayed_link": "https://www.mayoclinic.org › alcohol › art-20044551",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAA4UlEQVR4AbTQEZDEMBjF8TifrutZ3dbqUwrE6lj4oF4LF0ulSDBQh1AlECtUOlPpzP_mcNPZo9s38-g38-Ap_siHcV-J55YdYbehxKRQp7RROpO7WKJRJj2-9-p6MoYCt4B3afMTm7EUmK8LfnuckF9x7PU80y-Kpot1716wguAYFqPbfliK2dDU7il2kdx2uW78fz2UHlprdRxKa_1IBa4zYM_TAvNa4gSq0rr6gumGI4i9LiswlkgDokELNJTo5FARojrE3ZB1MABmWLkjSIIk706ova95h3j_M_okTTwAAGkFykLTe7HBAAAAAElFTkSuQmCC.png",
+      "snippet": "The bottom line is that alcohol is potentially addictive, can cause intoxication, and contributes to health problems and preventable deaths. If you already ...",
+      "snippet_highlighted_words": [
+        "alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "The bottom line is that alcohol is potentially addictive, can cause intoxication, and contributes to health problems and preventable deaths. If you already ...",
+          "source_info_link": "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/alcohol/art-20044551",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAA4UlEQVR4AbTQEZDEMBjF8TifrutZ3dbqUwrE6lj4oF4LF0ulSDBQh1AlECtUOlPpzP_mcNPZo9s38-g38-Ap_siHcV-J55YdYbehxKRQp7RROpO7WKJRJj2-9-p6MoYCt4B3afMTm7EUmK8LfnuckF9x7PU80y-Kpot1716wguAYFqPbfliK2dDU7il2kdx2uW78fz2UHlprdRxKa_1IBa4zYM_TAvNa4gSq0rr6gumGI4i9LiswlkgDokELNJTo5FARojrE3ZB1MABmWLkjSIIk706ova95h3j_M_okTTwAAGkFykLTe7HBAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CukBL2dvdG8_dXJsPUNBRVNvZ0VCNnpzd0ZaSW9IbnFnTFVlNmZ6dXRzbS02XzVoaThfdU8takRfT3ppcTJKMnExRHFIT0hpbU5mY19FOFJDbDRhWHl2TjVpMV8zZDE1MGJZU0NRYzVuaW8tVnRuVVVIRGdGY0tMM3JEb3JCa0NVN1JtZHNndzZMQnlHUGlvZWEzRl9xZXFKXzlCTV9zRWNEWldRWVFQNExNeUotYm5CMTByY2h0YW9mdVZHQjBiQUxvZi1GWHhiTG9WT1VJZkl1UWRFd0FOYnZuTnNZbzBYcDlQUWVsY1Zqb1ESBBoCCAAalwQSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkDxAwgAEAAYACAAKg4KB2FsY29ob2wVnga8QDLpAS9nb3RvP3VybD1DQUVTb2dFQjZ6c3dGWklvSG5xZ0xVZTZmenV0c20tNl81aGk4X3VPLWpEX096aXEySjJxMURxSE9IaW1OZmNfRThSQ2w0YVh5dk41aTFfM2QxNTBiWVNDUWM1bmlvLVZ0blVVSERnRmNLTDNyRG9yQmtDVTdSbWRzZ3c2TEJ5R1Bpb2VhM0ZfcWVxSl85Qk1fc0VjRFpXUVlRUDRMTXlKLWJuQjEwcmNodGFvZnVWR0IwYkFMb2YtRlh4YkxvVk9VSWZJdVFkRXdBTmJ2bk5zWW8wWHA5UFFlbGNWam9ROj08Yj5BbGNvaG9sPC9iPiB1c2U6IFdlaWdoaW5nIHJpc2tzIGFuZCBiZW5lZml0cyAtIE1heW8gQ2xpbmljQqsBVGhlIGJvdHRvbSBsaW5lIGlzIHRoYXQgPGI-YWxjb2hvbDwvYj4gaXMgcG90ZW50aWFsbHkgYWRkaWN0aXZlLCBjYW4gY2F1c2UgaW50b3hpY2F0aW9uLCBhbmQgY29udHJpYnV0ZXMgdG8gaGVhbHRoIHByb2JsZW1zIGFuZCBwcmV2ZW50YWJsZSBkZWF0aHMuIElmIHlvdSBhbHJlYWR5Jm5ic3A7Li4uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CukBL2dvdG8_dXJsPUNBRVNvZ0VCNnpzd0ZaSW9IbnFnTFVlNmZ6dXRzbS02XzVoaThfdU8takRfT3ppcTJKMnExRHFIT0hpbU5mY19FOFJDbDRhWHl2TjVpMV8zZDE1MGJZU0NRYzVuaW8tVnRuVVVIRGdGY0tMM3JEb3JCa0NVN1JtZHNndzZMQnlHUGlvZWEzRl9xZXFKXzlCTV9zRWNEWldRWVFQNExNeUotYm5CMTByY2h0YW9mdVZHQjBiQUxvZi1GWHhiTG9WT1VJZkl1UWRFd0FOYnZuTnNZbzBYcDlQUWVsY1Zqb1ESBBoCCAAalwQSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkDxAwgAEAAYACAAKg4KB2FsY29ob2wVnga8QDLpAS9nb3RvP3VybD1DQUVTb2dFQjZ6c3dGWklvSG5xZ0xVZTZmenV0c20tNl81aGk4X3VPLWpEX096aXEySjJxMURxSE9IaW1OZmNfRThSQ2w0YVh5dk41aTFfM2QxNTBiWVNDUWM1bmlvLVZ0blVVSERnRmNLTDNyRG9yQmtDVTdSbWRzZ3c2TEJ5R1Bpb2VhM0ZfcWVxSl85Qk1fc0VjRFpXUVlRUDRMTXlKLWJuQjEwcmNodGFvZnVWR0IwYkFMb2YtRlh4YkxvVk9VSWZJdVFkRXdBTmJ2bk5zWW8wWHA5UFFlbGNWam9ROj08Yj5BbGNvaG9sPC9iPiB1c2U6IFdlaWdoaW5nIHJpc2tzIGFuZCBiZW5lZml0cyAtIE1heW8gQ2xpbmljQqsBVGhlIGJvdHRvbSBsaW5lIGlzIHRoYXQgPGI-YWxjb2hvbDwvYj4gaXMgcG90ZW50aWFsbHkgYWRkaWN0aXZlLCBjYW4gY2F1c2UgaW50b3hpY2F0aW9uLCBhbmQgY29udHJpYnV0ZXMgdG8gaGVhbHRoIHByb2JsZW1zIGFuZCBwcmV2ZW50YWJsZSBkZWF0aHMuIElmIHlvdSBhbHJlYWR5Jm5ic3A7Li4uIgIQAUgAWABoAA",
+      "source": "Mayo Clinic",
+      "read_more_link": "https://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/alcohol/art-20044551#:~:text=The%20bottom%20line%20is%20that,issues%20appear%20to%20be%20low."
+    },
+    {
+      "position": 7,
+      "title": "Alcohol - PAHO/WHO",
+      "link": "https://www.paho.org/en/topics/alcohol",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESYQHrOzAV8NttDalCVETpa98bMdgthWv4-cnblzH1-r439-Nx_p6vQHI6pJQivGMEAe0cyfgH86FDU_j9DOgriEJN1EI6BYYhsfYIx56iDZOc9OSUZYgDsaKnJZDX8NPm4bs&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QFnoECDAQAQ&uoh=1",
+      "displayed_link": "https://www.paho.org › topics › alcohol",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAJ1BMVEVHcEwCl9YCl9YCl9YCl9YCl9YCl9YCl9YCl9YCl9YCl9YDl9YCl9ZfkHzGAAAADXRSTlMAFF-jiim7Os1zSv7hkZ7PFQAAAUBJREFUeAFEz4FHA2EAhvHn7K7NwLXFENymnBKu3W5Tg5VaJogNJGyzjIKisglWBVsw29AmtK1NG6Cy5AsB0D_Vx0Y_vDyAl6l5nX8-27YjB8yo-UDC9CVnrd0bWrEa9EamOVSX3alGp52xkNyFWKvQGUVTc00kj9qouYSl2Ea_DtjZx6ffySfe23wOtPXNGyEm4pnXszSol56AKcSXjmvclHO0BEL8gFLsGfhx4OGuq4MzSFAOZaG0cRiE0JZFbyxTWdN0GA1k7sqE-LvMVYtyVyZKXJwQiln4FxykU_GBYyZwBV6QrkVFyYcN1PMrHVj8NlQzraOF9yrAfo5hKQ04JIE3vDWOQR5M1VBySrTVrgPuYqRZMFeijZ0-SMPMdqiV6kUvLJC06lzZ-zfjKeUm8IAtZTUqcStACXYwDy1SANjfUY4b-sSrAAAAAElFTkSuQmCC.png",
+      "snippet": "Alcohol is a causal factor in more than 200 diseases and health conditions, including injuries, several types of cancer, cardiovascular diseases, liver diseases ...",
+      "snippet_highlighted_words": [
+        "Alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Alcohol is a causal factor in more than 200 diseases and health conditions, including injuries, several types of cancer, cardiovascular diseases, liver diseases ...",
+          "source_info_link": "https://www.paho.org/en/topics/alcohol",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAJ1BMVEVHcEwCl9YCl9YCl9YCl9YCl9YCl9YCl9YCl9YCl9YCl9YDl9YCl9ZfkHzGAAAADXRSTlMAFF-jiim7Os1zSv7hkZ7PFQAAAUBJREFUeAFEz4FHA2EAhvHn7K7NwLXFENymnBKu3W5Tg5VaJogNJGyzjIKisglWBVsw29AmtK1NG6Cy5AsB0D_Vx0Y_vDyAl6l5nX8-27YjB8yo-UDC9CVnrd0bWrEa9EamOVSX3alGp52xkNyFWKvQGUVTc00kj9qouYSl2Ea_DtjZx6ffySfe23wOtPXNGyEm4pnXszSol56AKcSXjmvclHO0BEL8gFLsGfhx4OGuq4MzSFAOZaG0cRiE0JZFbyxTWdN0GA1k7sqE-LvMVYtyVyZKXJwQiln4FxykU_GBYyZwBV6QrkVFyYcN1PMrHVj8NlQzraOF9yrAfo5hKQ04JIE3vDWOQR5M1VBySrTVrgPuYqRZMFeijZ0-SMPMdqiV6kUvLJC06lzZ-zfjKeUm8IAtZTUqcStACXYwDy1SANjfUY4b-sSrAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpEBL2dvdG8_dXJsPUNBRVNZUUhyT3pBVl8wdndWZmNpUWhDYTlUb0FFOFRCSHRoRUJ5d09DU0pIUE9TNkNodFFSNjFGYnJ3b2d0RXkteUpfRVh0NFd6amFVN2xsSDRoRGNuM2cxaEoxSzlQV0xwb2JZOGtXallFdlIxNVJXZEJOY0lzcEdpR2RjZGV6cGZlbDdJaxIEGgIIABrDAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQJ0DCAAQABgAIAAqDgoHYWxjb2hvbBV_OK5AMpEBL2dvdG8_dXJsPUNBRVNZUUhyT3pBVl8wdndWZmNpUWhDYTlUb0FFOFRCSHRoRUJ5d09DU0pIUE9TNkNodFFSNjFGYnJ3b2d0RXkteUpfRVh0NFd6amFVN2xsSDRoRGNuM2cxaEoxSzlQV0xwb2JZOGtXallFdlIxNVJXZEJOY0lzcEdpR2RjZGV6cGZlbDdJazo8PGI-QWxjb2hvbDwvYj4gLSBQQUhPL1dITyAtIFBhbiBBbWVyaWNhbiBIZWFsdGggT3JnYW5pemF0aW9uQrABPGI-QWxjb2hvbDwvYj4gaXMgYSBjYXVzYWwgZmFjdG9yIGluIG1vcmUgdGhhbiAyMDAgZGlzZWFzZXMgYW5kIGhlYWx0aCBjb25kaXRpb25zLCBpbmNsdWRpbmcgaW5qdXJpZXMsIHNldmVyYWwgdHlwZXMgb2YgY2FuY2VyLCBjYXJkaW92YXNjdWxhciBkaXNlYXNlcywgbGl2ZXIgZGlzZWFzZXMmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpEBL2dvdG8_dXJsPUNBRVNZUUhyT3pBVl8wdndWZmNpUWhDYTlUb0FFOFRCSHRoRUJ5d09DU0pIUE9TNkNodFFSNjFGYnJ3b2d0RXkteUpfRVh0NFd6amFVN2xsSDRoRGNuM2cxaEoxSzlQV0xwb2JZOGtXallFdlIxNVJXZEJOY0lzcEdpR2RjZGV6cGZlbDdJaxIEGgIIABrDAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQJ0DCAAQABgAIAAqDgoHYWxjb2hvbBV_OK5AMpEBL2dvdG8_dXJsPUNBRVNZUUhyT3pBVl8wdndWZmNpUWhDYTlUb0FFOFRCSHRoRUJ5d09DU0pIUE9TNkNodFFSNjFGYnJ3b2d0RXkteUpfRVh0NFd6amFVN2xsSDRoRGNuM2cxaEoxSzlQV0xwb2JZOGtXallFdlIxNVJXZEJOY0lzcEdpR2RjZGV6cGZlbDdJazo8PGI-QWxjb2hvbDwvYj4gLSBQQUhPL1dITyAtIFBhbiBBbWVyaWNhbiBIZWFsdGggT3JnYW5pemF0aW9uQrABPGI-QWxjb2hvbDwvYj4gaXMgYSBjYXVzYWwgZmFjdG9yIGluIG1vcmUgdGhhbiAyMDAgZGlzZWFzZXMgYW5kIGhlYWx0aCBjb25kaXRpb25zLCBpbmNsdWRpbmcgaW5qdXJpZXMsIHNldmVyYWwgdHlwZXMgb2YgY2FuY2VyLCBjYXJkaW92YXNjdWxhciBkaXNlYXNlcywgbGl2ZXIgZGlzZWFzZXMmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "Pan American Health Organization (PAHO)",
+      "read_more_link": "https://www.paho.org/en/topics/alcohol#:~:text=Alcohol%20is%20a%20causal%20factor,mental%20health%20disorders%2C%20and%20injuries."
+    }
+  ],
+  "related_searches": [
+    {
+      "block_position": 1,
+      "query": "Alcohol types",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+types&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhOEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+types&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Alcohol formula",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+formula&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhXEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+formula&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Alcohol Medicine",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+Medicine&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhWEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+Medicine&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Alcohol Pic",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+Pic&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhVEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+Pic&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Alcohol effects",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+effects&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhUEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+effects&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Alcohol names",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+names&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhTEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+names&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Alcohol syndrome",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+syndrome&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhREAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+syndrome&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Alcohol near me",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=Alcohol+near+me&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q1QJ6BAhQEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Alcohol+near+me&safe=off"
+    }
+  ],
+  "things_to_know": {
+    "buttons": [
+      {
+        "text": "Calories",
+        "table": [
+          [
+            "Amount Per 1 fl oz (29.7 g)100 grams1 can (356 g)1 can (356 g)"
+          ],
+          [
+            "Calories 154"
+          ]
+        ],
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=calories+in+alcohol&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QrooIegQILxAO",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=calories+in+alcohol&safe=off"
+      },
+      {
+        "text": "Types",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=types+of+alcohol&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QrooIegQILxAc",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=types+of+alcohol&safe=off"
+      },
+      {
+        "text": "Popularity",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=what+are+the+most+popular+alcoholic+beverages&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QrooIegQILxAq",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=what+are+the+most+popular+alcoholic+beverages&safe=off"
+      },
+      {
+        "text": "Health Effects",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=what+are+the+health+effects+of+alcoholic+beverages&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QrooIegQILxA4",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=what+are+the+health+effects+of+alcoholic+beverages&safe=off"
+      },
+      {
+        "text": "Alcohol Content",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&q=what+is+the+alcohol+content+of+different+alcoholic+beverages&sa=X&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4QrooIegQILxBG",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=what+is+the+alcohol+content+of+different+alcoholic+beverages&safe=off"
+      }
+    ]
+  },
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=10&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8NMDegQITxAW",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=10&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAE",
+      "3": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=20&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAG",
+      "4": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=30&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAI",
+      "5": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=40&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAK",
+      "6": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=50&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAM",
+      "7": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=60&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAO",
+      "8": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=70&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAQ",
+      "9": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=80&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAS",
+      "10": "https://www.google.com/search?q=%22alcohol%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuSdxGnM2PvYqMKqBfSH0Ikq5V-aw:1793197223119&ei=pwTiaqTvBqaIp84P3oHD8Q0&start=90&sa=N&sstk=AS6-VmLxeyXPEANwbtnmARxET6v1UmXUCGcPm-5MPFAwwiyr9_kJJ4gx-GuUdKNadRmowhseIgiZ_LG6cI-dHq_7PtJlA6lVIBcZ_A&ved=2ahUKEwjk3vub9NyXAxUmxMkDHd7AMN4Q8tMDegQITxAU"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=30",
+      "5": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=40",
+      "6": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=50",
+      "7": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=60",
+      "8": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=70",
+      "9": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=80",
+      "10": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22&safe=off&start=90"
+    }
+  }
+}

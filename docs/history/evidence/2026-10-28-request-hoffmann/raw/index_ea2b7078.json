@@ -1,0 +1,194 @@
+[
+ {
+  "query": "\"GHB\"",
+  "total_results": 69,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "1f14e2cd4592895ca02733a425106d6f83a959151dc703e5f8ac8306dac46135"
+ },
+ {
+  "query": "\"GHB\" \"harm\" OR \"harmful\"",
+  "total_results": 410000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "d76bd6970cc6f310faddfaab5b792463a44107fac16a8fa7255d80076ee92bda"
+ },
+ {
+  "query": "\"LSD\"",
+  "total_results": 67,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "b605df381239244c52074869bda45d287629a863732ecc3f4c045c7b14b8b324"
+ },
+ {
+  "query": "\"LSD\" \"harm\" OR \"harmful\"",
+  "total_results": 72,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "002ea077508f7e9cc95044a306e06d30fe259f1bfdf57145fe7b60d2a19fb323"
+ },
+ {
+  "query": "\"alcohol\"",
+  "total_results": 736000000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "4ab9c8cef421b403415865b39cf010f60755f63e0c91909f1974e0a99910ba73"
+ },
+ {
+  "query": "\"alcohol\" \"harm\" OR \"harmful\"",
+  "total_results": 217000000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "1909d0cc3c4d8f15a5fbdc88408d1b95b879980130ad25c8656e37732c861a76"
+ },
+ {
+  "query": "\"amphetamine\"",
+  "total_results": 52,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "1b6973d5a8c410dfd0f948c5cab0134471465d413226d28d35932bf2d6c6590a"
+ },
+ {
+  "query": "\"amphetamine\" \"harm\" OR \"harmful\"",
+  "total_results": 5890000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "798933e3a35b68574f08c26f0effb5d3538893c0a79d16e237a37857821dfdce"
+ },
+ {
+  "query": "\"benzodiazepines\"",
+  "total_results": 4570000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "b2475729e9aa3a3b6e3664503b54a7887c91dc1844c2ea2409cceb1d02215ceb"
+ },
+ {
+  "query": "\"benzodiazepines\" \"harm\" OR \"harmful\"",
+  "total_results": 54,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "2baaace36ceb6058eb9dd4b231bc81f64555620586f8918c843507a1a9fdf4db"
+ },
+ {
+  "query": "\"buprenorphine\"",
+  "total_results": 8150000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "7dc93f0f5bf66fa952c714cdfd06b2063795b580f73d971f87385f35f5d086f2"
+ },
+ {
+  "query": "\"buprenorphine\" \"harm\" OR \"harmful\"",
+  "total_results": 6340000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "0b2597cb119345170218ea21d2b277a77d2ecd3752eeb91008973054d738d871"
+ },
+ {
+  "query": "\"butane\"",
+  "total_results": 21100000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "af7ea8f0b57322368d20ff9b146d899a022d1bcb2242cb5cf201b69ff2af2dad"
+ },
+ {
+  "query": "\"butane\" \"harm\" OR \"harmful\"",
+  "total_results": 73,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "2502a29828e5be3a1e2b9a3161f4536a99f933ecf33b535aea43a6ce3b578b5b"
+ },
+ {
+  "query": "\"cannabis\"",
+  "total_results": 63,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "9b97d18e2b03c99fde8cf80d91737e89d542c1afbe77bc2d3f95bb3fc3121063"
+ },
+ {
+  "query": "\"cannabis\" \"harm\" OR \"harmful\"",
+  "total_results": 59,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "81395ebbc6f308c08354940c9523b366735c1c801b0068254fb319880456f38e"
+ },
+ {
+  "query": "\"cocaine\"",
+  "total_results": 47500000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "5c795ec5077a3ead14a84aa5ef5e96b8b84196b7c909dc7504bdd97a37337a67"
+ },
+ {
+  "query": "\"cocaine\" \"harm\" OR \"harmful\"",
+  "total_results": 20600000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "00cebee61275d95d9281da70be43fc8cf0bd4399383911bf604b3cdbd16a6da7"
+ },
+ {
+  "query": "\"ecstasy\"",
+  "total_results": 65,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "07aaf9a4cf1f3870f215fb024769c0aefdd4334933b95adbe126e5e1ad8da754"
+ },
+ {
+  "query": "\"ecstasy\" \"harm\" OR \"harmful\"",
+  "total_results": 4850000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "288b7c94b7a22d2520ed8b302b7657bda89966dcef2bb52cc2fe84f7f9da714d"
+ },
+ {
+  "query": "\"heroin\"",
+  "total_results": 73,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "f1a207e4b156e737f4ff59a176b4e9259e96ef86d62678b24e1d3b02329c98eb"
+ },
+ {
+  "query": "\"heroin\" \"harm\" OR \"harmful\"",
+  "total_results": 16000000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "38a48c289b2baa17e4a0910db04841a795d5878cb5711330a0b5a530658367ad"
+ },
+ {
+  "query": "\"ketamine\"",
+  "total_results": 72,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "3b49b26e441217850ea39a9a3b9efd13d509fd3b9e463a41bf420d5afc1827c1"
+ },
+ {
+  "query": "\"ketamine\" \"harm\" OR \"harmful\"",
+  "total_results": 68,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "afd4cce574e8f3288fc19122f2f410951d2cc03fa965b1e156f2f6cc08347cbd"
+ },
+ {
+  "query": "\"khat\"",
+  "total_results": 14300000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "dcaa4c90b3db858d5d8f939aa64b48364849048c5716519389344177f56c336b"
+ },
+ {
+  "query": "\"khat\" \"harm\" OR \"harmful\"",
+  "total_results": 0,
+  "organic_results_state": "Fully empty",
+  "raw_sha256": "78987c0ebe3dd13374edacfd5a1d4feb120ad94af79f60dfe42e982f0e678018"
+ },
+ {
+  "query": "\"mephedrone\"",
+  "total_results": 642000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "b926cf3984b4627773d04dc0fb767e8f3046bf78eaf75f9c4a7a63ae0a8f834d"
+ },
+ {
+  "query": "\"mephedrone\" \"harm\" OR \"harmful\"",
+  "total_results": 4570000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "d710c778e520483ac1523a2849acef33ce274cc016002d1cd010012f872eaaf6"
+ },
+ {
+  "query": "\"methadone\"",
+  "total_results": 5320000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "b4ce62e5ba953ce063072f8cdebdaf81bc640b33bea3b390b849ef03847542e8"
+ },
+ {
+  "query": "\"methadone\" \"harm\" OR \"harmful\"",
+  "total_results": 69,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "5bb4f9ddf94caf637f2cfbfe10b970a47d1ca3f31414d21afd15c87824b78029"
+ },
+ {
+  "query": "\"methamphetamine\"",
+  "total_results": 10200000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "4e03cc2c44f6294cabca1a7458bd3e84595d312cefbf1450e4292da00801447a"
+ },
+ {
+  "query": "\"methamphetamine\" \"harm\" OR \"harmful\"",
+  "total_results": 10400000,
+  "organic_results_state": "Results for exact spelling",
+  "raw_sha256": "e499dc051591f190141838582491213d80abb7fdee2bfb57ae200757212d03b8"
+ }
+]

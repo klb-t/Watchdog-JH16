@@ -167,6 +167,17 @@
       "test": "przeliczenie p",
       "status": "unresolved",
       "evidence": []
+    },
+    {
+      "cause": "Google przestał podawać szacunek liczby wyników dla wielu zapytań (pomiar 28.10.2026)",
+      "test": "surowe odpowiedzi przebiegu ea2b7078 (kopia testowa): 14 z 32 liczb równe liczbie wyników osiągalnych (52–73), np. „cannabis” 63 wobec 134 mln w przebiegu c17d1147 z 26.10; zapytanie szkodliwości dla khat: stan dostawcy „Fully empty”",
+      "status": "shown",
+      "evidence": [
+        {
+          "label": "indeks surowych odpowiedzi i raport",
+          "path": "docs/history/evidence/2026-10-28-request-hoffmann/README.md"
+        }
+      ]
     }
   ],
   "limitations": [

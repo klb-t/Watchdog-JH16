@@ -174,6 +174,24 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
   - zmienić status na „nierozstrzygnięta”;
   - wskazać źródło, np. dokumentację Google o zmianie szacunków, jeśli takie znasz.
 
+**A5. Zlecenie z tekstu: wklej cytat prof. Hoffmanna (ok. 32 kredyty SerpApi)**
+- Menu → Prace i replikacje → **„Zlecenie z tekstu”**. Wklej cytat razem z linkiem i kliknij „Rozpoznaj”.
+- Oczekiwane po rozpoznaniu:
+  - praca doi:10.2196/jmir.4033, rozpoznana przez Crossref (strona JMIR ma ochronę przed botami, co widać w „Pobraniach”);
+  - 3 prośby, każda z cytatem;
+  - plan: przeliczenie danych z pracy i nowy pomiar 32 zapytaniami;
+  - propozycje z kosztem;
+  - 4 pytania;
+  - informacja, że odczyt modelem jest wyłączony, z powodem.
+- Zaznacz zgodę i kliknij „Wyślij i rozpocznij”. Część dosłowna startuje od razu. Propozycje uruchamiasz przyciskiem „Akceptuj i uruchom”. Odpowiedzi na pytania zapisujesz bez wstrzymywania pracy.
+- Na kopii testowej 28.10:
+  - przeliczenie dało 0,8162, „reproduced”;
+  - nowy pomiar był niekompletny: Google zwrócił prawdziwy szacunek dla mniej niż połowy zapytań, a dla „khat” harm nic. Werdykt „nie da się ocenić” jest więc poprawny;
+  - Trends A1 w 4 regionach wyniósł 0,75–0,92.
+
+  Raport: `docs/replication/REQUEST_HOFFMANN_2026-10-28/REPORT.md`.
+- **Do potwierdzenia:** rzeczywista cena Twoich dodatkowych kredytów SerpApi. Automat przyjmuje 0,014 € za zapytanie i limit 1 € dziennie.
+
 **B. Nowe pomiary (kredyty SerpApi)**
 6. Ustawienia → kreator. Krok 1: „serpapi: zapisany” i, w trybie „Standardowy”, dzienny limit
    SerpApi. Krok 2: „Punkt odniesienia” → „JH16: nowe pomiary przez własny SerpApi” (32 kredyty)

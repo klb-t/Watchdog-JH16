@@ -1,0 +1,667 @@
+{
+  "search_metadata": {
+    "id": "6ae204ce2b5683c31967f27f",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/oeQgklsDK0VXt_jJvNkdFvCYutxnv0nkbatdCdI5GDM/6ae204ce2b5683c31967f27f.json",
+    "markdown_endpoint": "https://serpapi.com/searches/oeQgklsDK0VXt_jJvNkdFvCYutxnv0nkbatdCdI5GDM/6ae204ce2b5683c31967f27f.md",
+    "pixel_position_endpoint": "https://serpapi.com/searches/oeQgklsDK0VXt_jJvNkdFvCYutxnv0nkbatdCdI5GDM/6ae204ce2b5683c31967f27f.json_with_pixel_position",
+    "created_at": "2026-10-28 14:21:02 UTC",
+    "processed_at": "2026-10-28 14:21:02 UTC",
+    "google_url": "https://www.google.com/search?q=%22khat%22&oq=%22khat%22&hl=en&safe=off&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/oeQgklsDK0VXt_jJvNkdFvCYutxnv0nkbatdCdI5GDM/6ae204ce2b5683c31967f27f.html",
+    "total_time_taken": 0.63
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "\"khat\"",
+    "google_domain": "google.com",
+    "hl": "en",
+    "safe": "off",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "\"khat\"",
+    "total_results": 14300000,
+    "time_taken_displayed": 0.43,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "knowledge_graph": {
+    "title": "Khat",
+    "type": "Plant",
+    "entity_type": "biology",
+    "kgmid": "/m/0fldz",
+    "knowledge_graph_search_link": "https://www.google.com/search?kgmid=/m/0fldz&hl=en-US&q=Khat",
+    "serpapi_knowledge_graph_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en-US&kgmid=%2Fm%2F0fldz&q=Khat&safe=off",
+    "header_images": [
+      {
+        "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTjQknzTa-FQun_r75X-GHnFSTM3YVtiZGZKxhA-4ig2zrskhUB3HStmlQnoH2whvshS2kRFoOAFmQsGEP4i0v5NDfefHjId1NLr59j_mFJ&s=10",
+        "source": "https://detoxplusuk.com/khat-drug-addiction/"
+      }
+    ],
+    "scientific_name": "Catha edulis",
+    "people_also_search_for": [
+      {
+        "name": "Kratom",
+        "image": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/bDlGt-YZBgBug761VY_MARIDv70ChDTdTuqfDW_EzpXVGEq4b3qFQqFlI9ORHV4c.jpeg",
+        "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&si=APenkKlisoOXLiCMwraINHtdqOQii4CK9kOlkQc8Apn-pS60yVcWrlj6_CVAqXaLUPuLA6BLDvFKPK3mzgq9yOfl_gHR034nj2-hJVeQSu3m3PKvffC5V1sAv5U0aO2CYtEukOweEnoyzYaPHPTz-NW-MosvJTnf8toNB8vcp6Bui7zAJvB-nvRxEJzam-QwWxFExqq0nNWW&q=Kratom&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQs9oBKAB6BAgKEAY",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Kratom&safe=off&si=APenkKlisoOXLiCMwraINHtdqOQii4CK9kOlkQc8Apn-pS60yVcWrlj6_CVAqXaLUPuLA6BLDvFKPK3mzgq9yOfl_gHR034nj2-hJVeQSu3m3PKvffC5V1sAv5U0aO2CYtEukOweEnoyzYaPHPTz-NW-MosvJTnf8toNB8vcp6Bui7zAJvB-nvRxEJzam-QwWxFExqq0nNWW"
+      },
+      {
+        "name": "Areca palm",
+        "image": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/bDlGt-YZBgBug761VY_MARIDv70ChDTdTuqfDW_EzpVzWLsUJTWbs-xzcDuYXrHN.jpeg",
+        "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&si=APenkKlisoOXLiCMwraINHtdqOQii4CK9kOlkQc8Apn-pS60yYCXAV4y0itdjsbwtmaXgXk-OYP9hGnN1Rlp7h4-ZshQKaj0RwKSu7Oavxmul8uryfIf43xw41LpZyVo9E2s0Y2-hjhfdEOzawrPD5BskNvgFQEKvIRl3Yz53o-WwmLFw9hmC8IB6ORqmpjEOBQd08LdCYN_n4LqaYDWVHEnqFVqviSG8g%3D%3D&q=Areca+catechu&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQs9oBKAB6BAgKEAo",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Areca+catechu&safe=off&si=APenkKlisoOXLiCMwraINHtdqOQii4CK9kOlkQc8Apn-pS60yYCXAV4y0itdjsbwtmaXgXk-OYP9hGnN1Rlp7h4-ZshQKaj0RwKSu7Oavxmul8uryfIf43xw41LpZyVo9E2s0Y2-hjhfdEOzawrPD5BskNvgFQEKvIRl3Yz53o-WwmLFw9hmC8IB6ORqmpjEOBQd08LdCYN_n4LqaYDWVHEnqFVqviSG8g%3D%3D"
+      },
+      {
+        "name": "Catha",
+        "image": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/bDlGt-YZBgBug761VY_MARIDv70ChDTdTuqfDW_EzpU7RCm6HFBk0atR-blga0Ft.jpeg",
+        "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&si=APenkKkicnuBo3HChbgOSg9PTrSKjmOZoDYMZFfiLeKjxtW674nFhA4BKURFXNqzyu3JzrMcwLR2piAnP-kvkW4s-Gpmy2JSMI4JJaU57CIz4aV8j-MX6xamOt_yHZOEZ-WnHN5UrFk4ZP6ZhtZtYf8pPVkv1PTqAnUdUs5N-Go1yFBWNR2fSe5QujenCFKuWVz-15ArRsaA&q=Catha&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQs9oBKAB6BAgKEA4",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Catha&safe=off&si=APenkKkicnuBo3HChbgOSg9PTrSKjmOZoDYMZFfiLeKjxtW674nFhA4BKURFXNqzyu3JzrMcwLR2piAnP-kvkW4s-Gpmy2JSMI4JJaU57CIz4aV8j-MX6xamOt_yHZOEZ-WnHN5UrFk4ZP6ZhtZtYf8pPVkv1PTqAnUdUs5N-Go1yFBWNR2fSe5QujenCFKuWVz-15ArRsaA"
+      },
+      {
+        "name": "Staff-vine family",
+        "image": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/bDlGt-YZBgBug761VY_MARIDv70ChDTdTuqfDW_EzpU7xlpvqmluIVHREe9h3hU_.jpeg",
+        "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&si=APenkKlisoOXLiCMwraINHtdqOQii4CK9kOlkQc8Apn-pS60ySX5npcAh9gyVZI5_3VPZc1f3fg4y35cM7FfSX12Rtge2OPtIlqW08NS6lM66dFz3D0BNJqY8YcTbr7dWImWc-ytKiS5v05v2suB6XkLIHwOGMkLr6A1CK7sNbgNeRwBzog51sHu8gyjVdCJUbLHS9TC3HIY&q=Celastraceae&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQs9oBKAB6BAgKEBI",
+        "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Celastraceae&safe=off&si=APenkKlisoOXLiCMwraINHtdqOQii4CK9kOlkQc8Apn-pS60ySX5npcAh9gyVZI5_3VPZc1f3fg4y35cM7FfSX12Rtge2OPtIlqW08NS6lM66dFz3D0BNJqY8YcTbr7dWImWc-ytKiS5v05v2suB6XkLIHwOGMkLr6A1CK7sNbgNeRwBzog51sHu8gyjVdCJUbLHS9TC3HIY"
+      }
+    ],
+    "people_also_search_for_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat&stick=H4sIAAAAAAAAAONgFuLQz9U3SMtJqVKCs7QEgzNTUssTK4v9UitKgktSC4p_MYoFpOYX5KQqJOYU5ysUpyYWJWcopOUXLWJl8c5ILLnFJsnwxqEiMJevqXNJuOEhVu1FmyOSgm3Sw74fBwDYWrqjZQAAAA&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQzO0BKAR6BAgKEBQ",
+    "people_also_search_for_stick": "H4sIAAAAAAAAAONgFuLQz9U3SMtJqVKCs7QEgzNTUssTK4v9UitKgktSC4p_MYoFpOYX5KQqJOYU5ysUpyYWJWcopOUXLWJl8c5ILLnFJsnwxqEiMJevqXNJuOEhVu1FmyOSgm3Sw74fBwDYWrqjZQAAAA"
+  },
+  "inline_videos": [
+    {
+      "position": 1,
+      "title": "Khat is a flowering evergreen shrub that is abused for its ...",
+      "link": "https://www.facebook.com/DEAHQ/videos/khat-is-a-flowering-evergreen-shrub-that-is-abused-for-its-stimulant-like-effect/1919613615623218/",
+      "thumbnail": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/XOeFG4eL7nr4KyT5igNU1KHRWhUmIn2YOzNMxY36EG8.jpeg",
+      "channel": "Drug Enforcement Administration - DEA",
+      "duration": "0:20",
+      "platform": "Facebook",
+      "date": "Dec 17, 2025"
+    },
+    {
+      "position": 2,
+      "title": "The Dangerous Secret Of Houthi Warriors With Swollen Cheeks",
+      "link": "https://www.youtube.com/watch?v=_ODwonpMWTM",
+      "thumbnail": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/TNN9SFXw_LkDA2pu4A5yokhI6B3_8Mw4bZbxXdiXuno.jpeg",
+      "channel": "Firstpost",
+      "duration": "6:33",
+      "platform": "YouTube",
+      "date": "2 weeks ago",
+      "short_clip": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcQQUg4KDnKHUHhj0X9glRFuRtjsoLa1nyREtg"
+    },
+    {
+      "position": 3,
+      "title": "Khat is a flowering evergreen shrub that is abused for its ...",
+      "link": "https://www.facebook.com/DEAHQ/posts/khat-is-a-flowering-evergreen-shrub-that-is-abused-for-its-stimulant-like-effect/671811095140359/",
+      "thumbnail": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/xEOcr7YT-H64TRRo7OPSEoqiOozXQl7P0sjwrJ6aNcI.jpeg",
+      "channel": "Drug Enforcement Administration - DEA",
+      "duration": "0:10",
+      "platform": "Facebook",
+      "date": "Dec 17, 2023",
+      "short_clip": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcTP3xoDzFuxKv6W5xqNlbM-wBbrdUUHAO0Z_g"
+    }
+  ],
+  "related_questions": [
+    {
+      "question": "Why do Muslims eat khat?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJXaHkgZG8gTXVzbGltcyBlYXQga2hhdD8iLCJsayI6IkdoZDNhSGtnWkc4Z2JYVnpiR2x0Y3lCbFlYUWdhMmhoZEEiLCJicyI6ImMtTXk1WklJejZoVVNNbFg4QzB0enNuTUxWWklUU3hSeU01SUxMRTNrcFFTTDRmSTVhTEpjYWx5Q1hnV2c1a0tHWWxGdVdtbE9mWkdnbEw4bWFoaVhJWmNjdUVnZm1KUnFrSkpScXBDVW1wZWFscG1TYkZDZmhyVURuNHBYckFPbUF5WE81ZWlTMzRxMUp6aWpQeHloZElDaGZ3OGhVU0ZsS0xTZElXUzFHS2dMaVVwb0t2d0t4SmdCQUEiLCJpZCI6ImZjX3pnVGlhcjI1TS1QVzVOb1AyZGVWMFFNXzUifQ==",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJXaHkgZG8gTXVzbGltcyBlYXQga2hhdD8iLCJsayI6IkdoZDNhSGtnWkc4Z2JYVnpiR2x0Y3lCbFlYUWdhMmhoZEEiLCJicyI6ImMtTXk1WklJejZoVVNNbFg4QzB0enNuTUxWWklUU3hSeU01SUxMRTNrcFFTTDRmSTVhTEpjYWx5Q1hnV2c1a0tHWWxGdVdtbE9mWkdnbEw4bWFoaVhJWmNjdUVnZm1KUnFrSkpScXBDVW1wZWFscG1TYkZDZmhyVURuNHBYckFPbUF5WE81ZWlTMzRxMUp6aWpQeHloZElDaGZ3OGhVU0ZsS0xTZElXUzFHS2dMaVVwb0t2d0t4SmdCQUEiLCJpZCI6ImZjX3pnVGlhcjI1TS1QVzVOb1AyZGVWMFFNXzUifQ%3D%3D"
+    },
+    {
+      "question": "Is khat harmful?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJJcyBraGF0IGhhcm1mdWw/IiwibGsiOiJHZzlwY3lCcmFHRjBJR2hoY20xbWRXdyIsImJzIjoiYy1NeTVaSUl6NmhVU01sWDhDMHR6c25NTFZaSVRTeFJ5TTVJTExFM2twUVNMNGZJNWFMSmNhbHlDWGdXZzVrS0dZbEZ1V21sT2ZaR2dsTDhtYWhpWElaY2N1RWdmbUpScWtKSlJxcENVbXBlYWxwbVNiRkNmaHJVRG40cFhyQU9tQXlYTzVlaVMzNHExSnppalB4eWhkSUNoZnc4aFVTRmxLTFNkSVdTMUdLZ0xpVXBvS3Z3S3hKZ0JBQSIsImlkIjoiZmNfemdUaWFyMjVNLVBXNU5vUDJkZVYwUU1fNSJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJJcyBraGF0IGhhcm1mdWw%2FIiwibGsiOiJHZzlwY3lCcmFHRjBJR2hoY20xbWRXdyIsImJzIjoiYy1NeTVaSUl6NmhVU01sWDhDMHR6c25NTFZaSVRTeFJ5TTVJTExFM2twUVNMNGZJNWFMSmNhbHlDWGdXZzVrS0dZbEZ1V21sT2ZaR2dsTDhtYWhpWElaY2N1RWdmbUpScWtKSlJxcENVbXBlYWxwbVNiRkNmaHJVRG40cFhyQU9tQXlYTzVlaVMzNHExSnppalB4eWhkSUNoZnc4aFVTRmxLTFNkSVdTMUdLZ0xpVXBvS3Z3S3hKZ0JBQSIsImlkIjoiZmNfemdUaWFyMjVNLVBXNU5vUDJkZVYwUU1fNSJ9"
+    },
+    {
+      "question": "What are the benefits of khat?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJXaGF0IGFyZSB0aGUgYmVuZWZpdHMgb2Yga2hhdD8iLCJsayI6IkdnMXJhR0YwSUdKbGJtVm1hWFJ6IiwiYnMiOiJjLU15NVpJSXo2aFVTTWxYOEMwdHpzbk1MVlpJVFN4UnlNNUlMTEUza3BRU0w0Zkk1YUxKY2FseUNYZ1dnNWtLR1lsRnVXbWxPZlpHZ2xMOG1haGlYSVpjY3VFZ2ZtSlJxa0pKUnFwQ1VtcGVhbHBtU2JGQ2ZoclVEbjRwWHJBT21BeVhPNWVpUzM0cTFKemlqUHh5aGRJQ2hmdzhoVVNGbEtMU2RJV1MxR0tnTGlVcG9LdndLeEpnQkFBIiwiaWQiOiJmY196Z1RpYXIyNU0tUFc1Tm9QMmRlVjBRTV81In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJXaGF0IGFyZSB0aGUgYmVuZWZpdHMgb2Yga2hhdD8iLCJsayI6IkdnMXJhR0YwSUdKbGJtVm1hWFJ6IiwiYnMiOiJjLU15NVpJSXo2aFVTTWxYOEMwdHpzbk1MVlpJVFN4UnlNNUlMTEUza3BRU0w0Zkk1YUxKY2FseUNYZ1dnNWtLR1lsRnVXbWxPZlpHZ2xMOG1haGlYSVpjY3VFZ2ZtSlJxa0pKUnFwQ1VtcGVhbHBtU2JGQ2ZoclVEbjRwWHJBT21BeVhPNWVpUzM0cTFKemlqUHh5aGRJQ2hmdzhoVVNGbEtMU2RJV1MxR0tnTGlVcG9LdndLeEpnQkFBIiwiaWQiOiJmY196Z1RpYXIyNU0tUFc1Tm9QMmRlVjBRTV81In0%3D"
+    },
+    {
+      "question": "Does khat show up on a drug test?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJEb2VzIGtoYXQgc2hvdyB1cCBvbiBhIGRydWcgdGVzdD8iLCJsayI6IkdpQmtiMlZ6SUd0b1lYUWdjMmh2ZHlCMWNDQnZiaUJoSUdSeWRXY2dkR1Z6ZEEiLCJicyI6ImMtTXk1WklJejZoVVNNbFg4QzB0enNuTUxWWklUU3hSeU01SUxMRTNrcFFTTDRmSTVhTEpjYWx5Q1hnV2c1a0tHWWxGdVdtbE9mWkdnbEw4bWFoaVhJWmNjdUVnZm1KUnFrSkpScXBDVW1wZWFscG1TYkZDZmhyVURuNHBYckFPbUF5WE81ZWlTMzRxMUp6aWpQeHloZElDaGZ3OGhVU0ZsS0xTZElXUzFHS2dMaVVwb0t2d0t4SmdCQUEiLCJpZCI6ImZjX3pnVGlhcjI1TS1QVzVOb1AyZGVWMFFNXzUifQ==",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTVZXWkNlbVJuWkY5R2VUSmtZVGN4UTJzd1RHNVRjaTFIY3pVd2NGbEJNRWxRZERaWWVWTkZYMUptWWt4RGIyeFdWRmR2WjJjMVZpMTFkMjlMY3pJemRtc3RlV3hXUjFWNFExUnFhWGwxVlROeE1tNVVWVzAzTmw5cWR4SVhlbWRVYVdGeU1qVk5MVkJYTlU1dlVESmtaVll3VVUwYUlrRkVjM0k1WmxKUmVsOUVYM1ZpY0U0dFRtaEdRVU15VlVSM2IwbE5SMWhST1ZFIiwiZmN2IjoiMyIsImVpIjoiemdUaWFyMjVNLVBXNU5vUDJkZVYwUU0iLCJxYyI6IkNnUnJhR0YwRUFBb0FURUFBQURnRGtEa1AzMFVoa29fIiwicXVlc3Rpb24iOiJEb2VzIGtoYXQgc2hvdyB1cCBvbiBhIGRydWcgdGVzdD8iLCJsayI6IkdpQmtiMlZ6SUd0b1lYUWdjMmh2ZHlCMWNDQnZiaUJoSUdSeWRXY2dkR1Z6ZEEiLCJicyI6ImMtTXk1WklJejZoVVNNbFg4QzB0enNuTUxWWklUU3hSeU01SUxMRTNrcFFTTDRmSTVhTEpjYWx5Q1hnV2c1a0tHWWxGdVdtbE9mWkdnbEw4bWFoaVhJWmNjdUVnZm1KUnFrSkpScXBDVW1wZWFscG1TYkZDZmhyVURuNHBYckFPbUF5WE81ZWlTMzRxMUp6aWpQeHloZElDaGZ3OGhVU0ZsS0xTZElXUzFHS2dMaVVwb0t2d0t4SmdCQUEiLCJpZCI6ImZjX3pnVGlhcjI1TS1QVzVOb1AyZGVWMFFNXzUifQ%3D%3D"
+    }
+  ],
+  "ai_overview": {
+    "text_blocks": [
+      {
+        "type": "paragraph",
+        "snippet": "Khat (Catha edulis) is a flowering evergreen shrub or tree native to East Africa and the Arabian Peninsula whose fresh leaves are chewed for their amphetamine-like stimulant effects.",
+        "reference_indexes": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "type": "heading",
+        "snippet": "Plant Characteristics & Cultivation"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "Appearance: A slow-growing shrub or tree reaching heights of 1 to 5 meters (and up to 10 meters in equatorial areas) with glossy, evergreen leaves."
+          },
+          {
+            "snippet": "Environment: Thrives in arid climates and drought-resistant conditions at temperatures between 5–35°C (41–95°F)."
+          },
+          {
+            "snippet": "Potency: Fresh leaves contain the active stimulant cathinone, which rapidly degrades into cathine within 48 hours after harvesting, making fresh leaves necessary for the desired stimulant effect.",
+            "reference_indexes": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "snippet": "Traditional & Cultural Use"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "Usage: Traditionally chewed like tobacco; the fresh leaves and shoots are kept in the cheek and chewed intermittently to release active chemicals into the saliva."
+          },
+          {
+            "snippet": "History: Cultivated and used socially for centuries in regions like Yemen, Ethiopia, and Somalia—predating the widespread use of coffee in those areas.",
+            "reference_indexes": [
+              0,
+              1,
+              6,
+              7
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "snippet": "Effects and Risks"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "Short-term Effects: Increased alertness, euphoria, talkativeness, elevated heart rate, and raised blood pressure. High doses can cause manic behavior, hyperactivity, paranoia, and hallucinations.",
+            "reference_indexes": [
+              0,
+              6,
+              7,
+              8
+            ]
+          },
+          {
+            "snippet": "Side Effects & Health Risks: Insomnia, tooth staining, gastric disorders, psychological dependence, and potential links to chronic depression or psychosis with heavy use.",
+            "reference_indexes": [
+              6,
+              7,
+              8
+            ]
+          }
+        ]
+      },
+      {
+        "type": "heading",
+        "snippet": "Legal Status"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "International & Regional: Its legal status varies widely; it is a legal and deeply embedded social tradition in countries like Yemen, but it is classified as an illegal controlled substance or banned in many Western countries (including the United States, the UK, and much of Europe) due to its cathinone and cathine content. You can read more about its active compound profiles via the European Union Drugs Agency.",
+            "snippet_links": [
+              {
+                "text": "European Union Drugs Agency",
+                "link": "https://www.euda.europa.eu/publications/drug-profiles/khat_en"
+              }
+            ],
+            "reference_indexes": [
+              0,
+              1,
+              7,
+              9
+            ]
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "snippet": "If you'd like, I can provide more details on:"
+      },
+      {
+        "type": "list",
+        "list": [
+          {
+            "snippet": "The specific legal penalties in a particular country or region"
+          },
+          {
+            "snippet": "The pharmacology and chemistry of cathinone vs. synthetic alternatives"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "snippet": "Let me know how you would like to proceed."
+      }
+    ],
+    "references": [
+      {
+        "index": 0,
+        "title": "Khat - a controversial plant",
+        "link": "https://pubmed.ncbi.nlm.nih.gov/19921126/",
+        "snippet": "Abstract Khat (Catha edulis) is a shrub or tree whose leaves have been chewed for centuries by people who live in the Eastern part of Africa and the Arabian Penins...",
+        "source": "National Institutes of Health (NIH) | (.gov)",
+        "source_icon": "https://encrypted-tbn3.gstatic.com/faviconV2?url=https://pubmed.ncbi.nlm.nih.gov&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL"
+      },
+      {
+        "index": 1,
+        "title": "Khat drug profile | The European Union Drugs Agency (EUDA)",
+        "link": "https://www.euda.europa.eu/publications/drug-profiles/khat_en",
+        "snippet": "About Khat Khat (also known as qat or chat) comprises the leaves and fresh shoots of Catha edulis Forsk, a flowering evergreen shrub cultivated in East Africa and ...",
+        "source": "EUDA",
+        "source_icon": "https://encrypted-tbn1.gstatic.com/faviconV2?url=https://www.euda.europa.eu&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcR_jiL1SUGAQU9y2jP6-m5BWgVvYyOpC_3XSDt4WLz43HD3CF3WTn0QG2NVA0MVy7bzKbhUFfi3ev2elBSrR-HQN4wfTR6equ8IvKKz4xurCib2YpxLPsQsA2qilZWe2AoF1H0bUJo_hqOyGV37lh5H-XDgsw"
+      },
+      {
+        "index": 2,
+        "title": "KHAT (Catha edulis) - DEA Diversion Control Division",
+        "link": "https://www.deadiversion.usdoj.gov/drug_chem_info/khat.pdf",
+        "snippet": "Introduction: Khat, Catha edulis, is a flowering shrub native to East. Africa and the Arabian-Peninsula. Khat often refers to the leaves and young shoot of C. edul...",
+        "source": "DEA Diversion Control Division (.gov)",
+        "source_icon": "https://encrypted-tbn0.gstatic.com/faviconV2?url=https://www.deadiversion.usdoj.gov&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcScG5YxWTQYL8Z2iA5fZEml3t74O-0K00OcMCm0EobpUU15EBWY3f7y73z0I1tRWsIoaVu7tef0_E82aP1wgwsq7fjMHsJUXib48V0xnop2bEAY2VHv9Msl6am3jXhbVxcQSm3J2nYz9-XjQkwRgvG238a0vg"
+      },
+      {
+        "index": 3,
+        "title": "Khat - Wikipedia",
+        "link": "https://en.wikipedia.org/wiki/Khat",
+        "snippet": "Khat is a slow-growing shrub or tree that typically attains a height of 1–5 meters (3 feet 3 inches – 16 feet 5 inches). However, it can reach heights of up to 10 ...",
+        "source": "Wikipedia",
+        "source_icon": "https://encrypted-tbn1.gstatic.com/faviconV2?url=https://en.wikipedia.org&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcQdQMzFy7CmBIsiZf-rmH9Gg9Jrl821wQiD3-lovcaOg-EUVdFSOLmlpcxeyRfme4sPk1AjuH9rbBIBsekL1laasj8HIxLwYogHog0P9T5vFDzytY2LnG65vbOU_d9SAmD23TqNUWFiiuCWoDIn3BqWrXD9ng"
+      },
+      {
+        "index": 4,
+        "title": "YouTube",
+        "link": "https://www.youtube.com/watch?v=nkMgdRd0TsQ",
+        "snippet": "sometimes called a natural empetamine. stuff this plant's leaves in your cheek. and you'll get a jolt of energy. it's been compared to both harmless coffee. and li",
+        "source": "YouTube",
+        "source_icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8_9hAAAAhUlEQVR4AWNwL_ChCFPHgP8MxqxA7ArEKVBcCcUNIAznI-RdQXrABgAZpv8ZjP6Tg0F6QQbsosCAXSADHmGVVPIC0jKEDHgAMuAbmgRE445D___feYzXIJBeBigH04BVW_9DAcgwqEGYaik2gGIvUByIlEbjDooTEiwps5GRlNmolpkowgBVP9wMSzSKGAAAAABJRU5ErkJggg.png",
+        "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQPAFza9BWqytVT2ZaOyUSTtzsmJGsqo5U7sFYzCRZ1ANxD4z8Dq7BPVpd-H_W4uEDWApRYjbAmUcQLE4OMkplOemqkWCudbEdk_CfJFhVZizS7pmbAhoNsWDAxRyRlfPWcueOA3NjOVkmCj7isGDP9_9KUwg"
+      },
+      {
+        "index": 5,
+        "title": "Khat Fast Facts",
+        "link": "https://www.justice.gov/archive/ndic/pubs31/31482/index.htm",
+        "snippet": "It remains available to provide access to historical materials. * What is khat? Khat (Catha edulis) is a flowering shrub native to East Africa and the Arabian Peni...",
+        "source": "Department of Justice (.gov)",
+        "source_icon": "https://encrypted-tbn2.gstatic.com/faviconV2?url=https://www.justice.gov&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQdWRVbkvSFs62u1l14rEpkkSOvXPLmHXW9a2CmJqGdbaTvZNzCPjlS8QyI-wGweItq0D3R5F3TJ2egfcf8z8YR2Io-7EHjOsZPmRxBFmP0Y2cbPoGrrU0-06Iyyso_fOX_F-I_rdiYCm8oYx3fgwtDM541HQ"
+      },
+      {
+        "index": 6,
+        "title": "Khat",
+        "link": "https://www.dea.gov/factsheets/khat",
+        "snippet": "Khat * What is Khat? Khat is a flowering evergreen shrub that is abused for its stimulant-like effect. Khat has two active ingredients, cathine and cathinone. * St...",
+        "source": "DEA.gov",
+        "source_icon": "https://encrypted-tbn1.gstatic.com/faviconV2?url=https://www.dea.gov&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL"
+      },
+      {
+        "index": 7,
+        "title": "Khat is a flowering evergreen shrub that is abused for its stimulant",
+        "link": "https://www.facebook.com/DEAHQ/videos/khat-is-a-flowering-evergreen-shrub-that-is-abused-for-its-stimulant-like-effect/1919613615623218/",
+        "snippet": "KHAT (Source: National Institute on Drug Abuse (NIDA); Drug Enforcement Agency (DEA)) (ILLEGAL TO SELL AND/OR POSSESS IN MINNESOTA; SEE PENALTIES BELOW) What are t...",
+        "source": "Facebook",
+        "source_icon": "https://encrypted-tbn2.gstatic.com/faviconV2?url=https://www.facebook.com&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFKmqrK0E6SEUEbELfnyDcO0nkZoU4UHHaxMTYS_2oFV1K3ve69R92tX9hQy3I5LpX_peKdiQMDgFjPtv8OvTDhACa_ZwccBsnQMex9XP87UNdj0ChuyhJFpCQUK1yDwNE8-V9muXshb1QtltBCfKP2gGdQA"
+      },
+      {
+        "index": 8,
+        "title": "Khat - Alcohol and Drug Foundation",
+        "link": "https://adf.org.au/drug-facts/khat/",
+        "snippet": "Definition: Khat is a stimulant plant (Catha edulis) containing cathinone and cathine, used traditionally and socially in the Middle East and East Africa by chewin...",
+        "source": "Alcohol and Drug Foundation",
+        "source_icon": "https://encrypted-tbn0.gstatic.com/faviconV2?url=https://adf.org.au&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFFrOxKMEJSuPPl4ZlnC3GqLGdYGU-w3hJWKGBEcI8Ql4npTJTKmYGZxq1kkyn5S_hEHxvJGtfNuvLLgue9KHHb8jQ0ZZgA-Bx9gk6A9H8A0CR2tNRSTa9YQnjxpsN9j3VdzAIwq4TAoKJBepCB0f-U8DMJw"
+      },
+      {
+        "index": 9,
+        "title": "Khat: A widely used drug of abuse in the Horn of Africa and the Arabian ...",
+        "link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3991038/",
+        "snippet": "Khat or Catha edulis, is a flowering plant most commonly found in countries of the African Horn and the Arabian Peninsula. Khat chewing goes far back in history an...",
+        "source": "National Institutes of Health (NIH) | (.gov)",
+        "source_icon": "https://encrypted-tbn1.gstatic.com/faviconV2?url=https://pmc.ncbi.nlm.nih.gov&client=AIM&size=128&type=FAVICON&fallback_opts=TYPE,SIZE,URL",
+        "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJXCtfMUJyOX1C0gDmvSJ477FrHht6z8sGJa4n5vridocSfX1iGvA8lRFEVnXgS1fK-1KgzSQ_WXGAfDc9CkWi2ZmdKU42LzPsI7Skzdmmj9RHNs-3XEM5dphPpHNLLqAmRl4b0wLWV2IMPIEoBfJu5zYd0Q"
+      }
+    ]
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Khat",
+      "link": "https://en.wikipedia.org/wiki/Khat",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESXQHrOzAVQxcCRSN_5B1ah5_aKEZB23ZALX2wjvSgtMFwldjjf5XIoBbld8ItyK7nlWEqepJKSq6tMUdvmeiDDTN9lb40enYG3qGyWaCaWNvx2LeLz5I6LweI-ZXqKQ&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQFnoECBYQAQ&uoh=1",
+      "displayed_link": "https://en.wikipedia.org › wiki › Khat",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAnklEQVR4AeTNIQiDQABG4b-u17X1aF6PK3YEO9iMJqPVau82y4FgMezS0oVLhqsHtrcqeqzDXv3CEz_6L4yTtZM3dnHmPTtjzXZAXKYVo4agkU2GI2Lloc6JDez1-flswMu1EQZ3xlE7lK8eKDkjtwE-crBMV-wesKmCiisGGepZIfQJpMj9SNb2MYWrChjVkULuCyCfRvsdmBieyQQAsoDk_9ryhFMAAAAASUVORK5CYII.png",
+      "snippet": "Traditionally, khat is used as a socialising drug as in Yemen, where khat-chewing is predominantly a male habit combined with conversation, hookah smoking, and ...",
+      "snippet_highlighted_words": [
+        "khat",
+        "khat"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Traditionally, khat is used as a socialising drug as in Yemen, where khat-chewing is predominantly a male habit combined with conversation, hookah smoking, and ...",
+          "source_info_link": "https://en.wikipedia.org/wiki/Khat",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAnklEQVR4AeTNIQiDQABG4b-u17X1aF6PK3YEO9iMJqPVau82y4FgMezS0oVLhqsHtrcqeqzDXv3CEz_6L4yTtZM3dnHmPTtjzXZAXKYVo4agkU2GI2Lloc6JDez1-flswMu1EQZ3xlE7lK8eKDkjtwE-crBMV-wesKmCiisGGepZIfQJpMj9SNb2MYWrChjVkULuCyCfRvsdmBieyQQAsoDk_9ryhFMAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CowBL2dvdG8_dXJsPUNBRVNYUUhyT3pBVmh5andvMkZ2Yy1SLUtIbHVaMWVhaEF4Skc4b3lXRENKZzh3c0hEZjk1ZkNZVk1yZHhrUW1rcGxFRkl6VzkyM2YxeFVTZ0ZoS0hLck9oc0NxWGhzSG5xV2xMTHNZS3l3VjgtVDFnRTdIRWNUOWlQdE1fMzByZFESBBoCCAAanAMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkD2AggAEAAYACAAKgsKBGtoYXQVzgyZQDKMAS9nb3RvP3VybD1DQUVTWFFIck96QVZoeWp3bzJGdmMtUi1LSGx1WjFlYWhBeEpHOG95V0RDSmc4d3NIRGY5NWZDWVZNcmR4a1Fta3BsRUZJelc5MjNmMXhVU2dGaEtIS3JPaHNDcVhoc0hucVdsTExzWUt5d1Y4LVQxZ0U3SEVjVDlpUHRNXzMwcmRROhc8Yj5LaGF0PC9iPiAtIFdpa2lwZWRpYUK2AVRyYWRpdGlvbmFsbHksIDxiPmtoYXQ8L2I-IGlzIHVzZWQgYXMgYSBzb2NpYWxpc2luZyBkcnVnIGFzIGluIFllbWVuLCB3aGVyZSA8Yj5raGF0PC9iPi1jaGV3aW5nIGlzIHByZWRvbWluYW50bHkgYSBtYWxlIGhhYml0IGNvbWJpbmVkIHdpdGggY29udmVyc2F0aW9uLCBob29rYWggc21va2luZywgYW5kJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CowBL2dvdG8_dXJsPUNBRVNYUUhyT3pBVmh5andvMkZ2Yy1SLUtIbHVaMWVhaEF4Skc4b3lXRENKZzh3c0hEZjk1ZkNZVk1yZHhrUW1rcGxFRkl6VzkyM2YxeFVTZ0ZoS0hLck9oc0NxWGhzSG5xV2xMTHNZS3l3VjgtVDFnRTdIRWNUOWlQdE1fMzByZFESBBoCCAAanAMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkD2AggAEAAYACAAKgsKBGtoYXQVzgyZQDKMAS9nb3RvP3VybD1DQUVTWFFIck96QVZoeWp3bzJGdmMtUi1LSGx1WjFlYWhBeEpHOG95V0RDSmc4d3NIRGY5NWZDWVZNcmR4a1Fta3BsRUZJelc5MjNmMXhVU2dGaEtIS3JPaHNDcVhoc0hucVdsTExzWUt5d1Y4LVQxZ0U3SEVjVDlpUHRNXzMwcmRROhc8Yj5LaGF0PC9iPiAtIFdpa2lwZWRpYUK2AVRyYWRpdGlvbmFsbHksIDxiPmtoYXQ8L2I-IGlzIHVzZWQgYXMgYSBzb2NpYWxpc2luZyBkcnVnIGFzIGluIFllbWVuLCB3aGVyZSA8Yj5raGF0PC9iPi1jaGV3aW5nIGlzIHByZWRvbWluYW50bHkgYSBtYWxlIGhhYml0IGNvbWJpbmVkIHdpdGggY29udmVyc2F0aW9uLCBob29rYWggc21va2luZywgYW5kJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "source": "Wikipedia",
+      "read_more_link": "https://en.wikipedia.org/wiki/Khat#:~:text=Traditionally%2C%20khat%20is%20used%20as,hookah%20smoking%2C%20and%20tea%20drinking."
+    },
+    {
+      "position": 2,
+      "title": "Khat",
+      "link": "https://www.dea.gov/factsheets/khat",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESXgHrOzAVnWAF49pX4I7oKHAIpJ1WhEGj1uRezFWnDqLef-bi22d4LwNRLqshRn-lQJW5QigtVWT3cu7rBLUwcYtZOlGNCLPy7qxoUYuQOI5xYJhcm7rQnGY71OHqYMw&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQFnoECB0QAQ&uoh=1",
+      "displayed_link": "https://www.dea.gov › factsheets › khat",
+      "favicon": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/4F5TlhW3xo6aUfmU6uDeuonjQe2ko4pXCXib-_Zdb5c.png",
+      "snippet": "What is Khat? Khat is a flowering evergreen shrub that is abused for its stimulant-like effect. Khat has two active ingredients, cathine and cathinone.",
+      "snippet_highlighted_words": [
+        "Khat",
+        "Khat",
+        "Khat"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "What is Khat? Khat is a flowering evergreen shrub that is abused for its stimulant-like effect. Khat has two active ingredients, cathine and cathinone.",
+          "source_info_link": "https://www.dea.gov/factsheets/khat",
+          "icon": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/4F5TlhW3xo6aUfmU6uDeurXVr6rUZDi5d2tuKrH7OAPKGIP1k6PHYiSEPxxhYsw3.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=Co0BL2dvdG8_dXJsPUNBRVNYZ0hyT3pBVnBHODRqYk9RZ2NBRXgySk1CUWhTSm1SV2p1eFlCU0sySm95UXlPWVlneDdnaDltN0lTd0RMZ2hOWk1YcU1xbnl3U09ubDlaWkJ4amdZdDlEdTFNUjJ5M3ZQYXlBTDcwUnRKQmxqUEN1V3g4UzNsUjhwNTdxRW00EgQaAggAGpEDEgIIARoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA6wIIABAAGAAgACoLCgRraGF0FeTZz0AyjQEvZ290bz91cmw9Q0FFU1hnSHJPekFWcEc4NGpiT1FnY0FFeDJKTUJRaFNKbVJXanV4WUJTSzJKb3lReU9ZWWd4N2doOW03SVN3RExnaE5aTVhxTXFueXdTT25sOVpaQnhqZ1l0OUR1MU1SMnkzdlBheUFMNzBSdEpCbGpQQ3VXeDhTM2xSOHA1N3FFbTQ6FTxiPktoYXQ8L2I-IC0gREVBLmdvdkKsAVdoYXQgaXMgPGI-S2hhdDwvYj4_IDxiPktoYXQ8L2I-IGlzIGEgZmxvd2VyaW5nIGV2ZXJncmVlbiBzaHJ1YiB0aGF0IGlzIGFidXNlZCBmb3IgaXRzIHN0aW11bGFudC1saWtlIGVmZmVjdC4gPGI-S2hhdDwvYj4gaGFzIHR3byBhY3RpdmUgaW5ncmVkaWVudHMsIGNhdGhpbmUgYW5kIGNhdGhpbm9uZS4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=Co0BL2dvdG8_dXJsPUNBRVNYZ0hyT3pBVnBHODRqYk9RZ2NBRXgySk1CUWhTSm1SV2p1eFlCU0sySm95UXlPWVlneDdnaDltN0lTd0RMZ2hOWk1YcU1xbnl3U09ubDlaWkJ4amdZdDlEdTFNUjJ5M3ZQYXlBTDcwUnRKQmxqUEN1V3g4UzNsUjhwNTdxRW00EgQaAggAGpEDEgIIARoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA6wIIABAAGAAgACoLCgRraGF0FeTZz0AyjQEvZ290bz91cmw9Q0FFU1hnSHJPekFWcEc4NGpiT1FnY0FFeDJKTUJRaFNKbVJXanV4WUJTSzJKb3lReU9ZWWd4N2doOW03SVN3RExnaE5aTVhxTXFueXdTT25sOVpaQnhqZ1l0OUR1MU1SMnkzdlBheUFMNzBSdEpCbGpQQ3VXeDhTM2xSOHA1N3FFbTQ6FTxiPktoYXQ8L2I-IC0gREVBLmdvdkKsAVdoYXQgaXMgPGI-S2hhdDwvYj4_IDxiPktoYXQ8L2I-IGlzIGEgZmxvd2VyaW5nIGV2ZXJncmVlbiBzaHJ1YiB0aGF0IGlzIGFidXNlZCBmb3IgaXRzIHN0aW11bGFudC1saWtlIGVmZmVjdC4gPGI-S2hhdDwvYj4gaGFzIHR3byBhY3RpdmUgaW5ncmVkaWVudHMsIGNhdGhpbmUgYW5kIGNhdGhpbm9uZS4iAhABSABYAGgA",
+      "source": "DEA (.gov)",
+      "read_more_link": "https://www.dea.gov/factsheets/khat#:~:text=What%20is%20Khat%3F,active%20ingredients%2C%20cathine%20and%20cathinone."
+    },
+    {
+      "position": 3,
+      "title": "Khat - a controversial plant",
+      "link": "https://pubmed.ncbi.nlm.nih.gov/19921126/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESZAHrOzAVKpnrRLH4fhlBDyB5_aXnAiIPXpHgyoEvWaB14O9v9VfT1IiNmi_d7_gu3h13FQMpaXtUbkZtrwVxQ6E0yLp2aDzt-HKliUwzxeD2LTqEq7fdgYfMlJKzFje1PIljrTg&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQFnoECBoQAQ&uoh=1",
+      "displayed_link": "https://pubmed.ncbi.nlm.nih.gov › ...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd-UAAABA0lEQVR4AWJwL_ChKwYTEqE9BglJae0kYGe4AUFTPIB4ChRXAM1SxGshUHMCEP8nFQfG54tBHasItOg_Gk7EZ-EjkAFk4JVIvqxAt1QspJcb0GwdWAAIhGEYnqVtGqNtWqAlAjdKbRBNEXD5cZyPu4_zRvgF9Kh7-9UC8-jIq70ETV-Ah5xlrifaoMGYpUKToCcA2oAeDciAeEBPBORBNqDNg3xAkwfhgDzIb6CZBmPW6ik3AS8PwvGwoPk8uDOU84trYwGg4OoKJcHbLXEB0VDOxpbBQLtHUbCsrLhxKxQF2Y9cQiHBu7yuiKIXioI7sKg1lNT7Lx1BDw1Fq-yC9PwKfAFmoVRnLcb2rQAAAABJRU5ErkJggg.png",
+      "author": "by EE Balint",
+      "snippet": "Khat (Catha edulis) is a shrub or tree whose leaves have been chewed for centuries by people who live in the Eastern part of Africa and the Arabian ...",
+      "snippet_highlighted_words": [
+        "Khat"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Khat (Catha edulis) is a shrub or tree whose leaves have been chewed for centuries by people who live in the Eastern part of Africa and the Arabian ...",
+          "source_info_link": "https://pubmed.ncbi.nlm.nih.gov/19921126/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd-UAAABA0lEQVR4AWJwL_ChKwYTEqE9BglJae0kYGe4AUFTPIB4ChRXAM1SxGshUHMCEP8nFQfG54tBHasItOg_Gk7EZ-EjkAFk4JVIvqxAt1QspJcb0GwdWAAIhGEYnqVtGqNtWqAlAjdKbRBNEXD5cZyPu4_zRvgF9Kh7-9UC8-jIq70ETV-Ah5xlrifaoMGYpUKToCcA2oAeDciAeEBPBORBNqDNg3xAkwfhgDzIb6CZBmPW6ik3AS8PwvGwoPk8uDOU84trYwGg4OoKJcHbLXEB0VDOxpbBQLtHUbCsrLhxKxQF2Y9cQiHBu7yuiKIXioI7sKg1lNT7Lx1BDw1Fq-yC9PwKfAFmoVRnLcb2rQAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVmZTUlNCSWlHZlJOUDNya1o1QXpvVElqXzI2QW9BbzNmaHRUT01DNk90UmNlNjFGR2ctWlZ5WEhJa3NCY1pMNlRMc0Y3QV9NSWlIVVRpME1YTjg0QTRQekEzeHJLamMzaE1SUkp2U2loMUJ5ejNIUFlDMWxkYXdOdVRrY3RDc0kSBBoCCAAapwMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCBAwgAEAAYACAAKgsKBGtoYXQVqPanQDKVAS9nb3RvP3VybD1DQUVTWkFIck96QVZmU1JTQklpR2ZSTlAzcmtaNUF6b1RJal8yNkFvQW8zZmh0VE9NQzZPdFJjZTYxRkdnLVpWeVhISWtzQmNaTDZUTHNGN0FfTUlpSFVUaTBNWE44NEE0UHpBM3hyS2pjM2hNUlJKdlNpaDFCeXozSFBZQzFsZGF3TnVUa2N0Q3NJOiw8Yj5LaGF0PC9iPiAtIGEgY29udHJvdmVyc2lhbCBwbGFudCAtIFB1Yk1lZEKjATxiPktoYXQ8L2I-IChDYXRoYSBlZHVsaXMpIGlzIGEgc2hydWIgb3IgdHJlZSB3aG9zZSBsZWF2ZXMgaGF2ZSBiZWVuIGNoZXdlZCBmb3IgY2VudHVyaWVzIGJ5IHBlb3BsZSB3aG8gbGl2ZSBpbiB0aGUgRWFzdGVybiBwYXJ0IG9mIEFmcmljYSBhbmQgdGhlIEFyYWJpYW4mbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVmZTUlNCSWlHZlJOUDNya1o1QXpvVElqXzI2QW9BbzNmaHRUT01DNk90UmNlNjFGR2ctWlZ5WEhJa3NCY1pMNlRMc0Y3QV9NSWlIVVRpME1YTjg0QTRQekEzeHJLamMzaE1SUkp2U2loMUJ5ejNIUFlDMWxkYXdOdVRrY3RDc0kSBBoCCAAapwMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCBAwgAEAAYACAAKgsKBGtoYXQVqPanQDKVAS9nb3RvP3VybD1DQUVTWkFIck96QVZmU1JTQklpR2ZSTlAzcmtaNUF6b1RJal8yNkFvQW8zZmh0VE9NQzZPdFJjZTYxRkdnLVpWeVhISWtzQmNaTDZUTHNGN0FfTUlpSFVUaTBNWE44NEE0UHpBM3hyS2pjM2hNUlJKdlNpaDFCeXozSFBZQzFsZGF3TnVUa2N0Q3NJOiw8Yj5LaGF0PC9iPiAtIGEgY29udHJvdmVyc2lhbCBwbGFudCAtIFB1Yk1lZEKjATxiPktoYXQ8L2I-IChDYXRoYSBlZHVsaXMpIGlzIGEgc2hydWIgb3IgdHJlZSB3aG9zZSBsZWF2ZXMgaGF2ZSBiZWVuIGNoZXdlZCBmb3IgY2VudHVyaWVzIGJ5IHBlb3BsZSB3aG8gbGl2ZSBpbiB0aGUgRWFzdGVybiBwYXJ0IG9mIEFmcmljYSBhbmQgdGhlIEFyYWJpYW4mbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "National Institutes of Health (NIH) | (.gov)"
+    },
+    {
+      "position": 4,
+      "title": "Drug Fact Sheet: Khat",
+      "link": "https://www.dea.gov/sites/default/files/2020-06/Khat-2020_0.pdf",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESegHrOzAVaAjccfQTxlQ3KTqpGyDqBJqoCwP_ahQKS-rd9i4xHAVrgCFN5u99iVLDIoo_wqW1xUMI9UY9hSBqy1rtj8M2dF29VJrxsijbeTn_BYwkdNUBX2GXbz1-AkYh9rnzr0nFrKGbNJ3uBBjlheA5v_ekiwMo5l1f&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQFnoECBUQAQ&uoh=1",
+      "displayed_link": "https://www.dea.gov › sites › files › Khat-2020_0",
+      "favicon": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/4F5TlhW3xo6aUfmU6uDeuoVRTn_1oDPeVep0DUr12M0.png",
+      "snippet": "Khat is a flowering evergreen shrub that is abused for its stimulant-like effect. Khat has two active ingredients, cathine and cathinone. WHAT IS ITS ORIGIN?",
+      "snippet_highlighted_words": [
+        "Khat",
+        "Khat"
+      ],
+      "rich_snippet": {
+        "top": {
+          "detected_extensions": {
+            "page": 1
+          },
+          "extensions": [
+            "1 page"
+          ]
+        }
+      },
+      "about_this_result": {
+        "source": {
+          "description": "Khat is a flowering evergreen shrub that is abused for its stimulant-like effect. Khat has two active ingredients, cathine and cathinone. WHAT IS ITS ORIGIN?",
+          "source_info_link": "https://www.dea.gov/sites/default/files/2020-06/Khat-2020_0.pdf",
+          "icon": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/4F5TlhW3xo6aUfmU6uDeukOAYj0MgSJgC7dmrMA9WqGHieSa7u339TEKhoGnGcmF.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CrIBL2dvdG8_dXJsPUNBRVNlZ0hyT3pBVkloclF5M1A5VXB5bTA3UjV2bmRac05fYThaamw1cUpvbjVnVFU0VGdVQmo1eFBNMmNQemdnekVFcFY1NXBIX0hReF9RaFZfNmF6MEc3WTFuTHAzdFRaSTBWcHNNU0xWYVhaajByMWV6amRFQmVTSGNnaFl4eWFidV9va1VPNjFKb0p2Tmh4aHVxTzk1SUhpUmxfRGVTN09vanlaaRIEGgIIABrGAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQKADCAAQABgAIAAqCwoEa2hhdBXGTa5AMrIBL2dvdG8_dXJsPUNBRVNlZ0hyT3pBVkloclF5M1A5VXB5bTA3UjV2bmRac05fYThaamw1cUpvbjVnVFU0VGdVQmo1eFBNMmNQemdnekVFcFY1NXBIX0hReF9RaFZfNmF6MEc3WTFuTHAzdFRaSTBWcHNNU0xWYVhaajByMWV6amRFQmVTSGNnaFl4eWFidV9va1VPNjFKb0p2Tmh4aHVxTzk1SUhpUmxfRGVTN09vanlaaTomRHJ1ZyBGYWN0IFNoZWV0OiA8Yj5LaGF0PC9iPiAtIERFQS5nb3ZCqwE8Yj5LaGF0PC9iPiBpcyBhIGZsb3dlcmluZyBldmVyZ3JlZW4gc2hydWIgdGhhdCBpcyBhYnVzZWQgZm9yIGl0cyBzdGltdWxhbnQtbGlrZSBlZmZlY3QuIDxiPktoYXQ8L2I-IGhhcyB0d28gYWN0aXZlIGluZ3JlZGllbnRzLCBjYXRoaW5lIGFuZCBjYXRoaW5vbmUuIFdIQVQgSVMgSVRTIE9SSUdJTj8iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CrIBL2dvdG8_dXJsPUNBRVNlZ0hyT3pBVkloclF5M1A5VXB5bTA3UjV2bmRac05fYThaamw1cUpvbjVnVFU0VGdVQmo1eFBNMmNQemdnekVFcFY1NXBIX0hReF9RaFZfNmF6MEc3WTFuTHAzdFRaSTBWcHNNU0xWYVhaajByMWV6amRFQmVTSGNnaFl4eWFidV9va1VPNjFKb0p2Tmh4aHVxTzk1SUhpUmxfRGVTN09vanlaaRIEGgIIABrGAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQKADCAAQABgAIAAqCwoEa2hhdBXGTa5AMrIBL2dvdG8_dXJsPUNBRVNlZ0hyT3pBVkloclF5M1A5VXB5bTA3UjV2bmRac05fYThaamw1cUpvbjVnVFU0VGdVQmo1eFBNMmNQemdnekVFcFY1NXBIX0hReF9RaFZfNmF6MEc3WTFuTHAzdFRaSTBWcHNNU0xWYVhaajByMWV6amRFQmVTSGNnaFl4eWFidV9va1VPNjFKb0p2Tmh4aHVxTzk1SUhpUmxfRGVTN09vanlaaTomRHJ1ZyBGYWN0IFNoZWV0OiA8Yj5LaGF0PC9iPiAtIERFQS5nb3ZCqwE8Yj5LaGF0PC9iPiBpcyBhIGZsb3dlcmluZyBldmVyZ3JlZW4gc2hydWIgdGhhdCBpcyBhYnVzZWQgZm9yIGl0cyBzdGltdWxhbnQtbGlrZSBlZmZlY3QuIDxiPktoYXQ8L2I-IGhhcyB0d28gYWN0aXZlIGluZ3JlZGllbnRzLCBjYXRoaW5lIGFuZCBjYXRoaW5vbmUuIFdIQVQgSVMgSVRTIE9SSUdJTj8iAhABSABYAGgA",
+      "source": "DEA (.gov)",
+      "read_more_link": "https://www.dea.gov/sites/default/files/2020-06/Khat-2020_0.pdf#:~:text=Khat%20is%20a%20flowering%20evergreen,WHAT%20IS%20ITS%20ORIGIN%3F"
+    },
+    {
+      "position": 5,
+      "title": "Khat drug profile | The European Union Drugs Agency (EUDA)",
+      "link": "https://www.euda.europa.eu/publications/drug-profiles/khat_en",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESeAHrOzAVmwFQgRzjcDeImDrYIs6W_Fj6EFJgN2gVWwIxqTCzsUE3TAYn8ibWRuyfg6GqdHYEMKzV2bJk-LA43k7lAutQaqfu-rePc521g_zUjhDSyd6E-t2CTmgBNl4Ik02RCYebAnMM4v4XeO3tEvJnq5VhiLairw&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQFnoECFUQAQ&uoh=1",
+      "displayed_link": "https://www.euda.europa.eu › drug-profiles › khat_en",
+      "favicon": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/4F5TlhW3xo6aUfmU6uDeutahJLgB_6pnRe5GyKWfF8E.png",
+      "date": "Sep 24, 2010",
+      "snippet": "Khat (also known as qat or chat) comprises the leaves and fresh shoots of Catha edulis Forsk, a flowering evergreen shrub cultivated in East ...",
+      "snippet_highlighted_words": [
+        "Khat"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Khat (also known as qat or chat) comprises the leaves and fresh shoots of Catha edulis Forsk, a flowering evergreen shrub cultivated in East ...",
+          "source_info_link": "https://www.euda.europa.eu/publications/drug-profiles/khat_en",
+          "icon": "https://serpapi.com/searches/6ae204ce2b5683c31967f27f/images/4F5TlhW3xo6aUfmU6uDeurgDMMjcqWzdt0uuCkmEy9McdmM26pCD3D4bDmO1sl46.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CrABL2dvdG8_dXJsPUNBRVNlQUhyT3pBVkhUMHJXeGhPNFRLUTJLVnQxV3A3QlRjRExtZTRQeWJGQXdOVVRRc2haYmM4SktDakc4aVhMQ2gtUnFNdVJqT21VYkJsbENtWGxuMVRDaFNpN0c3VVFiMG1Tb0pfbFdKdUFjZzlhejZTdmR1bHloMWpXblYtTWZOUjBDMDQyYVNzUExBMVdzLTlteGRtSEJtZFZmTHJBMlJQLXcSBBoCCAAa0AMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCqAwgAEAAYACAAKgsKBGtoYXQVyL1hQDKwAS9nb3RvP3VybD1DQUVTZUFIck96QVZIVDByV3hoTzRUS1EyS1Z0MVdwN0JUY0RMbWU0UHliRkF3TlVUUXNoWmJjOEpLQ2pHOGlYTENoLVJxTXVSak9tVWJCbGxDbVhsbjFUQ2hTaTdHN1VRYjBtU29KX2xXSnVBY2c5YXo2U3ZkdWx5aDFqV25WLU1mTlIwQzA0MmFTc1BMQTFXcy05bXhkbUhCbWRWZkxyQTJSUC13OkE8Yj5LaGF0PC9iPiBkcnVnIHByb2ZpbGUgfCBUaGUgRXVyb3BlYW4gVW5pb24gRHJ1Z3MgQWdlbmN5IChFVURBKUKcATxiPktoYXQ8L2I-IChhbHNvIGtub3duIGFzIHFhdCBvciBjaGF0KSBjb21wcmlzZXMgdGhlIGxlYXZlcyBhbmQgZnJlc2ggc2hvb3RzIG9mIENhdGhhIGVkdWxpcyBGb3JzaywgYSBmbG93ZXJpbmcgZXZlcmdyZWVuIHNocnViIGN1bHRpdmF0ZWQgaW4gRWFzdCZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CrABL2dvdG8_dXJsPUNBRVNlQUhyT3pBVkhUMHJXeGhPNFRLUTJLVnQxV3A3QlRjRExtZTRQeWJGQXdOVVRRc2haYmM4SktDakc4aVhMQ2gtUnFNdVJqT21VYkJsbENtWGxuMVRDaFNpN0c3VVFiMG1Tb0pfbFdKdUFjZzlhejZTdmR1bHloMWpXblYtTWZOUjBDMDQyYVNzUExBMVdzLTlteGRtSEJtZFZmTHJBMlJQLXcSBBoCCAAa0AMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCqAwgAEAAYACAAKgsKBGtoYXQVyL1hQDKwAS9nb3RvP3VybD1DQUVTZUFIck96QVZIVDByV3hoTzRUS1EyS1Z0MVdwN0JUY0RMbWU0UHliRkF3TlVUUXNoWmJjOEpLQ2pHOGlYTENoLVJxTXVSak9tVWJCbGxDbVhsbjFUQ2hTaTdHN1VRYjBtU29KX2xXSnVBY2c5YXo2U3ZkdWx5aDFqV25WLU1mTlIwQzA0MmFTc1BMQTFXcy05bXhkbUhCbWRWZkxyQTJSUC13OkE8Yj5LaGF0PC9iPiBkcnVnIHByb2ZpbGUgfCBUaGUgRXVyb3BlYW4gVW5pb24gRHJ1Z3MgQWdlbmN5IChFVURBKUKcATxiPktoYXQ8L2I-IChhbHNvIGtub3duIGFzIHFhdCBvciBjaGF0KSBjb21wcmlzZXMgdGhlIGxlYXZlcyBhbmQgZnJlc2ggc2hvb3RzIG9mIENhdGhhIGVkdWxpcyBGb3JzaywgYSBmbG93ZXJpbmcgZXZlcmdyZWVuIHNocnViIGN1bHRpdmF0ZWQgaW4gRWFzdCZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "EUDA",
+      "read_more_link": "https://www.euda.europa.eu/publications/drug-profiles/khat_en#:~:text=Khat%20(also%20known%20as%20qat,and%20the%20South%2DWest%20Arabian%20Peninsula."
+    },
+    {
+      "position": 6,
+      "title": "Khat | Effects of Khat",
+      "link": "https://talktofrank.com/drug/khat",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESXAHrOzAV2rhNzbaVQBefZ0Qe2VW-150_jZrfbLailUcYgsw1b-eMs8Dq69m1oXfcaZKO5ZLOmwIh_UTiG8PbQ38WEkxh2dk9WBIg4d2TrU0rEF3UVpqN0_xz2-av&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQFnoECFIQAQ&uoh=1",
+      "displayed_link": "https://talktofrank.com › drug › khat",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAulBMVEVHcEwOOUQKN0IALDkOOUQLN0IBNEB5jpRKZW0AMDw9XWYiRU9TcnpziI4LOEMNOUQALjuJn6X6_v_M1tkrVWC7yMyYqK0HP0v3-_3j6u1kfYSMnKHf5-oIN0IOOURxi5L________k7e8NOUQOOUQAKzgDO0csTVequ8Dl6-5LZ2_CzdGbqa4OOUQOOUQ6XmgfSlUOOUTT3N4OOUQOOUShs7n9__8OOURme4Hy-PsOOUQOOUQOOUQOOUSwoVztAAAAPnRSTlMAXYGCIsr_3_f-8vzd6__AzM309eTm4O_z8ODu6v8o0f_92P-k__b32fvq7_O1bOLuCvCWBcnei_3j8uGtPIoiXH4AAAENSURBVHgBtY_VQsNQDIan2VJvJ9XUMrcaznj_18IhSO_gP36-aOc_1e31-73e03w7BhIOYTRGZaSipoOqK4YpqWU7k-nMmbueH4RepJIZC5ikkTvLQvQ8LXRylXghwi5dBFgB4QqfJjFLuN7oZBjM70tCy063K4OFJNztD2SQwQYxPx3m8SRzFitYlQatSoCS6TiohGew3buHrY5-vdP9mWo0FwJeptvpPt24qTM6ZFdr4msZ1i6WRaKilqCbKN9aUW_GAEgMwAbCt2qT1G9vJbidPcG7-w_JnLBbA_P54UMDAct6jsxNR0q2UhLL7oSnmz95tsAzLZHbYGwyt8LOYNgOn3y73W437vyVHgEGECc7qLA_CAAAAABJRU5ErkJggg.png",
+      "snippet": "Khat is a stimulant and chewing it can: make people more alert and talkative; produce feelings of elation; suppress the appetite; lead to periods of insomnia ...",
+      "snippet_highlighted_words": [
+        "Khat"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Khat is a stimulant and chewing it can: make people more alert and talkative; produce feelings of elation; suppress the appetite; lead to periods of insomnia ...",
+          "source_info_link": "https://talktofrank.com/drug/khat",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAulBMVEVHcEwOOUQKN0IALDkOOUQLN0IBNEB5jpRKZW0AMDw9XWYiRU9TcnpziI4LOEMNOUQALjuJn6X6_v_M1tkrVWC7yMyYqK0HP0v3-_3j6u1kfYSMnKHf5-oIN0IOOURxi5L________k7e8NOUQOOUQAKzgDO0csTVequ8Dl6-5LZ2_CzdGbqa4OOUQOOUQ6XmgfSlUOOUTT3N4OOUQOOUShs7n9__8OOURme4Hy-PsOOUQOOUQOOUQOOUSwoVztAAAAPnRSTlMAXYGCIsr_3_f-8vzd6__AzM309eTm4O_z8ODu6v8o0f_92P-k__b32fvq7_O1bOLuCvCWBcnei_3j8uGtPIoiXH4AAAENSURBVHgBtY_VQsNQDIan2VJvJ9XUMrcaznj_18IhSO_gP36-aOc_1e31-73e03w7BhIOYTRGZaSipoOqK4YpqWU7k-nMmbueH4RepJIZC5ikkTvLQvQ8LXRylXghwi5dBFgB4QqfJjFLuN7oZBjM70tCy063K4OFJNztD2SQwQYxPx3m8SRzFitYlQatSoCS6TiohGew3buHrY5-vdP9mWo0FwJeptvpPt24qTM6ZFdr4msZ1i6WRaKilqCbKN9aUW_GAEgMwAbCt2qT1G9vJbidPcG7-w_JnLBbA_P54UMDAct6jsxNR0q2UhLL7oSnmz95tsAzLZHbYGwyt8LOYNgOn3y73W437vyVHgEGECc7qLA_CAAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CooBL2dvdG8_dXJsPUNBRVNYQUhyT3pBVklzS2kyV2FrOVhIdnBCRUhLRlAxaHFDMUQtZ3cyZHBZSnBKYzRzZ1I3Qk9oRlJ6SWxhcDY3YTdTNVUxMUhJN0ZCVWxmY3MtZ1J2clVlZGJ2S1QwN3Vqa1Z2d091SGxEVDlsdEpWVFBjSUFMZXZmeW9fVE5BEgQaAggAGpgDEgIIARoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA8gIIABAAGAAgACoLCgRraGF0FWZDsUAyigEvZ290bz91cmw9Q0FFU1hBSHJPekFWSXNLaTJXYWs5WEh2cEJFSEtGUDFocUMxRC1ndzJkcFlKcEpjNHNnUjdCT2hGUnpJbGFwNjdhN1M1VTExSEk3RkJVbGZjcy1nUnZyVWVkYnZLVDA3dWprVnZ3T3VIbERUOWx0SlZUUGNJQUxldmZ5b19UTkE6HkVmZmVjdHMgb2YgPGI-S2hhdDwvYj4gLSBGUkFOS0KtATxiPktoYXQ8L2I-IGlzIGEgc3RpbXVsYW50IGFuZCBjaGV3aW5nIGl0IGNhbjogbWFrZSBwZW9wbGUgbW9yZSBhbGVydCBhbmQgdGFsa2F0aXZlOyBwcm9kdWNlIGZlZWxpbmdzIG9mIGVsYXRpb247IHN1cHByZXNzIHRoZSBhcHBldGl0ZTsgbGVhZCB0byBwZXJpb2RzIG9mIGluc29tbmlhJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CooBL2dvdG8_dXJsPUNBRVNYQUhyT3pBVklzS2kyV2FrOVhIdnBCRUhLRlAxaHFDMUQtZ3cyZHBZSnBKYzRzZ1I3Qk9oRlJ6SWxhcDY3YTdTNVUxMUhJN0ZCVWxmY3MtZ1J2clVlZGJ2S1QwN3Vqa1Z2d091SGxEVDlsdEpWVFBjSUFMZXZmeW9fVE5BEgQaAggAGpgDEgIIARoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA8gIIABAAGAAgACoLCgRraGF0FWZDsUAyigEvZ290bz91cmw9Q0FFU1hBSHJPekFWSXNLaTJXYWs5WEh2cEJFSEtGUDFocUMxRC1ndzJkcFlKcEpjNHNnUjdCT2hGUnpJbGFwNjdhN1M1VTExSEk3RkJVbGZjcy1nUnZyVWVkYnZLVDA3dWprVnZ3T3VIbERUOWx0SlZUUGNJQUxldmZ5b19UTkE6HkVmZmVjdHMgb2YgPGI-S2hhdDwvYj4gLSBGUkFOS0KtATxiPktoYXQ8L2I-IGlzIGEgc3RpbXVsYW50IGFuZCBjaGV3aW5nIGl0IGNhbjogbWFrZSBwZW9wbGUgbW9yZSBhbGVydCBhbmQgdGFsa2F0aXZlOyBwcm9kdWNlIGZlZWxpbmdzIG9mIGVsYXRpb247IHN1cHByZXNzIHRoZSBhcHBldGl0ZTsgbGVhZCB0byBwZXJpb2RzIG9mIGluc29tbmlhJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "source": "Talk to Frank",
+      "read_more_link": "https://talktofrank.com/drug/khat#:~:text=Duration"
+    },
+    {
+      "position": 7,
+      "title": "El Khat",
+      "link": "https://www.mfa.org/event/music/el-khat",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESYgHrOzAVjPzYOgF_oQt4lELmZwD2i5ja2tnX8VVlmjV8jYSVUDAFJ8b7Q-jH9lgevT4I8h4n8DTodPb8pZUMXxC2vFSawS95WJy6xrGeIXt9_TqzGVswV3gi5bnKfQNiwEmY&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQFnoECFEQAQ&uoh=1",
+      "displayed_link": "https://www.mfa.org › event › music › el-khat",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAKlBMVEVHcEz2GQT2GQb2GQX1GQT2GgX1GQX1GQX2GQX1GQX1GQX1GQX0GAT2GQVoaOxTAAAADnRSTlMAD095Qlru3Bf_-8AlmiFc5XYAAABfSURBVHgBYyAEBFC5yg4o3LDiBhTurK0o3Jkz96ByZ95A5U6LQOHOnK2Iwp2Z64DCnVl7AIU7sxiVO6sIlbsFmTsLVXFtA6ZFCGegOhK3F2btweP9YpTAc3ZAC1hiAQBz5UVfibvQRQAAAABJRU5ErkJggg.png",
+      "snippet": "Using handmade instruments as an expression of a minimalist life philosophy, El Khat creates unique Arabic tunes infused with psychedelic rock energy and an",
+      "snippet_highlighted_words": [
+        "Khat"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Using handmade instruments as an expression of a minimalist life philosophy, El Khat creates unique Arabic tunes infused with psychedelic rock energy and an",
+          "source_info_link": "https://www.mfa.org/event/music/el-khat",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAKlBMVEVHcEz2GQT2GQb2GQX1GQT2GgX1GQX1GQX2GQX1GQX1GQX1GQX0GAT2GQVoaOxTAAAADnRSTlMAD095Qlru3Bf_-8AlmiFc5XYAAABfSURBVHgBYyAEBFC5yg4o3LDiBhTurK0o3Jkz96ByZ95A5U6LQOHOnK2Iwp2Z64DCnVl7AIU7sxiVO6sIlbsFmTsLVXFtA6ZFCGegOhK3F2btweP9YpTAc3ZAC1hiAQBz5UVfibvQRQAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpIBL2dvdG8_dXJsPUNBRVNZZ0hyT3pBVl9WR3BYUjVYejVIMlpBT1pEdDJndGlKS09qR0daOU8yT0RBTGwtVlBBRWlHOHdwZ0gtNm15cEh2bnN5cDE3OEJnY2dveG9kcWx6NWowVVpRcnltaXZkVU5fVEtJWkM1aHc4cDBzSUl4WWpwei0tRFVadHhTdk9ycFFCVnQSBBoCCAAaowMSAggAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkD9AggAEAAYACAAKgsKBGtoYXQVbDmEQDKSAS9nb3RvP3VybD1DQUVTWWdIck96QVZfVkdwWFI1WHo1SDJaQU9aRHQyZ3RpSktPakdHWjlPMk9EQUxsLVZQQUVpRzh3cGdILTZteXBIdm5zeXAxNzhCZ2Nnb3hvZHFsejVqMFVaUXJ5bWl2ZFVOX1RLSVpDNWh3OHAwc0lJeFlqcHotLURVWnR4U3ZPcnBRQlZ0OitFbCA8Yj5LaGF0PC9iPiB8IE11c2V1bSBvZiBGaW5lIEFydHMgQm9zdG9uQqMBVXNpbmcgaGFuZG1hZGUgaW5zdHJ1bWVudHMgYXMgYW4gZXhwcmVzc2lvbiBvZiBhIG1pbmltYWxpc3QgbGlmZSBwaGlsb3NvcGh5LCBFbCA8Yj5LaGF0PC9iPiBjcmVhdGVzIHVuaXF1ZSBBcmFiaWMgdHVuZXMgaW5mdXNlZCB3aXRoIHBzeWNoZWRlbGljIHJvY2sgZW5lcmd5IGFuZCBhbiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpIBL2dvdG8_dXJsPUNBRVNZZ0hyT3pBVl9WR3BYUjVYejVIMlpBT1pEdDJndGlKS09qR0daOU8yT0RBTGwtVlBBRWlHOHdwZ0gtNm15cEh2bnN5cDE3OEJnY2dveG9kcWx6NWowVVpRcnltaXZkVU5fVEtJWkM1aHc4cDBzSUl4WWpwei0tRFVadHhTdk9ycFFCVnQSBBoCCAAaowMSAggAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkD9AggAEAAYACAAKgsKBGtoYXQVbDmEQDKSAS9nb3RvP3VybD1DQUVTWWdIck96QVZfVkdwWFI1WHo1SDJaQU9aRHQyZ3RpSktPakdHWjlPMk9EQUxsLVZQQUVpRzh3cGdILTZteXBIdm5zeXAxNzhCZ2Nnb3hvZHFsejVqMFVaUXJ5bWl2ZFVOX1RLSVpDNWh3OHAwc0lJeFlqcHotLURVWnR4U3ZPcnBRQlZ0OitFbCA8Yj5LaGF0PC9iPiB8IE11c2V1bSBvZiBGaW5lIEFydHMgQm9zdG9uQqMBVXNpbmcgaGFuZG1hZGUgaW5zdHJ1bWVudHMgYXMgYW4gZXhwcmVzc2lvbiBvZiBhIG1pbmltYWxpc3QgbGlmZSBwaGlsb3NvcGh5LCBFbCA8Yj5LaGF0PC9iPiBjcmVhdGVzIHVuaXF1ZSBBcmFiaWMgdHVuZXMgaW5mdXNlZCB3aXRoIHBzeWNoZWRlbGljIHJvY2sgZW5lcmd5IGFuZCBhbiICEAFIAFgAaAA",
+      "source": "Museum of Fine Arts Boston"
+    }
+  ],
+  "related_searches": [
+    {
+      "block_position": 1,
+      "query": "Khat effects",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+effects&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhMEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+effects&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Khat miraa",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+miraa&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhXEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+miraa&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Khat legal",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+legal&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhWEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+legal&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Khat chewing",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+chewing&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhUEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+chewing&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Khat teeth",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+teeth&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhTEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+teeth&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Khat taste",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+taste&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhQEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+taste&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Khat mouth",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+mouth&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhOEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+mouth&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Khat tea",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=Khat+tea&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ1QJ6BAhNEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Khat+tea&safe=off"
+    }
+  ],
+  "things_to_know": {
+    "buttons": [
+      {
+        "text": "Legal Status",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=what+is+the+legal+status+of+khat&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQrooIegQITxAP",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=what+is+the+legal+status+of+khat&safe=off"
+      },
+      {
+        "text": "Cultivation",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=how+is+khat+cultivated&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQrooIegQITxAe",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=how+is+khat+cultivated&safe=off"
+      },
+      {
+        "text": "History",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=what+is+the+history+of+khat+use&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQrooIegQITxAt",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=what+is+the+history+of+khat+use&safe=off"
+      },
+      {
+        "text": "Pronunciation",
+        "thumbnail": "https://ssl.gstatic.com/dictionary/static/pronunciation/20180801/desktop/sil.svg",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=How+to+pronounce+Khat&si=APenkKlipiXvsRlbcvV7P-0Fc_rmONu7LzYp7-B6ylk0iGACs-pMuMyGor0gYKuA78Hw6KpjBoNw2-_v60No2CR2T7y2RAsw4a9mLQ4G59M7kebPlHgCCXdeZ9QGQhHCk73yNnbEQcAs&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQrooIegQITxA8",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=How+to+pronounce+Khat&safe=off&si=APenkKlipiXvsRlbcvV7P-0Fc_rmONu7LzYp7-B6ylk0iGACs-pMuMyGor0gYKuA78Hw6KpjBoNw2-_v60No2CR2T7y2RAsw4a9mLQ4G59M7kebPlHgCCXdeZ9QGQhHCk73yNnbEQcAs"
+      },
+      {
+        "text": "Chemical Composition",
+        "search_link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&q=what+is+the+chemical+composition+of+khat&sa=X&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQrooIegQITxBL",
+        "serpapi_search_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=what+is+the+chemical+composition+of+khat&safe=off"
+      }
+    ]
+  },
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=%22khat%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&ei=zgTiar25M-PW5NoP2deV0QM&start=10&sa=N&sstk=AS6-VmJ85Fs9V8aci3ZXVIyeLYF3wDKGQUSRLQgzfVoP58B5qpU9-DqBh9QAVzkV87L6LLI_HRtCPp1DOJynNaYDxx_g74LzEmxjkQ&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ8NMDegQIRxAK",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=%22khat%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&ei=zgTiar25M-PW5NoP2deV0QM&start=10&sa=N&sstk=AS6-VmJ85Fs9V8aci3ZXVIyeLYF3wDKGQUSRLQgzfVoP58B5qpU9-DqBh9QAVzkV87L6LLI_HRtCPp1DOJynNaYDxx_g74LzEmxjkQ&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ8tMDegQIRxAE",
+      "3": "https://www.google.com/search?q=%22khat%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&ei=zgTiar25M-PW5NoP2deV0QM&start=20&sa=N&sstk=AS6-VmJ85Fs9V8aci3ZXVIyeLYF3wDKGQUSRLQgzfVoP58B5qpU9-DqBh9QAVzkV87L6LLI_HRtCPp1DOJynNaYDxx_g74LzEmxjkQ&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ8tMDegQIRxAG",
+      "4": "https://www.google.com/search?q=%22khat%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuJF9Fzkj8m09ow41hoFYMClMDHjQ:1793197262857&ei=zgTiar25M-PW5NoP2deV0QM&start=30&sa=N&sstk=AS6-VmJ85Fs9V8aci3ZXVIyeLYF3wDKGQUSRLQgzfVoP58B5qpU9-DqBh9QAVzkV87L6LLI_HRtCPp1DOJynNaYDxx_g74LzEmxjkQ&ved=2ahUKEwi92PSu9NyXAxVjK1kFHdlrJToQ8tMDegQIRxAI"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22khat%22&safe=off&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22khat%22&safe=off&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22khat%22&safe=off&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22khat%22&safe=off&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22khat%22&safe=off&start=30"
+    }
+  }
+}

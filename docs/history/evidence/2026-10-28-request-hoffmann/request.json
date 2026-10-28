@@ -1,0 +1,306 @@
+{
+  "id": "abf0ae08-7563-4b5d-9ed8-0ecbff15545b",
+  "created_at": "2026-10-28T14:20:20.670Z",
+  "text_sha256": "86b40e9a36f47c23521603fe06bf69f75daaab93335fbc6ea295498292135f61",
+  "content_hash": "d49318d4bae9c644ebf0f9226530c5177d967e8361ebe53151d12fc258ae764f",
+  "body": {
+    "text": "zacząć można od bardzo prostych prac np takich jak w artykule\n\nhttps://www.jmir.org/2016/2/e38/\n\ngdzie zaproponowaliśmy sposób oceny popularności i szkodliwości różnych substancji - możliwy byłby update co do rozwoju\nsytuacji w kolejnych okresach oraz próba sprawdzenia sytuacji w poszczególnych krajach (obszarach językowych)\n\npozdrawiam serdecznie",
+    "analysis": {
+      "config_version": "2026-10-28-v1",
+      "config_hash": "02ee09e5c0618f67aee5d225edad31d6c957e45680f550f9752fb59b5720eb8e",
+      "text_sha256": "86b40e9a36f47c23521603fe06bf69f75daaab93335fbc6ea295498292135f61",
+      "identifiers": [
+        {
+          "kind": "url",
+          "value": "https://www.jmir.org/2016/2/e38/"
+        }
+      ],
+      "retrievals": [
+        {
+          "purpose": "page",
+          "url": "https://www.jmir.org/2016/2/e38/",
+          "status": 202,
+          "bytes": 2137,
+          "sha256": "f7de940af6fb0b1ad705d25868cecdfc7d0d932ff9a6460387964dab2a65d3b3",
+          "object_uri": "file:///home/kielbowicz_marcin/wt/request_2026-10-28/inst/store/raw/f7de940af6fb0b1ad705d25868cecdfc7d0d932ff9a6460387964dab2a65d3b3",
+          "error": null
+        },
+        {
+          "purpose": "crossref (jmir)",
+          "url": "https://api.crossref.org/works?filter=issn:1438-8871,from-pub-date:2016-01-01,until-pub-date:2016-12-31&rows=1000&select=DOI,title,resource",
+          "status": 200,
+          "bytes": 79085,
+          "sha256": "3fee0226f357ae7c37fef32a185485ce9db7a5979e9650247cf27bb93fcfe56c",
+          "object_uri": "file:///home/kielbowicz_marcin/wt/request_2026-10-28/inst/store/raw/3fee0226f357ae7c37fef32a185485ce9db7a5979e9650247cf27bb93fcfe56c",
+          "error": null
+        }
+      ],
+      "works": [
+        {
+          "doi": "10.2196/jmir.4033",
+          "title": "Can Google Searches Predict the Popularity and Harm of Psychoactive Agents?",
+          "via": "Crossref 1438-8871/2016: registered landing page equals https://www.jmir.org/2016/2/e38/"
+        }
+      ],
+      "target": {
+        "target_id": "jh2016",
+        "title": "Can Google Searches Predict the Popularity and Harm of Psychoactive Agents?",
+        "matched_doi": "10.2196/jmir.4033"
+      },
+      "intents": [
+        {
+          "id": "replicate",
+          "label": "Powtórzenie metody wskazanej pracy",
+          "fragment": "zacząć można od bardzo prostych prac np takich jak w artykule",
+          "rule": "jak w (artykule|pracy)",
+          "source": "rule"
+        },
+        {
+          "id": "period_update",
+          "label": "Aktualizacja na kolejne okresy",
+          "fragment": "sytuacji w kolejnych okresach oraz próba sprawdzenia sytuacji w poszczególnych krajach (obszarach językowych)",
+          "rule": "kolejn\\w+ okres",
+          "source": "rule"
+        },
+        {
+          "id": "regional",
+          "label": "Kraje lub obszary językowe",
+          "fragment": "sytuacji w kolejnych okresach oraz próba sprawdzenia sytuacji w poszczególnych krajach (obszarach językowych)",
+          "rule": "kraj",
+          "source": "rule"
+        }
+      ],
+      "model": {
+        "status": "disabled",
+        "reason": "A real Vertex call from the app (VM metadata token) was refused by the agent session's permission policy on 2026-10-25 and has not been verified. Until it is, requests use the deterministic rules only and say so.",
+        "notes": []
+      },
+      "literal": [
+        {
+          "id": "jh16_recompute",
+          "label": "Przeliczenie danych z publikacji (sprawdzenie obliczeń, nie nowy pomiar)",
+          "intents": [
+            "replicate"
+          ],
+          "launch": {
+            "kind": "jh16_plan",
+            "baseline": "fixture"
+          },
+          "requests": 0,
+          "matched_intents": [
+            "replicate"
+          ]
+        },
+        {
+          "id": "jh16_new_period",
+          "label": "Nowy pomiar metodą wierną: kolejny okres (dziś), te same 32 zapytania",
+          "intents": [
+            "replicate",
+            "period_update"
+          ],
+          "launch": {
+            "kind": "jh16_plan",
+            "baseline": "live_serp"
+          },
+          "requests": 32,
+          "matched_intents": [
+            "replicate",
+            "period_update"
+          ]
+        }
+      ],
+      "proposals": [
+        {
+          "id": "jh16_trends",
+          "label": "Google Trends: zainteresowanie od 2004 r. i kalibracja rang w regionach świat, US, GB, PL (eksploracyjne)",
+          "intents": [
+            "period_update",
+            "regional"
+          ],
+          "launch": {
+            "kind": "jh16_plan",
+            "baseline": "none",
+            "trendsRegions": [
+              "GB",
+              "PL",
+              "US",
+              "WORLD"
+            ]
+          },
+          "requests": 16,
+          "matched_intents": [
+            "period_update",
+            "regional"
+          ]
+        },
+        {
+          "id": "jh16_countries_gl",
+          "label": "Kraje przez ustawienie Google gl=us i gl=pl oraz 2 powtórzenia (preset rozszerzenia, nie replikacja)",
+          "intents": [
+            "regional"
+          ],
+          "launch": {
+            "kind": "jh16_plan",
+            "baseline": "live_serp_extension"
+          },
+          "requests": 160,
+          "matched_intents": [
+            "regional"
+          ]
+        },
+        {
+          "id": "jh16_language_areas",
+          "label": "Obszary językowe: nazwy substancji w innych językach",
+          "intents": [
+            "regional"
+          ],
+          "launch": null,
+          "unavailable": "wymaga przetłumaczonych i przejrzanych nazw 16 substancji dla wybranych języków (zapytanie „harm” też trzeba przetłumaczyć); podaj języki w pytaniu poniżej",
+          "requests": null,
+          "matched_intents": [
+            "regional"
+          ]
+        },
+        {
+          "id": "jh16_repeat",
+          "label": "Powtarzanie nowego pomiaru co miesiąc",
+          "intents": [
+            "period_update"
+          ],
+          "launch": null,
+          "unavailable": "harmonogram pomiarów JH16 nie jest jeszcze zaimplementowany; kolejny okres uruchomisz ponownie ręcznie",
+          "requests": null,
+          "matched_intents": [
+            "period_update"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "substances",
+          "to": "użytkownik",
+          "text": "Zostać przy 16 substancjach z pracy, czy dodać inne (np. nowe substancje psychoaktywne)?",
+          "matched_intents": [
+            "replicate"
+          ]
+        },
+        {
+          "id": "countries",
+          "to": "użytkownik",
+          "text": "Które kraje lub obszary językowe są najważniejsze (np. Polska, Niemcy, świat anglojęzyczny)?",
+          "matched_intents": [
+            "regional"
+          ]
+        },
+        {
+          "id": "periods",
+          "to": "użytkownik",
+          "text": "Jakie okresy porównać: kolejne punkty pomiaru (np. co miesiąc od dziś), czy szereg wstecz od 2004 r. z Google Trends?",
+          "matched_intents": [
+            "period_update"
+          ]
+        },
+        {
+          "id": "original_data",
+          "to": "autor",
+          "text": "Czy zachowały się surowe liczby wyników z 20.06.2014 (lub zrzuty ekranu)? Pozwoliłyby oddzielić zmianę sposobu szacowania przez Google od zmiany zjawiska.",
+          "matched_intents": [
+            "replicate"
+          ]
+        }
+      ],
+      "intake": null,
+      "cost": {
+        "eur_per_request": 0.014,
+        "literal_requests": 32,
+        "literal_eur": 0.448,
+        "daily_auto_spend_eur": 1
+      },
+      "plan_hash": "eab088bd3a3756a5dc2d07a9ca15382b0e8cb11b3637ff74890c38e441296260"
+    }
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "kind": "launched",
+      "body": {
+        "action": "jh16_recompute",
+        "runIds": [
+          "b4b6f5cc-30b4-47a9-b798-a1f7e6454879"
+        ],
+        "requests": 0,
+        "text_sha256": "86b40e9a36f47c23521603fe06bf69f75daaab93335fbc6ea295498292135f61"
+      },
+      "created_at": "2026-10-28T14:20:20.748Z"
+    },
+    {
+      "sequence": 2,
+      "kind": "launched",
+      "body": {
+        "action": "jh16_new_period",
+        "runIds": [
+          "ea2b7078-a708-4205-ab29-b784486a26c1"
+        ],
+        "requests": 32,
+        "text_sha256": "86b40e9a36f47c23521603fe06bf69f75daaab93335fbc6ea295498292135f61"
+      },
+      "created_at": "2026-10-28T14:20:20.810Z"
+    },
+    {
+      "sequence": 3,
+      "kind": "accepted",
+      "body": {
+        "action": "jh16_trends"
+      },
+      "created_at": "2026-10-28T14:21:18.636Z"
+    },
+    {
+      "sequence": 4,
+      "kind": "launched",
+      "body": {
+        "action": "jh16_trends",
+        "runIds": [
+          "a44e493a-791c-499b-8f3c-2c2e93cdbf9e",
+          "11f82e98-44cb-4b6e-965f-3bf5a6761000",
+          "df6be58d-7d45-4dad-ae6a-400b620264ed",
+          "52eedd1f-0693-42b7-8c09-3dd804bed208"
+        ],
+        "requests": 16,
+        "text_sha256": "86b40e9a36f47c23521603fe06bf69f75daaab93335fbc6ea295498292135f61"
+      },
+      "created_at": "2026-10-28T14:21:18.829Z"
+    }
+  ],
+  "runs": [
+    {
+      "action": "jh16_recompute",
+      "run_id": "b4b6f5cc-30b4-47a9-b798-a1f7e6454879",
+      "status": "COMPLETED"
+    },
+    {
+      "action": "jh16_new_period",
+      "run_id": "ea2b7078-a708-4205-ab29-b784486a26c1",
+      "status": "COMPLETED"
+    },
+    {
+      "action": "jh16_trends",
+      "run_id": "a44e493a-791c-499b-8f3c-2c2e93cdbf9e",
+      "status": "COMPLETED"
+    },
+    {
+      "action": "jh16_trends",
+      "run_id": "11f82e98-44cb-4b6e-965f-3bf5a6761000",
+      "status": "COMPLETED"
+    },
+    {
+      "action": "jh16_trends",
+      "run_id": "df6be58d-7d45-4dad-ae6a-400b620264ed",
+      "status": "COMPLETED"
+    },
+    {
+      "action": "jh16_trends",
+      "run_id": "52eedd1f-0693-42b7-8c09-3dd804bed208",
+      "status": "COMPLETED"
+    }
+  ]
+}

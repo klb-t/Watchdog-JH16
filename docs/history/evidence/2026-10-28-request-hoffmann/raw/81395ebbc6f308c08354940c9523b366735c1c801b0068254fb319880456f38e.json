@@ -1,0 +1,405 @@
+{
+  "search_metadata": {
+    "id": "6ae204b3311b6549dc9eefed",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/B9Tn6I2u84RFmxqpDtpxFemKZNuJaBFi_AbEsVASHn8/6ae204b3311b6549dc9eefed.json",
+    "markdown_endpoint": "https://serpapi.com/searches/B9Tn6I2u84RFmxqpDtpxFemKZNuJaBFi_AbEsVASHn8/6ae204b3311b6549dc9eefed.md",
+    "pixel_position_endpoint": "https://serpapi.com/searches/B9Tn6I2u84RFmxqpDtpxFemKZNuJaBFi_AbEsVASHn8/6ae204b3311b6549dc9eefed.json_with_pixel_position",
+    "created_at": "2026-10-28 14:20:35 UTC",
+    "processed_at": "2026-10-28 14:20:35 UTC",
+    "google_url": "https://www.google.com/search?q=%22cannabis%22+%22harm%22+OR+%22harmful%22&oq=%22cannabis%22+%22harm%22+OR+%22harmful%22&hl=en&safe=off&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/B9Tn6I2u84RFmxqpDtpxFemKZNuJaBFi_AbEsVASHn8/6ae204b3311b6549dc9eefed.html",
+    "total_time_taken": 0.36
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "\"cannabis\" \"harm\" OR \"harmful\"",
+    "google_domain": "google.com",
+    "hl": "en",
+    "safe": "off",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "\"cannabis\" \"harm\" OR \"harmful\"",
+    "total_results": 59,
+    "time_taken_displayed": 0.18,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "related_questions": [
+    {
+      "question": "What harm does cannabis cause?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgaGFybSBkb2VzIGNhbm5hYmlzIGNhdXNlPyIsImxrIjoiYzVPU0xjOUlMRkhJU0N6S1ZVakpUeTFXU0U3TXkwdE15Z1F4U290VEFRIiwiYnMiOiJjMzJPTVF2Q1FBeUZjYzFVSFEtc0VRZGRCTGtfVU54MWRrN2JuRmRvYzlDTEZQLTl0VXFSQ3QzQzQ3MHZINXdodlhsUzlOUTJXQWFPV0pBSTVkWDdlRVRPN01hc3U3a0dYT0F3SUtobHRDZjBUTFY2ekZuWVZSb3h1SEdRV1RUcGZBWDJzQnhvVmZ5WnJVelNUVUpRdUk1djFUT3ljMXg4WUhXUS0xRzU5eDFWZTFFTU1oVHpVRDZScE1TR1Jhbi0ybVIyWjdZVEJ2NHhrc1VMIiwiaWQiOiJmY19zd1RpYXFERkJzZjlwdFFQdm9yTXlBc18yIn0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgaGFybSBkb2VzIGNhbm5hYmlzIGNhdXNlPyIsImxrIjoiYzVPU0xjOUlMRkhJU0N6S1ZVakpUeTFXU0U3TXkwdE15Z1F4U290VEFRIiwiYnMiOiJjMzJPTVF2Q1FBeUZjYzFVSFEtc0VRZGRCTGtfVU54MWRrN2JuRmRvYzlDTEZQLTl0VXFSQ3QzQzQ3MHZINXdodlhsUzlOUTJXQWFPV0pBSTVkWDdlRVRPN01hc3U3a0dYT0F3SUtobHRDZjBUTFY2ekZuWVZSb3h1SEdRV1RUcGZBWDJzQnhvVmZ5WnJVelNUVUpRdUk1djFUT3ljMXg4WUhXUS0xRzU5eDFWZTFFTU1oVHpVRDZScE1TR1Jhbi0ybVIyWjdZVEJ2NHhrc1VMIiwiaWQiOiJmY19zd1RpYXFERkJzZjlwdFFQdm9yTXlBc18yIn0%3D"
+    },
+    {
+      "question": "What are 20 health benefits of cannabis?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgYXJlIDIwIGhlYWx0aCBiZW5lZml0cyBvZiBjYW5uYWJpcz8iLCJsayI6IkdoNHlNQ0JvWldGc2RHZ2dZbVZ1WldacGRITWdiMllnWTJGdWJtRmlhWE0iLCJicyI6ImMzMk9NUXZDUUF5RmNjMVVIUS1zRVFkZEJMa19VTngxZGs3Ym5GZG9jOUNMRlAtOXRVcVJDdDNDNDcwdkg1d2h2WGxTOU5RMldBYU9XSkFJNWRYN2VFVE83TWFzdTdrR1hPQXdJS2hsdENmMFRMVjZ6Rm5ZVlJveHVIR1FXVFRwZkFYMnNCeG9WZnlaclV6U1RVSlF1STV2MVRPeWMxeDhZSFdRLTFHNTl4MVZlMUVNTWhUelVENlJwTVNHUmFuLTJtUjJaN1lUQnY0eGtzVUwiLCJpZCI6ImZjX3N3VGlhcURGQnNmOXB0UVB2b3JNeUFzXzIifQ==",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgYXJlIDIwIGhlYWx0aCBiZW5lZml0cyBvZiBjYW5uYWJpcz8iLCJsayI6IkdoNHlNQ0JvWldGc2RHZ2dZbVZ1WldacGRITWdiMllnWTJGdWJtRmlhWE0iLCJicyI6ImMzMk9NUXZDUUF5RmNjMVVIUS1zRVFkZEJMa19VTngxZGs3Ym5GZG9jOUNMRlAtOXRVcVJDdDNDNDcwdkg1d2h2WGxTOU5RMldBYU9XSkFJNWRYN2VFVE83TWFzdTdrR1hPQXdJS2hsdENmMFRMVjZ6Rm5ZVlJveHVIR1FXVFRwZkFYMnNCeG9WZnlaclV6U1RVSlF1STV2MVRPeWMxeDhZSFdRLTFHNTl4MVZlMUVNTWhUelVENlJwTVNHUmFuLTJtUjJaN1lUQnY0eGtzVUwiLCJpZCI6ImZjX3N3VGlhcURGQnNmOXB0UVB2b3JNeUFzXzIifQ%3D%3D"
+    },
+    {
+      "question": "What is cannabis?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgaXMgY2FubmFiaXM/IiwibGsiOiJHaEIzYUdGMElHbHpJR05oYm01aFltbHoiLCJicyI6ImMzMk9NUXZDUUF5RmNjMVVIUS1zRVFkZEJMa19VTngxZGs3Ym5GZG9jOUNMRlAtOXRVcVJDdDNDNDcwdkg1d2h2WGxTOU5RMldBYU9XSkFJNWRYN2VFVE83TWFzdTdrR1hPQXdJS2hsdENmMFRMVjZ6Rm5ZVlJveHVIR1FXVFRwZkFYMnNCeG9WZnlaclV6U1RVSlF1STV2MVRPeWMxeDhZSFdRLTFHNTl4MVZlMUVNTWhUelVENlJwTVNHUmFuLTJtUjJaN1lUQnY0eGtzVUwiLCJpZCI6ImZjX3N3VGlhcURGQnNmOXB0UVB2b3JNeUFzXzIifQ==",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgaXMgY2FubmFiaXM%2FIiwibGsiOiJHaEIzYUdGMElHbHpJR05oYm01aFltbHoiLCJicyI6ImMzMk9NUXZDUUF5RmNjMVVIUS1zRVFkZEJMa19VTngxZGs3Ym5GZG9jOUNMRlAtOXRVcVJDdDNDNDcwdkg1d2h2WGxTOU5RMldBYU9XSkFJNWRYN2VFVE83TWFzdTdrR1hPQXdJS2hsdENmMFRMVjZ6Rm5ZVlJveHVIR1FXVFRwZkFYMnNCeG9WZnlaclV6U1RVSlF1STV2MVRPeWMxeDhZSFdRLTFHNTl4MVZlMUVNTWhUelVENlJwTVNHUmFuLTJtUjJaN1lUQnY0eGtzVUwiLCJpZCI6ImZjX3N3VGlhcURGQnNmOXB0UVB2b3JNeUFzXzIifQ%3D%3D"
+    },
+    {
+      "question": "What are the effects of long-term cannabis use on the body and mental health?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgYXJlIHRoZSBlZmZlY3RzIG9mIGxvbmctdGVybSBjYW5uYWJpcyB1c2Ugb24gdGhlIGJvZHkgYW5kIG1lbnRhbCBoZWFsdGg/IiwibGsiOiJHaUZsWm1abFkzUnpJRzltSUd4dmJtY2dkR1Z5YlNCallXNXVZV0pwY3lCMWMyVSIsImJzIjoiYzMyT01RdkNRQXlGY2MxVUhRLXNFUWRkQkxrX1VOeDFkazdibkZkb2M5Q0xGUC05dFVxUkN0M0M0NzB2SDV3aHZYbFM5TlEyV0FhT1dKQUk1ZFg3ZUVUTzdNYXN1N2tHWE9Bd0lLaGx0Q2YwVExWNnpGbllWUm94dUhHUVdUVHBmQVgyc0J4b1ZmeVpyVXpTVFVKUXVJNXYxVE95YzF4OFlIV1EtMUc1OXgxVmUxRU1NaFR6VUQ2UnBNU0dSYW4tMm1SMlo3WVRCdjR4a3NVTCIsImlkIjoiZmNfc3dUaWFxREZCc2Y5cHRRUHZvck15QXNfMiJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWaE4yMTJZbEJtYlhkek16Uk9NMkZOWW5jNFNVdFpMV010UTBodVYyODNMWFY2VWxjd1QwNHpabGQwUlZWa1lUVmxSSFJKU1ZFMFdVOWhNa0Z5Ykc5eldHNVRUbVprZDFRMU9FaE1SVUpIU21jM2JUQnpjakJGYWxsVFFSSVhjM2RVYVdGeFJFWkNjMlk1Y0hSUlVIWnZjazE1UVhNYUlrRklUakJGTjBZMWNXdGtkRVV5ZVUxZlNFaG9aVFl5VFRkMk4zRnVSSE5NU21jIiwiZmN2IjoiMyIsImVpIjoic3dUaWFxREZCc2Y5cHRRUHZvck15QXMiLCJxYyI6ImMtTVNUVTdNeTB0TXlpeFd5RWdzeWdVVGFhVTVBZ3dTakxVbk4tdmFBd0EiLCJxdWVzdGlvbiI6IldoYXQgYXJlIHRoZSBlZmZlY3RzIG9mIGxvbmctdGVybSBjYW5uYWJpcyB1c2Ugb24gdGhlIGJvZHkgYW5kIG1lbnRhbCBoZWFsdGg%2FIiwibGsiOiJHaUZsWm1abFkzUnpJRzltSUd4dmJtY2dkR1Z5YlNCallXNXVZV0pwY3lCMWMyVSIsImJzIjoiYzMyT01RdkNRQXlGY2MxVUhRLXNFUWRkQkxrX1VOeDFkazdibkZkb2M5Q0xGUC05dFVxUkN0M0M0NzB2SDV3aHZYbFM5TlEyV0FhT1dKQUk1ZFg3ZUVUTzdNYXN1N2tHWE9Bd0lLaGx0Q2YwVExWNnpGbllWUm94dUhHUVdUVHBmQVgyc0J4b1ZmeVpyVXpTVFVKUXVJNXYxVE95YzF4OFlIV1EtMUc1OXgxVmUxRU1NaFR6VUQ2UnBNU0dSYW4tMm1SMlo3WVRCdjR4a3NVTCIsImlkIjoiZmNfc3dUaWFxREZCc2Y5cHRRUHZvck15QXNfMiJ9"
+    }
+  ],
+  "ai_overview": {
+    "page_token": "0AWaYHiczVXdkqo4EH6BfY3Dxe4ooDjqVFGnEgQGf2bMHD2Wc0PxZ0DBjERF5-68yz7VPs0GkBFddWfPXuymCpN0utOd7v78fvweBsvFH7_86q_Xb_SB55MkqWJCcOhVHRLxFt0vHX5GQho7_ldKNrHjyY4fk8irEpvzQ9lbctSaeTKZzbj8PHAPGtx-K9c5h8oC5wUyTUaBtepokM7ab2s03JJ4sAeUy1zIpm1Rb84i2M0pb_LsZ_Gl3mGbKq16y-qEonXlng70V6daE2r16jNvRUwB_AdDhUDFbDaACgC-pdn95I0--xD4di7Gavb7sddT5yDTNVAm0S7fB1OdTONFPUoqA29qJwCQ_BKAboVklI87RRQ4n9J3qTfNL47cmJSjvOH_wjhY9I4S_eRcvX4fmp5sWeLUGS45KvtTDgJU3ue5lgBoPRLYgWB8I_gsMgyeX4GalvZmj2QOyL2y-NjZQGAueRez_hZ4O2aTyAeO72SLmKZtr4zaAlHp-7M-mT61FtOp76mDxkafDOPpN307AbxjM72QWK7nmr4pfM32Yk1sCO16s3WX4c2hH4CjZcCFC3MwN6Xnnour_SoUC7QpJyk-KxHqXawZhnkCryXBOKthqS9VXDIqiq4oKtD9tBXKNyoA4VZZDQwNALFBT92iY-RX0PZxnkeQG0GUr9M5Pyv3LgRJqoRQSXIcyYWu7H7cffSVoEJgFOado8bpHVgNMh-F4uDsfpbvKQrU1JIACJOXLDSYgCJpKnhCcADVRdkkd4OhAlS1eAUuvQeeVipgZwgz30YXGMpiAQ3MknCwSB0iVPw9acpZ-Y3L-GZSDSi7i0efGX-HyXwwbB1AdYaRMra03th4Bzs63b5uwqjZ8fe7odR6HY0dCVzGEonsf8Bezv8TbQW39Q7cdh1tbQA-hTY_o5Jb3JY9pMRt3Rxt2nW0oQxtl7hNusBtf0EbC-iItj48PG1-jdt-Bm3wFtqMG2jrXUPb4jraMm47QdvijNuOvVLmtiPaforbxv-C2zL4efl0SnSbOb5OeDN9ZvajwGs1nyAVgr7QoP01VKXRJwhvFq0fIssN78zAfYC17nrv3plMQB48l1vJX2o1x1ouLTugbPkb-3wrjtLl80uxm21CtuKiMCayYDXqm7UzrsBwt23gehNoAzLvCYYuvK_iSkVQNrYrBZWKJLU60zgQGxLSorEpiMF6NE_eN9-75r4vGhvdiyy60rbzzfuA3tdXAnmZ-y9Jb1hfrvpD8IoeR2hdG-pPmlbxO4myrAzGkxBIkmiakpMFQ-V-FwS7zqO1_Z5wUezIrMwSZm0HJgBYaS922T9DjzVVj819NvcJBOhxClAHs4-wfuCoY5ke3crSfV0Q242mLQoN12bJifB6_ybX2hxdxrL4JwVyb5w",
+    "serpapi_link": "https://serpapi.com/search.json?engine=google_ai_overview&page_token=0AWaYHiczVXdkqo4EH6BfY3Dxe4ooDjqVFGnEgQGf2bMHD2Wc0PxZ0DBjERF5-68yz7VPs0GkBFddWfPXuymCpN0utOd7v78fvweBsvFH7_86q_Xb_SB55MkqWJCcOhVHRLxFt0vHX5GQho7_ldKNrHjyY4fk8irEpvzQ9lbctSaeTKZzbj8PHAPGtx-K9c5h8oC5wUyTUaBtepokM7ab2s03JJ4sAeUy1zIpm1Rb84i2M0pb_LsZ_Gl3mGbKq16y-qEonXlng70V6daE2r16jNvRUwB_AdDhUDFbDaACgC-pdn95I0--xD4di7Gavb7sddT5yDTNVAm0S7fB1OdTONFPUoqA29qJwCQ_BKAboVklI87RRQ4n9J3qTfNL47cmJSjvOH_wjhY9I4S_eRcvX4fmp5sWeLUGS45KvtTDgJU3ue5lgBoPRLYgWB8I_gsMgyeX4GalvZmj2QOyL2y-NjZQGAueRez_hZ4O2aTyAeO72SLmKZtr4zaAlHp-7M-mT61FtOp76mDxkafDOPpN307AbxjM72QWK7nmr4pfM32Yk1sCO16s3WX4c2hH4CjZcCFC3MwN6Xnnour_SoUC7QpJyk-KxHqXawZhnkCryXBOKthqS9VXDIqiq4oKtD9tBXKNyoA4VZZDQwNALFBT92iY-RX0PZxnkeQG0GUr9M5Pyv3LgRJqoRQSXIcyYWu7H7cffSVoEJgFOado8bpHVgNMh-F4uDsfpbvKQrU1JIACJOXLDSYgCJpKnhCcADVRdkkd4OhAlS1eAUuvQeeVipgZwgz30YXGMpiAQ3MknCwSB0iVPw9acpZ-Y3L-GZSDSi7i0efGX-HyXwwbB1AdYaRMra03th4Bzs63b5uwqjZ8fe7odR6HY0dCVzGEonsf8Bezv8TbQW39Q7cdh1tbQA-hTY_o5Jb3JY9pMRt3Rxt2nW0oQxtl7hNusBtf0EbC-iItj48PG1-jdt-Bm3wFtqMG2jrXUPb4jraMm47QdvijNuOvVLmtiPaforbxv-C2zL4efl0SnSbOb5OeDN9ZvajwGs1nyAVgr7QoP01VKXRJwhvFq0fIssN78zAfYC17nrv3plMQB48l1vJX2o1x1ouLTugbPkb-3wrjtLl80uxm21CtuKiMCayYDXqm7UzrsBwt23gehNoAzLvCYYuvK_iSkVQNrYrBZWKJLU60zgQGxLSorEpiMF6NE_eN9-75r4vGhvdiyy60rbzzfuA3tdXAnmZ-y9Jb1hfrvpD8IoeR2hdG-pPmlbxO4myrAzGkxBIkmiakpMFQ-V-FwS7zqO1_Z5wUezIrMwSZm0HJgBYaS922T9DjzVVj819NvcJBOhxClAHs4-wfuCoY5ke3crSfV0Q242mLQoN12bJifB6_ybX2hxdxrL4JwVyb5w"
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Does cannabis cause mental health issues?",
+      "link": "https://adf.org.au/insights/cannabis-mental-health/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESbgHrOzAVQOz6-tAql47bW4zCINVgnbgXh9nT0P4Qq6TZikKnNRQWxtnGOdwtXIIJd9A080VhNPeB2rH9h9BnV8iBarWDECdTpgOQVYKMupAI_8I8WeauTgr424_dHb0DwqoNztMhgEx_ym0yiImm&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECC0QAQ&uoh=1",
+      "displayed_link": "https://adf.org.au › insights › cannabis-mental-health",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAArklEQVR4AeTMIQjCQBhH8X-0WuxhvcOqzWowGq12MJltVqvZKFy_dGnp4ODa4NIF09LTjzGYxQ6--oMnfvRXmCiVBJkSsTIxxmw4bOW2uqhDvtXCwVNRn6pgswxwlaEjHeU_SOn7ggiKAKcR4dAYWojbEqubMKg61X0dcfWNnWFpekO8suFlwuNqtqVtEtw1YjnLzfHVyu90MvRr6cEcIQy5x0MgeYAhvAeXHE0mAN0iwhNnLJLgAAAAAElFTkSuQmCC.png",
+      "date": "Aug 23, 2021",
+      "snippet": "Event safety & harm reduction · Supervised injecting facilities ... Research has also found people with anxiety are more likely to use cannabis or ...",
+      "snippet_highlighted_words": [
+        "harm",
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Event safety & harm reduction · Supervised injecting facilities ... Research has also found people with anxiety are more likely to use cannabis or ...",
+          "source_info_link": "https://adf.org.au/insights/cannabis-mental-health/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAArklEQVR4AeTMIQjCQBhH8X-0WuxhvcOqzWowGq12MJltVqvZKFy_dGnp4ODa4NIF09LTjzGYxQ6--oMnfvRXmCiVBJkSsTIxxmw4bOW2uqhDvtXCwVNRn6pgswxwlaEjHeU_SOn7ggiKAKcR4dAYWojbEqubMKg61X0dcfWNnWFpekO8suFlwuNqtqVtEtw1YjnLzfHVyu90MvRr6cEcIQy5x0MgeYAhvAeXHE0mAN0iwhNnLJLgAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqIBL2dvdG8_dXJsPUNBRVNiZ0hyT3pBVkZ2NkV2MWdldXBuTXJxOFJXV0Vrdi1IVm81SnBBckNPa2dTZDNTdDJBcjFUemx2THhpZkFSR1EzMmduTXBFOUFzRWNiUFpVQi1YQVV2Vk9EenZhdjQ1TWNGNC1zRzJlZUhVdmpIRGs1OEU0LUtLQlJhOE5NX0lLU29WYkVubjQ2UFpTcG1hTGRLZFZtEgQaAggAGtoDEgIIABoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAtAMIABAAGAAgACoPCghjYW5uYWJpcxXqb5FAKgsKBGhhcm0VQzPmPTKiAS9nb3RvP3VybD1DQUVTYmdIck96QVZGdjZFdjFnZXVwbk1ycThSV1dFa3YtSFZvNUpwQXJDT2tnU2QzU3QyQXIxVHpsdkx4aWZBUkdRMzJnbk1wRTlBc0VjYlBaVUItWEFVdlZPRHp2YXY0NU1jRjQtc0cyZWVIVXZqSERrNThFNC1LS0JSYThOTV9JS1NvVmJFbm40NlBaU3BtYUxkS2RWbTowRG9lcyA8Yj5jYW5uYWJpczwvYj4gY2F1c2UgbWVudGFsIGhlYWx0aCBpc3N1ZXM_QrQBRXZlbnQgc2FmZXR5ICZhbXA7IDxiPmhhcm08L2I-IHJlZHVjdGlvbiAmbWlkZG90OyBTdXBlcnZpc2VkIGluamVjdGluZyBmYWNpbGl0aWVzIC4uLiBSZXNlYXJjaCBoYXMgYWxzbyBmb3VuZCBwZW9wbGUgd2l0aCBhbnhpZXR5IGFyZSBtb3JlIGxpa2VseSB0byB1c2UgPGI-Y2FubmFiaXM8L2I-IG9yJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqIBL2dvdG8_dXJsPUNBRVNiZ0hyT3pBVkZ2NkV2MWdldXBuTXJxOFJXV0Vrdi1IVm81SnBBckNPa2dTZDNTdDJBcjFUemx2THhpZkFSR1EzMmduTXBFOUFzRWNiUFpVQi1YQVV2Vk9EenZhdjQ1TWNGNC1zRzJlZUhVdmpIRGs1OEU0LUtLQlJhOE5NX0lLU29WYkVubjQ2UFpTcG1hTGRLZFZtEgQaAggAGtoDEgIIABoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAtAMIABAAGAAgACoPCghjYW5uYWJpcxXqb5FAKgsKBGhhcm0VQzPmPTKiAS9nb3RvP3VybD1DQUVTYmdIck96QVZGdjZFdjFnZXVwbk1ycThSV1dFa3YtSFZvNUpwQXJDT2tnU2QzU3QyQXIxVHpsdkx4aWZBUkdRMzJnbk1wRTlBc0VjYlBaVUItWEFVdlZPRHp2YXY0NU1jRjQtc0cyZWVIVXZqSERrNThFNC1LS0JSYThOTV9JS1NvVmJFbm40NlBaU3BtYUxkS2RWbTowRG9lcyA8Yj5jYW5uYWJpczwvYj4gY2F1c2UgbWVudGFsIGhlYWx0aCBpc3N1ZXM_QrQBRXZlbnQgc2FmZXR5ICZhbXA7IDxiPmhhcm08L2I-IHJlZHVjdGlvbiAmbWlkZG90OyBTdXBlcnZpc2VkIGluamVjdGluZyBmYWNpbGl0aWVzIC4uLiBSZXNlYXJjaCBoYXMgYWxzbyBmb3VuZCBwZW9wbGUgd2l0aCBhbnhpZXR5IGFyZSBtb3JlIGxpa2VseSB0byB1c2UgPGI-Y2FubmFiaXM8L2I-IG9yJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "source": "Alcohol and Drug Foundation",
+      "read_more_link": "https://adf.org.au/insights/cannabis-mental-health/#:~:text=ALCOHOL%20%26%20DRUG%20HOTLINE1800%20250&text=Research%20has%20also%20found%20people,or%20become%20dependent%20on%20cannabis."
+    },
+    {
+      "position": 2,
+      "title": "5 things to know if you regularly use THC",
+      "link": "https://www.colorado.edu/health/blog/cannabis",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESaAHrOzAVTqv2T1nvCifMf7LZ-FtJkTJ2WLpwPILCkDrQWWjrfEt1hQWsdcGiScSOiEqwYMkjhKqw3zHnS_D0kAzgiBddO31T60U4w77Z-y9KrjO4fN_Fkz0aJqlgc3aLM1YDI6AQeO9c&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECCgQAQ&uoh=1",
+      "displayed_link": "https://www.colorado.edu › health › blog › cannabis",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAXVBMVEVHcEytm2qxnm2tm2qKelPIs3msmWnYwYL03JOmlGbQunwBAADOt3bp4MojHx9zZEK9u7itr7Tw59DOyb87NjLb0rvZxY2MjZLgzZoTDhN5eX8aFhuen6RdXWT8-OtPjssNAAAACnRSTlMA1tLN8pXccTKZ4eHEVAAAATBJREFUOI2Nk9uChCAIQJ2Z2tpQM7N70_9_5gKVqfWw5804IYIK8Q-KOiIr07j7NiGuLtO4lVWAjY1bvJKxUVNchpCRBUKD_6jW03VSjvNNAM9inwV94hQLxUHphTOB26zdZp_w12-B35EW9IQsYHi5LZeg-ATm2AsML1UkUA8ugTsSCrbvd4Er2YXeXsI0DJQDBYN8SZB2GK4i9cQ_GXDY2HFmQUGW5T7DKWhu1CEUZ6MwGW8h1bCqVFhH3Lsn6BxUqlSh8IF23Md9Dl12KwSCeJGxz7niuWNchwIaRjFUg1IW47Eg3vtc9lMATDoVBM011yZpdSAQpTszMM2D0FIN3QFd1FTgTgVXt28jQeTLoIL7L8cWfuIXFhujgZdIyPV8PcAV3mkcjfANf-7xR_4AWSIpJ6I-sFwAAAAASUVORK5CYII.png",
+      "date": "Apr 10, 2025",
+      "snippet": "Cannabis impacts everyone differently, and there are many ways to modify your current use, including: Cutting back (using less often); Using ...",
+      "snippet_highlighted_words": [
+        "Cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Cannabis impacts everyone differently, and there are many ways to modify your current use, including: Cutting back (using less often); Using ...",
+          "source_info_link": "https://www.colorado.edu/health/blog/cannabis",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAXVBMVEVHcEytm2qxnm2tm2qKelPIs3msmWnYwYL03JOmlGbQunwBAADOt3bp4MojHx9zZEK9u7itr7Tw59DOyb87NjLb0rvZxY2MjZLgzZoTDhN5eX8aFhuen6RdXWT8-OtPjssNAAAACnRSTlMA1tLN8pXccTKZ4eHEVAAAATBJREFUOI2Nk9uChCAIQJ2Z2tpQM7N70_9_5gKVqfWw5804IYIK8Q-KOiIr07j7NiGuLtO4lVWAjY1bvJKxUVNchpCRBUKD_6jW03VSjvNNAM9inwV94hQLxUHphTOB26zdZp_w12-B35EW9IQsYHi5LZeg-ATm2AsML1UkUA8ugTsSCrbvd4Er2YXeXsI0DJQDBYN8SZB2GK4i9cQ_GXDY2HFmQUGW5T7DKWhu1CEUZ6MwGW8h1bCqVFhH3Lsn6BxUqlSh8IF23Md9Dl12KwSCeJGxz7niuWNchwIaRjFUg1IW47Eg3vtc9lMATDoVBM011yZpdSAQpTszMM2D0FIN3QFd1FTgTgVXt28jQeTLoIL7L8cWfuIXFhujgZdIyPV8PcAV3mkcjfANf-7xR_4AWSIpJ6I-sFwAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpoBL2dvdG8_dXJsPUNBRVNhQUhyT3pBVkE2Skw2QmFVX0Y0dU9HRTBqbVByby1EeWVobjJwaXlBSXdPWkxhSTlHcmNvMW9yMjVZaHF2TXhGSktNMTk2enJoVU11RVZJb1dBMXRBWkhnWXVRWUwwMnpXNXMtdGJSMVlFVkZJdWVhSTdaeHpPN0pxZ01yQlVncUQyY3V6TVFGQXk3MxIEGgIIABrNAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQKcDCAAQABgAIAAqDwoIY2FubmFiaXMVRtJ1PyoLCgRoYXJtFQAAAAAymgEvZ290bz91cmw9Q0FFU2FBSHJPekFWQTZKTDZCYVVfRjR1T0dFMGptUHJvLUR5ZWhuMnBpeUFJd09aTGFJOUdyY28xb3IyNVlocXZNeEZKS00xOTZ6cmhVTXVFVklvV0ExdEFaSGdZdVFZTDAyelc1cy10YlIxWUVWRkl1ZWFJN1p4ek83SnFnTXJCVWdxRDJjdXpNUUZBeTczOkM1IHRoaW5ncyB0byBrbm93IGlmIHlvdSByZWd1bGFybHkgdXNlIFRIQyB8IEhlYWx0aCAmYW1wOyBXZWxsLUJlaW5nQpwBPGI-Q2FubmFiaXM8L2I-IGltcGFjdHMgZXZlcnlvbmUgZGlmZmVyZW50bHksIGFuZCB0aGVyZSBhcmUgbWFueSB3YXlzIHRvIG1vZGlmeSB5b3VyIGN1cnJlbnQgdXNlLCBpbmNsdWRpbmc6IEN1dHRpbmcgYmFjayAodXNpbmcgbGVzcyBvZnRlbik7IFVzaW5nJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpoBL2dvdG8_dXJsPUNBRVNhQUhyT3pBVkE2Skw2QmFVX0Y0dU9HRTBqbVByby1EeWVobjJwaXlBSXdPWkxhSTlHcmNvMW9yMjVZaHF2TXhGSktNMTk2enJoVU11RVZJb1dBMXRBWkhnWXVRWUwwMnpXNXMtdGJSMVlFVkZJdWVhSTdaeHpPN0pxZ01yQlVncUQyY3V6TVFGQXk3MxIEGgIIABrNAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQKcDCAAQABgAIAAqDwoIY2FubmFiaXMVRtJ1PyoLCgRoYXJtFQAAAAAymgEvZ290bz91cmw9Q0FFU2FBSHJPekFWQTZKTDZCYVVfRjR1T0dFMGptUHJvLUR5ZWhuMnBpeUFJd09aTGFJOUdyY28xb3IyNVlocXZNeEZKS00xOTZ6cmhVTXVFVklvV0ExdEFaSGdZdVFZTDAyelc1cy10YlIxWUVWRkl1ZWFJN1p4ek83SnFnTXJCVWdxRDJjdXpNUUZBeTczOkM1IHRoaW5ncyB0byBrbm93IGlmIHlvdSByZWd1bGFybHkgdXNlIFRIQyB8IEhlYWx0aCAmYW1wOyBXZWxsLUJlaW5nQpwBPGI-Q2FubmFiaXM8L2I-IGltcGFjdHMgZXZlcnlvbmUgZGlmZmVyZW50bHksIGFuZCB0aGVyZSBhcmUgbWFueSB3YXlzIHRvIG1vZGlmeSB5b3VyIGN1cnJlbnQgdXNlLCBpbmNsdWRpbmc6IEN1dHRpbmcgYmFjayAodXNpbmcgbGVzcyBvZnRlbik7IFVzaW5nJm5ic3A7Li4uIgIQAUgAWABoAA",
+      "source": "University of Colorado Boulder",
+      "read_more_link": "https://www.colorado.edu/health/blog/cannabis#:~:text=Cannabis%20impacts%20everyone%20differently%2C%20and,Using%20lower%20potency%20THC"
+    },
+    {
+      "position": 3,
+      "title": "Adverse Impact of Cannabis on Human Health - PubMed - NIH",
+      "link": "https://pubmed.ncbi.nlm.nih.gov/37582489/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESZAHrOzAV3xlNDrIHUY4OluBV2EP-C3BQ2Z88zow-ehbAjATNXynn7FU-ScFw7aPBJhVs5aMbh3T82LzYhl4YZI7dOG7JdA8iot7uIW8bIFQMhnybcqYNAenKuyE3hqrP5wd3CxY&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECCsQAQ&uoh=1",
+      "displayed_link": "https://pubmed.ncbi.nlm.nih.gov › ...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd-UAAABA0lEQVR4AWJwL_ChKwYTEqE9BglJae0kYGe4AUFTPIB4ChRXAM1SxGshUHMCEP8nFQfG54tBHasItOg_Gk7EZ-EjkAFk4JVIvqxAt1QspJcb0GwdWAAIhGEYnqVtGqNtWqAlAjdKbRBNEXD5cZyPu4_zRvgF9Kh7-9UC8-jIq70ETV-Ah5xlrifaoMGYpUKToCcA2oAeDciAeEBPBORBNqDNg3xAkwfhgDzIb6CZBmPW6ik3AS8PwvGwoPk8uDOU84trYwGg4OoKJcHbLXEB0VDOxpbBQLtHUbCsrLhxKxQF2Y9cQiHBu7yuiKIXioI7sKg1lNT7Lx1BDw1Fq-yC9PwKfAFmoVRnLcb2rQAAAABJRU5ErkJggg.png",
+      "author": "by M Chandy",
+      "snippet": "However, recent studies show that cannabis has adverse cardiovascular and pulmonary effects and is linked with malignancy. Moreover, case ...",
+      "snippet_highlighted_words": [
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "However, recent studies show that cannabis has adverse cardiovascular and pulmonary effects and is linked with malignancy. Moreover, case ...",
+          "source_info_link": "https://pubmed.ncbi.nlm.nih.gov/37582489/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd-UAAABA0lEQVR4AWJwL_ChKwYTEqE9BglJae0kYGe4AUFTPIB4ChRXAM1SxGshUHMCEP8nFQfG54tBHasItOg_Gk7EZ-EjkAFk4JVIvqxAt1QspJcb0GwdWAAIhGEYnqVtGqNtWqAlAjdKbRBNEXD5cZyPu4_zRvgF9Kh7-9UC8-jIq70ETV-Ah5xlrifaoMGYpUKToCcA2oAeDciAeEBPBORBNqDNg3xAkwfhgDzIb6CZBmPW6ik3AS8PwvGwoPk8uDOU84trYwGg4OoKJcHbLXEB0VDOxpbBQLtHUbCsrLhxKxQF2Y9cQiHBu7yuiKIXioI7sKg1lNT7Lx1BDw1Fq-yC9PwKfAFmoVRnLcb2rQAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVjFnVUNZS0taZnZ3b3ZVeW5UNUZreGRyWE9yZ3hLQ3lnTHREMjlBYWZaYmR2dnJacmp4N1ZTeWdsc0ViYnFVdjJCeWlpc0tGb0FtcFFjblpiLXU0dzJrUU1fYW01VDlHTUIyQ1Z6UkhKcklVRGZFczRKTHVvcXJZb1dmbGszLVUSBBoCCAAawgMSAggAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCcAwgAEAAYACAAKg8KCGNhbm5hYmlzFV9ddEAqCwoEaGFybRUAAAAAMpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVjFnVUNZS0taZnZ3b3ZVeW5UNUZreGRyWE9yZ3hLQ3lnTHREMjlBYWZaYmR2dnJacmp4N1ZTeWdsc0ViYnFVdjJCeWlpc0tGb0FtcFFjblpiLXU0dzJrUU1fYW01VDlHTUIyQ1Z6UkhKcklVRGZFczRKTHVvcXJZb1dmbGszLVU6QEFkdmVyc2UgSW1wYWN0IG9mIDxiPkNhbm5hYmlzPC9iPiBvbiBIdW1hbiBIZWFsdGggLSBQdWJNZWQgLSBOSUhCmQFIb3dldmVyLCByZWNlbnQgc3R1ZGllcyBzaG93IHRoYXQgPGI-Y2FubmFiaXM8L2I-IGhhcyBhZHZlcnNlIGNhcmRpb3Zhc2N1bGFyIGFuZCBwdWxtb25hcnkgZWZmZWN0cyBhbmQgaXMgbGlua2VkIHdpdGggbWFsaWduYW5jeS4gTW9yZW92ZXIsIGNhc2UmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVjFnVUNZS0taZnZ3b3ZVeW5UNUZreGRyWE9yZ3hLQ3lnTHREMjlBYWZaYmR2dnJacmp4N1ZTeWdsc0ViYnFVdjJCeWlpc0tGb0FtcFFjblpiLXU0dzJrUU1fYW01VDlHTUIyQ1Z6UkhKcklVRGZFczRKTHVvcXJZb1dmbGszLVUSBBoCCAAawgMSAggAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCcAwgAEAAYACAAKg8KCGNhbm5hYmlzFV9ddEAqCwoEaGFybRUAAAAAMpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVjFnVUNZS0taZnZ3b3ZVeW5UNUZreGRyWE9yZ3hLQ3lnTHREMjlBYWZaYmR2dnJacmp4N1ZTeWdsc0ViYnFVdjJCeWlpc0tGb0FtcFFjblpiLXU0dzJrUU1fYW01VDlHTUIyQ1Z6UkhKcklVRGZFczRKTHVvcXJZb1dmbGszLVU6QEFkdmVyc2UgSW1wYWN0IG9mIDxiPkNhbm5hYmlzPC9iPiBvbiBIdW1hbiBIZWFsdGggLSBQdWJNZWQgLSBOSUhCmQFIb3dldmVyLCByZWNlbnQgc3R1ZGllcyBzaG93IHRoYXQgPGI-Y2FubmFiaXM8L2I-IGhhcyBhZHZlcnNlIGNhcmRpb3Zhc2N1bGFyIGFuZCBwdWxtb25hcnkgZWZmZWN0cyBhbmQgaXMgbGlua2VkIHdpdGggbWFsaWduYW5jeS4gTW9yZW92ZXIsIGNhc2UmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "National Institutes of Health (NIH) | (.gov)",
+      "read_more_link": "https://pubmed.ncbi.nlm.nih.gov/37582489/#:~:text=However%2C%20recent%20studies%20show%20that,cannabis%20use%20and%20neuropsychiatric%20disorders."
+    },
+    {
+      "position": 4,
+      "title": "Is Cannabis Bad for You? Research Says 'No.'",
+      "link": "https://www.netacare.org/learn/blog/is-cannabis-bad-for-you-research-says-no",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAEShwEB6zswFU1Hpm-Dy8yeushHfHchDD3Xgm1B1bB7ZkccxLNeFFj3zzsDYMYa0ov8qNy8bZH2H80D47KLQJWXsIqlqGl35ypeeGim2jqqXr9sZPE9yKYoip8a57X2cz5IRDsr1stZlYoFS9y6U3uVG6Lyvt5VAd38EcRmmweR8EMWPgbuaYC1EU4&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECD8QAQ&uoh=1",
+      "displayed_link": "https://www.netacare.org › learn › blog › is-cannabis-b...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAALVBMVEUAbLMAbLMAbLMAbLMAYq8AarO_0OMec7X___9Nh70AXa3X4ewAVarr8PSGqc9SQdm8AAAAA3RSTlPb8emv25QvAAAAcUlEQVR4AWNgFEQGDMrGyIAKXBNXFK5bcjAS17SiE5kbldF9FME1cevoSHWGc906gGALnOvbO6NzRxecG1lzouXwVDg3ZN6N3peuCMUgvV0IbveLvlwE12rJiWavxUiOXNEebIyb63sdhRviiuZ9qnMBIyZfIl-LO0kAAAAASUVORK5CYII.png",
+      "snippet": "Only 6-percent of Americans claim marijuana is more harmful. American perceptions align with growing research on the safety and efficacy of cannabis. So, how ...",
+      "snippet_highlighted_words": [
+        "harmful",
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Only 6-percent of Americans claim marijuana is more harmful. American perceptions align with growing research on the safety and efficacy of cannabis. So, how ...",
+          "source_info_link": "https://www.netacare.org/learn/blog/is-cannabis-bad-for-you-research-says-no",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAALVBMVEUAbLMAbLMAbLMAbLMAYq8AarO_0OMec7X___9Nh70AXa3X4ewAVarr8PSGqc9SQdm8AAAAA3RSTlPb8emv25QvAAAAcUlEQVR4AWNgFEQGDMrGyIAKXBNXFK5bcjAS17SiE5kbldF9FME1cevoSHWGc906gGALnOvbO6NzRxecG1lzouXwVDg3ZN6N3peuCMUgvV0IbveLvlwE12rJiWavxUiOXNEebIyb63sdhRviiuZ9qnMBIyZfIl-LO0kAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CsUBL2dvdG8_dXJsPUNBRVNod0VCNnpzd0ZaaVZ3Z2c3SnF3Y0lSOC1UeE9wTFhGenAtTUN5dWxsazQ3Q01xM3l3bjd4RFM2Z0tGLTBMQVRvZ3hUSE1SNVBYbURha2dHYWM4RnRUcmh6Xzl5TjNkNUc0Yy1SOFlCeFhWekJmMmhTdWQtc1dPRUZYWXo0X2JLNGpUV1FiMmlLVlpBa0NSWEkxOUFBZjc4MzBTODFwNFAyWWxhVWdzcG0zcjhZcHQxNlduOGdheHMSBBoCCAAajQQSABoAIgAqADIGCAESAnVzOgBCBAgBEABKAFoAcgB6AIJA6QMIABAAGAAgACoPCghjYW5uYWJpcxXfi5xAKgsKBGhhcm0VknSRPzLFAS9nb3RvP3VybD1DQUVTaHdFQjZ6c3dGWmlWd2dnN0pxd2NJUjgtVHhPcExYRnpwLU1DeXVsbGs0N0NNcTN5d243eERTNmdLRi0wTEFUb2d4VEhNUjVQWG1EYWtnR2FjOEZ0VHJoel85eU4zZDVHNGMtUjhZQnhYVnpCZjJoU3VkLXNXT0VGWFl6NF9iSzRqVFdRYjJpS1ZaQWtDUlhJMTlBQWY3ODMwUzgxcDRQMllsYVVnc3BtM3I4WXB0MTZXbjhnYXhzOkJJcyA8Yj5DYW5uYWJpczwvYj4gQmFkIGZvciBZb3U_IFJlc2VhcmNoIFNheXMgJiMzOTtOby4mIzM5OyAtIE5FVEFCtAFPbmx5IDYtcGVyY2VudCBvZiBBbWVyaWNhbnMgY2xhaW0gbWFyaWp1YW5hIGlzIG1vcmUgPGI-aGFybWZ1bDwvYj4uIEFtZXJpY2FuIHBlcmNlcHRpb25zIGFsaWduIHdpdGggZ3Jvd2luZyByZXNlYXJjaCBvbiB0aGUgc2FmZXR5IGFuZCBlZmZpY2FjeSBvZiA8Yj5jYW5uYWJpczwvYj4uIFNvLCBob3cmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CsUBL2dvdG8_dXJsPUNBRVNod0VCNnpzd0ZaaVZ3Z2c3SnF3Y0lSOC1UeE9wTFhGenAtTUN5dWxsazQ3Q01xM3l3bjd4RFM2Z0tGLTBMQVRvZ3hUSE1SNVBYbURha2dHYWM4RnRUcmh6Xzl5TjNkNUc0Yy1SOFlCeFhWekJmMmhTdWQtc1dPRUZYWXo0X2JLNGpUV1FiMmlLVlpBa0NSWEkxOUFBZjc4MzBTODFwNFAyWWxhVWdzcG0zcjhZcHQxNlduOGdheHMSBBoCCAAajQQSABoAIgAqADIGCAESAnVzOgBCBAgBEABKAFoAcgB6AIJA6QMIABAAGAAgACoPCghjYW5uYWJpcxXfi5xAKgsKBGhhcm0VknSRPzLFAS9nb3RvP3VybD1DQUVTaHdFQjZ6c3dGWmlWd2dnN0pxd2NJUjgtVHhPcExYRnpwLU1DeXVsbGs0N0NNcTN5d243eERTNmdLRi0wTEFUb2d4VEhNUjVQWG1EYWtnR2FjOEZ0VHJoel85eU4zZDVHNGMtUjhZQnhYVnpCZjJoU3VkLXNXT0VGWFl6NF9iSzRqVFdRYjJpS1ZaQWtDUlhJMTlBQWY3ODMwUzgxcDRQMllsYVVnc3BtM3I4WXB0MTZXbjhnYXhzOkJJcyA8Yj5DYW5uYWJpczwvYj4gQmFkIGZvciBZb3U_IFJlc2VhcmNoIFNheXMgJiMzOTtOby4mIzM5OyAtIE5FVEFCtAFPbmx5IDYtcGVyY2VudCBvZiBBbWVyaWNhbnMgY2xhaW0gbWFyaWp1YW5hIGlzIG1vcmUgPGI-aGFybWZ1bDwvYj4uIEFtZXJpY2FuIHBlcmNlcHRpb25zIGFsaWduIHdpdGggZ3Jvd2luZyByZXNlYXJjaCBvbiB0aGUgc2FmZXR5IGFuZCBlZmZpY2FjeSBvZiA8Yj5jYW5uYWJpczwvYj4uIFNvLCBob3cmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "NETA",
+      "read_more_link": "https://www.netacare.org/learn/blog/is-cannabis-bad-for-you-research-says-no#:~:text=Only%206%2Dpercent%20of%20Americans%20claim,substances%20Americans%20consume%20every%20day%3F"
+    },
+    {
+      "position": 5,
+      "title": "Cannabis Health Effects",
+      "link": "https://restoredcdc.org/www.cdc.gov/cannabis/health-effects/index.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESgQEB6zswFcjHCvcnfsd-46O8gCf8JpnpgkXyrmbUWUV6qpoRFPKN3xCfmHbu2KrAmcyL7Jw-xv6Agru9hJtUfWntoARkrQHr87-Fo7iDe4RnInJyQWUAhvaS1T1aqBGaclf8NTn-6IxBcid_lH_StQjCOfx9X6PuH7PtIpRWOG5E8dM&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECEMQAQ&uoh=1",
+      "displayed_link": "https://restoredcdc.org › www.cdc.gov › health-effects",
+      "date": "Feb 16, 2024",
+      "snippet": "17. Keep Reading: Cannabis and Driving. Lung Health. Smoked cannabis, regardless of how it is smoked, can harm lung tissues and cause scarring ...",
+      "snippet_highlighted_words": [
+        "Cannabis",
+        "cannabis",
+        "harm"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "17. Keep Reading: Cannabis and Driving. Lung Health. Smoked cannabis, regardless of how it is smoked, can harm lung tissues and cause scarring ...",
+          "source_info_link": "https://restoredcdc.org/www.cdc.gov/cannabis/health-effects/index.html"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=Cr0BL2dvdG8_dXJsPUNBRVNnUUVCNnpzd0ZSYnI1N1BVNTBTcldHaHZrT2dRVDhLLVRaQm9oVDdJVGhYUkpGOHN2S21sbkVlRVdMWElXUnZHWmdjRHEyZ3pLZkJ0bHJ3TGJQYktNUDd4cXF5c1ZoV1RjVkY3cWFMZ0liQTFoVEg2OXRENWxIVks0d09hLUNrak5KSDdJeTNiOHZkcEMySW51XzdnajRIZzlhSE0xNXJhSGc1cFlicTlkZ2ZDOGtFEgQaAggAGugDEgAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQMQDCAAQABgAIAAqDwoIY2FubmFiaXMVK-6tQCoLCgRoYXJtFX7ZOT4yvQEvZ290bz91cmw9Q0FFU2dRRUI2enN3RlJicjU3UFU1MFNyV0dodmtPZ1FUOEstVFpCb2hUN0lUaFhSSkY4c3ZLbWxuRWVFV0xYSVdSdkdaZ2NEcTJnektmQnRscndMYlBiS01QN3hxcXlzVmhXVGNWRjdxYUxnSWJBMWhUSDY5dEQ1bEhWSzR3T2EtQ2tqTkpIN0l5M2I4dmRwQzJJbnVfN2dqNEhnOWFITTE1cmFIZzVwWWJxOWRnZkM4a0U6LTxiPkNhbm5hYmlzPC9iPiBIZWFsdGggRWZmZWN0cyAtIFJlc3RvcmVkIENEQ0KsATE3LiBLZWVwIFJlYWRpbmc6IDxiPkNhbm5hYmlzPC9iPiBhbmQgRHJpdmluZy4gTHVuZyBIZWFsdGguIFNtb2tlZCA8Yj5jYW5uYWJpczwvYj4sIHJlZ2FyZGxlc3Mgb2YgaG93IGl0IGlzIHNtb2tlZCwgY2FuIDxiPmhhcm08L2I-IGx1bmcgdGlzc3VlcyBhbmQgY2F1c2Ugc2NhcnJpbmcmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=Cr0BL2dvdG8_dXJsPUNBRVNnUUVCNnpzd0ZSYnI1N1BVNTBTcldHaHZrT2dRVDhLLVRaQm9oVDdJVGhYUkpGOHN2S21sbkVlRVdMWElXUnZHWmdjRHEyZ3pLZkJ0bHJ3TGJQYktNUDd4cXF5c1ZoV1RjVkY3cWFMZ0liQTFoVEg2OXRENWxIVks0d09hLUNrak5KSDdJeTNiOHZkcEMySW51XzdnajRIZzlhSE0xNXJhSGc1cFlicTlkZ2ZDOGtFEgQaAggAGugDEgAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQMQDCAAQABgAIAAqDwoIY2FubmFiaXMVK-6tQCoLCgRoYXJtFX7ZOT4yvQEvZ290bz91cmw9Q0FFU2dRRUI2enN3RlJicjU3UFU1MFNyV0dodmtPZ1FUOEstVFpCb2hUN0lUaFhSSkY4c3ZLbWxuRWVFV0xYSVdSdkdaZ2NEcTJnektmQnRscndMYlBiS01QN3hxcXlzVmhXVGNWRjdxYUxnSWJBMWhUSDY5dEQ1bEhWSzR3T2EtQ2tqTkpIN0l5M2I4dmRwQzJJbnVfN2dqNEhnOWFITTE1cmFIZzVwWWJxOWRnZkM4a0U6LTxiPkNhbm5hYmlzPC9iPiBIZWFsdGggRWZmZWN0cyAtIFJlc3RvcmVkIENEQ0KsATE3LiBLZWVwIFJlYWRpbmc6IDxiPkNhbm5hYmlzPC9iPiBhbmQgRHJpdmluZy4gTHVuZyBIZWFsdGguIFNtb2tlZCA8Yj5jYW5uYWJpczwvYj4sIHJlZ2FyZGxlc3Mgb2YgaG93IGl0IGlzIHNtb2tlZCwgY2FuIDxiPmhhcm08L2I-IGx1bmcgdGlzc3VlcyBhbmQgY2F1c2Ugc2NhcnJpbmcmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "Restored CDC",
+      "read_more_link": "https://restoredcdc.org/www.cdc.gov/cannabis/health-effects/index.html#:~:text=717,damage%20to%20small%20blood%20vessels."
+    },
+    {
+      "position": 6,
+      "title": "Is Marijuana Harmful?",
+      "link": "https://www.safeandsober.org/resources/is-marijuana-harmful/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESdwHrOzAVZmw8nyAdnQ3JUxKIQWVtlbYjUFnA1K-8KMoP3oWeSC1N9lenLvltd1CNiffcPJjAfaKFe0mc9QdSODN2ZJhyyYjxd80c0KoGyqUgP5QIeUghTymlXRzDpicr_EMDzgSplzt2T0XeUaCc-Yya6G6pHKte&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECEoQAQ&uoh=1",
+      "displayed_link": "https://www.safeandsober.org › resources › is-marijuana-...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAJFBMVEVMaXF2UO92UO92UO92UO92UO92UO92UO92UO92UO92UO92UO9WoNY2AAAADHRSTlMAJH7N8__iuBBjnkEEpOF2AAABH0lEQVR4AU2QQ2MEQRCFZ2Pbl9iXOOdgfcvMW91inGLbtm6xbf25VG_v9swb9lcuySNdpt5QmS4JBe2A5FJBih72PtjFWdcHpbAZdQIsA2Z6igXIBtJ2oWyKiGbYV5rhmvQCH8C6oI2gw-AFbM8CJAD5epglLbgEjrWAZJ9UwQygpmQKBERKb1lYJY1C9bzLoG8VyCxloiWJg1hKEUUTlDfk8e1cwN3Fm-02SuSkpMHNxjse8Q6Fxl3MsnUwBxZqs1CWWygj3CEESnFoMwB7lIjYlHYBdPFzUDlb1QwgexyCWQXdhQDMdiy9gTQoUjxP62ETS86GvNIHjHxCyeNAMeYA1ZNU2eJ2-QTJSOv5qq29ZiC0oEJvPGQd__3RPv4BeZld8IR0oIAAAAAASUVORK5CYII.png",
+      "snippet": "The perception of harm is low, and most teens report that they primarily ... Weigh the pros of a safe and sober lifestyle versus the cons of cannabis use.",
+      "snippet_highlighted_words": [
+        "harm",
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "The perception of harm is low, and most teens report that they primarily ... Weigh the pros of a safe and sober lifestyle versus the cons of cannabis use.",
+          "source_info_link": "https://www.safeandsober.org/resources/is-marijuana-harmful/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAJFBMVEVMaXF2UO92UO92UO92UO92UO92UO92UO92UO92UO92UO92UO9WoNY2AAAADHRSTlMAJH7N8__iuBBjnkEEpOF2AAABH0lEQVR4AU2QQ2MEQRCFZ2Pbl9iXOOdgfcvMW91inGLbtm6xbf25VG_v9swb9lcuySNdpt5QmS4JBe2A5FJBih72PtjFWdcHpbAZdQIsA2Z6igXIBtJ2oWyKiGbYV5rhmvQCH8C6oI2gw-AFbM8CJAD5epglLbgEjrWAZJ9UwQygpmQKBERKb1lYJY1C9bzLoG8VyCxloiWJg1hKEUUTlDfk8e1cwN3Fm-02SuSkpMHNxjse8Q6Fxl3MsnUwBxZqs1CWWygj3CEESnFoMwB7lIjYlHYBdPFzUDlb1QwgexyCWQXdhQDMdiy9gTQoUjxP62ETS86GvNIHjHxCyeNAMeYA1ZNU2eJ2-QTJSOv5qq29ZiC0oEJvPGQd__3RPv4BeZld8IR0oIAAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=Cq4BL2dvdG8_dXJsPUNBRVNkd0hyT3pBVnpqcmYyMTJWdEljUWtreDR2N2NsVEs3QXl3VU9SZ3FpcXVWTlJNOFNua2ROa09IaTNsT3lBenR4dkl0MmNYRnlCQkUtTVU1NEtNc3JkYVpreHU1T2hmVDZLUmJMY1dsLWx3RkxzX2hyVHg3Q3UwM3lfRXRSdjA3cnBYMVZhZFFUOTczMmpyZk5SUXE0VTlGZHpmNndqMEtjEgQaAggAGtUDEgAaACIAKgAyBggBEgJ1czoAQgQIARAASgBaAHIAegCCQLEDCAAQABgAIAAqDwoIY2FubmFiaXMVRkYIQCoLCgRoYXJtFSL_ZkAyrgEvZ290bz91cmw9Q0FFU2R3SHJPekFWempyZjIxMlZ0SWNRa2t4NHY3Y2xUSzdBeXdVT1JncWlxdVZOUk04U25rZE5rT0hpM2xPeUF6dHh2SXQyY1hGeUJCRS1NVTU0S01zcmRhWmt4dTVPaGZUNktSYkxjV2wtbHdGTHNfaHJUeDdDdTAzeV9FdFJ2MDdycFgxVmFkUVQ5NzMyanJmTlJRcTRVOUZkemY2d2owS2M6LUlzIE1hcmlqdWFuYSA8Yj5IYXJtZnVsPC9iPj8gLSBTYWZlIGFuZCBTb2JlckKoAVRoZSBwZXJjZXB0aW9uIG9mIDxiPmhhcm08L2I-IGlzIGxvdywgYW5kIG1vc3QgdGVlbnMgcmVwb3J0IHRoYXQgdGhleSBwcmltYXJpbHkgLi4uIFdlaWdoIHRoZSBwcm9zIG9mIGEgc2FmZSBhbmQgc29iZXIgbGlmZXN0eWxlIHZlcnN1cyB0aGUgY29ucyBvZiA8Yj5jYW5uYWJpczwvYj4gdXNlLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=Cq4BL2dvdG8_dXJsPUNBRVNkd0hyT3pBVnpqcmYyMTJWdEljUWtreDR2N2NsVEs3QXl3VU9SZ3FpcXVWTlJNOFNua2ROa09IaTNsT3lBenR4dkl0MmNYRnlCQkUtTVU1NEtNc3JkYVpreHU1T2hmVDZLUmJMY1dsLWx3RkxzX2hyVHg3Q3UwM3lfRXRSdjA3cnBYMVZhZFFUOTczMmpyZk5SUXE0VTlGZHpmNndqMEtjEgQaAggAGtUDEgAaACIAKgAyBggBEgJ1czoAQgQIARAASgBaAHIAegCCQLEDCAAQABgAIAAqDwoIY2FubmFiaXMVRkYIQCoLCgRoYXJtFSL_ZkAyrgEvZ290bz91cmw9Q0FFU2R3SHJPekFWempyZjIxMlZ0SWNRa2t4NHY3Y2xUSzdBeXdVT1JncWlxdVZOUk04U25rZE5rT0hpM2xPeUF6dHh2SXQyY1hGeUJCRS1NVTU0S01zcmRhWmt4dTVPaGZUNktSYkxjV2wtbHdGTHNfaHJUeDdDdTAzeV9FdFJ2MDdycFgxVmFkUVQ5NzMyanJmTlJRcTRVOUZkemY2d2owS2M6LUlzIE1hcmlqdWFuYSA8Yj5IYXJtZnVsPC9iPj8gLSBTYWZlIGFuZCBTb2JlckKoAVRoZSBwZXJjZXB0aW9uIG9mIDxiPmhhcm08L2I-IGlzIGxvdywgYW5kIG1vc3QgdGVlbnMgcmVwb3J0IHRoYXQgdGhleSBwcmltYXJpbHkgLi4uIFdlaWdoIHRoZSBwcm9zIG9mIGEgc2FmZSBhbmQgc29iZXIgbGlmZXN0eWxlIHZlcnN1cyB0aGUgY29ucyBvZiA8Yj5jYW5uYWJpczwvYj4gdXNlLiICEAFIAFgAaAA",
+      "source": "Safe and Sober",
+      "read_more_link": "https://www.safeandsober.org/resources/is-marijuana-harmful/#:~:text=The%20perception%20of%20harm%20is,primarily%20use%20marijuana%20for%20enjoyment.&text=Weigh%20the%20pros%20of%20a,the%20cons%20of%20cannabis%20use."
+    },
+    {
+      "position": 7,
+      "title": "The Devastating Effects of Marijuana Abuse",
+      "link": "https://recoverycentersofamerica.com/substance-guide/marijuana/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESegHrOzAVw9wUGWl8gcROloCfKzB4CWm7HspMVfdo1FgalmRP3rmepEW4h9B1jG1lAQo1-3zb84X8LV8KAjrDRYqIjw-Bp7TL4G9WVlFxBaO2EIO48Tb2oUdv7c-UI3eo_F1FOi0eV5W7AsteWnscMnYo44XqejqddWz6&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECEAQAQ&uoh=1",
+      "displayed_link": "https://recoverycentersofamerica.com › substance-guide",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEVHcEwDQl8DQ2ACPl0DQ2ADQ2ACQ2ABQmADQ2ADQ2ADQ2ADQ2ADQ2ADQ2ADQ2ADQ2A5YHb-AAD_AABhd4dJbH_9vcH_yMr_v8D-tLf-lpv_oKVDdId2laKBmqWCmqb_AADm6EzLAAAAIHRSTlMACIseligUTmm2WzijRHnKamoJ_____xj___8a____WQJ0ll0AAADASURBVHgB5MyFEcMwDEBRyTJTmWn_LVuFpMsK_QHTO8O_hEaHZHUMnPVE5InzlkL0S5iQgWEWnOfBUMg8Old4qAIqJAVchLYGvSjAizXAqgAZiAugARRwvOgjACSUG1ILcy1RqFnaIOOgQ2w6YLDldlN76joGdPh1PJ3HLqG7JUq4gOtp7BIycA64KuB2H5sAJgGP5-v1ft6mJlB6WcDlJgmAKuCqGwESFAFn3SWY0ubKhsH-o9t_x8aBDEZMtgEAiEETkcpKkGoAAAAASUVORK5CYII.png",
+      "snippet": "Marijuana, also known as cannabis, is a commonly used drug that can cause both short-term and long-term damage to an individual's physical, mental, and ...",
+      "snippet_highlighted_words": [
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Marijuana, also known as cannabis, is a commonly used drug that can cause both short-term and long-term damage to an individual's physical, mental, and ...",
+          "source_info_link": "https://recoverycentersofamerica.com/substance-guide/marijuana/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAYFBMVEVHcEwDQl8DQ2ACPl0DQ2ADQ2ACQ2ABQmADQ2ADQ2ADQ2ADQ2ADQ2ADQ2ADQ2ADQ2A5YHb-AAD_AABhd4dJbH_9vcH_yMr_v8D-tLf-lpv_oKVDdId2laKBmqWCmqb_AADm6EzLAAAAIHRSTlMACIseligUTmm2WzijRHnKamoJ_____xj___8a____WQJ0ll0AAADASURBVHgB5MyFEcMwDEBRyTJTmWn_LVuFpMsK_QHTO8O_hEaHZHUMnPVE5InzlkL0S5iQgWEWnOfBUMg8Old4qAIqJAVchLYGvSjAizXAqgAZiAugARRwvOgjACSUG1ILcy1RqFnaIOOgQ2w6YLDldlN76joGdPh1PJ3HLqG7JUq4gOtp7BIycA64KuB2H5sAJgGP5-v1ft6mJlB6WcDlJgmAKuCqGwESFAFn3SWY0ubKhsH-o9t_x8aBDEZMtgEAiEETkcpKkGoAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CrIBL2dvdG8_dXJsPUNBRVNlZ0hyT3pBVklIMEJ0X1lnV2oyc2d2MExJdGZWMXRCZ2lpb0NZX2RZNTFiWTJDeDBtU0JmVUVUSHNSVFlWeWxsc1R4anF3b1liSkt1emFEblFaTTBtOVNjZ0FSOGR5VFVjYjBKRUlwRENHZGFTa0FHeEhrLWVRZ0tOWWRDdlRTalNqNF9Ld1dIdzFfNzYtWHhzbFdQSS1QTkVETTZvOU5mOGJGbxIEGgIIABrbAxICCAAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQLUDCAAQABgAIAAqDwoIY2FubmFiaXMVTF3-PioLCgRoYXJtFQAAAAAysgEvZ290bz91cmw9Q0FFU2VnSHJPekFWSUgwQnRfWWdXajJzZ3YwTEl0ZlYxdEJnaWlvQ1lfZFk1MWJZMkN4MG1TQmZVRVRIc1JUWVZ5bGxzVHhqcXdvWWJKS3V6YURuUVpNMG05U2NnQVI4ZHlUVWNiMEpFSXBEQ0dkYVNrQUd4SGstZVFnS05ZZEN2VFNqU2o0X0t3V0h3MV83Ni1YeHNsV1BJLVBORURNNm85TmY4YkZvOipUaGUgRGV2YXN0YXRpbmcgRWZmZWN0cyBvZiBNYXJpanVhbmEgQWJ1c2VCqwFNYXJpanVhbmEsIGFsc28ga25vd24gYXMgPGI-Y2FubmFiaXM8L2I-LCBpcyBhIGNvbW1vbmx5IHVzZWQgZHJ1ZyB0aGF0IGNhbiBjYXVzZSBib3RoIHNob3J0LXRlcm0gYW5kIGxvbmctdGVybSBkYW1hZ2UgdG8gYW4gaW5kaXZpZHVhbCYjMzk7cyBwaHlzaWNhbCwgbWVudGFsLCBhbmQmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CrIBL2dvdG8_dXJsPUNBRVNlZ0hyT3pBVklIMEJ0X1lnV2oyc2d2MExJdGZWMXRCZ2lpb0NZX2RZNTFiWTJDeDBtU0JmVUVUSHNSVFlWeWxsc1R4anF3b1liSkt1emFEblFaTTBtOVNjZ0FSOGR5VFVjYjBKRUlwRENHZGFTa0FHeEhrLWVRZ0tOWWRDdlRTalNqNF9Ld1dIdzFfNzYtWHhzbFdQSS1QTkVETTZvOU5mOGJGbxIEGgIIABrbAxICCAAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQLUDCAAQABgAIAAqDwoIY2FubmFiaXMVTF3-PioLCgRoYXJtFQAAAAAysgEvZ290bz91cmw9Q0FFU2VnSHJPekFWSUgwQnRfWWdXajJzZ3YwTEl0ZlYxdEJnaWlvQ1lfZFk1MWJZMkN4MG1TQmZVRVRIc1JUWVZ5bGxzVHhqcXdvWWJKS3V6YURuUVpNMG05U2NnQVI4ZHlUVWNiMEpFSXBEQ0dkYVNrQUd4SGstZVFnS05ZZEN2VFNqU2o0X0t3V0h3MV83Ni1YeHNsV1BJLVBORURNNm85TmY4YkZvOipUaGUgRGV2YXN0YXRpbmcgRWZmZWN0cyBvZiBNYXJpanVhbmEgQWJ1c2VCqwFNYXJpanVhbmEsIGFsc28ga25vd24gYXMgPGI-Y2FubmFiaXM8L2I-LCBpcyBhIGNvbW1vbmx5IHVzZWQgZHJ1ZyB0aGF0IGNhbiBjYXVzZSBib3RoIHNob3J0LXRlcm0gYW5kIGxvbmctdGVybSBkYW1hZ2UgdG8gYW4gaW5kaXZpZHVhbCYjMzk7cyBwaHlzaWNhbCwgbWVudGFsLCBhbmQmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "Recovery Centers of America",
+      "read_more_link": "https://recoverycentersofamerica.com/substance-guide/marijuana/#:~:text=Marijuana%2C%20also%20known%20as%20cannabis%2C,physical%2C%20mental%2C%20and%20emotional%20well%2Dbeing."
+    },
+    {
+      "position": 8,
+      "title": "Relief or risk? Using cannabis as we age",
+      "link": "https://www.health.harvard.edu/healthy-aging-and-longevity/relief-or-risk-using-cannabis-as-we-age",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESnQEB6zswFeWJboiw6d-mXsOqBG4oQyVy61jdi6IArzJK4RHPi7DZqTbb0r0m7FiTLleO1ojlwVHfvNZzv85zl-Zd4s6ZGDNtevfCCiQepxacOdVT7hfrHD9ogY1gPO5EWDqcHqZwC4nnPAZI8uMEqvQTiwholSHUk_1CIKTDPb9P9uTAl-m7owHxzV4_Z6R20ZkQPs4gAZ_Ctc6yeRkP&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECEkQAQ&uoh=1",
+      "displayed_link": "https://www.health.harvard.edu › relief-or-risk-using-ca...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAA8FBMVEX____X19etoaGwo6Oxo6OolZWYAACKLy-aMzOcPT2NKCiiAACeAACpmJhzRESzurrAxcV6S0uGT0_Hzc3W2dl_XFyFV1eMFRWnp6fAwsKVJSWSkJCbLS13Tk6HWFiQAABxODiUAACUHh6jEhISAAAcAACUgoLFurpqWVk3Gxs3ISEMAACbVlZnAABfAACRSUmlZWV_MTFxExO1AAC-AACnAAB_QkKagYGRZWWtAAC5Cwt0AABYLi54aWmvr6-Ramrm6emIAAD8__9_OjpnUlKBgoJkMDCwAACYhoZkPDyifHyCAAB_Kyt9ICCSdHROTU2vP4NYAAABcUlEQVR4Aa3MhXakMBSA4Qzu0rDdZBh3N0JbLhWkru__NOuLrBxrf4h-5wS9rwbH_0goZq5RoCjJiqrpuqYosvFjlsQCTct2HMc9sm3sfTr-NuNjs8TPjk1os0l825NblPhEq6DreJ7ttm3Pw50j59vsVrDbs1y3L7ltyx0M3Z7V7pZIeHM0nkxn47kgLEaz6WS89AvkVqv1Zrvbr9er3WG9323Xa658NmDDWciaJ6dnEbAwZhCUz_IRGP5paJxjLLHw7CKAiC-Q6hAc8OUFptQY9K4GADotMEkB-jHBWeIbszwOALpJgdkJg6h7TcnlTUxubiVgeYaKuOhudk8nFsXpynsI4M5EZUka9fJDml_jx-6lzIKnBFUSIxbmNEtoMtnewd09qpY9s3jtZxci8mNgLwmqRdNrQp21jz2X9Sn6I_OpeWukL2vzURfRX71GAUD45qev2d-YvYYAoJdW14kRMOm-tHokfbpE_81L0Mf0FX92NnzvR-kXAAAAAElFTkSuQmCC.png",
+      "date": "Dec 1, 2025",
+      "snippet": "This can mean older adults are more vulnerable to perilous side effects such as falls. Cannabis can also interact with prescription and over-the ...",
+      "snippet_highlighted_words": [
+        "Cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "This can mean older adults are more vulnerable to perilous side effects such as falls. Cannabis can also interact with prescription and over-the ...",
+          "source_info_link": "https://www.health.harvard.edu/healthy-aging-and-longevity/relief-or-risk-using-cannabis-as-we-age",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAA8FBMVEX____X19etoaGwo6Oxo6OolZWYAACKLy-aMzOcPT2NKCiiAACeAACpmJhzRESzurrAxcV6S0uGT0_Hzc3W2dl_XFyFV1eMFRWnp6fAwsKVJSWSkJCbLS13Tk6HWFiQAABxODiUAACUHh6jEhISAAAcAACUgoLFurpqWVk3Gxs3ISEMAACbVlZnAABfAACRSUmlZWV_MTFxExO1AAC-AACnAAB_QkKagYGRZWWtAAC5Cwt0AABYLi54aWmvr6-Ramrm6emIAAD8__9_OjpnUlKBgoJkMDCwAACYhoZkPDyifHyCAAB_Kyt9ICCSdHROTU2vP4NYAAABcUlEQVR4Aa3MhXakMBSA4Qzu0rDdZBh3N0JbLhWkru__NOuLrBxrf4h-5wS9rwbH_0goZq5RoCjJiqrpuqYosvFjlsQCTct2HMc9sm3sfTr-NuNjs8TPjk1os0l825NblPhEq6DreJ7ttm3Pw50j59vsVrDbs1y3L7ltyx0M3Z7V7pZIeHM0nkxn47kgLEaz6WS89AvkVqv1Zrvbr9er3WG9323Xa658NmDDWciaJ6dnEbAwZhCUz_IRGP5paJxjLLHw7CKAiC-Q6hAc8OUFptQY9K4GADotMEkB-jHBWeIbszwOALpJgdkJg6h7TcnlTUxubiVgeYaKuOhudk8nFsXpynsI4M5EZUka9fJDml_jx-6lzIKnBFUSIxbmNEtoMtnewd09qpY9s3jtZxci8mNgLwmqRdNrQp21jz2X9Sn6I_OpeWukL2vzURfRX71GAUD45qev2d-YvYYAoJdW14kRMOm-tHokfbpE_81L0Mf0FX92NnzvR-kXAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CuIBL2dvdG8_dXJsPUNBRVNuUUVCNnpzd0ZjWExtdzFMeFNudVJOY0g2VGIySjZOcDNBRVdrQS15Q28wVEFTVW96aUhoT2ZGRFJFSkRndmowazczWklFa0FqaHJaLUpBM1psS3lZcEdwZ2h1Vko5MWxDR0pYcTlIb3lXZWFzMVl4dzU4YzlHU0xzZnY0MkhpN0N6dmFScU9jV2xnWnJ4QWlNakdrSjJ6RHFiMHR5WFlLdDctZUZQR0RXSHFnSjA0elowaVpIUUR3WkxZajZ1MU83UXJfNnN0RG9BWnFhdVNfeWNCeBIEGgIIABqWBBICCAAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQPADCAAQABgAIAAqDwoIY2FubmFiaXMVni9aQCoLCgRoYXJtFQAAAAAy4gEvZ290bz91cmw9Q0FFU25RRUI2enN3RmNYTG13MUx4U251Uk5jSDZUYjJKNk5wM0FFV2tBLXlDbzBUQVNVb3ppSGhPZkZEUkVKRGd2ajBrNzNaSUVrQWpoclotSkEzWmxLeVlwR3BnaHVWSjkxbENHSlhxOUhveVdlYXMxWXh3NThjOUdTTHNmdjQySGk3Q3p2YVJxT2NXbGdacnhBaU1qR2tKMnpEcWIwdHlYWUt0Ny1lRlBHRFdIcWdKMDR6WjBpWkhRRHdaTFlqNnUxTzdRcl82c3REb0FacWF1U195Y0J4OkBSZWxpZWYgb3Igcmlzaz8gVXNpbmcgPGI-Y2FubmFiaXM8L2I-IGFzIHdlIGFnZSAtIEhhcnZhcmQgSGVhbHRoQqABVGhpcyBjYW4gbWVhbiBvbGRlciBhZHVsdHMgYXJlIG1vcmUgdnVsbmVyYWJsZSB0byBwZXJpbG91cyBzaWRlIGVmZmVjdHMgc3VjaCBhcyBmYWxscy4gPGI-Q2FubmFiaXM8L2I-IGNhbiBhbHNvIGludGVyYWN0IHdpdGggcHJlc2NyaXB0aW9uIGFuZCBvdmVyLXRoZSZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CuIBL2dvdG8_dXJsPUNBRVNuUUVCNnpzd0ZjWExtdzFMeFNudVJOY0g2VGIySjZOcDNBRVdrQS15Q28wVEFTVW96aUhoT2ZGRFJFSkRndmowazczWklFa0FqaHJaLUpBM1psS3lZcEdwZ2h1Vko5MWxDR0pYcTlIb3lXZWFzMVl4dzU4YzlHU0xzZnY0MkhpN0N6dmFScU9jV2xnWnJ4QWlNakdrSjJ6RHFiMHR5WFlLdDctZUZQR0RXSHFnSjA0elowaVpIUUR3WkxZajZ1MU83UXJfNnN0RG9BWnFhdVNfeWNCeBIEGgIIABqWBBICCAAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQPADCAAQABgAIAAqDwoIY2FubmFiaXMVni9aQCoLCgRoYXJtFQAAAAAy4gEvZ290bz91cmw9Q0FFU25RRUI2enN3RmNYTG13MUx4U251Uk5jSDZUYjJKNk5wM0FFV2tBLXlDbzBUQVNVb3ppSGhPZkZEUkVKRGd2ajBrNzNaSUVrQWpoclotSkEzWmxLeVlwR3BnaHVWSjkxbENHSlhxOUhveVdlYXMxWXh3NThjOUdTTHNmdjQySGk3Q3p2YVJxT2NXbGdacnhBaU1qR2tKMnpEcWIwdHlYWUt0Ny1lRlBHRFdIcWdKMDR6WjBpWkhRRHdaTFlqNnUxTzdRcl82c3REb0FacWF1U195Y0J4OkBSZWxpZWYgb3Igcmlzaz8gVXNpbmcgPGI-Y2FubmFiaXM8L2I-IGFzIHdlIGFnZSAtIEhhcnZhcmQgSGVhbHRoQqABVGhpcyBjYW4gbWVhbiBvbGRlciBhZHVsdHMgYXJlIG1vcmUgdnVsbmVyYWJsZSB0byBwZXJpbG91cyBzaWRlIGVmZmVjdHMgc3VjaCBhcyBmYWxscy4gPGI-Q2FubmFiaXM8L2I-IGNhbiBhbHNvIGludGVyYWN0IHdpdGggcHJlc2NyaXB0aW9uIGFuZCBvdmVyLXRoZSZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "Harvard Health",
+      "read_more_link": "https://www.health.harvard.edu/healthy-aging-and-longevity/relief-or-risk-using-cannabis-as-we-age#:~:text=This%20can%20mean%20older%20adults,often%20than%20younger%20people%20do."
+    },
+    {
+      "position": 9,
+      "title": "Is cannabis dangerous or beneficial to the human body?",
+      "link": "https://www.quora.com/Is-cannabis-dangerous-or-beneficial-to-the-human-body",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAEShgEB6zswFQIuE27qO4mka3FrNToH9qVFD97j1745O9Z92c8oO4BHFOKo-_OWMARY6AOM6vE02iKeiJrJfbE2kswG9uq4N1oJci0FZbzqf_H1r5noJh7Cp0ZlLLS-3kDzuZwTM4v_4moA-tB2XCoM4eKHWiQG_f58gq_cQi54l1bSgrMWY3BpNQ&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQFnoECEcQAQ&uoh=1",
+      "displayed_link": "70+ answers",
+      "date": "9 years ago",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAMFBMVEVHcEy4Kia5Kie5Kie5Kia5Kie5Kye5Kya5Kia5Kya5Kye5Kye5Kia5Kie5Kye4KybpLYg9AAAAEHRSTlMADBsoY5-1xoDS-f_mdeg3NaD4rAAAALBJREFUeAFjIAIwKhsJIHjMrullIQZwuc7Vu3fvmgGTFwfygPxCqOTs3WCwUwAiuXv3ntirp3fvhkh37d7XyMAg8Xr3CrCxs3cfAdF-u3eCDGdZvbsBxOXYvcsBSInu3iMANvH07kAgpbZ7K8SG6N1JQNJ8914I9_buYjQummI0o9AsgjjjCcwZEEfugToS1QuJKB7cPR_mfaiHP8ADBwyS4EFXDgKN8IA1BgEBAuEPAM0eYq2VgXsvAAAAAElFTkSuQmCC.png",
+      "snippet": "Originally Answered: Is cannabis harmful or helpful? Which outweighs ... Originally Answered: Does weed (cannabis) harm the body? How? ·.",
+      "snippet_highlighted_words": [
+        "cannabis harmful",
+        "cannabis",
+        "harm"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Originally Answered: Is cannabis harmful or helpful? Which outweighs ... Originally Answered: Does weed (cannabis) harm the body? How? ·.",
+          "source_info_link": "https://www.quora.com/Is-cannabis-dangerous-or-beneficial-to-the-human-body",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAMFBMVEVHcEy4Kia5Kie5Kie5Kia5Kie5Kye5Kya5Kia5Kya5Kye5Kye5Kia5Kie5Kye4KybpLYg9AAAAEHRSTlMADBsoY5-1xoDS-f_mdeg3NaD4rAAAALBJREFUeAFjIAIwKhsJIHjMrullIQZwuc7Vu3fvmgGTFwfygPxCqOTs3WCwUwAiuXv3ntirp3fvhkh37d7XyMAg8Xr3CrCxs3cfAdF-u3eCDGdZvbsBxOXYvcsBSInu3iMANvH07kAgpbZ7K8SG6N1JQNJ8914I9_buYjQummI0o9AsgjjjCcwZEEfugToS1QuJKB7cPR_mfaiHP8ADBwyS4EFXDgKN8IA1BgEBAuEPAM0eYq2VgXsvAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CsQBL2dvdG8_dXJsPUNBRVNoZ0VCNnpzd0ZWeHNTMms0ZnN0MkN4MDdpU1p6bEQ3R0g2T2Q4VmFIRUNlUWQtRkxXRDRnZnpnN2JmVC1yb2lfRG5UdGJ3dWJZUEJFUmVSNEFpelp3Q0ZZamJmdEphcVZXQWdqTWhNd3diUlQwMlRDSnhzMlRzdXZvTk10dnJNQTBLYlZfMWpTYTY0bkoxcFZENktLanFKanU3ZXB6Yk1xWkxkUUxfRkx0ZnFwbDV6cTRUeDY1QRIEGgIIABr6AxIAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkDWAwgAEAAYACAAKg8KCGNhbm5hYmlzFW4niEAqCwoEaGFybRXvWN0_MsQBL2dvdG8_dXJsPUNBRVNoZ0VCNnpzd0ZWeHNTMms0ZnN0MkN4MDdpU1p6bEQ3R0g2T2Q4VmFIRUNlUWQtRkxXRDRnZnpnN2JmVC1yb2lfRG5UdGJ3dWJZUEJFUmVSNEFpelp3Q0ZZamJmdEphcVZXQWdqTWhNd3diUlQwMlRDSnhzMlRzdXZvTk10dnJNQTBLYlZfMWpTYTY0bkoxcFZENktLanFKanU3ZXB6Yk1xWkxkUUxfRkx0ZnFwbDV6cTRUeDY1QTpFSXMgPGI-Y2FubmFiaXM8L2I-IGRhbmdlcm91cyBvciBiZW5lZmljaWFsIHRvIHRoZSBodW1hbiBib2R5PyAtIFF1b3JhQp8BT3JpZ2luYWxseSBBbnN3ZXJlZDogSXMgPGI-Y2FubmFiaXMgaGFybWZ1bDwvYj4gb3IgaGVscGZ1bD8gV2hpY2ggb3V0d2VpZ2hzIC4uLiBPcmlnaW5hbGx5IEFuc3dlcmVkOiBEb2VzIHdlZWQgKDxiPmNhbm5hYmlzPC9iPikgPGI-aGFybTwvYj4gdGhlIGJvZHk_IEhvdz8gwrcuIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CsQBL2dvdG8_dXJsPUNBRVNoZ0VCNnpzd0ZWeHNTMms0ZnN0MkN4MDdpU1p6bEQ3R0g2T2Q4VmFIRUNlUWQtRkxXRDRnZnpnN2JmVC1yb2lfRG5UdGJ3dWJZUEJFUmVSNEFpelp3Q0ZZamJmdEphcVZXQWdqTWhNd3diUlQwMlRDSnhzMlRzdXZvTk10dnJNQTBLYlZfMWpTYTY0bkoxcFZENktLanFKanU3ZXB6Yk1xWkxkUUxfRkx0ZnFwbDV6cTRUeDY1QRIEGgIIABr6AxIAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkDWAwgAEAAYACAAKg8KCGNhbm5hYmlzFW4niEAqCwoEaGFybRXvWN0_MsQBL2dvdG8_dXJsPUNBRVNoZ0VCNnpzd0ZWeHNTMms0ZnN0MkN4MDdpU1p6bEQ3R0g2T2Q4VmFIRUNlUWQtRkxXRDRnZnpnN2JmVC1yb2lfRG5UdGJ3dWJZUEJFUmVSNEFpelp3Q0ZZamJmdEphcVZXQWdqTWhNd3diUlQwMlRDSnhzMlRzdXZvTk10dnJNQTBLYlZfMWpTYTY0bkoxcFZENktLanFKanU3ZXB6Yk1xWkxkUUxfRkx0ZnFwbDV6cTRUeDY1QTpFSXMgPGI-Y2FubmFiaXM8L2I-IGRhbmdlcm91cyBvciBiZW5lZmljaWFsIHRvIHRoZSBodW1hbiBib2R5PyAtIFF1b3JhQp8BT3JpZ2luYWxseSBBbnN3ZXJlZDogSXMgPGI-Y2FubmFiaXMgaGFybWZ1bDwvYj4gb3IgaGVscGZ1bD8gV2hpY2ggb3V0d2VpZ2hzIC4uLiBPcmlnaW5hbGx5IEFuc3dlcmVkOiBEb2VzIHdlZWQgKDxiPmNhbm5hYmlzPC9iPikgPGI-aGFybTwvYj4gdGhlIGJvZHk_IEhvdz8gwrcuIgIQAUgAWABoAA",
+      "source": "Quora",
+      "read_more_link": "https://www.quora.com/Is-cannabis-dangerous-or-beneficial-to-the-human-body#:~:text=Originally%20Answered%3A%20Is%20cannabis%20harmful,or%20helpful%3F%20Which%20outweighs%20which%3F&text=Originally%20Answered%3A%20Does%20weed%20(cannabis),harm%20the%20body%3F%20How%3F"
+    }
+  ],
+  "related_searches": [
+    {
+      "block_position": 1,
+      "query": "5 ways daily cannabis use can affect your body and mind",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=5+ways+daily+cannabis+use+can+affect+your+body+and+mind&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAg7EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=5+ways+daily+cannabis+use+can+affect+your+body+and+mind&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Does cannabis have medical uses",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=Does+cannabis+have+medical+uses&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAhFEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Does+cannabis+have+medical+uses&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Social effects of cannabis",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=Social+effects+of+cannabis&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAg-EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Social+effects+of+cannabis&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Cannabis-induced mood disorder",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=Cannabis-induced+mood+disorder&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAhEEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis-induced+mood+disorder&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Is getting high every night bad",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=Is+getting+high+every+night+bad&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAg8EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Is+getting+high+every+night+bad&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Getting high every day Reddit",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=Getting+high+every+day+Reddit&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAg5EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Getting+high+every+day+Reddit&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Why do I not feel high after hitting a cart",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=Why+do+I+not+feel+high+after+hitting+a+cart&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAhBEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Why+do+I+not+feel+high+after+hitting+a+cart&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Cannabis use disorder",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&q=Cannabis+use+disorder&sa=X&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ1QJ6BAg9EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis+use+disorder&safe=off"
+    }
+  ],
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&ei=swTiaqDFBsf9ptQPvorMyAs&start=10&sa=N&sstk=AS6-VmJLr49wVp0CRif5rez7_s0B-0SXRYv5T00YQxLugAyAB7Gq927YVCMkKHTs6Og56eZnoLAg8myWoq7k1FnzKgS-ei5FNjOqyQ&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ8NMDegQIMRAO",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&ei=swTiaqDFBsf9ptQPvorMyAs&start=10&sa=N&sstk=AS6-VmJLr49wVp0CRif5rez7_s0B-0SXRYv5T00YQxLugAyAB7Gq927YVCMkKHTs6Og56eZnoLAg8myWoq7k1FnzKgS-ei5FNjOqyQ&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ8tMDegQIMRAE",
+      "3": "https://www.google.com/search?q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&ei=swTiaqDFBsf9ptQPvorMyAs&start=20&sa=N&sstk=AS6-VmJLr49wVp0CRif5rez7_s0B-0SXRYv5T00YQxLugAyAB7Gq927YVCMkKHTs6Og56eZnoLAg8myWoq7k1FnzKgS-ei5FNjOqyQ&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ8tMDegQIMRAG",
+      "4": "https://www.google.com/search?q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&ei=swTiaqDFBsf9ptQPvorMyAs&start=30&sa=N&sstk=AS6-VmJLr49wVp0CRif5rez7_s0B-0SXRYv5T00YQxLugAyAB7Gq927YVCMkKHTs6Og56eZnoLAg8myWoq7k1FnzKgS-ei5FNjOqyQ&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ8tMDegQIMRAI",
+      "5": "https://www.google.com/search?q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&ei=swTiaqDFBsf9ptQPvorMyAs&start=40&sa=N&sstk=AS6-VmJLr49wVp0CRif5rez7_s0B-0SXRYv5T00YQxLugAyAB7Gq927YVCMkKHTs6Og56eZnoLAg8myWoq7k1FnzKgS-ei5FNjOqyQ&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ8tMDegQIMRAK",
+      "6": "https://www.google.com/search?q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDiOUHNe_AXAIjTnrjovTBo__oe0Fw:1793197235114&ei=swTiaqDFBsf9ptQPvorMyAs&start=50&sa=N&sstk=AS6-VmJLr49wVp0CRif5rez7_s0B-0SXRYv5T00YQxLugAyAB7Gq927YVCMkKHTs6Og56eZnoLAg8myWoq7k1FnzKgS-ei5FNjOqyQ&ved=2ahUKEwjg6teh9NyXAxXHvokEHT4FE7kQ8tMDegQIMRAM"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&start=30",
+      "5": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&start=40",
+      "6": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22+%22harm%22+OR+%22harmful%22&safe=off&start=50"
+    }
+  }
+}
