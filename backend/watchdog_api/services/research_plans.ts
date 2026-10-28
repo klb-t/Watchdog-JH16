@@ -16,7 +16,8 @@ export class ResearchPlans {
   constructor(readonly repo: SettingsRepository, private readonly automation: AutomationRepository,
     private readonly assistantProfile: AssistantProfile, private readonly automationProfile: AutomationProfile,
     private readonly orchestrator: RunOrchestrator, private readonly methods: MethodSpecRepository, private readonly vault: UserVault,
-    private readonly comparedRun: (owner: string) => ComparedRun | null = () => null) {}
+    private readonly comparedRun: (owner: string) => ComparedRun | null = () => null,
+    private readonly protocolFor: (owner: string, id: string) => { id: string; content_hash: string; target_id: string; name: string } | null = () => null) {}
   prepare(owner: string, raw: unknown) {
     const input = ResearchPlanInputSchema.parse(raw), settings = this.repo.get(owner, this.assistantProfile.defaults);
     if (settings.hash !== input.settingsHash) throw new AutomationError('Save and reload the current settings before preparing the plan');
@@ -30,7 +31,15 @@ export class ResearchPlans {
     const baseline = input.baseline === 'none' ? null : { mode: input.baseline, preset, presetHash: canonicalHash(preset), method, methodId: specId, methodHash: specHash,
       attemptMeaning: input.baseline === 'fixture' ? 'pipeline_self_check: published 2014 counts; not an independent replication' : 'temporal_reassessment: new counts cannot reproduce the historic data collection',
       extension: extension ? { preset: extension, presetHash: canonicalHash(extension) } : null,
-      plannedQueries: preset.substances.length * 2 * (1 + (extension?.variants.length ?? 0)), retryPolicy: 'Finite provider retries also consume the daily SERP request limit' };
+      plannedQueries: preset.substances.length * 2 * (1 + (extension?.variants.length ?? 0)), retryPolicy: 'Finite provider retries also consume the daily SERP request limit',
+      dataRole: (() => {
+        if (!input.confirmationProtocolId) return { role: 'exploratory' as const };
+        const protocol = this.protocolFor(owner, input.confirmationProtocolId);
+        if (!protocol || protocol.target_id !== 'jh2016') throw new AutomationError('Choose one of your frozen JH16 protocols');
+        if (input.baseline === 'fixture') throw new AutomationError('The paper\'s own counts cannot be confirmation data; choose a new measurement');
+        return { role: 'confirmation' as const, protocolId: protocol.id, protocolHash: protocol.content_hash, protocolName: protocol.name,
+          scope: 'Danymi potwierdzającymi jest tylko przebieg metodą wierną; warianty rozszerzenia pozostają eksploracyjne.' };
+      })() };
     // The calibration runs are built now, so the reviewed plan body names every
     // request, region and compared value; launch submits exactly these.
     const regions = [...new Set(input.trendsRegions ?? [])].sort();
@@ -80,7 +89,9 @@ export class ResearchPlans {
         const common = { source_id: live ? 'serp_result_count' : 'fixture_jh2016', personal_credentials: live,
           language: p.language, query_expansion_mode: p.query_expansion_mode,
           method_spec_id: baseline.methodId, method_spec_hash: baseline.methodHash, plan: planItems, research_plan_id: id, research_plan_hash: expectedHash };
-        runId = this.orchestrator.submitJob('PIPELINE', { ...common, source_params: live ? {} : { fixture_set: 'faithful_2014-06-20' },
+        const role = baseline.dataRole?.role === 'confirmation'
+          ? { data_role: 'confirmation', protocol_id: baseline.dataRole.protocolId, protocol_hash: baseline.dataRole.protocolHash } : { data_role: 'exploratory' };
+        runId = this.orchestrator.submitJob('PIPELINE', { ...common, ...role, source_params: live ? {} : { fixture_set: 'faithful_2014-06-20' },
           preset_id: p.preset_id, preset_version: p.preset_version, attempt_meaning: baseline.attemptMeaning }, owner);
         const ext = baseline.extension?.preset;
         if (ext) for (const v of ext.variants) extensionRunIds.push(this.orchestrator.submitJob('PIPELINE', { ...common,

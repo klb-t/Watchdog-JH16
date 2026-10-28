@@ -196,5 +196,22 @@
         }
       ]
     }
+  ],
+  "endpoints": [
+    {
+      "claim_key": "harm_index_vs_reference_pearson",
+      "hypothesis": "H-harm",
+      "p_value": "hi_vs_reference.pearson",
+      "label": "Pearson Hi vs Nutt 2010"
+    },
+    {
+      "claim_key": "popularity_ranking_stability",
+      "hypothesis": "H-pop",
+      "p_value": "pi_vs_published",
+      "label": "Spearman Pi vs Tabela 1"
+    }
+  ],
+  "confirmation_sources": [
+    "serp_result_count"
   ]
 }

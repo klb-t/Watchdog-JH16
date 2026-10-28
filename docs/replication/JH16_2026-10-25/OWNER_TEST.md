@@ -8,9 +8,9 @@ Wyniki i ocena, które ten test ma sprawdzić: [REPORT.md](REPORT.md).
 |---|---|
 | Adres | https://watchdog.34-158-117-249.sslip.io |
 | Logowanie | użytkownik `marcin`, hasło Caddy: na VM `sudo bash ~/chatadhd/tools/gcp/aliases.sh --show-pass` |
-| Wersja kodu | `84a9e71` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
-| Obraz | `watchdog:84a9e71…` na VM; poprzednie (`10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
-| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) i `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`), z kopiami `release.env` |
+| Wersja kodu | `6b7e63e` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
+| Obraz | `watchdog:6b7e63e…` na VM; poprzednie (`84a9e71`, `10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
+| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`) i `…before-6b7e63e…-20261026T173110Z.tar.gz` (sha256 `a3c6407f…1182`), z kopiami `release.env` |
 | Klucz SerpApi | zapisany w Twoim zaszyfrowanym sejfie w WatchDogu (Ustawienia → krok 1 pokazuje „serpapi: zapisany”) |
 
 Każdy nowy pomiar (32 zapytania) zużywa kredyty SerpApi z Twojego konta: darmowy limit
@@ -70,7 +70,16 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
 5. **Projekt pracy:** praca złożona z zapisanych wyników (streszczenie, hipotezy, metody,
    odstępstwa, dane i pochodzenie, wyniki, porównanie, kalibracja, rozbieżności, ograniczenia,
    wnioski, aneks odtwarzalności). Pod każdym blokiem jest źródło z linkiem do przebiegu.
-   „Pobierz Markdown” / „Pobierz HTML”.
+   „Pobierz Markdown” / „Pobierz HTML”. Redakcja językowa przez model (Vertex) jest widoczna, ale
+   wyłączona w konfiguracji, dopóki nie sprawdzimy prawdziwego wywołania na tej instalacji.
+
+**A2. Protokół potwierdzający (E5.7b, bez kosztu)**
+- Replikacje → JH16 → **Protokół**: wybierz rodzinę porównań, punkt główny, korektę (Holm) i alfa,
+  wpisz uzasadnienie → „Zamroź protokół”. Zamrożenia nie da się zmienić ani usunąć.
+- W kreatorze (punkt 6) w „Rola nowych danych JH16” wybierz ten protokół: nowy pomiar metodą wierną
+  będzie danymi potwierdzającymi. Zakładka „Protokół” pokaże p surowe i skorygowane oraz decyzję
+  względem alfa; „Przebiegi” oznaczą przebieg jako „potwierdzające”, a projekt pracy dostanie sekcję
+  „Protokół potwierdzający”. Wcześniejsze przebiegi zostają eksploracyjne (z podanym powodem).
 
 **B. Nowe pomiary (kredyty SerpApi)**
 6. Ustawienia → kreator. Krok 1: „serpapi: zapisany” i, w trybie „Standardowy”, dzienny limit

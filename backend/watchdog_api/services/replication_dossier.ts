@@ -38,6 +38,8 @@ export interface RunSummary {
   run_id: string; created_at: string; status: string; git_commit: string | null; provenance: Provenance; provenance_label: string;
   variant: string | null; source_run_id: string | null; acquired_utc: [string, string] | null; fetches: number;
   manifest_sha256: string | null; effective_config_hash: string | null; preset: string | null;
+  /** What the run's own hashed configuration declares about its data role (E5.7b). */
+  role_config: { data_role: string | null; protocol_id: string | null; protocol_hash: string | null; source_id: string | null };
   evaluation: any | null; calibration: Record<string, { spearman: number | null; pearson_log10: number | null; n: number | null; excluded: string[] }> | null;
 }
 
@@ -80,7 +82,9 @@ export async function collectRuns(db: Db, store: ObjectStore, owner: string, dos
       variant: config.variant_id ?? config.region_id ?? sourceCfg?.variant_id ?? sourceCfg?.region_id ?? null, source_run_id: config.source_run_id ?? null,
       acquired_utc: times.length ? [times[0], times[times.length - 1]] : null, fetches: events.length,
       manifest_sha256: artifacts.getManifest(run.id)?.sha256 ?? null, effective_config_hash: run.effective_config_hash ?? null,
-      preset: config.preset_id ?? sourceCfg?.preset_id ?? null, evaluation, calibration });
+      preset: config.preset_id ?? sourceCfg?.preset_id ?? null,
+      role_config: { data_role: config.data_role ?? null, protocol_id: config.protocol_id ?? null, protocol_hash: config.protocol_hash ?? null, source_id: config.source_id ?? null },
+      evaluation, calibration });
   }
   return out.sort((a, b) => b.created_at.localeCompare(a.created_at) || a.run_id.localeCompare(b.run_id));
 }
@@ -113,7 +117,7 @@ export function primaryRuns(runs: readonly RunSummary[]): RunSummary[] {
   return out;
 }
 
-export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[], published: any, codeVersion: string | null, now = new Date().toISOString()): Manuscript {
+export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[], published: any, codeVersion: string | null, now = new Date().toISOString(), protocols: readonly any[] = []): Manuscript {
   const { target, dossier } = t, cite = target.citation;
   const primary = primaryRuns(runs), jh = primary.filter(r => r.evaluation), cal = primary.filter(r => r.calibration);
   const hist = jh.find(r => r.provenance === 'recomputation_of_published_data'), fresh = jh.find(r => r.provenance === 'new_fetch');
@@ -159,6 +163,18 @@ export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[
     sec('calibration', 'Kalibracja eksploracyjna (Google Trends)', [
       { type: 'p', text: 'Google Trends to względne zainteresowanie wyszukiwaniem, nie liczba wyników; porównywane są tylko rangi, bez werdyktów. Próbka Trends zmienia się między pobraniami.' },
       { type: 'table', columns: ['Region (przebieg)', ...ids], rows: cal.map(r => [`${r.variant ?? '—'} (${short(r.run_id)})`, ...ids.map(id => r.calibration![id].spearman === null ? 'nieobliczalne' : n3(r.calibration![id].spearman))]), sources: cal.map(r => ({ run_id: r.run_id })) }]);
+  }
+  if (protocols.length) {
+    const blocks: Block[] = [];
+    for (const p of protocols) {
+      blocks.push({ type: 'p', text: `Protokół „${p.name}” zamrożony ${p.frozen_at.slice(0, 16).replace('T', ' ')} UTC (sha256 ${p.content_hash.slice(0, 16)}): punkty główne ${p.body.primary.join(', ')}; rodzina porównań ${p.body.family.map((f: any) => f.claim_key).join(', ')}; korekta ${p.body.multiplicity}, alfa ${String(p.body.alpha).replace('.', ',')}. Uzasadnienie: ${p.body.rationale}`, sources: [{ config: `protocol ${p.id}` }] });
+      const conf = p.evaluation?.confirmation_runs ?? [];
+      if (!conf.length) blocks.push({ type: 'p', text: `Brak przebiegów potwierdzających po zamrożeniu tego protokołu; przebiegi eksploracyjne: ${p.evaluation?.exploratory_runs ?? 0}. Wyniki potwierdzające nie są dostępne.` });
+      else blocks.push({ type: 'table', columns: ['Przebieg', 'Porównanie', 'Główne', 'Werdykt', 'p', 'p skorygowane', `< alfa`],
+        rows: conf.flatMap((r: any) => r.endpoints.map((e: any) => [short(r.run_id), e.label, e.primary ? 'tak' : 'nie', e.verdict, p3(e.p_raw), p3(e.p_adjusted), e.significant === null ? '—' : e.significant ? 'tak' : 'nie'])),
+        sources: conf.map((r: any) => ({ run_id: r.run_id })) });
+    }
+    sec('protocol', 'Protokół potwierdzający i rodzina porównań', blocks);
   }
   sec('discrepancies', 'Rozbieżności i ich przyczyny', [{ type: 'table', columns: ['Możliwa przyczyna', 'Test', 'Status', 'Dowód'],
     rows: (dossier?.diagnosis ?? []).map((d: any) => [d.cause, d.test, STATUS[d.status] ?? d.status, (d.evidence ?? []).map((e: any) => e.path ?? e.label).join('; ') || '—']), sources: [{ config: 'dossier' }] }]);

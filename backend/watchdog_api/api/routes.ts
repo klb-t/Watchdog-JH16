@@ -30,6 +30,8 @@ import { listReplicationTargets, collectRuns, buildManuscript, manuscriptMarkdow
 import { buildInfo } from '../utils/build_info';
 import { editManuscript, applyEdition, readEditingSettings } from '../services/manuscript_editing';
 import { ManuscriptEditionRepository } from '../db/repositories/manuscript_editions';
+import { evaluateProtocol, dataRole, readProtocolOptions, ProtocolError } from '../services/study_protocols';
+import { StudyProtocolRepository } from '../db/repositories/study_protocols';
 
 export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService) {
 const apiRouter = Router();
@@ -42,6 +44,7 @@ const artRepo = new ArtifactRepository(db);
 const acqRepo = new AcquisitionRepository(db, store);
 const specRepo = new MethodSpecRepository(db);
 const editions = new ManuscriptEditionRepository(db);
+const protocols = new StudyProtocolRepository(db);
 
 // All descendants, including exports and provider narratives, share the owner gate.
 apiRouter.use('/runs/:id', (req, res, next) => {
@@ -136,7 +139,9 @@ async function replicationContext(id: string, owner: string) {
   if (!t || !t.dossier) return null;
   const runs = await collectRuns(db, store, owner, t.dossier);
   const published = t.interpretation?.published_values_ref ? readConfig(t.interpretation.published_values_ref) : null;
-  return { t, runs, published };
+  const frozen = protocols.list(owner, id);
+  const protocolResults = frozen.map(p => ({ ...p, evaluation: evaluateProtocol(p, runs) }));
+  return { t, runs: runs.map(r => ({ ...r, data_role: dataRole(r, frozen) })), published, protocols: protocolResults };
 }
 
 apiRouter.get('/replications/:id', requireCapability('run.view'), async (req, res, next) => {
@@ -145,7 +150,7 @@ apiRouter.get('/replications/:id', requireCapability('run.view'), async (req, re
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
     res.setHeader('Cache-Control', 'no-store');
     res.json({ target: c.t.target, interpretation: c.t.interpretation, dossier: c.t.dossier, hashes: c.t.hashes, runs: c.runs,
-      primary_run_ids: primaryRuns(c.runs).map(r => r.run_id), published: c.published });
+      primary_run_ids: primaryRuns(c.runs).map(r => r.run_id), published: c.published, protocols: c.protocols, protocol_options: readProtocolOptions() });
   } catch (e) { next(e); }
 });
 
@@ -153,7 +158,7 @@ apiRouter.get('/replications/:id/manuscript', requireCapability('run.view'), asy
   try {
     const c = await replicationContext(req.params.id, req.principal!.id);
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
-    const base = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit);
+    const base = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit, undefined, c.protocols);
     // An edition applies only to the exact results it was made from.
     const edition = req.query.edition ? editions.get(req.principal!.id, String(req.query.edition)) : null;
     if (req.query.edition && !edition) return res.status(404).json({ error: 'NOT_FOUND' });
@@ -170,12 +175,24 @@ apiRouter.get('/replications/:id/manuscript', requireCapability('run.view'), asy
   } catch (e) { next(e); }
 });
 
+apiRouter.post('/replications/:id/protocols', requireCapability('method.approve'), sameOriginMutation, (req, res, next) => {
+  try {
+    const body = z.object({ consent: z.literal(true), name: z.string().trim().min(1).max(160), primary: z.array(z.string()).min(1).max(50), family: z.array(z.string()).min(1).max(50),
+      multiplicity: z.string(), alpha: z.number(), rationale: z.string().trim().min(1).max(4000), expectedDossierHash: z.string().regex(/^[a-f0-9]{64}$/) }).strict().parse(req.body);
+    const t = listReplicationTargets().find(x => x.target.target_id === req.params.id);
+    if (!t) return res.status(404).json({ error: 'NOT_FOUND' });
+    const p = protocols.freeze(req.principal!.id, t, body);
+    audit.append(req.principal!.id, 'protocol.freeze', 'replication', req.params.id, tracer.getContext()?.request_id ?? 'protocol-freeze', { protocol: p.id, hash: p.content_hash });
+    res.status(201).json({ protocol: p });
+  } catch (e) { if (e instanceof ProtocolError) return res.status(409).json({ error: 'protocol_refused', message: e.message }); next(e); }
+});
+
 apiRouter.post('/replications/:id/manuscript/edit', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
   try {
     z.object({ consent: z.literal(true) }).strict().parse(req.body);
     const c = await replicationContext(req.params.id, req.principal!.id);
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
-    const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit);
+    const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit, undefined, c.protocols);
     const edition = await editManuscript(m, { spentTodayUsd: editions.spentToday(req.principal!.id) });
     editions.save(req.principal!.id, edition);
     audit.append(req.principal!.id, 'manuscript.edit', 'replication', req.params.id, tracer.getContext()?.request_id ?? 'manuscript-edit',
