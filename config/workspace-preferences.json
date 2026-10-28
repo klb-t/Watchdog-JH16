@@ -66,6 +66,10 @@
     "/replications": {
       "en": "Replications",
       "advanced": false
+    },
+    "/requests": {
+      "en": "Request from text",
+      "advanced": false
     }
   },
   "presets": {
@@ -131,6 +135,7 @@
             "/research",
             "/study",
             "/method",
+            "/requests",
             "/replications",
             "/runs"
           ]
@@ -183,6 +188,7 @@
             "/workbench",
             "/analyzers",
             "/method",
+            "/requests",
             "/replications",
             "/runs"
           ]

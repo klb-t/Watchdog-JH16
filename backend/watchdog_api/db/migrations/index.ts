@@ -1,6 +1,7 @@
 import { MIGRATION_023_ACCOUNTS } from './023_accounts';
 import { MIGRATION_024_MANUSCRIPT_EDITIONS } from './024_manuscript_editions';
 import { MIGRATION_025_STUDY_PROTOCOLS } from './025_study_protocols';
+import { MIGRATION_026_TEXT_REQUESTS } from './026_text_requests';
 import type { Database } from 'better-sqlite3';
 import { MIGRATION_001_INITIAL_SCHEMA } from './001_initial_schema';
 import { MIGRATION_002_ASSERTIONS } from './002_assertions';
@@ -60,7 +61,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '022_paper_comparisons', sql: MIGRATION_022_PAPER_COMPARISONS },
   { id: '023_accounts', sql: MIGRATION_023_ACCOUNTS },
   { id: '024_manuscript_editions', sql: MIGRATION_024_MANUSCRIPT_EDITIONS },
-  { id: '025_study_protocols', sql: MIGRATION_025_STUDY_PROTOCOLS }
+  { id: '025_study_protocols', sql: MIGRATION_025_STUDY_PROTOCOLS },
+  { id: '026_text_requests', sql: MIGRATION_026_TEXT_REQUESTS }
 ];
 
 const MIGRATIONS_TABLE = `

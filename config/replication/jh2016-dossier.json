@@ -213,5 +213,115 @@
   ],
   "confirmation_sources": [
     "serp_result_count"
-  ]
+  ],
+  "request_actions": {
+    "literal": [
+      {
+        "id": "jh16_recompute",
+        "intents": [
+          "replicate"
+        ],
+        "label": "Przeliczenie danych z publikacji (sprawdzenie obliczeń, nie nowy pomiar)",
+        "launch": {
+          "kind": "jh16_plan",
+          "baseline": "fixture"
+        }
+      },
+      {
+        "id": "jh16_new_period",
+        "intents": [
+          "replicate",
+          "period_update"
+        ],
+        "label": "Nowy pomiar metodą wierną: kolejny okres (dziś), te same 32 zapytania",
+        "launch": {
+          "kind": "jh16_plan",
+          "baseline": "live_serp"
+        }
+      }
+    ],
+    "proposals": [
+      {
+        "id": "jh16_trends",
+        "intents": [
+          "period_update",
+          "regional"
+        ],
+        "label": "Google Trends: zainteresowanie od 2004 r. i kalibracja rang w regionach świat, US, GB, PL (eksploracyjne)",
+        "launch": {
+          "kind": "jh16_plan",
+          "baseline": "none",
+          "trendsRegions": [
+            "GB",
+            "PL",
+            "US",
+            "WORLD"
+          ]
+        }
+      },
+      {
+        "id": "jh16_countries_gl",
+        "intents": [
+          "regional"
+        ],
+        "label": "Kraje przez ustawienie Google gl=us i gl=pl oraz 2 powtórzenia (preset rozszerzenia, nie replikacja)",
+        "launch": {
+          "kind": "jh16_plan",
+          "baseline": "live_serp_extension"
+        }
+      },
+      {
+        "id": "jh16_language_areas",
+        "intents": [
+          "regional"
+        ],
+        "label": "Obszary językowe: nazwy substancji w innych językach",
+        "launch": null,
+        "unavailable": "wymaga przetłumaczonych i przejrzanych nazw 16 substancji dla wybranych języków (zapytanie „harm” też trzeba przetłumaczyć); podaj języki w pytaniu poniżej"
+      },
+      {
+        "id": "jh16_repeat",
+        "intents": [
+          "period_update"
+        ],
+        "label": "Powtarzanie nowego pomiaru co miesiąc",
+        "launch": null,
+        "unavailable": "harmonogram pomiarów JH16 nie jest jeszcze zaimplementowany; kolejny okres uruchomisz ponownie ręcznie"
+      }
+    ],
+    "questions": [
+      {
+        "id": "substances",
+        "intents": [
+          "replicate"
+        ],
+        "to": "użytkownik",
+        "text": "Zostać przy 16 substancjach z pracy, czy dodać inne (np. nowe substancje psychoaktywne)?"
+      },
+      {
+        "id": "countries",
+        "intents": [
+          "regional"
+        ],
+        "to": "użytkownik",
+        "text": "Które kraje lub obszary językowe są najważniejsze (np. Polska, Niemcy, świat anglojęzyczny)?"
+      },
+      {
+        "id": "periods",
+        "intents": [
+          "period_update"
+        ],
+        "to": "użytkownik",
+        "text": "Jakie okresy porównać: kolejne punkty pomiaru (np. co miesiąc od dziś), czy szereg wstecz od 2004 r. z Google Trends?"
+      },
+      {
+        "id": "original_data",
+        "intents": [
+          "replicate"
+        ],
+        "to": "autor",
+        "text": "Czy zachowały się surowe liczby wyników z 20.06.2014 (lub zrzuty ekranu)? Pozwoliłyby oddzielić zmianę sposobu szacowania przez Google od zmiany zjawiska."
+      }
+    ]
+  }
 }

@@ -27,6 +27,7 @@
       { "label": "Projekty badawcze", "href": "/projects", "anyCapability": ["method.propose"] }
     ] },
     { "id": "papers", "label": "Prace i replikacje", "icon": "paper", "views": [
+      { "label": "Zlecenie z tekstu", "href": "/requests", "anyCapability": ["run.create"] },
       { "label": "Tekst, metodologia i ekstrakcja", "href": "/research", "anyCapability": ["method.propose"] },
       { "label": "Nowe badanie", "href": "/study", "anyCapability": ["run.create"] },
       { "label": "Przegląd metody", "href": "/method", "anyCapability": ["method.propose"] },

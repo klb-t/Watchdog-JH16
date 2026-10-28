@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "config_id": "text-requests",
+  "version": "2026-10-28-v1",
+  "_note": "A pasted text from a researcher becomes a request: identifiers, the work they point to, what the text asks for, the literal part started at once and proposals that wait for acceptance. Rules are deterministic and versioned; each recognised intent quotes the fragment that triggered it.",
+  "identifier_patterns": {
+    "doi": "\\b10\\.\\d{4,9}/[^\\s\"<>,;]+[^\\s\"<>,;.)]",
+    "url": "https?://[^\\s<>\"]+[^\\s<>\".,;)]"
+  },
+  "url_resolvers": [
+    {
+      "id": "jmir",
+      "host_suffix": "jmir.org",
+      "path_pattern": "^/(\\d{4})/(\\d+)/e(\\d+)/?$",
+      "issn": "1438-8871",
+      "year_group": 1,
+      "_how": "Crossref works filtered by ISSN and year; the work whose registered landing page equals the pasted URL (scheme and trailing slash ignored)."
+    }
+  ],
+  "crossref_endpoint": "https://api.crossref.org/works",
+  "fetch": {
+    "timeout_ms": 20000,
+    "max_bytes": 5000000,
+    "user_agent": "WatchDog research platform (https://github.com/klb-t/Watchdog-JH16)",
+    "_policy": "The publisher page is requested once, honestly identified. A bot-protection answer is recorded as such and never worked around."
+  },
+  "intents": [
+    {
+      "id": "replicate",
+      "label": "Powtórzenie metody wskazanej pracy",
+      "patterns": [
+        "zacz\\w*\\s+(można\\s+)?od",
+        "jak w (artykule|pracy)",
+        "replik",
+        "powt[óo]rz",
+        "replicat",
+        "as in the (paper|article)"
+      ]
+    },
+    {
+      "id": "period_update",
+      "label": "Aktualizacja na kolejne okresy",
+      "patterns": [
+        "kolejn\\w+ okres",
+        "update",
+        "aktualiz",
+        "rozw[oó]j\\w* sytuacji",
+        "over time",
+        "w czasie"
+      ]
+    },
+    {
+      "id": "regional",
+      "label": "Kraje lub obszary językowe",
+      "patterns": [
+        "kraj",
+        "obszar\\w* języko",
+        "countr",
+        "language area"
+      ]
+    }
+  ],
+  "model_supplement": {
+    "enabled": false,
+    "provider": "vertex",
+    "model": "gemini-3.5-flash",
+    "location": "global",
+    "uses": [
+      "intents the rules do not cover, each with the quoted fragment that supports it",
+      "a methodology proposal read from the paper"
+    ],
+    "_why_disabled": "A real Vertex call from the app (VM metadata token) was refused by the agent session's permission policy on 2026-10-25 and has not been verified. Until it is, requests use the deterministic rules only and say so.",
+    "instruction": "You read a message from a researcher and, if given, the text of the paper it points to. Return JSON {\"intents\":[{\"id\":<one of intent_ids>,\"quote\":<exact substring of text>}],\"method_notes\":[{\"statement\":<short method step>,\"quote\":<exact substring of paper>}]}. Only list intents not in 'already'. Every quote must be copied exactly; anything without an exact quote is discarded. Never state numbers that are not in a quote."
+  },
+  "cost": {
+    "serpapi_eur_per_request": 0.014,
+    "daily_auto_spend_eur": 1.0,
+    "_source": "Assumed price: SerpApi's smallest paid plan, USD 75 per 5000 searches (~EUR 0.014). The account is on the free plan (monthly pool used) and spends extra credits whose price is not known here; the owner should confirm. The cap limits what a request starts by itself."
+  }
+}

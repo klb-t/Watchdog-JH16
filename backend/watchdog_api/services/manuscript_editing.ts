@@ -3,7 +3,6 @@ import * as path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import { canonicalHash } from '../domain/canonical';
 import type { Manuscript } from './replication_dossier';
-import { registerSecretValue } from '../utils/redaction';
 
 /**
  * Optional language editing of a manuscript by a model (Vertex AI by default).
@@ -21,7 +20,8 @@ export function readEditingSettings(root = process.cwd()) {
   return { settings, hash: canonicalHash(settings) };
 }
 
-export type Transport = (url: string, init: { method?: string; headers?: Record<string, string>; body?: string; signal?: AbortSignal }) => Promise<{ ok: boolean; status: number; text(): Promise<string> }>;
+export type { Transport } from './vertex';
+import { vertexGenerate, type Transport } from './vertex';
 
 /** Tokens that carry facts. Order-insensitive multiset; whitespace and punctuation around them may change. */
 export function protectedTokens(text: string): string[] {
@@ -70,12 +70,6 @@ export function applyEdition(m: Manuscript, e: Edition): Manuscript & { edition:
     edition: { id: e.id, model: `${e.provider}:${e.model}`, edited: e.units.filter(u => u.status === 'edited').length, rejected: e.units.filter(u => u.status === 'rejected').length } };
 }
 
-async function metadata(base: string, p: string, transport: Transport) {
-  const r = await transport(`${base}/${p}`, { headers: { 'Metadata-Flavor': 'Google' }, signal: AbortSignal.timeout(5000) });
-  if (!r.ok) throw new Error(`metadata ${p}: HTTP ${r.status}`);
-  return r.text();
-}
-
 export async function editManuscript(m: Manuscript, opts: { transport?: Transport; spentTodayUsd: number; root?: string }): Promise<Edition> {
   const { settings, hash } = readEditingSettings(opts.root), transport = opts.transport ?? (fetch as unknown as Transport), p = settings.provider;
   if (settings.enabled !== true) throw Object.assign(new Error(`Language editing is disabled in config/manuscript/editing.json: ${settings._why_disabled ?? 'enabled is false'}`), { status: 409 });
@@ -86,20 +80,9 @@ export async function editManuscript(m: Manuscript, opts: { transport?: Transpor
   const estimate = (estTokens * settings.pricing_usd_per_million_tokens.input + estTokens * 1.5 * settings.pricing_usd_per_million_tokens.output) / 1e6;
   if (opts.spentTodayUsd + estimate > settings.daily_budget_usd)
     throw Object.assign(new Error(`Editing would exceed the daily budget (${settings.daily_budget_usd} USD; spent ${opts.spentTodayUsd.toFixed(4)}, this edit up to ${estimate.toFixed(4)})`), { status: 409 });
-  const tokenBody = JSON.parse(await metadata(p.metadata_base, 'instance/service-accounts/default/token', transport));
-  const token = tokenBody.access_token as string; registerSecretValue(token);
-  const project = p.project === 'from_metadata' ? (await metadata(p.metadata_base, 'project/project-id', transport)).trim() : p.project;
-  const host = p.location === 'global' ? 'aiplatform.googleapis.com' : `${p.location}-aiplatform.googleapis.com`;
-  const url = `https://${host}/v1/projects/${project}/locations/${p.location}/publishers/google/models/${p.model}:generateContent`;
-  const body = { systemInstruction: { parts: [{ text: settings.instruction }] },
-    contents: [{ role: 'user', parts: [{ text: JSON.stringify(list.map(u => ({ id: u.id, text: u.text }))) }] }],
-    generationConfig: { ...p.generation, responseMimeType: 'application/json' } };
-  const res = await transport(url, { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(p.timeout_ms) });
-  const raw = await res.text();
-  if (!res.ok) throw Object.assign(new Error(`Vertex returned HTTP ${res.status}: ${raw.slice(0, 300)}`), { status: 502 });
-  const d = JSON.parse(raw), usage = { input_tokens: d.usageMetadata?.promptTokenCount ?? 0, output_tokens: (d.usageMetadata?.candidatesTokenCount ?? 0) + (d.usageMetadata?.thoughtsTokenCount ?? 0) };
+  const reply = await vertexGenerate(p, settings.instruction, JSON.stringify(list.map(u => ({ id: u.id, text: u.text }))), transport), usage = reply.usage;
   let returned: any[] = [];
-  try { returned = JSON.parse(d.candidates?.[0]?.content?.parts?.map((x: any) => x.text ?? '').join('') ?? '[]'); } catch { returned = []; }
+  try { returned = JSON.parse(reply.text || '[]'); } catch { returned = []; }
   const byId = new Map((Array.isArray(returned) ? returned : []).map((x: any) => [String(x?.id), x?.text]));
   const edited: EditUnit[] = list.map(u => {
     const text = byId.get(u.id);

@@ -1,3 +1,4 @@
+import { TextRequestsPage, TextRequestPage } from './pages/TextRequests';
 import { WorkspacePreferencesProvider, WorkspaceLanding } from './lib/workspace_preferences';
 import { workspacePreferences } from '../shared/workspace_preferences';
 /**
@@ -52,6 +53,8 @@ export default function App() {
         <Route path="study" element={<AccessBoundary capability="run.create"><Study /></AccessBoundary>} />
         <Route path="method" element={<AccessBoundary capability="method.propose"><MethodReview /></AccessBoundary>} />
         <Route path="runs/:id/results" element={<AccessBoundary capability="run.view"><Results /></AccessBoundary>} />
+        <Route path="requests" element={<AccessBoundary capability="run.create"><TextRequestsPage /></AccessBoundary>} />
+        <Route path="requests/:id" element={<AccessBoundary capability="run.view"><TextRequestPage /></AccessBoundary>} />
         <Route path="replications" element={<AccessBoundary capability="run.view"><Replications /></AccessBoundary>} />
         <Route path="replications/:id" element={<AccessBoundary capability="run.view"><ReplicationTarget /></AccessBoundary>} />
         <Route path="diagnostics" element={<AccessBoundary capability="diagnostics.view"><Diagnostics /></AccessBoundary>} />

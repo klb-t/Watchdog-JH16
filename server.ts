@@ -53,6 +53,10 @@ import { ResearchPlans } from './backend/watchdog_api/services/research_plans';
 import { PersonalSearch } from './backend/watchdog_api/services/personal_search';
 import { ReplicationMeasurements } from './backend/watchdog_api/services/replication_measurements';
 import { buildReplicationMeasurementRouter } from './backend/watchdog_api/api/replication_measurement_routes';
+import { TextRequests, httpFetcher, readRequestConfig } from './backend/watchdog_api/services/text_requests';
+import { TextRequestRepository } from './backend/watchdog_api/db/repositories/text_requests';
+import { buildTextRequestRouter } from './backend/watchdog_api/api/text_request_routes';
+import { RunRepository } from './backend/watchdog_api/db/repositories/runs';
 import { latestLiveJh16Run } from './backend/watchdog_api/services/jh16_trends';
 import { StudyProtocolRepository } from './backend/watchdog_api/db/repositories/study_protocols';
 import { RunOrchestrator } from './backend/watchdog_api/services/run_orchestrator';
@@ -150,6 +154,21 @@ export async function configureApp() {
   const measurements = new ReplicationMeasurements(settings, vault, assistantProfile,
     new RunOrchestrator(db, store, (id, owner, personal) => search.resolve(id, owner, personal)), (owner, id) => new StudyProtocolRepository(db).get(owner, id));
   app.use('/api/replications', buildReplicationMeasurementRouter(measurements, new AuditRepository(sqlite)));
+  // Requests from a pasted text: the literal part is started through the same plans and measurements as the UI.
+  const textRequestRepo = new TextRequestRepository(db);
+  const textRequests = new TextRequests(textRequestRepo, { fetcher: httpFetcher(readRequestConfig().config.fetch.max_bytes), store }, {
+    jh16Plan: (owner, launch, name) => {
+      const current = settings.get(owner, assistantProfile.defaults);
+      const plan = plans.prepare(owner, { name, settingsHash: current.hash, baseline: launch.baseline, refreshMemory: false, scanPapers: false, dailyScan: false, paperScope: 'substances',
+        ...(launch.trendsRegions ? { trendsRegions: launch.trendsRegions } : {}) });
+      const l = plans.launch(owner, plan.id, plan.hash, plan.body.baseline?.methodHash ?? null);
+      return { runIds: [l.runId, ...(l.extensionRunIds ?? []), ...(l.trendsRunIds ?? [])].filter(Boolean) as string[] };
+    },
+    measurement: (owner, t) => { const d = measurements.describe(owner, t)!; return { runIds: [measurements.launch(owner, t, { expectedPresetHash: d.preset_hash, dataRole: 'exploratory' }).runId] }; },
+    intake: (owner, doc) => ({ documentId: research.saveDocument(owner, { title: doc.title.slice(0, 500), source: doc.source, text: doc.text.slice(0, 500000), coverage: doc.coverage, language: null, geography: [] }).id }),
+    searchesToday: owner => settings.searchesToday(owner),
+  });
+  app.use('/api/text-requests', buildTextRequestRouter(textRequests, textRequestRepo, new RunRepository(db), new AuditRepository(sqlite)));
   app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite), assistant));
   app.use(errorHandler);
 
