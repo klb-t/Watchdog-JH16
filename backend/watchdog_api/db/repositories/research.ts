@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import type { Database } from 'better-sqlite3';
 import { randomUUID } from 'node:crypto';
 import { canonicalHash } from '../../domain/canonical';
@@ -11,6 +12,9 @@ export class ResearchRepository {
   audit(owner: string, action: string, id: string, detail: unknown) { new AuditRepository(this.db).append(owner, action, 'research', id, id, detail); }
   saveDocument(owner: string, raw: unknown): PaperDocument {
     const body = PaperInputSchema.parse(raw), hash = canonicalHash(body), id = canonicalHash({ owner, hash });
+    // A conversion record describes exactly the converted text; edited text is saved without it.
+    if (body.conversion && createHash('sha256').update(body.text).digest('hex') !== body.conversion.textSha256)
+      throw new AutomationError('The text differs from the converted file; save it without the conversion record or keep the converted text');
     const inserted=this.db.prepare('INSERT OR IGNORE INTO research_documents VALUES (?,?,?,?,?)').run(id, owner, hash, JSON.stringify(body), new Date().toISOString());
     if(inserted.changes)this.audit(owner, 'paper.intake', id, { hash, coverage: body.coverage }); return this.document(owner, id)!;
   }

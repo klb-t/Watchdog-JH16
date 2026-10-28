@@ -24,6 +24,8 @@
     "express": "^4.22.2",
     "lucide-react": "^0.546.0",
     "nodemailer": "^7.0.13",
+    "parse5": "7.3.0",
+    "pdfjs-dist": "4.10.38",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "react-router-dom": "^7.18.2",

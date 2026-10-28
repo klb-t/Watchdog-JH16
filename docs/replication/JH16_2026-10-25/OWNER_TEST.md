@@ -8,9 +8,9 @@ Wyniki i ocena, które ten test ma sprawdzić: [REPORT.md](REPORT.md).
 |---|---|
 | Adres | https://watchdog.34-158-117-249.sslip.io |
 | Logowanie | użytkownik `marcin`, hasło Caddy: na VM `sudo bash ~/chatadhd/tools/gcp/aliases.sh --show-pass` |
-| Wersja kodu | `6b7e63e` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
-| Obraz | `watchdog:6b7e63e…` na VM; poprzednie (`84a9e71`, `10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
-| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`) i `…before-6b7e63e…-20261026T173110Z.tar.gz` (sha256 `a3c6407f…1182`), z kopiami `release.env` |
+| Wersja kodu | `0ce79a4` (gałąź `claude/jh16-hoffmann-test-20261025`); widoczna w każdym przebiegu i manifeście jako `git_commit` |
+| Obraz | `watchdog:0ce79a4…` na VM; poprzednie (`6b7e63e`, `84a9e71`, `10744c9`, `e33504e`, `c3508c16`) zachowane do cofnięcia |
+| Kopie danych sprzed aktualizacji | `/var/backups/watchdog/watchdog-data-before-e33504e…-20261025T125242Z.tar.gz` (sha256 `504e329b…17b8`) `…before-10744c9…-20261025T143201Z.tar.gz` (sha256 `d3c1cf3d…04e0`) `…before-84a9e71…-20261025T162352Z.tar.gz` (sha256 `43323380…1737`) `…before-6b7e63e…-20261026T173110Z.tar.gz` (sha256 `a3c6407f…1182`) i `…before-0ce79a4…-20261026T175225Z.tar.gz` (sha256 `d1d56d53…2e1c`), z kopiami `release.env` |
 | Klucz SerpApi | zapisany w Twoim zaszyfrowanym sejfie w WatchDogu (Ustawienia → krok 1 pokazuje „serpapi: zapisany”) |
 
 Każdy nowy pomiar (32 zapytania) zużywa kredyty SerpApi z Twojego konta: darmowy limit
@@ -93,6 +93,13 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
    25.10, bo Google zmienia szacunki i próbkę Trends.
 8. **Ustawienia działają:** ustaw dzienny limit poniżej liczby zapytań planu → krok 3 pokazuje
    „Limit nie wystarczy”, a uruchomienie jest odrzucone bez wysłania zapytań.
+
+**B2. Dokumenty HTML i PDF (E5.8b, bez kosztu)**
+- Prace i replikacje → „Tekst, metodologia i ekstrakcja” → „Wczytaj HTML lub PDF”: tekst pracy
+  powstaje w kodzie (pdf.js / parse5); notka pokazuje parser, sha256 pliku i liczbę stron.
+- Zakładka „Ekstraktory danych” → format „HTML (tabele)” → wczytaj stronę z tabelą → „Pokaż tabele
+  w tym HTML” → wpisz numer tabeli i nagłówki kolumn w „Zdefiniuj kopiowanie”: wartości są kopiowane
+  dokładnie, z pozycją komórki w pliku. Tabele z PDF nie są jeszcze obsługiwane.
 
 **C. Kontrola niezależna (opcjonalnie, na VM)**
 9. Z wyników przebiegu pobierz „JSON” i uruchom

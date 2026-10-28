@@ -27,15 +27,17 @@ export function SubstitutionEditor({ value,onChange,requirements,busy,onSave }: 
   </div>;
 }
 
-export function CopyPlanBuilder({ format,busy,onSave }: {format:'json'|'csv';busy:boolean;onSave:(plan:CopyPlan)=>void}) {
-  const [name,setName]=useState(''),[rows,setRows]=useState(''),[fields,setFields]=useState([{name:'',selector:'',required:true}]);
-  const value={version:'copy-plan-1' as const,name,format,rowsPointer:format==='csv'?'':rows,fields};
+export function CopyPlanBuilder({ format,busy,onSave }: {format:'json'|'csv'|'html';busy:boolean;onSave:(plan:CopyPlan)=>void}) {
+  const [name,setName]=useState(''),[rows,setRows]=useState(''),[fields,setFields]=useState([{name:'',selector:'',required:true}]),[table,setTable]=useState({index:0,headerRowIndex:0});
+  const value={version:'copy-plan-1' as const,name,format,rowsPointer:format==='json'?rows:'',fields,...(format==='html'?{table}:{})};
   const change=(index:number,patch:Partial<CopyPlan['fields'][number]>)=>setFields(fields.map((f,i)=>i===index?{...f,...patch}:f));
   return <div className="space-y-3" data-testid="copy-plan-builder">
     <h3 className="font-semibold">Zdefiniuj kopiowanie bez klucza LLM</h3>
     <label className="block">Nazwa parsera<input className={formClass} value={name} onChange={e=>setName(e.target.value)}/></label>
+    {format==='html' && <div className="grid sm:grid-cols-2 gap-3"><label>Numer tabeli (od 0, w kolejności dokumentu)<input type="number" min={0} className={formClass} value={table.index} onChange={e=>setTable({...table,index:Number(e.target.value)})} data-testid="html-table-index"/></label>
+      <label>Wiersz nagłówków w tej tabeli (od 0)<input type="number" min={0} className={formClass} value={table.headerRowIndex} onChange={e=>setTable({...table,headerRowIndex:Number(e.target.value)})}/></label></div>}
     {format==='json' && <label className="block">Ścieżka do listy rekordów<input className={formClass} value={rows} onChange={e=>setRows(e.target.value)} placeholder="np. /rows; puste dla listy na poziomie głównym"/></label>}
-    <p className="text-xs">{format==='json'?'Ścieżki JSON Pointer: /wartosc wskazuje pole rekordu, ~1 oznacza ukośnik w nazwie, ~0 tyldę.':'Wpisz dokładną nazwę nagłówka kolumny CSV.'} Każde pole wyniku kopiuje pojedynczą wartość. Wartości liczbowe zachowują zapis ze źródła.</p>
+    <p className="text-xs">{format==='json'?'Ścieżki JSON Pointer: /wartosc wskazuje pole rekordu, ~1 oznacza ukośnik w nazwie, ~0 tyldę.':format==='html'?'Wpisz dokładny tekst komórki nagłówka tabeli HTML (scalone komórki colspan/rowspan są rozwijane).':'Wpisz dokładną nazwę nagłówka kolumny CSV.'} Każde pole wyniku kopiuje pojedynczą wartość. Wartości liczbowe zachowują zapis ze źródła.</p>
     {fields.map((f,i)=><fieldset key={i} className="rounded border p-3 space-y-2"><legend>Pole {i+1}</legend>
       <div className="grid sm:grid-cols-2 gap-3"><label>Nazwa pola wyniku {i+1}<input className={formClass} value={f.name} onChange={e=>change(i,{name:e.target.value})} placeholder="np. wartosc"/></label>
       <label>{format==='json'?'Ścieżka w rekordzie':'Nagłówek kolumny'} {i+1}<input className={formClass} value={f.selector} onChange={e=>change(i,{selector:e.target.value})}/></label></div>

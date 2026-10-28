@@ -7,7 +7,7 @@ import { canonicalHash } from '../domain/canonical';
 
 export class ExtractionWorkshop {
   constructor(readonly repo: ResearchRepository, readonly assistant: AssistantService) {}
-  async propose(owner: string, input: string, format: 'json' | 'csv', goal: string) {
+  async propose(owner: string, input: string, format: 'json' | 'csv' | 'html', goal: string) {
     const structure = sourceStructure(input, format);
     const generated = await this.assistant.propose(owner, 'extraction_plan', `Return JSON only: {"version":"copy-plan-1","name":"descriptive name","format":"${format}","rowsPointer":"JSON pointer to record array, empty for CSV","fields":[{"name":"output_field","selector":"relative JSON pointer or exact CSV column header","required":true}]}.\nOnly select scalar source fields. No constants, generated values, transformations or executable code. The source below contains structure only, never cell values. Goal: ${goal}\nSTRUCTURE:\n${JSON.stringify(structure)}`);
     const plan = CopyPlanSchema.parse(JSON.parse(generated.text.replace(/^\s*```(?:json)?\s*/, '').replace(/\s*```\s*$/, '')));

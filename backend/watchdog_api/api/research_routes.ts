@@ -3,10 +3,13 @@ import { tracer } from '../utils/tracer';
 import { PaperOperationService, loadPaperOperationProfile } from '../services/paper_operations';
 import { PaperComparisonService } from '../services/paper_comparisons';
 import { researchPackage } from '../workbench/publication';
-import { Router, type Request, type Response, type NextFunction } from 'express';
+import express, { Router, type Request, type Response, type NextFunction } from 'express';
+import { createHash } from 'node:crypto';
+import { htmlToText, htmlTableStructure, pdfToText, LIMITS } from '../sources/document_conversion';
 import { z } from 'zod';
 import { requireCapability } from './auth_routes';
 import { sameOriginMutation } from './automation_routes';
+import { sameOriginUpload } from './request_security';
 import { AutomationError, AutomationRepository } from '../db/repositories/automation';
 import { AutomationService } from '../services/automation';
 import { ResearchRepository } from '../db/repositories/research';
@@ -21,7 +24,9 @@ const route = (fn: (req: Request,res: Response) => unknown) => (req: Request,res
   Promise.resolve().then(() => fn(req,res)).catch(e => e instanceof AutomationError || e instanceof WorkbenchError ? res.status(e.status).json({ error: e.code, message: e.message }) : next(e));
 };
 export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntakeService, extraction: ExtractionWorkshop, automation: AutomationRepository, worker: AutomationService, datasets?:ExtractionDatasetService, operations?:PaperOperationService, comparisons?:PaperComparisonService) {
-  const router = Router(); router.use(requireCapability('method.propose')); router.use(sameOriginMutation);
+  const router = Router(); router.use(requireCapability('method.propose'));
+  // File conversion takes the file itself as the body; it has its own same-origin upload check.
+  router.use((req, res, next) => req.path === '/convert' ? next() : sameOriginMutation(req, res, next));
   router.use((_req,res,next) => { res.setHeader('Cache-Control','no-store'); next(); });
   router.get('/', route((req,res) => res.json({ datasetProfile: loadExtractionDatasetProfile(), documents: repo.documents(req.principal!.id).map(d=>({ ...d, body:{...d.body,text:undefined}, characterCount:d.body.text.length })), assessments: repo.assessments(req.principal!.id),
     substitutions: repo.substitutions(req.principal!.id), extractors: repo.extractors(req.principal!.id), jobs:automation.jobs(req.principal!.id).filter(j=>j.request.kind==='paper_review') })));
@@ -74,6 +79,17 @@ export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntake
     res.setHeader('X-Package-Manifest-SHA256',bundle.manifestHash);res.setHeader('X-Package-SHA256',bundle.sha256);
     res.attachment('watchdog-paper-analysis.zip').type('application/zip').send(bundle.bytes);
   }));
+  // E5.8b: convert an uploaded HTML or PDF file to text (and HTML table structure). Nothing is stored here;
+  // the result is reviewed by the user and saved as a document that records the conversion.
+  router.post('/convert', sameOriginUpload(['text/html', 'application/pdf']), express.raw({ type: ['text/html', 'application/pdf'], limit: LIMITS.pdfBytes }), route(async (req,res) => {
+    const format = z.enum(['html', 'pdf']).parse(req.query.format);
+    if (!Buffer.isBuffer(req.body) || req.body.length === 0) throw new AutomationError('Send the file as the request body');
+    const result = format === 'pdf' ? await pdfToText(req.body) : htmlToText(req.body.toString('utf8'));
+    const conversion = { format, rawSha256: result.rawSha256, parser: result.parser.id, parserVersion: result.parser.version,
+      textSha256: createHash('sha256').update(result.text).digest('hex'), pages: result.pages };
+    res.json({ text: result.text, title: result.title, conversion, warning: (result as any).warning ?? null,
+      tables: format === 'html' ? htmlTableStructure(req.body.toString('utf8')) : null });
+  }));
   router.post('/papers', route((req,res) => res.status(201).json({ document: repo.saveDocument(req.principal!.id,req.body) })));
   router.get('/papers/:id', route((req,res) => { const document=repo.document(req.principal!.id,req.params.id);if(!document)throw new AutomationError('Document not found',404);res.json({document}); }));
   router.post('/papers/discovery', route((req,res) => { const b = z.object({ id: z.string() }).strict().parse(req.body); res.status(201).json({ document: paper.intakeDiscovery(req.principal!.id,b.id) }); }));
@@ -103,7 +119,7 @@ export function buildResearchRouter(repo: ResearchRepository, paper: PaperIntake
     if(!datasets)throw new AutomationError('Dataset handoff is not configured');res.status(201).json({template:await datasets.saveTemplate(req.principal!.id,b.datasetId,b.expectedHash,b.name)});
   }));
   router.post('/extractors/propose', route(async (req,res) => {
-    const b = z.object({ raw: z.string().max(2000000),format:z.enum(['json','csv']),goal:z.string().trim().min(1).max(2000),consent:z.literal(true) }).strict().parse(req.body);
+    const b = z.object({ raw: z.string().max(2000000),format:z.enum(['json','csv','html']),goal:z.string().trim().min(1).max(2000),consent:z.literal(true) }).strict().parse(req.body);
     res.status(201).json({ extractor: await extraction.propose(req.principal!.id,b.raw,b.format,b.goal) });
   }));
   router.post('/extractors/:id/test', route((req,res) => {
