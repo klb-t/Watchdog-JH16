@@ -35,6 +35,21 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
 
 - [x] **E5.8b-2 — PDF tables.** `pdf-layout-1` (pdf.js positions, PDF sha256), proposed column boundaries from shared gaps (review only), and an explicit PDF table plan (page, range, boundaries, names, row tolerance, join gap, raised-text marker and window) with per-cell provenance (page, baseline, fragment indices, bbox). Verified on arXiv 1706.03762 Table 2 through the UI. Tests in `tests/integration/document_conversion.test.ts`; gate 644/644.
 
+- [x] **E5.13 — Request from a pasted text (first case: Prof. Hoffmann's quote).**
+  - **Path:** `/requests`, `services/text_requests.ts`, migration 026.
+    - The work is resolved through open metadata: an honestly identified page request, then Crossref with an exact landing-page match.
+    - Intents come from versioned rules, each quoting its fragment. An optional Vertex reading keeps only verbatim-quoted proposals; it is off until a real call is verified.
+    - From the dossier: literal actions start on send within a daily automatic spending cap; proposals start only on acceptance; questions do not block.
+    - Works outside the register go to paper intake.
+    - Open-access full text comes from Europe PMC (JATS by PMCID); a publisher's protection is never worked around. No contact address is sent unless configured.
+  - **Real run on a copy:** request `abf0ae08`.
+    - Recomputation `b4b6f5cc` gave 0.8162, reproduced.
+    - The new measurement `ea2b7078` was not computable: 14 of 32 counts collapsed, and the khat harm query was empty. This is a shown cause, added to the JH16 diagnosis.
+    - The accepted Trends calibration had A1 0.75–0.92 in 4 regions.
+  - **Report:** `../replication/REQUEST_HOFFMANN_2026-10-28/REPORT.md`.
+  - **Tests:** `tests/integration/text_requests.test.ts` and a browser test.
+  - **Blocked:** a verified Vertex call (permission policy); the owner's price per SerpApi credit.
+
 - [x] **E5.7b-4 — Evidence graphs.** Per replication target, a deterministic graph (`services/evidence_graph.ts`, `GET /api/replications/:id/evidence-graph`, tab „Dowody”): hypotheses → claims ← pre-registration/protocols, runs → claims (verdict on the edge), runs → protocol (confirmation), manifests/reference files → runs, evidence → diagnosis causes, runs/files → manuscript sections. Gaps are named: a claim no complete run evaluates, a hypothesis without a claim, a shown/probable/excluded diagnosis without evidence, a manuscript table without a source. Graph hash is stable for identical inputs. On real data: JH16 87 nodes, 1 gap (a probable cause without evidence); CR2014 33 nodes, 0 gaps; the first build found the manuscripts' deviation tables had no source (fixed). Tests in `tests/integration/replication_general.test.ts`, browser test. Still open in E5.7b: methods other than correlation with a reference table.
 
 - [x] **E5.7b-3 — A second replication target through a general path (CR2014).** Cavazos-Rehg et al. 2014 (Tobacco Control): Google Trends cigar searches 2011 vs YRBS 2011 youth cigar use by state. Pre-registered in `aa7e2ea` before any Trends request; preset v2 (`7cec448`, still before any value) after the provider refused >100-character queries. Real run `fcf2ed4a`: r = 0.358 (p 0.032, n 36) vs the published 0.39 (p .018) — reproduced, reading supports; sensitivity without UT/RI 0.194 vs 0.26; independently recomputed from raw files. The three other endpoints are listed as not replicable (no open reference data). Code that had to change, because JH16's evaluation/manuscript/UI were study-specific: Trends by region source, `reference_correlation` analyzer, `replication_evaluation` artifact, measurement launch from Replications, general dossier/UI/manuscript, provider `max_query_chars`. The next target of this kind needs only configuration. Report `../replication/CR2014_2026-10-26/REPORT.md`; tests `tests/integration/replication_general.test.ts` and a browser test. Still open in E5.7b: evidence graphs; methods other than correlation with a reference table.

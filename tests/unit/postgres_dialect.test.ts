@@ -35,14 +35,18 @@ test('column and insert rules', () => {
   assert.strictEqual(translateStatement('INSERT OR REPLACE INTO t VALUES (1);').manual, 'INSERT OR REPLACE needs a conflict target');
 });
 
-test('every shipped migration translates without a manual step and keeps all 51 triggers', () => {
+test('every shipped migration translates without a manual step and keeps every trigger SQLite has', async () => {
+  const Database = (await import('better-sqlite3')).default, { runMigrations } = await import('../../backend/watchdog_api/db/migrations');
+  const sqlite = new Database(':memory:'); runMigrations(sqlite);
+  const expected = (sqlite.prepare("SELECT count(*) AS c FROM sqlite_master WHERE type = 'trigger'").get() as any).c; sqlite.close();
   let triggers = 0;
   for (const m of MIGRATIONS) for (const stmt of splitStatements(m.sql)) {
     const t = translateStatement(stmt);
     assert.strictEqual(t.manual, null, `${m.id}: ${t.manual}`);
     triggers += t.postgres.filter(s => /^CREATE TRIGGER/.test(s)).length;
   }
-  assert.strictEqual(triggers, 51);
+  assert.strictEqual(triggers, expected);
+  assert.ok(expected >= 55, 'migration 026 adds four WORM triggers to the 51 probed on PostgreSQL');
 });
 
 test('WATCHDOG_DB_BACKEND: sqlite works, postgres is refused as not implemented, anything else is an error', async () => {

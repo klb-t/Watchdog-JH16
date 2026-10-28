@@ -183,5 +183,31 @@
   ],
   "confirmation_sources": [
     "trends_interest_by_region"
-  ]
+  ],
+  "request_actions": {
+    "literal": [
+      {
+        "id": "cr2014_measure",
+        "intents": [
+          "replicate",
+          "period_update"
+        ],
+        "label": "Nowy pomiar metodą wierną (Google Trends 2011, stany USA)",
+        "launch": {
+          "kind": "measurement"
+        }
+      }
+    ],
+    "proposals": [],
+    "questions": [
+      {
+        "id": "years",
+        "intents": [
+          "period_update"
+        ],
+        "to": "użytkownik",
+        "text": "Powtórzyć dla późniejszych lat? Wymaga otwartych danych YRBS dla tych lat (pytanie o cygara jest w zbiorze CDC do 2017 r.)."
+      }
+    ]
+  }
 }

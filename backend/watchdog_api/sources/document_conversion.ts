@@ -233,3 +233,25 @@ export function pdfTableRecords(layout: PdfLayout, spec: PdfTableSpec) {
     return { rowIndex, y: row.y, cells: cells.map(c => ({ ...c, text: c.text.trim() })) };
   });
 }
+
+/**
+ * JATS XML (PubMed Central / Europe PMC full text) to plain text: the article
+ * title, the abstract and the body; references (<back>) are left out. Block
+ * elements become line breaks, table cells tabs; entities are decoded. A small
+ * explicit reader, not an XML schema validator: it never invents content.
+ */
+export const JATS_TEXT_VERSION = '1';
+const JATS_BLOCK = /<\/?(p|sec|title|abstract|table-wrap|caption|tr|list-item|fig|disp-formula|label|boxed-text)\b[^>]*>/gi;
+const decode = (s: string) => s.replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16))).replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+  .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+export function jatsToText(xml: string) {
+  if (Buffer.byteLength(xml) > LIMITS.htmlBytes * 5) throw new AutomationError('JATS input exceeds 10 MB');
+  const part = (re: RegExp) => xml.match(re)?.[1] ?? '';
+  const plain = (s: string) => tidy(decode(s.replace(JATS_BLOCK, '\n').replace(/<\/?(td|th)\b[^>]*>/gi, '\t').replace(/<[^>]+>/g, '')));
+  const title = plain(part(/<article-title[^>]*>([\s\S]*?)<\/article-title>/i)) || null;
+  const abstract = plain(part(/<abstract[^>]*>([\s\S]*?)<\/abstract>/i)), body = plain(part(/<body[^>]*>([\s\S]*?)<\/body>/i));
+  const bodyXml = part(/<body[^>]*>([\s\S]*?)<\/body>/i);
+  const sections = [...bodyXml.matchAll(/<sec\b[^>]*>\s*<title[^>]*>([\s\S]*?)<\/title>/gi)].map(m => plain(m[1])).filter(Boolean);
+  return { format: 'jats' as const, text: [title, abstract, body].filter(Boolean).join('\n\n'), title, sections, tables: (bodyXml.match(/<table-wrap\b/gi) ?? []).length,
+    rawSha256: sha(xml), parser: { id: 'jats-text', version: JATS_TEXT_VERSION } };
+}

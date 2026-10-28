@@ -329,6 +329,21 @@ test('E5.7b: a protocol is frozen from the Replications page and confirmation da
   assert.deepStrictEqual(protocols[0].evaluation.confirmation_runs, []);
 });
 
+test('text request: a pasted text without a link is read by the rules, sent only after consent, and answered questions are kept', async () => {
+  await page.goto(`${baseUrl}/requests`);
+  await page.fill('[data-testid="request-text"]', 'Warto zrobić update wyników w kolejnych okresach i sprawdzić sytuację w poszczególnych krajach.');
+  await page.click('[data-testid="request-preview"]');
+  await page.locator('[data-testid="request-intents"]').waitFor();
+  const intents = await page.locator('[data-testid="request-intents"]').innerText();
+  assert.match(intents, /Aktualizacja na kolejne okresy — „Warto zrobić update/); assert.match(intents, /Kraje lub obszary językowe/);
+  assert.match(await page.locator('[data-testid="request-model"]').innerText(), /wyłączony/);
+  assert.strictEqual(await page.locator('[data-testid="request-submit"]').isDisabled(), true, 'consent first');
+  await page.check('[data-testid="request-consent"]'); await page.click('[data-testid="request-submit"]');
+  await page.locator('[data-testid="text-request-page"]').waitFor();
+  assert.match(await page.locator('[data-testid="request-quote"]').innerText(), /kolejnych okresach/);
+  assert.match(await page.locator('[data-testid="request-actions"]').innerText(), /Brak/);
+});
+
 test('second replication target (cr2014): general pages, measurement gated by key and approval, manuscript without JH16 fields', async () => {
   await page.goto(`${baseUrl}/replications`);
   await page.locator('[data-testid="replication-cr2014"]').click();

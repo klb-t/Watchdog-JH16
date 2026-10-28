@@ -1,0 +1,576 @@
+{
+  "search_metadata": {
+    "id": "6ae204b45fa7b736fa5e178f",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/3RMlYG9NFsEWM9srYs_PmWutpaY8-Eo04DNsd2dQXP8/6ae204b45fa7b736fa5e178f.json",
+    "markdown_endpoint": "https://serpapi.com/searches/3RMlYG9NFsEWM9srYs_PmWutpaY8-Eo04DNsd2dQXP8/6ae204b45fa7b736fa5e178f.md",
+    "pixel_position_endpoint": "https://serpapi.com/searches/3RMlYG9NFsEWM9srYs_PmWutpaY8-Eo04DNsd2dQXP8/6ae204b45fa7b736fa5e178f.json_with_pixel_position",
+    "created_at": "2026-10-28 14:20:36 UTC",
+    "processed_at": "2026-10-28 14:20:36 UTC",
+    "google_url": "https://www.google.com/search?q=%22cannabis%22&oq=%22cannabis%22&hl=en&safe=off&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/3RMlYG9NFsEWM9srYs_PmWutpaY8-Eo04DNsd2dQXP8/6ae204b45fa7b736fa5e178f.html",
+    "total_time_taken": 0.63
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "\"cannabis\"",
+    "google_domain": "google.com",
+    "hl": "en",
+    "safe": "off",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "\"cannabis\"",
+    "total_results": 63,
+    "time_taken_displayed": 0.32,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "local_map": {
+    "image": "https://www.google.com/maps/vt/data=TYm2DPobOyGJOyeA_KpU_FCeHNFcamrMDP4ZIWh1veT88ndQQdxxOS6JG_yYVM_qI5P9W9vh72VNVDpJVxer2r7Lc36gnu4FZBhPriEanTLPypNJse4vKc578XqIUqdywcOFPvVnPoWD2o1uQR-citsvzH69sFHWm2TBL0rsDX1QoDeTvUBf3V299ICCkTXqhtEHREitiZhgM0jiBUdmI0FKpbohZPYBM64zqEaOJJgzya8B7rHRdxR1BU0bxtKIBFpsZIO0njJ66VcjjB9IC4Neakxm4Qk11ZNbDZ8uMzJ5t9zwW0TdjL6A44w76ZSNLXZ7-ObW4WRm7xPIIvxmnvhr71X6mUeMfinOKO1nlPiDrRcVVh5qEZKlIgCZvRSndtmUOaIGxvec3rMyXbRmU21PkcyKG-CsvJ0WNHqexlZR_zq4sgtc8a5CTJPQyXA6tK_VihWEAIJxuSRKVfzTfN69zVjDAZjZJtVcgfs8UGVemSi_I8IpLQtuQi7ZjaVVEky2hL21lJe76Qp1rxA0CpRdICOwvTYSPqv4h1fTByfCLqU4m9A2FgqR1uhM-ogv6JGiVEimoU31YrnCjtGjQbvvogh7JQ-qFEL88Nqy4_Yxvs5_Syv-at4YZEGlRKfcjJ5Cr0HcojjyzWQa8xENernVfVVfP505KuuAhyGkx2bOj8Ct1GsymjkwCxzXyimMxli2wth_Tnt6j0HBd2fuCcFXvx4xwYIxQC3XTIlPBWITO-MWOtSMXMf8OTJnEPG4w1XQgc1rli24B8-dJac4wll6SqWrBSjVZGMcUbSIUAKZw3mXidvArRQiyXZCQ5s9yZAp_ekeyEmRuO1A-_yD-no7ogb9nODsLVW6spLOtWteAZWBYDSCRoiYO51D61qCxzvls7k7I7bW1rZFeObpxIrWc_0zwysYJ4L6Zj7UzoSF7BuKg7sSVq5oOssmtMHBTiRX73SFpLq3utlFEZqAdAOfRkw8MJj32oixQItW0n7x825SBqBtK2l7rShripcUFxpbsdQU8pPN67QIHR3Hv5DCyz75LpLTneDxVLsLtZhjojFtpJE5Te9pElng7MtkSd4Lb3EjCKLjTbJLSqTDHsdoenpzwSHLjxV48XZW_SMIq0wP0wUF7GBC0ks0yableclLcMGi_2EyIgJSiKgiWCcZ1TFSDLRWoscfogWZi6Rkj14qyBTci7FOv5Uu1YcPRBvhQvKGdwEa0BK2AzgPOBSG1lWYYicDxs_oqZy6r7-xd2wNPc9Wis5U10bNIm42Isya8bdOdy5aEI8AAr7NnkgcO6gBdPaNlEARDt7oCIBA-5J2hHYvZftVOT-IQ8xY0A-ZcW163Gv8VMHHEv3wINJesn-cPS5sIJaJyCY3LFYUD-DCiALe4qxhjuzQonwgHQ",
+    "gps_coordinates": {
+      "latitude": 32.491230287947594,
+      "longitude": -100.4150390625
+    }
+  },
+  "local_results": {
+    "places": [
+      {
+        "position": 1,
+        "title": "Star Seed Botanicals Buda",
+        "type": "Cannabis store",
+        "rating": 5,
+        "reviews": 48,
+        "description": "\"Great selection and top notch customer service.\"",
+        "thumbnail": "https://lh3.googleusercontent.com/grass-cs/AABkmLdwoEJ8Q1u-1X6ps6pvSNjwLpZWBJmRXryezgOseJ4TKtgCamSR8MwWK5nW-b6yLWu_tapEAuak9dBTeaJv4xKzA8q1YLmYwU4RRWBBN3DvKgluCG7z0sq9VJlnsyE9Q-fBpfKPrCeZftVO=w228-h228-n-k-no",
+        "thumbnail_large": "https://lh3.googleusercontent.com/grass-cs/AABkmLdwoEJ8Q1u-1X6ps6pvSNjwLpZWBJmRXryezgOseJ4TKtgCamSR8MwWK5nW-b6yLWu_tapEAuak9dBTeaJv4xKzA8q1YLmYwU4RRWBBN3DvKgluCG7z0sq9VJlnsyE9Q-fBpfKPrCeZftVO=w1000-h1000-c-n",
+        "links": {
+          "phone": "tel:(512) 295-0307",
+          "website": "https://www.starseedbotanicals.com/"
+        },
+        "place_id": "9589925377643624747",
+        "place_id_search": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&ludocid=9589925377643624747&q=%22cannabis%22&safe=off",
+        "provider_id": "/g/11zcxzvv6j",
+        "gps_coordinates": {
+          "latitude": 30.103866,
+          "longitude": -97.874996
+        },
+        "address": "401 N Farm to Market 1626 Suite 401B, Buda, TX 78610",
+        "hours": "Open · Closes 10 PM",
+        "phone": "(512) 295-0307"
+      },
+      {
+        "position": 2,
+        "title": "Canna Buddha, Texico, N.M.",
+        "type": "Cannabis store",
+        "rating": 4.2,
+        "reviews": 5,
+        "thumbnail": "https://lh3.googleusercontent.com/grass-cs/AABkmLemCQYi0Crvg0NQZJfLBytPz6S7_Y9VW8ekqjA3QvvNIlqV0o85O9v5fba00bQImeOgw3RPySt1vsetxmBRRdNvantYMKgLDx5kpelbaQ-3We7dskD5xHCHglPkVhPAPrl3wPSMTcgKhQTG=w228-h228-n-k-no",
+        "thumbnail_large": "https://lh3.googleusercontent.com/grass-cs/AABkmLemCQYi0Crvg0NQZJfLBytPz6S7_Y9VW8ekqjA3QvvNIlqV0o85O9v5fba00bQImeOgw3RPySt1vsetxmBRRdNvantYMKgLDx5kpelbaQ-3We7dskD5xHCHglPkVhPAPrl3wPSMTcgKhQTG=w1000-h1000-c-n",
+        "links": {
+          "phone": "tel:(575) 220-0003",
+          "website": "https://cannabuddha.us/texico/"
+        },
+        "place_id": "2761142149110389504",
+        "place_id_search": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&ludocid=2761142149110389504&q=%22cannabis%22&safe=off",
+        "provider_id": "/g/11p1qns2ld",
+        "gps_coordinates": {
+          "latitude": 34.388954,
+          "longitude": -103.046991
+        },
+        "address": "400 Wheeler Ave, Texico, NM 88135",
+        "hours": "Open · Closes 11 PM",
+        "phone": "(575) 220-0003"
+      },
+      {
+        "position": 3,
+        "title": "Ember Trees",
+        "type": "Cannabis store",
+        "rating": 5,
+        "reviews": 13,
+        "description": "\"Ember Trees cannabis delivery service absolutely exceeded my expectations.\"",
+        "thumbnail": "https://lh3.googleusercontent.com/grass-cs/AABkmLdhrnz93fGWaimQsSJZGrpCt18ao6xih39AiTbsoszwVs0sj7dMXp8UpFl8RjmbAa3_KvZ5DvXo4tCX-ByjXjVm2RfCVpnoUy979EdTYNb_NAsTk_W1zTcu_Emb18cdOSxJemccsKOsvl1F=w228-h228-n-k-no",
+        "thumbnail_large": "https://lh3.googleusercontent.com/grass-cs/AABkmLdhrnz93fGWaimQsSJZGrpCt18ao6xih39AiTbsoszwVs0sj7dMXp8UpFl8RjmbAa3_KvZ5DvXo4tCX-ByjXjVm2RfCVpnoUy979EdTYNb_NAsTk_W1zTcu_Emb18cdOSxJemccsKOsvl1F=w1000-h1000-c-n",
+        "links": {
+          "phone": "tel:(512) 733-9058",
+          "website": "https://www.embertrees.com/"
+        },
+        "place_id": "220494367910994570",
+        "place_id_search": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&ludocid=220494367910994570&q=%22cannabis%22&safe=off",
+        "provider_id": "/g/11z1c4pq2_",
+        "gps_coordinates": {
+          "latitude": 30.618305,
+          "longitude": -97.666298
+        },
+        "hours": "Open · Closes 10 PM",
+        "phone": "(512) 733-9058"
+      }
+    ],
+    "more_locations_link": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&udm=local&lsack=tATiauH-EpKjptQP29a2qQ4&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQjGp6BAgqEAA"
+  },
+  "knowledge_graph": {
+    "place_id": "ChIJnZ2HLcxRW4YRK7nzRFJCFoU"
+  },
+  "inline_videos": [
+    {
+      "position": 1,
+      "title": "Understanding the Cannabis Industry",
+      "link": "https://www.youtube.com/watch?v=2JoUMYYAPkY&t=66",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQEK5qKBdjXHfkjvZYHwWUckcPCdRWwvqfSIWJn2wXhfzk57BvZR6PyJA&s",
+      "channel": "Verisk",
+      "duration": "8m",
+      "platform": "YouTube",
+      "date": "Feb 26, 2024"
+    },
+    {
+      "position": 2,
+      "title": "What's In Your Cannabis? A consumer's guide to ...",
+      "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHrErbVEZOOkJtupuyssEGwV4Fe5WCXDFPEfoRro2FrpAQWiyR8c7XHA&s",
+      "channel": "Americans for Safe Access",
+      "duration": "1:13:35",
+      "platform": "YouTube",
+      "date": "Aug 31, 2023",
+      "key_moments": [
+        {
+          "time": "07:31",
+          "title": "WHERE DO CANNABIS CONTAMINANTS COME FROM?",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=451"
+        },
+        {
+          "time": "13:47",
+          "title": "CULTIVATION & PROCESSING",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=827"
+        },
+        {
+          "time": "27:53",
+          "title": "CONTAMINANTS FROM MANUFACTURING",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=1673"
+        },
+        {
+          "time": "29:27",
+          "title": "CONTAMINANTS FROM CULTIVATION & STORAGE",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=1767"
+        },
+        {
+          "time": "39:35",
+          "title": "SUMMARY OF REQUIRED TESTING",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=2375"
+        },
+        {
+          "time": "40:56",
+          "title": "COMMON CANNABIS PESTICIDES WITH EPA ACTION",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=2456"
+        },
+        {
+          "time": "44:20",
+          "title": "ISSUES WITH CANNABIS PRODUCT LABELS",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=2660"
+        },
+        {
+          "time": "54:14",
+          "title": "EDUCATE YOURSELF & OTHERS",
+          "link": "https://www.youtube.com/watch?v=kx4oK1QI-2s&t=3254"
+        }
+      ]
+    },
+    {
+      "position": 3,
+      "title": "10 Things You Need to Known About Cannabis",
+      "link": "https://www.youtube.com/watch?v=GCZGdZovZO8",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRlzgcSDp2Y4otn7rzKzhPXJA5IPzDRAv2c8roJn09M8xmquiWTgI6wsA&s",
+      "channel": "National Bleeding Disorders Foundation",
+      "duration": "1:01:18",
+      "platform": "YouTube",
+      "date": "Apr 20, 2023",
+      "key_moments": [
+        {
+          "time": "05:11",
+          "title": "The Benefit versus Risk Ratio",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=311"
+        },
+        {
+          "time": "07:28",
+          "title": "Schedules of Drugs",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=448"
+        },
+        {
+          "time": "11:07",
+          "title": "What's the Difference between Hemp and Cannabis",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=667"
+        },
+        {
+          "time": "16:48",
+          "title": "Cbd and Cannabis Are Not the Same",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=1008"
+        },
+        {
+          "time": "22:59",
+          "title": "Terpenes",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=1379"
+        },
+        {
+          "time": "26:18",
+          "title": "Endocannabinoid System",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=1578"
+        },
+        {
+          "time": "31:05",
+          "title": "Phytocannabinoids",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=1865"
+        },
+        {
+          "time": "32:13",
+          "title": "Fda Approved Products",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=1933"
+        },
+        {
+          "time": "36:42",
+          "title": "Ensemble Effect",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=2202"
+        },
+        {
+          "time": "57:59",
+          "title": "I Have Comor Comorbidities like Heart Disease or Diabetes Is Cannabis an Option for Me",
+          "link": "https://www.youtube.com/watch?v=GCZGdZovZO8&t=3479"
+        }
+      ]
+    },
+    {
+      "position": 4,
+      "title": "Hemp And Marijuana Industries Leaders Potentially Aligning?",
+      "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKxTP6Hzci39Fg1O8zJyfbD86n6E3R0Dcst9xSnRxXz3fHnSp-yHOupQ&s",
+      "channel": "TDR",
+      "duration": "40:25",
+      "platform": "YouTube",
+      "date": "Mar 10, 2026",
+      "short_clip": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcTZbo6OJ70yHEMfoEWanT4cNIFZTONVExVB9Q",
+      "key_moments": [
+        {
+          "time": "00:00",
+          "title": "Intro, market check & today’s lineup (High Tide, NCCC, Florida, liver study)",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=0"
+        },
+        {
+          "time": "04:21",
+          "title": "Who is High Tide’s Omar Khan & why NCCC matters for US medical cannabis",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=261"
+        },
+        {
+          "time": "07:25",
+          "title": "What is the NCCC? Goals, members & how it could shape US policy",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=445"
+        },
+        {
+          "time": "13:03",
+          "title": "Where the real opportunity is: medical vs adult-use (US & Europe)",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=783"
+        },
+        {
+          "time": "19:39",
+          "title": "Who will actually control US medical cannabis policy? Feds vs states vs industry",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=1179"
+        },
+        {
+          "time": "23:40",
+          "title": "Florida adult-use setback: why the Florida thesis is still intact",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=1420"
+        },
+        {
+          "time": "28:19",
+          "title": "Hemp vs marijuana: federal policy fight & industry alignment debate",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=1699"
+        },
+        {
+          "time": "32:26",
+          "title": "New Israeli research: CBD/CBG, fatty liver disease & the future of cannabinoid medicine",
+          "link": "https://www.youtube.com/watch?v=kzzrr4_8ZFs&t=1946"
+        }
+      ]
+    }
+  ],
+  "related_questions": [
+    {
+      "question": "Can I fly with joints in my carry-on?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJDYW4gSSBmbHkgd2l0aCBqb2ludHMgaW4gbXkgY2Fycnktb24/IiwibGsiOiJHaVJqWVc0Z2FTQm1iSGtnZDJsMGFDQnFiMmx1ZEhNZ2FXNGdiWGtnWTJGeWNua2diMjQiLCJicyI6ImM0V1BPUV9DTUJTRHhacUpPVndlT0FlVzdxamlXRG94SU1TY05vRThDSW1VQktyLWV3SUxDeXFqNWNfdjJXelBKbHRoVWVCc0d0UVVOYTZPYkF3Z2kzdURTbmpmTEozTnN5a2ZWd21rTmhET3NqVWJuclNJdUpHVmNHZElfN2lBUWdLc0ZTV0ZQQnZ4UWQxR3NDT2JGd0hielE1YWVLbDhPb3VvRlF3OWs0ZzYxUkNtY3RxWlBGdncyVHRheXI4c1c3Ri04ZjBDb3k3Q3ZOc2ZhaVZWV2pqZ1BmcmxoNF9mN2J3QSIsImlkIjoiZmNfdEFUaWF1SC1FcEtqcHRRUDI5YTJxUTRfNCJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJDYW4gSSBmbHkgd2l0aCBqb2ludHMgaW4gbXkgY2Fycnktb24%2FIiwibGsiOiJHaVJqWVc0Z2FTQm1iSGtnZDJsMGFDQnFiMmx1ZEhNZ2FXNGdiWGtnWTJGeWNua2diMjQiLCJicyI6ImM0V1BPUV9DTUJTRHhacUpPVndlT0FlVzdxamlXRG94SU1TY05vRThDSW1VQktyLWV3SUxDeXFqNWNfdjJXelBKbHRoVWVCc0d0UVVOYTZPYkF3Z2kzdURTbmpmTEozTnN5a2ZWd21rTmhET3NqVWJuclNJdUpHVmNHZElfN2lBUWdLc0ZTV0ZQQnZ4UWQxR3NDT2JGd0hielE1YWVLbDhPb3VvRlF3OWs0ZzYxUkNtY3RxWlBGdncyVHRheXI4c1c3Ri04ZjBDb3k3Q3ZOc2ZhaVZWV2pqZ1BmcmxoNF9mN2J3QSIsImlkIjoiZmNfdEFUaWF1SC1FcEtqcHRRUDI5YTJxUTRfNCJ9"
+    },
+    {
+      "question": "What kind of drug is cannabis?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJXaGF0IGtpbmQgb2YgZHJ1ZyBpcyBjYW5uYWJpcz8iLCJsayI6IkdoMTNhR0YwSUd0cGJtUWdiMllnWkhKMVp5QnBjeUJqWVc1dVlXSnBjdyIsImJzIjoiYzRXUE9RX0NNQlNEeFpxSk9Wd2VPQWVXN3FqaVdEb3hJTVNjTm9FOENJbVVCS3ItZXdJTEN5cWo1Y192Mld6UEpsdGhVZUJzR3RRVU5hNk9iQXdnaTN1RFNuamZMSjNOc3lrZlZ3bWtOaERPc2pVYm5yU0l1SkdWY0dkSV83aUFRZ0tzRlNXRlBCdnhRZDFHc0NPYkZ3SGJ6UTVhZUtsOE9vdW9GUXc5azRnNjFSQ21jdHFaUEZ2dzJUdGF5cjhzVzdGLThmMENveTdDdk5zZmFpVlZXampnUGZybGg0X2Y3YndBIiwiaWQiOiJmY190QVRpYXVILUVwS2pwdFFQMjlhMnFRNF80In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJXaGF0IGtpbmQgb2YgZHJ1ZyBpcyBjYW5uYWJpcz8iLCJsayI6IkdoMTNhR0YwSUd0cGJtUWdiMllnWkhKMVp5QnBjeUJqWVc1dVlXSnBjdyIsImJzIjoiYzRXUE9RX0NNQlNEeFpxSk9Wd2VPQWVXN3FqaVdEb3hJTVNjTm9FOENJbVVCS3ItZXdJTEN5cWo1Y192Mld6UEpsdGhVZUJzR3RRVU5hNk9iQXdnaTN1RFNuamZMSjNOc3lrZlZ3bWtOaERPc2pVYm5yU0l1SkdWY0dkSV83aUFRZ0tzRlNXRlBCdnhRZDFHc0NPYkZ3SGJ6UTVhZUtsOE9vdW9GUXc5azRnNjFSQ21jdHFaUEZ2dzJUdGF5cjhzVzdGLThmMENveTdDdk5zZmFpVlZXampnUGZybGg0X2Y3YndBIiwiaWQiOiJmY190QVRpYXVILUVwS2pwdFFQMjlhMnFRNF80In0%3D"
+    },
+    {
+      "question": "Is CBD harder on the liver than alcohol?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJJcyBDQkQgaGFyZGVyIG9uIHRoZSBsaXZlciB0aGFuIGFsY29ob2w/IiwibGsiOiJHaWRwY3lCalltUWdhR0Z5WkdWeUlHOXVJSFJvWlNCc2FYWmxjaUIwYUdGdUlHRnNZMjlvYjJ3IiwiYnMiOiJjNFdQT1FfQ01CU0R4WnFKT1Z3ZU9BZVc3cWppV0RveElNU2NOb0U4Q0ltVUJLci1ld0lMQ3lxajVjX3YyV3pQSmx0aFVlQnNHdFFVTmE2T2JBd2dpM3VEU25qZkxKM05zeWtmVndta05oRE9zalVibnJTSXVKR1ZjR2RJXzdpQVFnS3NGU1dGUEJ2eFFkMUdzQ09iRndIYnpRNWFlS2w4T291b0ZRdzlrNGc2MVJDbWN0cVpQRnZ3MlR0YXlyOHNXN0YtOGYwQ295N0N2TnNmYWlWVldqamdQZnJsaDRfZjdid0EiLCJpZCI6ImZjX3RBVGlhdUgtRXBLanB0UVAyOWEycVE0XzQifQ==",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJJcyBDQkQgaGFyZGVyIG9uIHRoZSBsaXZlciB0aGFuIGFsY29ob2w%2FIiwibGsiOiJHaWRwY3lCalltUWdhR0Z5WkdWeUlHOXVJSFJvWlNCc2FYWmxjaUIwYUdGdUlHRnNZMjlvYjJ3IiwiYnMiOiJjNFdQT1FfQ01CU0R4WnFKT1Z3ZU9BZVc3cWppV0RveElNU2NOb0U4Q0ltVUJLci1ld0lMQ3lxajVjX3YyV3pQSmx0aFVlQnNHdFFVTmE2T2JBd2dpM3VEU25qZkxKM05zeWtmVndta05oRE9zalVibnJTSXVKR1ZjR2RJXzdpQVFnS3NGU1dGUEJ2eFFkMUdzQ09iRndIYnpRNWFlS2w4T291b0ZRdzlrNGc2MVJDbWN0cVpQRnZ3MlR0YXlyOHNXN0YtOGYwQ295N0N2TnNmYWlWVldqamdQZnJsaDRfZjdid0EiLCJpZCI6ImZjX3RBVGlhdUgtRXBLanB0UVAyOWEycVE0XzQifQ%3D%3D"
+    },
+    {
+      "question": "Is cannabis legal in Sweden?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJJcyBjYW5uYWJpcyBsZWdhbCBpbiBTd2VkZW4/IiwibGsiOiJHaHRwY3lCallXNXVZV0pwY3lCc1pXZGhiQ0JwYmlCemQyVmtaVzQiLCJicyI6ImM0V1BPUV9DTUJTRHhacUpPVndlT0FlVzdxamlXRG94SU1TY05vRThDSW1VQktyLWV3SUxDeXFqNWNfdjJXelBKbHRoVWVCc0d0UVVOYTZPYkF3Z2kzdURTbmpmTEozTnN5a2ZWd21rTmhET3NqVWJuclNJdUpHVmNHZElfN2lBUWdLc0ZTV0ZQQnZ4UWQxR3NDT2JGd0hielE1YWVLbDhPb3VvRlF3OWs0ZzYxUkNtY3RxWlBGdncyVHRheXI4c1c3Ri04ZjBDb3k3Q3ZOc2ZhaVZWV2pqZ1BmcmxoNF9mN2J3QSIsImlkIjoiZmNfdEFUaWF1SC1FcEtqcHRRUDI5YTJxUTRfNCJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJSRVJpVjJWWlJWZEtWRmxXWVcxVmNGZDNVR1F4YVhka2RHNUdialpuUW5kd1duRm1TRkJuU20xSGExazFhRlpHVG1ZNWVrOUxiMUp3ZEdKcWJuQnRSbFl6Y3pSNVNtaFpiRTFSU0VaaFkwaDFhMVkxY1VaVFVqTmZZbEV0WVUxMlFSSVhkRUZVYVdGMVNDMUZjRXRxY0hSUlVESTVZVEp4VVRRYUlrRklUakJGTjBWWWVFVjNXRUZMVkhSSVEzbHllRXhxU3pGbk9YbHpPRXh3ZW5jIiwiZmN2IjoiMyIsImVpIjoidEFUaWF1SC1FcEtqcHRRUDI5YTJxUTQiLCJxYyI6IkNnaGpZVzV1WVdKcGN4QUFmWmpzX0Q0IiwicXVlc3Rpb24iOiJJcyBjYW5uYWJpcyBsZWdhbCBpbiBTd2VkZW4%2FIiwibGsiOiJHaHRwY3lCallXNXVZV0pwY3lCc1pXZGhiQ0JwYmlCemQyVmtaVzQiLCJicyI6ImM0V1BPUV9DTUJTRHhacUpPVndlT0FlVzdxamlXRG94SU1TY05vRThDSW1VQktyLWV3SUxDeXFqNWNfdjJXelBKbHRoVWVCc0d0UVVOYTZPYkF3Z2kzdURTbmpmTEozTnN5a2ZWd21rTmhET3NqVWJuclNJdUpHVmNHZElfN2lBUWdLc0ZTV0ZQQnZ4UWQxR3NDT2JGd0hielE1YWVLbDhPb3VvRlF3OWs0ZzYxUkNtY3RxWlBGdncyVHRheXI4c1c3Ri04ZjBDb3k3Q3ZOc2ZhaVZWV2pqZ1BmcmxoNF9mN2J3QSIsImlkIjoiZmNfdEFUaWF1SC1FcEtqcHRRUDI5YTJxUTRfNCJ9"
+    }
+  ],
+  "ai_overview": {
+    "error": "An AI Overview is not available for this search"
+  },
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "Educating the public on what cannabis really is.",
+      "link": "https://www.youtube.com/watch?v=CawCT7CNBxY",
+      "displayed_link": "60+ views",
+      "date": "2 years ago",
+      "thumbnail": "https://serpapi.com/searches/6ae204b45fa7b736fa5e178f/images/H__9PI0coshhOZ2ea8YMh5VfStnwe-4fLZQIgbwfuRA.jpeg",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8_9hAAAAhUlEQVR4AWNwL_ChCFPHgP8MxqxA7ArEKVBcCcUNIAznI-RdQXrABgAZpv8ZjP6Tg0F6QQbsosCAXSADHmGVVPIC0jKEDHgAMuAbmgRE445D___feYzXIJBeBigH04BVW_9DAcgwqEGYaik2gGIvUByIlEbjDooTEiwps5GRlNmolpkowgBVP9wMSzSKGAAAAABJRU5ErkJggg.png",
+      "snippet": "The CEO of Hempire Agric Ghana,Nana Kwaku Agyemang educating the public on what cannabis really is.",
+      "duration": "2:23",
+      "about_this_result": {
+        "source": {
+          "description": "The CEO of Hempire Agric Ghana,Nana Kwaku Agyemang educating the public on what cannabis really is.",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8_9hAAAAhUlEQVR4AWNwL_ChCFPHgP8MxqxA7ArEKVBcCcUNIAznI-RdQXrABgAZpv8ZjP6Tg0F6QQbsosCAXSADHmGVVPIC0jKEDHgAMuAbmgRE445D___feYzXIJBeBigH04BVW_9DAcgwqEGYaik2gGIvUByIlEbjDooTEiwps5GRlNmolpkowgBVP9wMSzSKGAAAAABJRU5ErkJggg.png"
+        }
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpgBL2dvdG8_dXJsPUNBRVNaZ0hyT3pBVnhENzJVajJBVzBNeXNLQjJ4SEZtTjA1ZDFzcFY5azZtU21oYXU0azRKZjE0Y1VxMXRfeXp4T0xucm1qSHNFclJtZ3dQWFVLUGNpMVlaaU9icHJQbHp3YUJkRjg3cmI0bThQbE13dkptZUlGQktWWmRGZXNkQ1A3NTlmUXdIQ0t3NkESFgoQCgQIMEgCCgQISEgCCgIIPxoCCAAaFhIAGgAiACoAMgA6AEIASgBaAHIAegAiAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpgBL2dvdG8_dXJsPUNBRVNaZ0hyT3pBVnhENzJVajJBVzBNeXNLQjJ4SEZtTjA1ZDFzcFY5azZtU21oYXU0azRKZjE0Y1VxMXRfeXp4T0xucm1qSHNFclJtZ3dQWFVLUGNpMVlaaU9icHJQbHp3YUJkRjg3cmI0bThQbE13dkptZUlGQktWWmRGZXNkQ1A3NTlmUXdIQ0t3NkESFgoQCgQIMEgCCgQISEgCCgIIPxoCCAAaFhIAGgAiACoAMgA6AEIASgBaAHIAegAiAhABSABYAGgA",
+      "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcRs2vlFlPlGXLRgUTJQxua5jZdsSW9JacI9OQ",
+      "source": "YouTube · Hempire Agric Ghana"
+    },
+    {
+      "position": 2,
+      "title": "Nuna Harvest Blog | Your Guide to Cannabis Lifestyle",
+      "link": "https://nunaharvest.com/blog/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESWAHrOzAVrK1dRpKwh5xnSJ-yMZXDGniHEquVNCgQ_ysgC03XjCaNqiXJI2BRNUgrw8tctW1-jYZyrRwmCdN2BkQNvlcsQovlws_BaSLa3lNcRHPbPHKFGXM&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQFnoECDYQAQ&uoh=1",
+      "displayed_link": "https://nunaharvest.com › blog",
+      "favicon": "https://serpapi.com/searches/6ae204b45fa7b736fa5e178f/images/H__9PI0coshhOZ2ea8YMh0tBuBdiBGoSwhCvG8A3TTA.png",
+      "snippet": "Get educated on cannabis, wellness, and local events with the Nuna Harvest blog. Access valuable information and stay engaged with our growing community.",
+      "snippet_highlighted_words": [
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Get educated on cannabis, wellness, and local events with the Nuna Harvest blog. Access valuable information and stay engaged with our growing community.",
+          "source_info_link": "https://nunaharvest.com/blog/",
+          "icon": "https://serpapi.com/searches/6ae204b45fa7b736fa5e178f/images/H__9PI0coshhOZ2ea8YMh4hB7oTv5dd3cHWJqpgvXA9PKQRdTWFYIDNOc8RTDX9c.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CoUBL2dvdG8_dXJsPUNBRVNXQUhyT3pBVjhfVjR1bFV3Unh6T1BTNnlsLTBSREM0MjdXanNRT1MyLVEzV2FVV2tSMHlyV1k2bDUwVGl4OUNvYWlVczRkd0dhaWdhZlpScnpyaTZNNTdpVUY3OElWaWZCTzA4c05ZNGlnSGllYkd4S0F1bmRUURIEGgIIABqlAxIAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkCBAwgAEAAYACAAKg8KCGNhbm5hYmlzFVohqUAyhQEvZ290bz91cmw9Q0FFU1dBSHJPekFWOF9WNHVsVXdSeHpPUFM2eWwtMFJEQzQyN1dqc1FPUzItUTNXYVVXa1IweXJXWTZsNTBUaXg5Q29haVVzNGR3R2FpZ2FmWlJyenJpNk01N2lVRjc4SVZpZkJPMDhzTlk0aWdIaWViR3hLQXVuZFRROjtOdW5hIEhhcnZlc3QgQmxvZyB8IFlvdXIgR3VpZGUgdG8gPGI-Q2FubmFiaXM8L2I-IExpZmVzdHlsZUKgAUdldCBlZHVjYXRlZCBvbiA8Yj5jYW5uYWJpczwvYj4sIHdlbGxuZXNzLCBhbmQgbG9jYWwgZXZlbnRzIHdpdGggdGhlIE51bmEgSGFydmVzdCBibG9nLiBBY2Nlc3MgdmFsdWFibGUgaW5mb3JtYXRpb24gYW5kIHN0YXkgZW5nYWdlZCB3aXRoIG91ciBncm93aW5nIGNvbW11bml0eS4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CoUBL2dvdG8_dXJsPUNBRVNXQUhyT3pBVjhfVjR1bFV3Unh6T1BTNnlsLTBSREM0MjdXanNRT1MyLVEzV2FVV2tSMHlyV1k2bDUwVGl4OUNvYWlVczRkd0dhaWdhZlpScnpyaTZNNTdpVUY3OElWaWZCTzA4c05ZNGlnSGllYkd4S0F1bmRUURIEGgIIABqlAxIAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkCBAwgAEAAYACAAKg8KCGNhbm5hYmlzFVohqUAyhQEvZ290bz91cmw9Q0FFU1dBSHJPekFWOF9WNHVsVXdSeHpPUFM2eWwtMFJEQzQyN1dqc1FPUzItUTNXYVVXa1IweXJXWTZsNTBUaXg5Q29haVVzNGR3R2FpZ2FmWlJyenJpNk01N2lVRjc4SVZpZkJPMDhzTlk0aWdIaWViR3hLQXVuZFRROjtOdW5hIEhhcnZlc3QgQmxvZyB8IFlvdXIgR3VpZGUgdG8gPGI-Q2FubmFiaXM8L2I-IExpZmVzdHlsZUKgAUdldCBlZHVjYXRlZCBvbiA8Yj5jYW5uYWJpczwvYj4sIHdlbGxuZXNzLCBhbmQgbG9jYWwgZXZlbnRzIHdpdGggdGhlIE51bmEgSGFydmVzdCBibG9nLiBBY2Nlc3MgdmFsdWFibGUgaW5mb3JtYXRpb24gYW5kIHN0YXkgZW5nYWdlZCB3aXRoIG91ciBncm93aW5nIGNvbW11bml0eS4iAhABSABYAGgA",
+      "source": "Nuna Harvest"
+    },
+    {
+      "position": 3,
+      "title": "Cannabis and CBD Blog",
+      "link": "https://thriveflower.com/blog/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESWQHrOzAVBHSoHesSSGjqqgyMN75pkGd9wZCyQf3aMRFkMTgwLGvkkVSD7QX_szEguDxfkGx6w30dq_aHNT-E6mUdgSY0X0tZ5V9rxiYuiwc8m9zY5t08WAtC&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQFnoECDUQAQ&uoh=1",
+      "displayed_link": "https://thriveflower.com › blog",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAJ1BMVEVHcEwAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmL_iegMAAAADHRSTlMAVtVB7cQRgnCQqyY1sh3fAAAAs0lEQVQokYWR2QKEIAhFc9_u_3_vCGijlsZL4Am4wHV9WDxBZw9Q40AtoA-ZQNhpIIjyD6cmmaAeohEGgjASKMzQMHQSYIH8AHhyU3XmwRzD2P9zE1R3XfbSPKnU7TXMDENvioeenmou_1K1TaPk41fIW4qshxN9dOO6NWUqGdJnLIeyUrY0ecuJq6BCYzisedyoLqEdMKxMjPLyU7DMpJN6J1_mVUixbKAcyO5KR5Jr-TI_jdYIU2Sxc6UAAAAASUVORK5CYII.png",
+      "snippet": "Philly's Thrive Flower has a very well researched and in-depth CBD blog covering many different topics about cannabis. Click to learn now!",
+      "snippet_highlighted_words": [
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Philly's Thrive Flower has a very well researched and in-depth CBD blog covering many different topics about cannabis. Click to learn now!",
+          "source_info_link": "https://thriveflower.com/blog/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAJ1BMVEVHcEwAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmIAYmL_iegMAAAADHRSTlMAVtVB7cQRgnCQqyY1sh3fAAAAs0lEQVQokYWR2QKEIAhFc9_u_3_vCGijlsZL4Am4wHV9WDxBZw9Q40AtoA-ZQNhpIIjyD6cmmaAeohEGgjASKMzQMHQSYIH8AHhyU3XmwRzD2P9zE1R3XfbSPKnU7TXMDENvioeenmou_1K1TaPk41fIW4qshxN9dOO6NWUqGdJnLIeyUrY0ecuJq6BCYzisedyoLqEdMKxMjPLyU7DMpJN6J1_mVUixbKAcyO5KR5Jr-TI_jdYIU2Sxc6UAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CoYBL2dvdG8_dXJsPUNBRVNXUUhyT3pBVmJhOGRsMHBycVR6ck1DRGM4bENnaEJxNUIxLTNtRDN0XzJwYUFpTUJycl9Eak02RHJ1UHc2dUJBWHpHRHlKTzBNS3BIZEpDWWdMYXlHVWpjSEtmaGJOUEJVOW1DNVJMUUNCcjYyMzRnZ3drSGw1QUESBBoCCAAaoAMSAggAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkD6AggAEAAYACAAKg8KCGNhbm5hYmlzFZ7Ja0AyhgEvZ290bz91cmw9Q0FFU1dRSHJPekFWYmE4ZGwwcHJxVHpyTUNEYzhsQ2doQnE1QjEtM21EM3RfMnBhQWlNQnJyX0RqTTZEcnVQdzZ1QkFYekdEeUpPME1LcEhkSkNZZ0xheUdVamNIS2ZoYk5QQlU5bUM1UkxRQ0JyNjIzNGdnd2tIbDVBQTo-PGI-Q2FubmFiaXM8L2I-IGFuZCBDQkQgQmxvZyB8IFRocml2ZSBGbG93ZXIgfCBMZWFybiBBYm91dCBDQkRClQFQaGlsbHkmIzM5O3MgVGhyaXZlIEZsb3dlciBoYXMgYSB2ZXJ5IHdlbGwgcmVzZWFyY2hlZCBhbmQgaW4tZGVwdGggQ0JEIGJsb2cgY292ZXJpbmcgbWFueSBkaWZmZXJlbnQgdG9waWNzIGFib3V0IDxiPmNhbm5hYmlzPC9iPi4gQ2xpY2sgdG8gbGVhcm4gbm93ISICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CoYBL2dvdG8_dXJsPUNBRVNXUUhyT3pBVmJhOGRsMHBycVR6ck1DRGM4bENnaEJxNUIxLTNtRDN0XzJwYUFpTUJycl9Eak02RHJ1UHc2dUJBWHpHRHlKTzBNS3BIZEpDWWdMYXlHVWpjSEtmaGJOUEJVOW1DNVJMUUNCcjYyMzRnZ3drSGw1QUESBBoCCAAaoAMSAggAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkD6AggAEAAYACAAKg8KCGNhbm5hYmlzFZ7Ja0AyhgEvZ290bz91cmw9Q0FFU1dRSHJPekFWYmE4ZGwwcHJxVHpyTUNEYzhsQ2doQnE1QjEtM21EM3RfMnBhQWlNQnJyX0RqTTZEcnVQdzZ1QkFYekdEeUpPME1LcEhkSkNZZ0xheUdVamNIS2ZoYk5QQlU5bUM1UkxRQ0JyNjIzNGdnd2tIbDVBQTo-PGI-Q2FubmFiaXM8L2I-IGFuZCBDQkQgQmxvZyB8IFRocml2ZSBGbG93ZXIgfCBMZWFybiBBYm91dCBDQkRClQFQaGlsbHkmIzM5O3MgVGhyaXZlIEZsb3dlciBoYXMgYSB2ZXJ5IHdlbGwgcmVzZWFyY2hlZCBhbmQgaW4tZGVwdGggQ0JEIGJsb2cgY292ZXJpbmcgbWFueSBkaWZmZXJlbnQgdG9waWNzIGFib3V0IDxiPmNhbm5hYmlzPC9iPi4gQ2xpY2sgdG8gbGVhcm4gbm93ISICEAFIAFgAaAA",
+      "source": "Thrive Flower"
+    },
+    {
+      "position": 4,
+      "title": "What Is Marijuana and How Is it Used? - TheStreet",
+      "link": "https://www.thestreet.com/retail/what-is-cannabis-14578863",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESdQHrOzAVQMcCzB-y5Q8SGV31_okwxhIySSQcpelVAp5BkD0p-cYZoqGqksh8KY96WC1W7mhfvbJyMUPf0rI8rrC4xQ1RlWi89Fsrp-HzNa5b0HWYBovDlgFWfCxDSPeRKAkmM2Bf_NHWTNyE7wxZqV5pX68gjA&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQFnoECDgQAQ&uoh=1",
+      "displayed_link": "https://www.thestreet.com › Retail",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAxklEQVR4Aa3SIQjCUBSF4T9YVl6yV5vFbDba49qqcbBuNS0NTEuLVqvVbLXZDYtHD0xEdrHonx58XO4Nj_Sln5FXAZJXpavWBKih2ze84kY7l08iMdt1bU72RsfcSDPMW984MbL2WkktAe6lA6VHA-ykmo2PjicvpLouIlx55xJIAdLqWUMWYaKwXojQneSTAyy6bkEj9RGepS1-fWI27fubsRqhFeAoHdlK9090w63jgwbdyZ3JAkyQl5uZLUCvZvK3fxv3AJa7uWaCXW15AAAAAElFTkSuQmCC.png",
+      "date": "Nov 17, 2020",
+      "snippet": "At its most basic, cannabis is a plant. This plant secretes hundreds of chemical compounds that give the drug many of its most defining traits.",
+      "snippet_highlighted_words": [
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "At its most basic, cannabis is a plant. This plant secretes hundreds of chemical compounds that give the drug many of its most defining traits.",
+          "source_info_link": "https://www.thestreet.com/retail/what-is-cannabis-14578863",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAAxklEQVR4Aa3SIQjCUBSF4T9YVl6yV5vFbDba49qqcbBuNS0NTEuLVqvVbLXZDYtHD0xEdrHonx58XO4Nj_Sln5FXAZJXpavWBKih2ze84kY7l08iMdt1bU72RsfcSDPMW984MbL2WkktAe6lA6VHA-ykmo2PjicvpLouIlx55xJIAdLqWUMWYaKwXojQneSTAyy6bkEj9RGepS1-fWI27fubsRqhFeAoHdlK9090w63jgwbdyZ3JAkyQl5uZLUCvZvK3fxv3AJa7uWaCXW15AAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqwBL2dvdG8_dXJsPUNBRVNkUUhyT3pBVjBwNjRaaWpZN0xvVTE4OE9nMWhUOUN4TVpKZWRjRS13bmhWV2JmTVV3cEtXRjdzaWNkM2JUclRGYlhId0tQaDZ0ejA2Z1NvYXpuZXNjQXFob1k2bEdhSmVEVDVXRGdlbG1lN0JjRzBmUVdmSE5nTURyZ3ZoRFVPVzJfWHlBLUp6dDk3cllZSmVxOFNlMjc4VHpkTENYdxIEGgIIABq4AxIAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCUAwgAEAAYACAAKg8KCGNhbm5hYmlzFfaO8T8yrAEvZ290bz91cmw9Q0FFU2RRSHJPekFWMHA2NFppalk3TG9VMTg4T2cxaFQ5Q3hNWkplZGNFLXduaFZXYmZNVXdwS1dGN3NpY2QzYlRyVEZiWEh3S1BoNnR6MDZnU29hem5lc2NBcWhvWTZsR2FKZURUNVdEZ2VsbWU3QmNHMGZRV2ZITmdNRHJndmhEVU9XMl9YeUEtSnp0OTdyWVlKZXE4U2UyNzhUemRMQ1h3OjFXaGF0IElzIE1hcmlqdWFuYSBhbmQgSG93IElzIGl0IFVzZWQ_IC0gVGhlU3RyZWV0QpYBQXQgaXRzIG1vc3QgYmFzaWMsIDxiPmNhbm5hYmlzPC9iPiBpcyBhIHBsYW50LiBUaGlzIHBsYW50IHNlY3JldGVzIGh1bmRyZWRzIG9mIGNoZW1pY2FsIGNvbXBvdW5kcyB0aGF0IGdpdmUgdGhlIGRydWcgbWFueSBvZiBpdHMgbW9zdCBkZWZpbmluZyB0cmFpdHMuIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqwBL2dvdG8_dXJsPUNBRVNkUUhyT3pBVjBwNjRaaWpZN0xvVTE4OE9nMWhUOUN4TVpKZWRjRS13bmhWV2JmTVV3cEtXRjdzaWNkM2JUclRGYlhId0tQaDZ0ejA2Z1NvYXpuZXNjQXFob1k2bEdhSmVEVDVXRGdlbG1lN0JjRzBmUVdmSE5nTURyZ3ZoRFVPVzJfWHlBLUp6dDk3cllZSmVxOFNlMjc4VHpkTENYdxIEGgIIABq4AxIAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCUAwgAEAAYACAAKg8KCGNhbm5hYmlzFfaO8T8yrAEvZ290bz91cmw9Q0FFU2RRSHJPekFWMHA2NFppalk3TG9VMTg4T2cxaFQ5Q3hNWkplZGNFLXduaFZXYmZNVXdwS1dGN3NpY2QzYlRyVEZiWEh3S1BoNnR6MDZnU29hem5lc2NBcWhvWTZsR2FKZURUNVdEZ2VsbWU3QmNHMGZRV2ZITmdNRHJndmhEVU9XMl9YeUEtSnp0OTdyWVlKZXE4U2UyNzhUemRMQ1h3OjFXaGF0IElzIE1hcmlqdWFuYSBhbmQgSG93IElzIGl0IFVzZWQ_IC0gVGhlU3RyZWV0QpYBQXQgaXRzIG1vc3QgYmFzaWMsIDxiPmNhbm5hYmlzPC9iPiBpcyBhIHBsYW50LiBUaGlzIHBsYW50IHNlY3JldGVzIGh1bmRyZWRzIG9mIGNoZW1pY2FsIGNvbXBvdW5kcyB0aGF0IGdpdmUgdGhlIGRydWcgbWFueSBvZiBpdHMgbW9zdCBkZWZpbmluZyB0cmFpdHMuIgIQAUgAWABoAA",
+      "source": "thestreet.com",
+      "read_more_link": "https://www.thestreet.com/retail/what-is-cannabis-14578863#:~:text=At%20its%20most%20basic%2C%20cannabis,of%20its%20most%20defining%20traits."
+    },
+    {
+      "position": 5,
+      "title": "https://dph.illinois.gov/topics-services/preventio...",
+      "link": "https://dph.illinois.gov/topics-services/prevention-wellness/medical-cannabis/cannabis-portal.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESnQEB6zswFX99WB0kEq95aeyZF6JnzXM2zsvskGLI6XXoEkXlpoNXPYFr-cJW4p8vfR8u4kLi0seN-_HpbOlI38zXuDkbI4sacqU1S89j9L2VK1bu2o5pd9s-k6MD4TH_N0rq797YyhyGo-oLjGos0xWE8YzTODcN6Vu-SXK5Af0oQxl5yMLi01ga0uvpyb3qql2Dm1XH1Ha-ClqJ3TF-&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQFnoECDQQAQ&uoh=1",
+      "displayed_link": "https://dph.illinois.gov › topics-services › cannabis-portal",
+      "snippet": "No information is available for this page.",
+      "about_this_result": {
+        "source": {
+          "source_info_link": "https://dph.illinois.gov/topics-services/prevention-wellness/medical-cannabis/cannabis-portal.html"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CuIBL2dvdG8_dXJsPUNBRVNuUUVCNnpzd0ZjeUkyZkF2MHhnd1VVQnZ3MlYtTVRNblpwQWp0ODBteTdVYXdMYWxuS0dMclRKYmo5bEZTZEhReElUT2dIaUJCZnF2ZzBNR0s2U0pHanFuSGRMV2xnc2N4elQwclY3V0xaSFU5cjF0YkFaZGo0Vmdqak9SRnFuNzZDOVkzbElhUUN1bzdydXgyTmVlVm41MUc5WnRLSmE4dXhjdWNIZS00Z3RXRnJkejNUU3ZDUlozTXdmYUpibGtDbU90bFdFR082TWR2YVhVT1FOdhIEGgIIABqkAhIAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkCAAggAEAAYACAAKg8KCGNhbm5hYmlzFQAAAD8y4gEvZ290bz91cmw9Q0FFU25RRUI2enN3RmN5STJmQXYweGd3VVVCdncyVi1NVE1uWnBBanQ4MG15N1Vhd0xhbG5LR0xyVEpiajlsRlNkSFF4SVRPZ0hpQkJmcXZnME1HSzZTSkdqcW5IZExXbGdzY3h6VDByVjdXTFpIVTlyMXRiQVpkajRWZ2pqT1JGcW43NkM5WTNsSWFRQ3VvN3J1eDJOZWVWbjUxRzladEtKYTh1eGN1Y0hlLTRndFdGcmR6M1RTdkNSWjNNd2ZhSmJsa0NtT3RsV0VHTzZNZHZhWFVPUU52OgAiAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CuIBL2dvdG8_dXJsPUNBRVNuUUVCNnpzd0ZjeUkyZkF2MHhnd1VVQnZ3MlYtTVRNblpwQWp0ODBteTdVYXdMYWxuS0dMclRKYmo5bEZTZEhReElUT2dIaUJCZnF2ZzBNR0s2U0pHanFuSGRMV2xnc2N4elQwclY3V0xaSFU5cjF0YkFaZGo0Vmdqak9SRnFuNzZDOVkzbElhUUN1bzdydXgyTmVlVm41MUc5WnRLSmE4dXhjdWNIZS00Z3RXRnJkejNUU3ZDUlozTXdmYUpibGtDbU90bFdFR082TWR2YVhVT1FOdhIEGgIIABqkAhIAGgAiACoAMgYIARICdXM6AEIECAEQAEoAWgByAHoAgkCAAggAEAAYACAAKg8KCGNhbm5hYmlzFQAAAD8y4gEvZ290bz91cmw9Q0FFU25RRUI2enN3RmN5STJmQXYweGd3VVVCdncyVi1NVE1uWnBBanQ4MG15N1Vhd0xhbG5LR0xyVEpiajlsRlNkSFF4SVRPZ0hpQkJmcXZnME1HSzZTSkdqcW5IZExXbGdzY3h6VDByVjdXTFpIVTlyMXRiQVpkajRWZ2pqT1JGcW43NkM5WTNsSWFRQ3VvN3J1eDJOZWVWbjUxRzladEtKYTh1eGN1Y0hlLTRndFdGcmR6M1RTdkNSWjNNd2ZhSmJsa0NtT3RsV0VHTzZNZHZhWFVPUU52OgAiAhABSABYAGgA",
+      "source": "Illinois Department of Public Health"
+    },
+    {
+      "position": 6,
+      "title": "Go inside one of the first medical cannabis dispensaries in Texas",
+      "link": "https://www.youtube.com/watch?v=a8Qk6R-YDgQ",
+      "displayed_link": "490+ views",
+      "date": "8 years ago",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRs8YOT9gylRcVOAMSKMjEnphi2eQdFp-hkKioLhKyopeHkT5yzfMonQ&s",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8_9hAAAAhUlEQVR4AWNwL_ChCFPHgP8MxqxA7ArEKVBcCcUNIAznI-RdQXrABgAZpv8ZjP6Tg0F6QQbsosCAXSADHmGVVPIC0jKEDHgAMuAbmgRE445D___feYzXIJBeBigH04BVW_9DAcgwqEGYaik2gGIvUByIlEbjDooTEiwps5GRlNmolpkowgBVP9wMSzSKGAAAAABJRU5ErkJggg.png",
+      "snippet": "Video: Go inside one of the first medical cannabis dispensaries in Texas. @KSATnews 8 likes 491 views 8y ago.",
+      "duration": "2:04",
+      "about_this_result": {
+        "source": {
+          "description": "Video: Go inside one of the first medical cannabis dispensaries in Texas. @KSATnews 8 likes 491 views 8y ago.",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8_9hAAAAhUlEQVR4AWNwL_ChCFPHgP8MxqxA7ArEKVBcCcUNIAznI-RdQXrABgAZpv8ZjP6Tg0F6QQbsosCAXSADHmGVVPIC0jKEDHgAMuAbmgRE445D___feYzXIJBeBigH04BVW_9DAcgwqEGYaik2gGIvUByIlEbjDooTEiwps5GRlNmolpkowgBVP9wMSzSKGAAAAABJRU5ErkJggg.png"
+        }
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpgBL2dvdG8_dXJsPUNBRVNaZ0hyT3pBVnZBQ050SzZhVVNmRlRGTU1HODVfV3dZcHFjRjh4S2FYeUdNYW5ISU5uTVctYWVNN2pRalZFZmJxQTBFeFVTUlAyajZfUFNRLU9KRmFGNTJJLWN4ZHU2a0pyaHA4dENDY3NDQzN0bVZXX0V1M3dIZUVDRXRNTEhlcl92ODVoUlFmZ3cSFgoQCgQIMEgCCgQISEgCCgIIPxoCCAAaFhIAGgAiACoAMgA6AEIASgBaAHIAegAiAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpgBL2dvdG8_dXJsPUNBRVNaZ0hyT3pBVnZBQ050SzZhVVNmRlRGTU1HODVfV3dZcHFjRjh4S2FYeUdNYW5ISU5uTVctYWVNN2pRalZFZmJxQTBFeFVTUlAyajZfUFNRLU9KRmFGNTJJLWN4ZHU2a0pyaHA4dENDY3NDQzN0bVZXX0V1M3dIZUVDRXRNTEhlcl92ODVoUlFmZ3cSFgoQCgQIMEgCCgQISEgCCgIIPxoCCAAaFhIAGgAiACoAMgA6AEIASgBaAHIAegAiAhABSABYAGgA",
+      "video_link": "https://encrypted-vtbn0.gstatic.com/video?q=tbn:ANd9GcRZ5tQLwrLHugXrUCgPG13-EC-n_jox_Xu5Qg",
+      "source": "YouTube · KSAT 12"
+    },
+    {
+      "position": 7,
+      "title": "Understanding Cannabis THC: What You Need to Know",
+      "link": "https://apotforpot.com/blogs/learn/thc/?srsltid=AYCX9vJWM6Nzkdhwn12Tz08zfzzfFCfPGGSMagIaJXHxZNIT3OUH2131",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESowEB6zswFVA1U1wglQAbmPdDdiYDGbejlJbLSc3g7B7k4cq0GxgUpQl_prmqtgVAB_ZXTQucIM7WZ1-9t0oyiOCFezsQDtSOqGNToWveqa2lvzWBZt45ZjFK5QtGCDGVD_KrPe--y0OyAJ4paVdJ7P1vFCuYemKyWCrpqsGX2eiYGTG3IVvShCF4pW3I95x19uXkK0_6ZAGmDPvVr06Kk2VmfnYM&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQFnoECDoQAQ&uoh=1",
+      "displayed_link": "https://apotforpot.com › blogs › learn › thc",
+      "snippet": "Many cannabis lovers use cannabis for its pain-relieving effects, making it a go-to for people like veterans and those with chronic pain. Retired ...",
+      "snippet_highlighted_words": [
+        "cannabis",
+        "cannabis"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Many cannabis lovers use cannabis for its pain-relieving effects, making it a go-to for people like veterans and those with chronic pain. Retired ...",
+          "source_info_link": "https://apotforpot.com/blogs/learn/thc/?srsltid=AYCX9vJWM6Nzkdhwn12Tz08zfzzfFCfPGGSMagIaJXHxZNIT3OUH2131"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CuoBL2dvdG8_dXJsPUNBRVNvd0VCNnpzd0ZXZHVzcENXVTRwQmlIbjZiVUpBQnlCS0tucWl5N3dzN0tRaExjeURSM3RzT015Rm14cFQxb2xYbW9paFg4NG5EeHFNWDdYanRITWlvNjMxaGxGMUFidVM1TVN3Y2ZUTURqZnRROHJsVl9iQldjR2twSFNadzdJQmsxSFJQSGVSZkxCUExrcm43OXhkOWlHdjdPSzNoWEFldFVmRU84RDZUWUlOc2tjQlZhVHh5dXc4VUVrUnJkTHBoSzNsN3VYeEtPMXBuNVpFWEVSTlozdDZxYlJsEgQaAggAGrcDEgAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQJMDCAAQABgAIAAqDwoIY2FubmFiaXMVpiOoQDKSAS9nb3RvP3VybD1DQUVTWWdIck96QVZZZkNfMTJuUW1WVXB0ekVQbnk1VTl4MVM5T1AzbjMtTkM3MHFUT2pmUFZHbzhGZU9CY0lPT3JWdm9Mb05RWmhodmVadk1mUTNfaEVOa1RiZWE1T1ZoLUhzeGs2ZERyZDFscFlvWVFQSkNDeE0taG9GTWN6RElGOVlTV0JxOjhVbmRlcnN0YW5kaW5nIDxiPkNhbm5hYmlzPC9iPiBUSEM6IFdoYXQgWW91IE5lZWQgdG8gS25vd0KoAU1hbnkgPGI-Y2FubmFiaXM8L2I-IGxvdmVycyB1c2UgPGI-Y2FubmFiaXM8L2I-IGZvciBpdHMgcGFpbi1yZWxpZXZpbmcgZWZmZWN0cywgbWFraW5nIGl0IGEgZ28tdG8gZm9yIHBlb3BsZSBsaWtlIHZldGVyYW5zIGFuZCB0aG9zZSB3aXRoIGNocm9uaWMgcGFpbi4gUmV0aXJlZCZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CuoBL2dvdG8_dXJsPUNBRVNvd0VCNnpzd0ZXZHVzcENXVTRwQmlIbjZiVUpBQnlCS0tucWl5N3dzN0tRaExjeURSM3RzT015Rm14cFQxb2xYbW9paFg4NG5EeHFNWDdYanRITWlvNjMxaGxGMUFidVM1TVN3Y2ZUTURqZnRROHJsVl9iQldjR2twSFNadzdJQmsxSFJQSGVSZkxCUExrcm43OXhkOWlHdjdPSzNoWEFldFVmRU84RDZUWUlOc2tjQlZhVHh5dXc4VUVrUnJkTHBoSzNsN3VYeEtPMXBuNVpFWEVSTlozdDZxYlJsEgQaAggAGrcDEgAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQJMDCAAQABgAIAAqDwoIY2FubmFiaXMVpiOoQDKSAS9nb3RvP3VybD1DQUVTWWdIck96QVZZZkNfMTJuUW1WVXB0ekVQbnk1VTl4MVM5T1AzbjMtTkM3MHFUT2pmUFZHbzhGZU9CY0lPT3JWdm9Mb05RWmhodmVadk1mUTNfaEVOa1RiZWE1T1ZoLUhzeGs2ZERyZDFscFlvWVFQSkNDeE0taG9GTWN6RElGOVlTV0JxOjhVbmRlcnN0YW5kaW5nIDxiPkNhbm5hYmlzPC9iPiBUSEM6IFdoYXQgWW91IE5lZWQgdG8gS25vd0KoAU1hbnkgPGI-Y2FubmFiaXM8L2I-IGxvdmVycyB1c2UgPGI-Y2FubmFiaXM8L2I-IGZvciBpdHMgcGFpbi1yZWxpZXZpbmcgZWZmZWN0cywgbWFraW5nIGl0IGEgZ28tdG8gZm9yIHBlb3BsZSBsaWtlIHZldGVyYW5zIGFuZCB0aG9zZSB3aXRoIGNocm9uaWMgcGFpbi4gUmV0aXJlZCZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "a Pot for Pot",
+      "read_more_link": "https://apotforpot.com/blogs/learn/thc/?srsltid=AYCX9vJWM6Nzkdhwn12Tz08zfzzfFCfPGGSMagIaJXHxZNIT3OUH2131#:~:text=Many%20cannabis%20lovers%20use%20cannabis,and%20addictive%20prescription%20pain%20killers."
+    }
+  ],
+  "related_searches": [
+    {
+      "block_position": 1,
+      "query": "Cannabis dispensary",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Cannabis+dispensary&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAgyEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis+dispensary&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Cannabis store",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Cannabis+store&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAhHEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis+store&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Dispensary near me",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Dispensary+near+me&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAhAEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Dispensary+near+me&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Cannabis products",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Cannabis+products&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAg8EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis+products&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Dispensary",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Dispensary&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAg7EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Dispensary&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Cannabis store near me",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Cannabis+store+near+me&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAg5EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis+store+near+me&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Cannabis shop",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Cannabis+shop&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAg3EAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis+shop&safe=off"
+    },
+    {
+      "block_position": 1,
+      "query": "Cannabis dispensary near me",
+      "link": "https://www.google.com/search?safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&q=Cannabis+dispensary+near+me&sa=X&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ1QJ6BAgzEAE",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=Cannabis+dispensary+near+me&safe=off"
+    }
+  ],
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&ei=tATiauH-EpKjptQP29a2qQ4&start=10&sa=N&sstk=AS6-VmJlUEBUzkj-9YAIjxb9A-FlLSOz2_HPoTGTPy__lHtTZZx8WMTEHLUwj_fjUXnDOgD4S4-qO3Zj_Pd3mj7tKMEH8NQFyN_g3A&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ8NMDegQISRAQ",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&ei=tATiauH-EpKjptQP29a2qQ4&start=10&sa=N&sstk=AS6-VmJlUEBUzkj-9YAIjxb9A-FlLSOz2_HPoTGTPy__lHtTZZx8WMTEHLUwj_fjUXnDOgD4S4-qO3Zj_Pd3mj7tKMEH8NQFyN_g3A&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ8tMDegQISRAE",
+      "3": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&ei=tATiauH-EpKjptQP29a2qQ4&start=20&sa=N&sstk=AS6-VmJlUEBUzkj-9YAIjxb9A-FlLSOz2_HPoTGTPy__lHtTZZx8WMTEHLUwj_fjUXnDOgD4S4-qO3Zj_Pd3mj7tKMEH8NQFyN_g3A&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ8tMDegQISRAG",
+      "4": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&ei=tATiauH-EpKjptQP29a2qQ4&start=30&sa=N&sstk=AS6-VmJlUEBUzkj-9YAIjxb9A-FlLSOz2_HPoTGTPy__lHtTZZx8WMTEHLUwj_fjUXnDOgD4S4-qO3Zj_Pd3mj7tKMEH8NQFyN_g3A&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ8tMDegQISRAI",
+      "5": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&ei=tATiauH-EpKjptQP29a2qQ4&start=40&sa=N&sstk=AS6-VmJlUEBUzkj-9YAIjxb9A-FlLSOz2_HPoTGTPy__lHtTZZx8WMTEHLUwj_fjUXnDOgD4S4-qO3Zj_Pd3mj7tKMEH8NQFyN_g3A&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ8tMDegQISRAK",
+      "6": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&ei=tATiauH-EpKjptQP29a2qQ4&start=50&sa=N&sstk=AS6-VmJlUEBUzkj-9YAIjxb9A-FlLSOz2_HPoTGTPy__lHtTZZx8WMTEHLUwj_fjUXnDOgD4S4-qO3Zj_Pd3mj7tKMEH8NQFyN_g3A&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ8tMDegQISRAM",
+      "7": "https://www.google.com/search?q=%22cannabis%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=AKL5yDjPfBC3_FD1BCDDXA91wXLqyRhoLw:1793197236319&ei=tATiauH-EpKjptQP29a2qQ4&start=60&sa=N&sstk=AS6-VmJlUEBUzkj-9YAIjxb9A-FlLSOz2_HPoTGTPy__lHtTZZx8WMTEHLUwj_fjUXnDOgD4S4-qO3Zj_Pd3mj7tKMEH8NQFyN_g3A&ved=2ahUKEwjhqKGi9NyXAxWSkYkEHVurLeUQ8tMDegQISRAO"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=30",
+      "5": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=40",
+      "6": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=50",
+      "7": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22cannabis%22&safe=off&start=60"
+    }
+  }
+}

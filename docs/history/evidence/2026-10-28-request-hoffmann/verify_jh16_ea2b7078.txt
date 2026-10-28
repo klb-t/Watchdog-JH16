@@ -1,0 +1,11 @@
+{
+  "n_Pi": 16,
+  "n_Hi": 15,
+  "value_mismatches": [],
+  "hi_vs_reference": {
+    "pearson": 0.3769822029503187,
+    "pearson_p": 0.16601366053896738,
+    "spearman": 0.12164599070997602,
+    "spearman_p": 0.6658357604368469
+  }
+}

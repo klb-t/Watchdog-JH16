@@ -1,0 +1,439 @@
+{
+  "search_metadata": {
+    "id": "6ae204a578727e711d2eb4ae",
+    "status": "Success",
+    "json_endpoint": "https://serpapi.com/searches/UD38wv3Bycb_30mQx-3Kv955kX9Ru9RkaRpa385B3xg/6ae204a578727e711d2eb4ae.json",
+    "markdown_endpoint": "https://serpapi.com/searches/UD38wv3Bycb_30mQx-3Kv955kX9Ru9RkaRpa385B3xg/6ae204a578727e711d2eb4ae.md",
+    "pixel_position_endpoint": "https://serpapi.com/searches/UD38wv3Bycb_30mQx-3Kv955kX9Ru9RkaRpa385B3xg/6ae204a578727e711d2eb4ae.json_with_pixel_position",
+    "created_at": "2026-10-28 14:20:21 UTC",
+    "processed_at": "2026-10-28 14:20:21 UTC",
+    "google_url": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&oq=%22alcohol%22+%22harm%22+OR+%22harmful%22&hl=en&safe=off&sourceid=chrome&ie=UTF-8",
+    "raw_html_file": "https://serpapi.com/searches/UD38wv3Bycb_30mQx-3Kv955kX9Ru9RkaRpa385B3xg/6ae204a578727e711d2eb4ae.html",
+    "total_time_taken": 0.5
+  },
+  "search_parameters": {
+    "engine": "google",
+    "q": "\"alcohol\" \"harm\" OR \"harmful\"",
+    "google_domain": "google.com",
+    "hl": "en",
+    "safe": "off",
+    "device": "desktop"
+  },
+  "search_information": {
+    "query_displayed": "\"alcohol\" \"harm\" OR \"harmful\"",
+    "total_results": 217000000,
+    "time_taken_displayed": 0.33,
+    "organic_results_state": "Results for exact spelling"
+  },
+  "related_questions": [
+    {
+      "question": "How harmful is alcohol to the body?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJIb3cgaGFybWZ1bCBpcyBhbGNvaG9sIHRvIHRoZSBib2R5PyIsImxrIjoiR2hKb2IzY2dZbUZrSUdseklHRnNZMjlvYjJ3IiwiYnMiOiJjNDNQdlFyQ1FCQUVZR3kzRXJHNlFnZUNxSjBKZGhZcGJId0JzYkxZNU81eVFwS0Z5MG53N2YwakppQ0k3Zkx0ekM3dEtEcElDOGUtc3RjU2x3WmM1dUtrUkJBRVo1Q0p2cVhKVkUzY2cyV3NCNFQyTkQ4NURtQnZFRy1ndVM2TWJ5QzJFMmtDTld0X0VqclQ5aFB5TE94T01kYWFQQXdwcEI2Y3RGQlJOXzlhNlIwZGFmV0tGMTl3RFMybV8xQnp4Y1c3dEpJbXBNbGFMZHZfN0hoMEJ3IiwiaWQiOiJmY19wUVRpYXJ2ME45eVpydUVQOU56eTBRNF81In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJIb3cgaGFybWZ1bCBpcyBhbGNvaG9sIHRvIHRoZSBib2R5PyIsImxrIjoiR2hKb2IzY2dZbUZrSUdseklHRnNZMjlvYjJ3IiwiYnMiOiJjNDNQdlFyQ1FCQUVZR3kzRXJHNlFnZUNxSjBKZGhZcGJId0JzYkxZNU81eVFwS0Z5MG53N2YwakppQ0k3Zkx0ekM3dEtEcElDOGUtc3RjU2x3WmM1dUtrUkJBRVo1Q0p2cVhKVkUzY2cyV3NCNFQyTkQ4NURtQnZFRy1ndVM2TWJ5QzJFMmtDTld0X0VqclQ5aFB5TE94T01kYWFQQXdwcEI2Y3RGQlJOXzlhNlIwZGFmV0tGMTl3RFMybV8xQnp4Y1c3dEpJbXBNbGFMZHZfN0hoMEJ3IiwiaWQiOiJmY19wUVRpYXJ2ME45eVpydUVQOU56eTBRNF81In0%3D"
+    },
+    {
+      "question": "What are 10 dangers of alcohol?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJXaGF0IGFyZSAxMCBkYW5nZXJzIG9mIGFsY29ob2w/IiwibGsiOiJHaDUzYUdGMElHRnlaU0F4TUNCa1lXNW5aWEp6SUc5bUlHRnNZMjlvYjJ3IiwiYnMiOiJjNDNQdlFyQ1FCQUVZR3kzRXJHNlFnZUNxSjBKZGhZcGJId0JzYkxZNU81eVFwS0Z5MG53N2YwakppQ0k3Zkx0ekM3dEtEcElDOGUtc3RjU2x3WmM1dUtrUkJBRVo1Q0p2cVhKVkUzY2cyV3NCNFQyTkQ4NURtQnZFRy1ndVM2TWJ5QzJFMmtDTld0X0VqclQ5aFB5TE94T01kYWFQQXdwcEI2Y3RGQlJOXzlhNlIwZGFmV0tGMTl3RFMybV8xQnp4Y1c3dEpJbXBNbGFMZHZfN0hoMEJ3IiwiaWQiOiJmY19wUVRpYXJ2ME45eVpydUVQOU56eTBRNF81In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJXaGF0IGFyZSAxMCBkYW5nZXJzIG9mIGFsY29ob2w%2FIiwibGsiOiJHaDUzYUdGMElHRnlaU0F4TUNCa1lXNW5aWEp6SUc5bUlHRnNZMjlvYjJ3IiwiYnMiOiJjNDNQdlFyQ1FCQUVZR3kzRXJHNlFnZUNxSjBKZGhZcGJId0JzYkxZNU81eVFwS0Z5MG53N2YwakppQ0k3Zkx0ekM3dEtEcElDOGUtc3RjU2x3WmM1dUtrUkJBRVo1Q0p2cVhKVkUzY2cyV3NCNFQyTkQ4NURtQnZFRy1ndVM2TWJ5QzJFMmtDTld0X0VqclQ5aFB5TE94T01kYWFQQXdwcEI2Y3RGQlJOXzlhNlIwZGFmV0tGMTl3RFMybV8xQnp4Y1c3dEpJbXBNbGFMZHZfN0hoMEJ3IiwiaWQiOiJmY19wUVRpYXJ2ME45eVpydUVQOU56eTBRNF81In0%3D"
+    },
+    {
+      "question": "What are the harmful effects of alcohol on the body?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJXaGF0IGFyZSB0aGUgaGFybWZ1bCBlZmZlY3RzIG9mIGFsY29ob2wgb24gdGhlIGJvZHk/IiwibGsiOiJHaU5oYkdOdmFHOXNJR2hoY20xbWRXd2daV1ptWldOMGN5QnZiaUIwYUdVZ1ltOWtlUSIsImJzIjoiYzQzUHZRckNRQkFFWUd5M0VyRzZRZ2VDcUowSmRoWXBiSHdCc2JMWTVPNXlRcEtGeTBudzdmMGpKaUNJN2ZMdHpDN3RLRHBJQzhlLXN0Y1Nsd1pjNXVLa1JCQUVaNUNKdnFYSlZFM2NnMldzQjRUMk5EODVEbUJ2RUctZ3VTNk1ieUMyRTJrQ05XdF9FanJUOWhQeUxPeE9NZGFhUEF3cHBCNmN0RkJSTl85YTZSMGRhZldLRjE5d0RTMm1fMUJ6eGNXN3RKSW1wTWxhTGR2XzdIaDBCdyIsImlkIjoiZmNfcFFUaWFydjBOOXlacnVFUDlOenkwUTRfNSJ9",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJXaGF0IGFyZSB0aGUgaGFybWZ1bCBlZmZlY3RzIG9mIGFsY29ob2wgb24gdGhlIGJvZHk%2FIiwibGsiOiJHaU5oYkdOdmFHOXNJR2hoY20xbWRXd2daV1ptWldOMGN5QnZiaUIwYUdVZ1ltOWtlUSIsImJzIjoiYzQzUHZRckNRQkFFWUd5M0VyRzZRZ2VDcUowSmRoWXBiSHdCc2JMWTVPNXlRcEtGeTBudzdmMGpKaUNJN2ZMdHpDN3RLRHBJQzhlLXN0Y1Nsd1pjNXVLa1JCQUVaNUNKdnFYSlZFM2NnMldzQjRUMk5EODVEbUJ2RUctZ3VTNk1ieUMyRTJrQ05XdF9FanJUOWhQeUxPeE9NZGFhUEF3cHBCNmN0RkJSTl85YTZSMGRhZldLRjE5d0RTMm1fMUJ6eGNXN3RKSW1wTWxhTGR2XzdIaDBCdyIsImlkIjoiZmNfcFFUaWFydjBOOXlacnVFUDlOenkwUTRfNSJ9"
+    },
+    {
+      "question": "What organ does alcohol damage the most?",
+      "type": "featured_snippet",
+      "next_page_token": "eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJXaGF0IG9yZ2FuIGRvZXMgYWxjb2hvbCBkYW1hZ2UgdGhlIG1vc3Q/IiwibGsiOiJHaWQzYUdGMElHOXlaMkZ1SUdSdlpYTWdZV3hqYjJodmJDQmtZVzFoWjJVZ2RHaGxJRzF2YzNRIiwiYnMiOiJjNDNQdlFyQ1FCQUVZR3kzRXJHNlFnZUNxSjBKZGhZcGJId0JzYkxZNU81eVFwS0Z5MG53N2YwakppQ0k3Zkx0ekM3dEtEcElDOGUtc3RjU2x3WmM1dUtrUkJBRVo1Q0p2cVhKVkUzY2cyV3NCNFQyTkQ4NURtQnZFRy1ndVM2TWJ5QzJFMmtDTld0X0VqclQ5aFB5TE94T01kYWFQQXdwcEI2Y3RGQlJOXzlhNlIwZGFmV0tGMTl3RFMybV8xQnp4Y1c3dEpJbXBNbGFMZHZfN0hoMEJ3IiwiaWQiOiJmY19wUVRpYXJ2ME45eVpydUVQOU56eTBRNF81In0=",
+      "serpapi_link": "https://serpapi.com/search.json?device=desktop&engine=google_related_questions&google_domain=google.com&next_page_token=eyJvbnMiOiIxMDA0MSIsImZjIjoiRXFFQkNtSkJTbWxVTkhSTWVHVmFNekZGVjJGVGFrMXJRV3BmWVVOSmJYQndiWEJYTm5WRE9YVTFlVzEzZDNwaVFqaGlVVzQ1VTB4VWRGUmtURWxQWnprNU1DMVFYMG94ZVROUWVUazFUR2RmUjJacmQyOW5OQzFpTTIxRk9URTRhV1JYYVdRemR4SVhjRkZVYVdGeWRqQk9PWGxhY25WRlVEbE9lbmt3VVRRYUlrRkVjM0k1WmxGemNYSkVhV2RZWldOT1dIZzBjVTV3TmpoVFNrMXVjRmhuVDJjIiwiZmN2IjoiMyIsImVpIjoicFFUaWFydjBOOXlacnVFUDlOenkwUTQiLCJxYyI6ImMtTVNTY3hKenNfSXoxSElTQ3pLQlJOcHBUa0NEQktNdFc5U0V1MW5NVEl5QXdBIiwicXVlc3Rpb24iOiJXaGF0IG9yZ2FuIGRvZXMgYWxjb2hvbCBkYW1hZ2UgdGhlIG1vc3Q%2FIiwibGsiOiJHaWQzYUdGMElHOXlaMkZ1SUdSdlpYTWdZV3hqYjJodmJDQmtZVzFoWjJVZ2RHaGxJRzF2YzNRIiwiYnMiOiJjNDNQdlFyQ1FCQUVZR3kzRXJHNlFnZUNxSjBKZGhZcGJId0JzYkxZNU81eVFwS0Z5MG53N2YwakppQ0k3Zkx0ekM3dEtEcElDOGUtc3RjU2x3WmM1dUtrUkJBRVo1Q0p2cVhKVkUzY2cyV3NCNFQyTkQ4NURtQnZFRy1ndVM2TWJ5QzJFMmtDTld0X0VqclQ5aFB5TE94T01kYWFQQXdwcEI2Y3RGQlJOXzlhNlIwZGFmV0tGMTl3RFMybV8xQnp4Y1c3dEpJbXBNbGFMZHZfN0hoMEJ3IiwiaWQiOiJmY19wUVRpYXJ2ME45eVpydUVQOU56eTBRNF81In0%3D"
+    }
+  ],
+  "organic_results": [
+    {
+      "position": 1,
+      "title": "National Helpline for Mental Health, Drug, Alcohol Issues",
+      "link": "https://www.samhsa.gov/find-help/helplines/national-helpline",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESdwHrOzAVkanbVVejvG8xIAAxQONidgElnlWa0fD7pfbIuT9lhpPe5sFw3Ysa23jcB3TLpoxfd5uTLD7wjObszXqdI2u4q3lf5nqvajJB4V91JqWDBegKW0SiCjnqiBGg4nimAYBPfDA7UOvZIJeFxRcztpIQG6N0&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECCUQAQ&uoh=1",
+      "displayed_link": "https://www.samhsa.gov › ... › Helplines",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAZlBMVEUeOEsVM0cAJDwAHjhHWGdve4V6hI2Bi5MuRFZYZ3PIzND___8aNUmpr7UAKUAAITre4OM1SlqyuL2aoqkAJj0vRVYAGTWRmaARMEXx8vMAFjPl5-lTYm8AACpodX8_UmEFLEHKztF8PZYpAAAA1klEQVR4AX2QBZIEIQwAA4xj467_f-QJUpucbJen40BgXCRpFsgL4kRZSYRASnGipDZI2loSGoVcS13Xo12SEGuKoRmKosdNR990EsoDiDl1blnhD8bNyYrDb9guHfUx_5ZGS892joYBpX_dv-hL0PK7CyqUk9GKScJksGXXRiydy8Sukd8ZUG3Gq42yUPATNebeLSP8RoGXVf_mU-kcA2i28EMXEd15zrGpPcOZN3j4U7HewUFLWoh_g4_EX8XkPQTG5ZezENklpWrQz-d8epGfN0d_-wSwjhXC-FrbmAAAAABJRU5ErkJggg.png",
+      "date": "Jun 9, 2023",
+      "snippet": "Self-Harm. 988 Suicide & Crisis Lifeline. 988 Partner Toolkit · Key ... Assures teens with parents who abuse alcohol or drugs that, \"It's not your ...",
+      "snippet_highlighted_words": [
+        "Harm",
+        "alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Self-Harm. 988 Suicide & Crisis Lifeline. 988 Partner Toolkit · Key ... Assures teens with parents who abuse alcohol or drugs that, \"It's not your ...",
+          "source_info_link": "https://www.samhsa.gov/find-help/helplines/national-helpline",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAZlBMVEUeOEsVM0cAJDwAHjhHWGdve4V6hI2Bi5MuRFZYZ3PIzND___8aNUmpr7UAKUAAITre4OM1SlqyuL2aoqkAJj0vRVYAGTWRmaARMEXx8vMAFjPl5-lTYm8AACpodX8_UmEFLEHKztF8PZYpAAAA1klEQVR4AX2QBZIEIQwAA4xj467_f-QJUpucbJen40BgXCRpFsgL4kRZSYRASnGipDZI2loSGoVcS13Xo12SEGuKoRmKosdNR990EsoDiDl1blnhD8bNyYrDb9guHfUx_5ZGS892joYBpX_dv-hL0PK7CyqUk9GKScJksGXXRiydy8Sukd8ZUG3Gq42yUPATNebeLSP8RoGXVf_mU-kcA2i28EMXEd15zrGpPcOZN3j4U7HewUFLWoh_g4_EX8XkPQTG5ZezENklpWrQz-d8epGfN0d_-wSwjhXC-FrbmAAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=Cq4BL2dvdG8_dXJsPUNBRVNkd0hyT3pBVjloX29NdkdBXzAxQkhHZGIzTkpGLTNxaG41cjd6RTNsaFZ4a2x0a1J2SmhYdEF2SDJCNjF3V1VRUUdYYWlIV0VwdVY0bDZScXVVdlFGTVFJUXFKaUhoT3FjdjlwUGd5dTVFVE1nMXg5cWFINmlQZURudG9aX180bmZPeGJDS1kxSm1GVG5iN09DWWV5Uk4zOE5EcEt4MjM1EgQaAggAGo4EEgIIARoAIgAqADIGCAESAnVzOgBCBAgBEABKAFoAcgB6AIJA6AMIABAAGAEgACoOCgdhbGNvaG9sFT0XpD8qCwoEaGFybRV-13o_Kg4KB2hhcm1mdWwVsZhxQDKuAS9nb3RvP3VybD1DQUVTZHdIck96QVY5aF9vTXZHQV8wMUJIR2RiM05KRi0zcWhuNXI3ekUzbGhWeGtsdGtSdkpoWHRBdkgyQjYxd1dVUVFHWGFpSFdFcHVWNGw2UnF1VXZRRk1RSVFxSmlIaE9xY3Y5cFBneXU1RVRNZzF4OXFhSDZpUGVEbnRvWl9fNG5mT3hiQ0tZMUptRlRuYjdPQ1lleVJOMzhORHBLeDIzNTpATmF0aW9uYWwgSGVscGxpbmUgZm9yIE1lbnRhbCBIZWFsdGgsIERydWcsIDxiPkFsY29ob2w8L2I-IElzc3Vlc0K9AVNlbGYtPGI-SGFybTwvYj4uIDk4OCBTdWljaWRlICZhbXA7IENyaXNpcyBMaWZlbGluZS4gOTg4IFBhcnRuZXIgVG9vbGtpdCAmbWlkZG90OyBLZXkgLi4uIEFzc3VyZXMgdGVlbnMgd2l0aCBwYXJlbnRzIHdobyBhYnVzZSA8Yj5hbGNvaG9sPC9iPiBvciBkcnVncyB0aGF0LCAmcXVvdDtJdCYjMzk7cyBub3QgeW91ciZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=Cq4BL2dvdG8_dXJsPUNBRVNkd0hyT3pBVjloX29NdkdBXzAxQkhHZGIzTkpGLTNxaG41cjd6RTNsaFZ4a2x0a1J2SmhYdEF2SDJCNjF3V1VRUUdYYWlIV0VwdVY0bDZScXVVdlFGTVFJUXFKaUhoT3FjdjlwUGd5dTVFVE1nMXg5cWFINmlQZURudG9aX180bmZPeGJDS1kxSm1GVG5iN09DWWV5Uk4zOE5EcEt4MjM1EgQaAggAGo4EEgIIARoAIgAqADIGCAESAnVzOgBCBAgBEABKAFoAcgB6AIJA6AMIABAAGAEgACoOCgdhbGNvaG9sFT0XpD8qCwoEaGFybRV-13o_Kg4KB2hhcm1mdWwVsZhxQDKuAS9nb3RvP3VybD1DQUVTZHdIck96QVY5aF9vTXZHQV8wMUJIR2RiM05KRi0zcWhuNXI3ekUzbGhWeGtsdGtSdkpoWHRBdkgyQjYxd1dVUVFHWGFpSFdFcHVWNGw2UnF1VXZRRk1RSVFxSmlIaE9xY3Y5cFBneXU1RVRNZzF4OXFhSDZpUGVEbnRvWl9fNG5mT3hiQ0tZMUptRlRuYjdPQ1lleVJOMzhORHBLeDIzNTpATmF0aW9uYWwgSGVscGxpbmUgZm9yIE1lbnRhbCBIZWFsdGgsIERydWcsIDxiPkFsY29ob2w8L2I-IElzc3Vlc0K9AVNlbGYtPGI-SGFybTwvYj4uIDk4OCBTdWljaWRlICZhbXA7IENyaXNpcyBMaWZlbGluZS4gOTg4IFBhcnRuZXIgVG9vbGtpdCAmbWlkZG90OyBLZXkgLi4uIEFzc3VyZXMgdGVlbnMgd2l0aCBwYXJlbnRzIHdobyBhYnVzZSA8Yj5hbGNvaG9sPC9iPiBvciBkcnVncyB0aGF0LCAmcXVvdDtJdCYjMzk7cyBub3QgeW91ciZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "SAMHSA (.gov)",
+      "read_more_link": "https://www.samhsa.gov/find-help/helplines/national-helpline#:~:text=An%20official%20website%20of%20the&text=Assures%20teens%20with%20parents%20who,that%2C%20%22It's%20not%20your%20fault!"
+    },
+    {
+      "position": 2,
+      "title": "Alcohol",
+      "link": "https://www.who.int/news-room/fact-sheets/detail/alcohol",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAEScwHrOzAVsm1nEetQPC9ZHpHlTitIKgKvcUdIpU1dCkuVLvDM2W_BSx58vnTjIowkPjNscjHjDA1ZojNf6p2AmpO8z1NexnpI0VWw0VkgUkifTyeD1pUzJFMODf8heauRRG75ox8F0Sg4X7kU4s7d20qvfpQ&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECCoQAQ&uoh=1",
+      "displayed_link": "https://www.who.int › Newsroom › Fact sheets › Detail",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAKlBMVEVHcEwOj88SkM8Kj88Mj88bktAZkdADjs4ek9Efk9EmldILj88WkdArl9J1DC9vAAAADnRSTlMAn4fQtUNW_iIxCehyFKEyppEAAAFHSURBVHgBYyAGMCqgcJkdEOwAhrBA1VQGVgiPvWEaQ6MSVwbrBhCP1YatYXGhSunMAJEAIDfnzNQw54kHXEozdDQZGHhlrAJOql3KNTJhu3xoAQOT0DQ21gM84nuCFSJ9DjAwh0xlY7taLXpC60CYmgMDy6EbAQHJPkeMpnUE-CgwhJkFBIRutBEvT2O9mZ3BMHnyVNUzJo6HynOCMvbuYuAWmxBQFqtzXKSVtUPRgSF1T5NL4ZqV2m5zA0KTMxnYW-4cr56arWgYkJCquoGBrSTy5naHiceLNW9ME5_AwBZ9NOEYa8yh4hi2MzsDGLjKEhetzGK7W3JDwfU00AvdW2QTWHPCJiybtN0KyGWbFsyay7mgLaAiE-RB3u3uDRyhoRfYNheDQ4Mz7ZC1k8oWnbQGMJdLefOJ3LYmaxt44DExcB0gIvgBkKFml-JPe1gAAAAASUVORK5CYII.png",
+      "date": "Jun 28, 2024",
+      "snippet": "The context plays an important role in the occurrence of alcohol-related harm, particularly as a result of alcohol intoxication. ... harmful use ...",
+      "snippet_highlighted_words": [
+        "alcohol",
+        "harm",
+        "alcohol",
+        "harmful"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "The context plays an important role in the occurrence of alcohol-related harm, particularly as a result of alcohol intoxication. ... harmful use ...",
+          "source_info_link": "https://www.who.int/news-room/fact-sheets/detail/alcohol",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcBAMAAACAI8KnAAAAKlBMVEVHcEwOj88SkM8Kj88Mj88bktAZkdADjs4ek9Efk9EmldILj88WkdArl9J1DC9vAAAADnRSTlMAn4fQtUNW_iIxCehyFKEyppEAAAFHSURBVHgBYyAGMCqgcJkdEOwAhrBA1VQGVgiPvWEaQ6MSVwbrBhCP1YatYXGhSunMAJEAIDfnzNQw54kHXEozdDQZGHhlrAJOql3KNTJhu3xoAQOT0DQ21gM84nuCFSJ9DjAwh0xlY7taLXpC60CYmgMDy6EbAQHJPkeMpnUE-CgwhJkFBIRutBEvT2O9mZ3BMHnyVNUzJo6HynOCMvbuYuAWmxBQFqtzXKSVtUPRgSF1T5NL4ZqV2m5zA0KTMxnYW-4cr56arWgYkJCquoGBrSTy5naHiceLNW9ME5_AwBZ9NOEYa8yh4hi2MzsDGLjKEhetzGK7W3JDwfU00AvdW2QTWHPCJiybtN0KyGWbFsyay7mgLaAiE-RB3u3uDRyhoRfYNheDQ4Mz7ZC1k8oWnbQGMJdLefOJ3LYmaxt44DExcB0gIvgBkKFml-JPe1gAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVkNVTG1XYUd5eHhTM0twX0RPY3IxdFVYbTRHdUpTNnBxLXBYYUpNX3JMemNzZm1aTmNBQk1QXzNUaE5Zb1l1ODkxakRDSklpTXQ4anBSZXk0azNxcEZpb0luLTRnNUdsRml3Z25mZ0xTWFdSQldiRHhnZHRYU254dHlPMHh4cDdRXzRDV1JoX3ZYcDZWcmNnLVJ4cxIEGgIIABrhAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQLsDCAAQABgAIAAqDgoHYWxjb2hvbBVy4qtAKgsKBGhhcm0VizvMPzKpAS9nb3RvP3VybD1DQUVTY3dIck96QVZDVUxtV2FHeXh4UzNLcF9ET2NyMXRVWG00R3VKUzZwcS1wWGFKTV9yTHpjc2ZtWk5jQUJNUF8zVGhOWW9ZdTg5MWpEQ0pJaU10OGpwUmV5NGszcXBGaW9Jbi00ZzVHbEZpd2duZmdMU1hXUkJXYkR4Z2R0WFNueHR5TzB4eHA3UV80Q1dSaF92WHA2VnJjZy1SeHM6MDxiPkFsY29ob2w8L2I-IC0gV29ybGQgSGVhbHRoIE9yZ2FuaXphdGlvbiAoV0hPKUK1AVRoZSBjb250ZXh0IHBsYXlzIGFuIGltcG9ydGFudCByb2xlIGluIHRoZSBvY2N1cnJlbmNlIG9mIDxiPmFsY29ob2w8L2I-LXJlbGF0ZWQgPGI-aGFybTwvYj4sIHBhcnRpY3VsYXJseSBhcyBhIHJlc3VsdCBvZiA8Yj5hbGNvaG9sPC9iPiBpbnRveGljYXRpb24uIC4uLiA8Yj5oYXJtZnVsPC9iPiB1c2UmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVkNVTG1XYUd5eHhTM0twX0RPY3IxdFVYbTRHdUpTNnBxLXBYYUpNX3JMemNzZm1aTmNBQk1QXzNUaE5Zb1l1ODkxakRDSklpTXQ4anBSZXk0azNxcEZpb0luLTRnNUdsRml3Z25mZ0xTWFdSQldiRHhnZHRYU254dHlPMHh4cDdRXzRDV1JoX3ZYcDZWcmNnLVJ4cxIEGgIIABrhAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQLsDCAAQABgAIAAqDgoHYWxjb2hvbBVy4qtAKgsKBGhhcm0VizvMPzKpAS9nb3RvP3VybD1DQUVTY3dIck96QVZDVUxtV2FHeXh4UzNLcF9ET2NyMXRVWG00R3VKUzZwcS1wWGFKTV9yTHpjc2ZtWk5jQUJNUF8zVGhOWW9ZdTg5MWpEQ0pJaU10OGpwUmV5NGszcXBGaW9Jbi00ZzVHbEZpd2duZmdMU1hXUkJXYkR4Z2R0WFNueHR5TzB4eHA3UV80Q1dSaF92WHA2VnJjZy1SeHM6MDxiPkFsY29ob2w8L2I-IC0gV29ybGQgSGVhbHRoIE9yZ2FuaXphdGlvbiAoV0hPKUK1AVRoZSBjb250ZXh0IHBsYXlzIGFuIGltcG9ydGFudCByb2xlIGluIHRoZSBvY2N1cnJlbmNlIG9mIDxiPmFsY29ob2w8L2I-LXJlbGF0ZWQgPGI-aGFybTwvYj4sIHBhcnRpY3VsYXJseSBhcyBhIHJlc3VsdCBvZiA8Yj5hbGNvaG9sPC9iPiBpbnRveGljYXRpb24uIC4uLiA8Yj5oYXJtZnVsPC9iPiB1c2UmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "World Health Organization (WHO)",
+      "read_more_link": "https://www.who.int/news-room/fact-sheets/detail/alcohol#:~:text=The%20context%20plays%20an%20important,a%20result%20of%20alcohol%20intoxication.&text=harmful%20use%20of%20alcohol."
+    },
+    {
+      "position": 3,
+      "title": "Alcohol Use and Your Health",
+      "link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAEScwHrOzAVQnhJ0dibGejphaTuq97eJPWs9BE53XrgKEGbuE4AJ7D69Fezzd5l6vsOJKGpG6J3Qw5NCWpxq3jeaT_w8xaVTSiiDAbrxdnFce6Vqq462xXPile_dHDnIqWxMq7DU6c6-FwipgZ4bwqej5MGmFc&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECCYQAQ&uoh=1",
+      "displayed_link": "https://www.cdc.gov › alcohol › about-alcohol-use",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAARVBMVEVHcEwGWbgAV7cAWLcCV7cAV7cAV7cAT7UASLMfYLsCV7eNptb________g5_Tx9Pq2xuSlud7O2OwAPrBvkM1Oe8QAV7d3XXwyAAAAF3RSTlMAZZkbv_84__78-fn7__f49_X2__j17LsicwUAAACsSURBVHgB3Y8FcgMwDAQdUE-GMyr9_1OrMjNnjTdrDL_DZvsMuxD28hwnIcgLcicONCYVdXCTrqXmQtZYCluH6PA0cSWRWXMfwtor6xqs1vO11NIUQORYq_NQ2vIkVzKxq89dAsbhgzg3O-sSgUtVY-ZcAtzIybwO5jJZKVppnnDzlUqyRDrFEBt9vJVqI0fJORtwmZLcSAHgnXOTbuQzfFyGsEunT7PfhSPiDJ1fD1WvIDgAAAAAAElFTkSuQmCC.png",
+      "date": "Jan 14, 2025",
+      "snippet": "Your liver can only process small amounts of alcohol. The rest of the alcohol can harm your liver and other organs as it moves through the body.",
+      "snippet_highlighted_words": [
+        "alcohol",
+        "alcohol",
+        "harm"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Your liver can only process small amounts of alcohol. The rest of the alcohol can harm your liver and other organs as it moves through the body.",
+          "source_info_link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAARVBMVEVHcEwGWbgAV7cAWLcCV7cAV7cAV7cAT7UASLMfYLsCV7eNptb________g5_Tx9Pq2xuSlud7O2OwAPrBvkM1Oe8QAV7d3XXwyAAAAF3RSTlMAZZkbv_84__78-fn7__f49_X2__j17LsicwUAAACsSURBVHgB3Y8FcgMwDAQdUE-GMyr9_1OrMjNnjTdrDL_DZvsMuxD28hwnIcgLcicONCYVdXCTrqXmQtZYCluH6PA0cSWRWXMfwtor6xqs1vO11NIUQORYq_NQ2vIkVzKxq89dAsbhgzg3O-sSgUtVY-ZcAtzIybwO5jJZKVppnnDzlUqyRDrFEBt9vJVqI0fJORtwmZLcSAHgnXOTbuQzfFyGsEunT7PfhSPiDJ1fD1WvIDgAAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVmlVaWZacHEzeFdCNi1qQU0wZDF5Wks0dGIyMkUyTktWSGtUbG9tOXBYSzZXRmxISC0yRDVfek05YkttRnBYZGhxcG5CX1pFZjl3bDhDcUJ6bzdlc3hBcjh2cXFMN0VnZW9zNWxkNEhZX3dzQk1oLXdTRVZ5NUJNdkRLS1dzeHRlZGpObWRoMV9aRHNPNzhDTXJ3axIEGgIIABrJAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQKMDCAAQABgAIAAqDgoHYWxjb2hvbBXzZtBAKgsKBGhhcm0VG9mCPzKpAS9nb3RvP3VybD1DQUVTY3dIck96QVZpVWlmWnBxM3hXQjYtakFNMGQxeVpLNHRiMjJFMk5LVkhrVGxvbTlwWEs2V0ZsSEgtMkQ1X3pNOWJLbUZwWGRocXBuQl9aRWY5d2w4Q3FCem83ZXN4QXI4dnFxTDdFZ2VvczVsZDRIWV93c0JNaC13U0VWeTVCTXZES0tXc3h0ZWRqTm1kaDFfWkRzTzc4Q01yd2s6KDxiPkFsY29ob2w8L2I-IFVzZSBhbmQgWW91ciBIZWFsdGggLSBDRENCpQFZb3VyIGxpdmVyIGNhbiBvbmx5IHByb2Nlc3Mgc21hbGwgYW1vdW50cyBvZiA8Yj5hbGNvaG9sPC9iPi4gVGhlIHJlc3Qgb2YgdGhlIDxiPmFsY29ob2w8L2I-IGNhbiA8Yj5oYXJtPC9iPiB5b3VyIGxpdmVyIGFuZCBvdGhlciBvcmdhbnMgYXMgaXQgbW92ZXMgdGhyb3VnaCB0aGUgYm9keS4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqkBL2dvdG8_dXJsPUNBRVNjd0hyT3pBVmlVaWZacHEzeFdCNi1qQU0wZDF5Wks0dGIyMkUyTktWSGtUbG9tOXBYSzZXRmxISC0yRDVfek05YkttRnBYZGhxcG5CX1pFZjl3bDhDcUJ6bzdlc3hBcjh2cXFMN0VnZW9zNWxkNEhZX3dzQk1oLXdTRVZ5NUJNdkRLS1dzeHRlZGpObWRoMV9aRHNPNzhDTXJ3axIEGgIIABrJAxICCAEaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQKMDCAAQABgAIAAqDgoHYWxjb2hvbBXzZtBAKgsKBGhhcm0VG9mCPzKpAS9nb3RvP3VybD1DQUVTY3dIck96QVZpVWlmWnBxM3hXQjYtakFNMGQxeVpLNHRiMjJFMk5LVkhrVGxvbTlwWEs2V0ZsSEgtMkQ1X3pNOWJLbUZwWGRocXBuQl9aRWY5d2w4Q3FCem83ZXN4QXI4dnFxTDdFZ2VvczVsZDRIWV93c0JNaC13U0VWeTVCTXZES0tXc3h0ZWRqTm1kaDFfWkRzTzc4Q01yd2s6KDxiPkFsY29ob2w8L2I-IFVzZSBhbmQgWW91ciBIZWFsdGggLSBDRENCpQFZb3VyIGxpdmVyIGNhbiBvbmx5IHByb2Nlc3Mgc21hbGwgYW1vdW50cyBvZiA8Yj5hbGNvaG9sPC9iPi4gVGhlIHJlc3Qgb2YgdGhlIDxiPmFsY29ob2w8L2I-IGNhbiA8Yj5oYXJtPC9iPiB5b3VyIGxpdmVyIGFuZCBvdGhlciBvcmdhbnMgYXMgaXQgbW92ZXMgdGhyb3VnaCB0aGUgYm9keS4iAhABSABYAGgA",
+      "source": "Centers for Disease Control and Prevention | CDC (.gov)",
+      "read_more_link": "https://www.cdc.gov/alcohol/about-alcohol-use/index.html#:~:text=Your%20liver%20can%20only%20process,it%20moves%20through%20the%20body."
+    },
+    {
+      "position": 4,
+      "title": "Harmful and Underage College Drinking",
+      "link": "https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/college-drinking",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESjAEB6zswFTNgz1ZwXZHnMafirp7wzSe1zWLXxhfBYWoHvyUm4V139DHrTIUxSQE1yxhvJ8xK7sbtCiOgIUHVDCDPvgR4NZr8QIMv5Cwtuuqcq_CLG8MIml5eSheYM9ua4ENJr3nHDnv9fjbKS3UYP82GP3wzkAhczUtA23ODocTS8R4IdoUwZh1hdNBnBg&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECCIQAQ&uoh=1",
+      "displayed_link": "https://www.niaaa.nih.gov › brochures-and-fact-sheets",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAflBMVEUAaJcAZ5UAaJUAaJQAZ5QAaZUAapUAaZQAY5AAZJIAapYzd6BQiatWjqxMiahYjKsAaZZDgqUAX47I1uH____S3-cAWIxcj6_Cz9t8o7pOhaholbAAXI4AXIzm7_Osw9Pd6O0ATIZEgqqUsMYlapd7ob8haZ4AV5EAZZiJq8SAz26ZAAABU0lEQVR4AW3OB2IEIQgFUBBQcZvbe0vP_S8YUSf9T-eNAgA6R8RMIt77YKHybo8IUMwSzDq3_4hsJdVIs7Km_ViettKpaowsPnkvQqTKlJJURByNJ9PZDHPypcJQvuachAhyzovlyrLepLKX0619zNkGypIXu1XNPtqMOrb3acUkzrAmMtEnkq10X7jbELEeOnIEIcOeY-Qf6JhPhi0bZR3_wLPhZW-16wYXDeN3vN3XVjwsBuSCOODpwYqX--nwDy5OV6s-3n8gdsynleWp7jCu6HBAOD1beflSUX_gCeD1VtvWbSviN3x7Wg0ZVvKpYQY4vX-hFiTmvhIRYHMbcKFakDqeHWJ-G3U8qGEgOi8bupzz5tpXNgwh9p41b-uKc8WGXpkZy7qUU8ondoisOKBQCJJKsoWZidEZcgFL0yQixOwcoGEMFIjKJb6vFecyAqDqB7OgJ6Bu0vQaAAAAAElFTkSuQmCC.png",
+      "snippet": "Harmful and underage college ... Studies also suggest that alcohol misuse and binge alcohol consumption has a negative impact on academic performance.",
+      "snippet_highlighted_words": [
+        "Harmful",
+        "alcohol",
+        "alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Harmful and underage college ... Studies also suggest that alcohol misuse and binge alcohol consumption has a negative impact on academic performance.",
+          "source_info_link": "https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/college-drinking",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAflBMVEUAaJcAZ5UAaJUAaJQAZ5QAaZUAapUAaZQAY5AAZJIAapYzd6BQiatWjqxMiahYjKsAaZZDgqUAX47I1uH____S3-cAWIxcj6_Cz9t8o7pOhaholbAAXI4AXIzm7_Osw9Pd6O0ATIZEgqqUsMYlapd7ob8haZ4AV5EAZZiJq8SAz26ZAAABU0lEQVR4AW3OB2IEIQgFUBBQcZvbe0vP_S8YUSf9T-eNAgA6R8RMIt77YKHybo8IUMwSzDq3_4hsJdVIs7Km_ViettKpaowsPnkvQqTKlJJURByNJ9PZDHPypcJQvuachAhyzovlyrLepLKX0619zNkGypIXu1XNPtqMOrb3acUkzrAmMtEnkq10X7jbELEeOnIEIcOeY-Qf6JhPhi0bZR3_wLPhZW-16wYXDeN3vN3XVjwsBuSCOODpwYqX--nwDy5OV6s-3n8gdsynleWp7jCu6HBAOD1beflSUX_gCeD1VtvWbSviN3x7Wg0ZVvKpYQY4vX-hFiTmvhIRYHMbcKFakDqeHWJ-G3U8qGEgOi8bupzz5tpXNgwh9p41b-uKc8WGXpkZy7qUU8ondoisOKBQCJJKsoWZidEZcgFL0yQixOwcoGEMFIjKJb6vFecyAqDqB7OgJ6Bu0vQaAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CswBL2dvdG8_dXJsPUNBRVNqQUVCNnpzd0ZRcmk1bHJKOEdoS29CR05nRWhmLWtZaThNRFNIVC1VOU5MSHNFM3ItMmRDeC13ejE2OEZ1XzZ1ZzEtaVdPM19JWktINVFYclJ4bzNKOEU1ay0wWEZ2MXVBTUE3Z09LS3ZGckV6NUlJUUROMDRJVXRiOWx2bXAzOG1VYW5YbFVRdlRWV1BQbHFrUktOVUdDcVAzN3FCUEh5ZUUxRHpORTNTMzN5cnh2ZGlPdUdDamRoR0RzTzV3EgQaAggAGvYDEgIIARoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA0AMIABAAGAAgACoOCgdhbGNvaG9sFZeco0AqCwoEaGFybRUHF2tAMswBL2dvdG8_dXJsPUNBRVNqQUVCNnpzd0ZRcmk1bHJKOEdoS29CR05nRWhmLWtZaThNRFNIVC1VOU5MSHNFM3ItMmRDeC13ejE2OEZ1XzZ1ZzEtaVdPM19JWktINVFYclJ4bzNKOEU1ay0wWEZ2MXVBTUE3Z09LS3ZGckV6NUlJUUROMDRJVXRiOWx2bXAzOG1VYW5YbFVRdlRWV1BQbHFrUktOVUdDcVAzN3FCUEh5ZUUxRHpORTNTMzN5cnh2ZGlPdUdDamRoR0RzTzV3Oiw8Yj5IYXJtZnVsPC9iPiBhbmQgVW5kZXJhZ2UgQ29sbGVnZSBEcmlua2luZ0KrATxiPkhhcm1mdWw8L2I-IGFuZCB1bmRlcmFnZSBjb2xsZWdlIC4uLiBTdHVkaWVzIGFsc28gc3VnZ2VzdCB0aGF0IDxiPmFsY29ob2w8L2I-IG1pc3VzZSBhbmQgYmluZ2UgPGI-YWxjb2hvbDwvYj4gY29uc3VtcHRpb24gaGFzIGEgbmVnYXRpdmUgaW1wYWN0IG9uIGFjYWRlbWljIHBlcmZvcm1hbmNlLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CswBL2dvdG8_dXJsPUNBRVNqQUVCNnpzd0ZRcmk1bHJKOEdoS29CR05nRWhmLWtZaThNRFNIVC1VOU5MSHNFM3ItMmRDeC13ejE2OEZ1XzZ1ZzEtaVdPM19JWktINVFYclJ4bzNKOEU1ay0wWEZ2MXVBTUE3Z09LS3ZGckV6NUlJUUROMDRJVXRiOWx2bXAzOG1VYW5YbFVRdlRWV1BQbHFrUktOVUdDcVAzN3FCUEh5ZUUxRHpORTNTMzN5cnh2ZGlPdUdDamRoR0RzTzV3EgQaAggAGvYDEgIIARoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJA0AMIABAAGAAgACoOCgdhbGNvaG9sFZeco0AqCwoEaGFybRUHF2tAMswBL2dvdG8_dXJsPUNBRVNqQUVCNnpzd0ZRcmk1bHJKOEdoS29CR05nRWhmLWtZaThNRFNIVC1VOU5MSHNFM3ItMmRDeC13ejE2OEZ1XzZ1ZzEtaVdPM19JWktINVFYclJ4bzNKOEU1ay0wWEZ2MXVBTUE3Z09LS3ZGckV6NUlJUUROMDRJVXRiOWx2bXAzOG1VYW5YbFVRdlRWV1BQbHFrUktOVUdDcVAzN3FCUEh5ZUUxRHpORTNTMzN5cnh2ZGlPdUdDamRoR0RzTzV3Oiw8Yj5IYXJtZnVsPC9iPiBhbmQgVW5kZXJhZ2UgQ29sbGVnZSBEcmlua2luZ0KrATxiPkhhcm1mdWw8L2I-IGFuZCB1bmRlcmFnZSBjb2xsZWdlIC4uLiBTdHVkaWVzIGFsc28gc3VnZ2VzdCB0aGF0IDxiPmFsY29ob2w8L2I-IG1pc3VzZSBhbmQgYmluZ2UgPGI-YWxjb2hvbDwvYj4gY29uc3VtcHRpb24gaGFzIGEgbmVnYXRpdmUgaW1wYWN0IG9uIGFjYWRlbWljIHBlcmZvcm1hbmNlLiICEAFIAFgAaAA",
+      "source": "National Institute on Alcohol Abuse and Alcoholism (NIAAA) (.gov)",
+      "read_more_link": "https://www.niaaa.nih.gov/publications/brochures-and-fact-sheets/college-drinking#:~:text=Studies%20also%20suggest%20that%20alcohol,negative%20impact%20on%20academic%20performance."
+    },
+    {
+      "position": 5,
+      "title": "Alcohol Is Hurting Your Health",
+      "link": "https://www.dartmouth-health.org/articles/alcohol-hurting-your-health",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESgAEB6zswFRI6JoozdYpneFJ8Gz6hmtN_mo1R8nYqSfZ8980AyPdvm7KG69orVH1DWf5PWe3m-dP4qF_-kLfYNHsLf8bR6H4RXntaAcvI6ZeIMypHMmN15QjzgiCpo8uj-uWYQABvTISd9SQ10zda6GkiUbOsSV3Wqafkd1ZJa5IKvg&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECCcQAQ&uoh=1",
+      "displayed_link": "https://www.dartmouth-health.org › articles › alcohol-h...",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAaVBMVEX____a4t7n7esmblg6d2P3-fi9ysOCppuUsah6oJSlvbW1xr-atq3Dzse1ycO4zMW7zsiLqZ5djn9umYyEo5hkkYO_zsiSraOiubFplIZIgW9EfGrI085tk4VWiHh_nZBeiHiBnpFQgnArzpbhAAAA_UlEQVR4AbWSBZIDIRBFGYfuMTxIYJP7H3IJ6675pa_ahVxXDSFt1w9D37UVXmgkZKIMgNGpwDtGnAFmfMe4PDcuzwztuu1838UkGZNKmwLb2r4byQnZ302LxWgJMc8MB-2cd673wYfe9xfQbHiYcYnRxqg5K-K6AtfkXrO1R2u9TkIk7SskdW-TElEhCuakdDlVeByVOYAMkKRwTssEwOCATx1ReqTUa1HSOl9BsIeGNmO4MUKxyxJEBeXujZBzvsmnkM7nc0j9qUBWw8slWARA-my3z40cDwD0_cUbrS6Ln8T-yeJr5A-OXZjhzPmMrMDbB6Pj0HXDSCtcU7cuUxR2oV9AxgAAAABJRU5ErkJggg.png",
+      "date": "Mar 21, 2025",
+      "snippet": "It can harm your brain, liver, heart, kidneys, skin, and pancreas. Alcohol affects your digestive, immune and nervous systems, too.",
+      "snippet_highlighted_words": [
+        "harm",
+        "Alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "It can harm your brain, liver, heart, kidneys, skin, and pancreas. Alcohol affects your digestive, immune and nervous systems, too.",
+          "source_info_link": "https://www.dartmouth-health.org/articles/alcohol-hurting-your-health",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAaVBMVEX____a4t7n7esmblg6d2P3-fi9ysOCppuUsah6oJSlvbW1xr-atq3Dzse1ycO4zMW7zsiLqZ5djn9umYyEo5hkkYO_zsiSraOiubFplIZIgW9EfGrI085tk4VWiHh_nZBeiHiBnpFQgnArzpbhAAAA_UlEQVR4AbWSBZIDIRBFGYfuMTxIYJP7H3IJ6675pa_ahVxXDSFt1w9D37UVXmgkZKIMgNGpwDtGnAFmfMe4PDcuzwztuu1838UkGZNKmwLb2r4byQnZ302LxWgJMc8MB-2cd673wYfe9xfQbHiYcYnRxqg5K-K6AtfkXrO1R2u9TkIk7SskdW-TElEhCuakdDlVeByVOYAMkKRwTssEwOCATx1ReqTUa1HSOl9BsIeGNmO4MUKxyxJEBeXujZBzvsmnkM7nc0j9qUBWw8slWARA-my3z40cDwD0_cUbrS6Ln8T-yeJr5A-OXZjhzPmMrMDbB6Pj0HXDSCtcU7cuUxR2oV9AxgAAAABJRU5ErkJggg.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CrwBL2dvdG8_dXJsPUNBRVNnQUVCNnpzd0ZTc3ZVV3d3QnFUZ0xvbThxZjZoVE84UjNiTzN2QXlRX2Q4THg0TjJUbVUtMklTNmVjbXhnUzBlamJDelZtQVhmajN0SklWZ2kwNkhSc05aQ0pFZGdTMEZGMDhUZTB3Z2k1TDVBenEtME5ncUxDaGx3M3pkd3pXb1lHdklvbW4zbVROX0tpMWdPZTRqY3Noa3J5djU4RTJxOTFXOVltWWsxanlQTGcSBBoCCAAa2AMSAggAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCyAwgAEAAYACAAKg4KB2FsY29ob2wVX8yWQCoLCgRoYXJtFQZ2HT8yvAEvZ290bz91cmw9Q0FFU2dBRUI2enN3RlNzdlVXd3dCcVRnTG9tOHFmNmhUTzhSM2JPM3ZBeVFfZDhMeDROMlRtVS0ySVM2ZWNteGdTMGVqYkN6Vm1BWGZqM3RKSVZnaTA2SFJzTlpDSkVkZ1MwRkYwOFRlMHdnaTVMNUF6cS0wTmdxTENobHczemR3eldvWUd2SW9tbjNtVE5fS2kxZ09lNGpjc2hrcnl2NThFMnE5MVc5WW1ZazFqeVBMZzo4PGI-QWxjb2hvbDwvYj4gSXMgSHVydGluZyBZb3VyIEhlYWx0aCB8IERhcnRtb3V0aCBIZWFsdGhCkQFJdCBjYW4gPGI-aGFybTwvYj4geW91ciBicmFpbiwgbGl2ZXIsIGhlYXJ0LCBraWRuZXlzLCBza2luLCBhbmQgcGFuY3JlYXMuIDxiPkFsY29ob2w8L2I-IGFmZmVjdHMgeW91ciBkaWdlc3RpdmUsIGltbXVuZSBhbmQgbmVydm91cyBzeXN0ZW1zLCB0b28uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CrwBL2dvdG8_dXJsPUNBRVNnQUVCNnpzd0ZTc3ZVV3d3QnFUZ0xvbThxZjZoVE84UjNiTzN2QXlRX2Q4THg0TjJUbVUtMklTNmVjbXhnUzBlamJDelZtQVhmajN0SklWZ2kwNkhSc05aQ0pFZGdTMEZGMDhUZTB3Z2k1TDVBenEtME5ncUxDaGx3M3pkd3pXb1lHdklvbW4zbVROX0tpMWdPZTRqY3Noa3J5djU4RTJxOTFXOVltWWsxanlQTGcSBBoCCAAa2AMSAggAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCyAwgAEAAYACAAKg4KB2FsY29ob2wVX8yWQCoLCgRoYXJtFQZ2HT8yvAEvZ290bz91cmw9Q0FFU2dBRUI2enN3RlNzdlVXd3dCcVRnTG9tOHFmNmhUTzhSM2JPM3ZBeVFfZDhMeDROMlRtVS0ySVM2ZWNteGdTMGVqYkN6Vm1BWGZqM3RKSVZnaTA2SFJzTlpDSkVkZ1MwRkYwOFRlMHdnaTVMNUF6cS0wTmdxTENobHczemR3eldvWUd2SW9tbjNtVE5fS2kxZ09lNGpjc2hrcnl2NThFMnE5MVc5WW1ZazFqeVBMZzo4PGI-QWxjb2hvbDwvYj4gSXMgSHVydGluZyBZb3VyIEhlYWx0aCB8IERhcnRtb3V0aCBIZWFsdGhCkQFJdCBjYW4gPGI-aGFybTwvYj4geW91ciBicmFpbiwgbGl2ZXIsIGhlYXJ0LCBraWRuZXlzLCBza2luLCBhbmQgcGFuY3JlYXMuIDxiPkFsY29ob2w8L2I-IGFmZmVjdHMgeW91ciBkaWdlc3RpdmUsIGltbXVuZSBhbmQgbmVydm91cyBzeXN0ZW1zLCB0b28uIgIQAUgAWABoAA",
+      "source": "Dartmouth Health",
+      "read_more_link": "https://www.dartmouth-health.org/articles/alcohol-hurting-your-health#:~:text=It%20can%20harm%20your%20brain%2C,immune%20and%20nervous%20systems%2C%20too."
+    },
+    {
+      "position": 6,
+      "title": "Alcohol: reducing the risk",
+      "link": "https://adf.org.au/reducing-risk/alcohol/",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESZAHrOzAVSww94z2DotEfikh7C8D9xhN22WHIU5At4ydsq74EUK6nJ3xXKNF8Gh66pzsSmXWdf3jzyVSXWHGPZ-p2vZn2Tn-Ct_vXh-Clj9AisbV-EjgMo68V2czYUPMVByWLTp8&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECEEQAQ&uoh=1",
+      "displayed_link": "https://adf.org.au › reducing-risk › alcohol",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAArklEQVR4AeTMIQjCQBhH8X-0WuxhvcOqzWowGq12MJltVqvZKFy_dGnp4ODa4NIF09LTjzGYxQ6--oMnfvRXmCiVBJkSsTIxxmw4bOW2uqhDvtXCwVNRn6pgswxwlaEjHeU_SOn7ggiKAKcR4dAYWojbEqubMKg61X0dcfWNnWFpekO8suFlwuNqtqVtEtw1YjnLzfHVyu90MvRr6cEcIQy5x0MgeYAhvAeXHE0mAN0iwhNnLJLgAAAAAElFTkSuQmCC.png",
+      "date": "May 19, 2025",
+      "snippet": "Alcohol, like any other drug, can be harmful. In fact, alcohol is ... to reduce the risk of harm from alcohol-related disease or injury ...",
+      "snippet_highlighted_words": [
+        "Alcohol",
+        "harmful",
+        "alcohol",
+        "harm",
+        "alcohol"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Alcohol, like any other drug, can be harmful. In fact, alcohol is ... to reduce the risk of harm from alcohol-related disease or injury ...",
+          "source_info_link": "https://adf.org.au/reducing-risk/alcohol/",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAAAAABXZoBIAAAArklEQVR4AeTMIQjCQBhH8X-0WuxhvcOqzWowGq12MJltVqvZKFy_dGnp4ODa4NIF09LTjzGYxQ6--oMnfvRXmCiVBJkSsTIxxmw4bOW2uqhDvtXCwVNRn6pgswxwlaEjHeU_SOn7ggiKAKcR4dAYWojbEqubMKg61X0dcfWNnWFpekO8suFlwuNqtqVtEtw1YjnLzfHVyu90MvRr6cEcIQy5x0MgeYAhvAeXHE0mAN0iwhNnLJLgAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVlJRQmJmYkhmRTNFanNXbjBLbVJEMnpNNGVXM01vb25WajBRTnZESkZYb3hFZzc1ZlgwT0lSYUhUZ3J4eHdNTnJqUUVJWjY1S1NsT0hoV0lXR29BX0tENmV1NEhvUExFdUh3QjBYakw0aXFXYk1tc1BFbUtGbEotM0ZFQVhGYjgSBBoCCAAa0QMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCrAwgAEAAYACAAKg4KB2FsY29ob2wV0BjDQCoLCgRoYXJtFdPzOkAylQEvZ290bz91cmw9Q0FFU1pBSHJPekFWUlFCYmZiSGZFM0Vqc1duMEttUkQyek00ZVczTW9vblZqMFFOdkRKRlhveEVnNzVmWDBPSVJhSFRncnh4d01OcmpRRUlaNjVLU2xPSGhXSVdHb0FfS0Q2ZXU0SG9QTEV1SHdCMFhqTDRpcVdiTW1zUEVtS0ZsSi0zRkVBWEZiODo2cmVkdWNpbmcgdGhlIHJpc2sgLSA8Yj5BbGNvaG9sPC9iPiBhbmQgRHJ1ZyBGb3VuZGF0aW9uQrMBPGI-QWxjb2hvbDwvYj4sIGxpa2UgYW55IG90aGVyIGRydWcsIGNhbiBiZSA8Yj5oYXJtZnVsPC9iPi4gSW4gZmFjdCwgPGI-YWxjb2hvbDwvYj4gaXMgLi4uIHRvIHJlZHVjZSB0aGUgcmlzayBvZiA8Yj5oYXJtPC9iPiBmcm9tIDxiPmFsY29ob2w8L2I-LXJlbGF0ZWQgZGlzZWFzZSBvciBpbmp1cnkmbmJzcDsuLi4iAhABSABYAGgA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CpUBL2dvdG8_dXJsPUNBRVNaQUhyT3pBVlJRQmJmYkhmRTNFanNXbjBLbVJEMnpNNGVXM01vb25WajBRTnZESkZYb3hFZzc1ZlgwT0lSYUhUZ3J4eHdNTnJqUUVJWjY1S1NsT0hoV0lXR29BX0tENmV1NEhvUExFdUh3QjBYakw0aXFXYk1tc1BFbUtGbEotM0ZFQVhGYjgSBBoCCAAa0QMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCrAwgAEAAYACAAKg4KB2FsY29ob2wV0BjDQCoLCgRoYXJtFdPzOkAylQEvZ290bz91cmw9Q0FFU1pBSHJPekFWUlFCYmZiSGZFM0Vqc1duMEttUkQyek00ZVczTW9vblZqMFFOdkRKRlhveEVnNzVmWDBPSVJhSFRncnh4d01OcmpRRUlaNjVLU2xPSGhXSVdHb0FfS0Q2ZXU0SG9QTEV1SHdCMFhqTDRpcVdiTW1zUEVtS0ZsSi0zRkVBWEZiODo2cmVkdWNpbmcgdGhlIHJpc2sgLSA8Yj5BbGNvaG9sPC9iPiBhbmQgRHJ1ZyBGb3VuZGF0aW9uQrMBPGI-QWxjb2hvbDwvYj4sIGxpa2UgYW55IG90aGVyIGRydWcsIGNhbiBiZSA8Yj5oYXJtZnVsPC9iPi4gSW4gZmFjdCwgPGI-YWxjb2hvbDwvYj4gaXMgLi4uIHRvIHJlZHVjZSB0aGUgcmlzayBvZiA8Yj5oYXJtPC9iPiBmcm9tIDxiPmFsY29ob2w8L2I-LXJlbGF0ZWQgZGlzZWFzZSBvciBpbmp1cnkmbmJzcDsuLi4iAhABSABYAGgA",
+      "source": "Alcohol and Drug Foundation",
+      "read_more_link": "https://adf.org.au/reducing-risk/alcohol/#:~:text=Alcohol%2C%20like%20any%20other%20drug%2C,one%20of%20the%20most%20harmful.&text=to%20reduce%20the%20risk%20of,from%20alcohol%2Drelated%20disease%20or%20injury"
+    },
+    {
+      "position": 7,
+      "title": "The Health Risks of Drinking Alcohol | Johns Hopkins",
+      "link": "https://publichealth.jhu.edu/2025/the-health-risks-of-drinking-alcohol",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESgQEB6zswFUyiRQMYM0cJFcGS0xgGxcXAYakGdrKyWFG6pWXP8-MLqEMrwyG2PblBilV1Qd5YmLrPV5wJR9z5spbKxvYzrYoq_jsxW6V_ucHH5ajFWI3zg-yM-9IWqyEX0X1AcdvTa-YJKPe6HBZ5g5Xbs3uiud3UpoOMZzUzWZDilD8&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECEMQAQ&uoh=1",
+      "displayed_link": "https://publichealth.jhu.edu › the-health-risks-of-drinkin...",
+      "favicon": "https://serpapi.com/images/i/_9j_4AAQSkZJRgABAQAAAQABAAD_2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys_RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3LTc3NzU3Nzc3NTc3Nzc3NzU3Nzc3Ny03Ny03Nzc3NTc3Kzc1Ny03N__AABEIACAAIAMBIgACEQEDEQH_xAAZAAADAAMAAAAAAAAAAAAAAAAEBQYBAgf_xAAoEAABBAECBQUAAwAAAAAAAAABAgMEEQUAEgYhIjFhExQjQVEyseP_xAAWAQEBAQAAAAAAAAAAAAAAAAAABQH_xAAcEQACAQUBAAAAAAAAAAAAAAABAgAREjEyQQP_2gAMAwEAAhEDEQA_AEgjQ4eKjT5jb8lcpxxKW0vemlGwgc-RJu_GicXk3JUkR8dw9j3lkXTja3CB-_y0E8syeGQAL9lLo-A4Cf7Ro_gdfEGOnjI4WA6-0R6bpLdoUm7I3GgO37qu2pPZOGQJnN5BcCe_CyGCxiVNLUjcw2tsKo1YO7S2QmG_jzMhsvx1tyENLQp7elW4KNjkCK2ee-mnHysrPyap8zEvQog6Wem00STZUOW4kk6VJHpcON7hRkTbT5Daf9NamoMNkzbh2XGYyS4-Q2-xlfG9vBKU87SogEEgKAvxY-9VuTlMKd9GTOmNpEpEVppURNISghSgAF11EoNj6quVa56tCt6uk9_zVHh8_TEeHlE_HHWFMyfbodU2OXSoKHNNAAUQR57az0SpuEI3DH-MlMJd9GNPmOJMpcV1lMRNLSslSQQV10kLNn6u-V6k-Ipcd_JIj4_b7GL8bOwEJVztSgCSQComvFD60bmM_bEiFi0_HIWVPyfboaU4OfSkJHJNE3ZJPjtqcQhW9PSe_wCaeaUNxh24J__Z.jpeg",
+      "date": "Nov 18, 2025",
+      "snippet": "Consuming alcohol has been shown to increase the risk of self-harm , suicide , and addiction. Twenty-eight million, or 1 in 10, Americans ages ...",
+      "snippet_highlighted_words": [
+        "alcohol",
+        "harm"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Consuming alcohol has been shown to increase the risk of self-harm , suicide , and addiction. Twenty-eight million, or 1 in 10, Americans ages ...",
+          "source_info_link": "https://publichealth.jhu.edu/2025/the-health-risks-of-drinking-alcohol",
+          "icon": "https://serpapi.com/images/i/_9j_4AAQSkZJRgABAQAAAQABAAD_2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys_RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3LTc3NzU3Nzc3NTc3Nzc3NzU3Nzc3Ny03Ny03Nzc3NTc3Kzc1Ny03N__AABEIACAAIAMBIgACEQEDEQH_xAAZAAADAAMAAAAAAAAAAAAAAAAEBQYBAgf_xAAoEAABBAECBQUAAwAAAAAAAAABAgMEEQUAEgYhIjFhExQjQVEyseP_xAAWAQEBAQAAAAAAAAAAAAAAAAAABQH_xAAcEQACAQUBAAAAAAAAAAAAAAABAgAREjEyQQP_2gAMAwEAAhEDEQA_AEgjQ4eKjT5jb8lcpxxKW0vemlGwgc-RJu_GicXk3JUkR8dw9j3lkXTja3CB-_y0E8syeGQAL9lLo-A4Cf7Ro_gdfEGOnjI4WA6-0R6bpLdoUm7I3GgO37qu2pPZOGQJnN5BcCe_CyGCxiVNLUjcw2tsKo1YO7S2QmG_jzMhsvx1tyENLQp7elW4KNjkCK2ee-mnHysrPyap8zEvQog6Wem00STZUOW4kk6VJHpcON7hRkTbT5Daf9NamoMNkzbh2XGYyS4-Q2-xlfG9vBKU87SogEEgKAvxY-9VuTlMKd9GTOmNpEpEVppURNISghSgAF11EoNj6quVa56tCt6uk9_zVHh8_TEeHlE_HHWFMyfbodU2OXSoKHNNAAUQR57az0SpuEI3DH-MlMJd9GNPmOJMpcV1lMRNLSslSQQV10kLNn6u-V6k-Ipcd_JIj4_b7GL8bOwEJVztSgCSQComvFD60bmM_bEiFi0_HIWVPyfboaU4OfSkJHJNE3ZJPjtqcQhW9PSe_wCaeaUNxh24J__Z.jpeg"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=Cr0BL2dvdG8_dXJsPUNBRVNnUUVCNnpzd0ZmcU5RbkdiTUM5R2F6dTFSNkpsWGVfZXJQdXlaM09KTnd2Snd0bEdXQ3BHT3hIaERucnhXcXBvZmdpV05hTlpuSTI2d3JDa3AyNTVGYTBpZzRfUFJGVi0yQkFhbF9Rc3hFd0tIdEJjTmtXaVNrYzVqTzNZLVc0NGdsd08tVXFxc3BKQ1JxQ25UbTAyT3JRcU5rSE92QTlWSDhBeUxQY2MwMzMxdi1VEgQaAggAGvADEgIIABoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAygMIABAAGAAgACoOCgdhbGNvaG9sFXp4lkAqCwoEaGFybRVPQa0-Mr0BL2dvdG8_dXJsPUNBRVNnUUVCNnpzd0ZmcU5RbkdiTUM5R2F6dTFSNkpsWGVfZXJQdXlaM09KTnd2Snd0bEdXQ3BHT3hIaERucnhXcXBvZmdpV05hTlpuSTI2d3JDa3AyNTVGYTBpZzRfUFJGVi0yQkFhbF9Rc3hFd0tIdEJjTmtXaVNrYzVqTzNZLVc0NGdsd08tVXFxc3BKQ1JxQ25UbTAyT3JRcU5rSE92QTlWSDhBeUxQY2MwMzMxdi1VOjtUaGUgSGVhbHRoIFJpc2tzIG9mIERyaW5raW5nIDxiPkFsY29ob2w8L2I-IHwgSm9obnMgSG9wa2luc0KlAUNvbnN1bWluZyA8Yj5hbGNvaG9sPC9iPiBoYXMgYmVlbiBzaG93biB0byBpbmNyZWFzZSB0aGUgcmlzayBvZiBzZWxmLTxiPmhhcm08L2I-ICwgc3VpY2lkZSAsIGFuZCBhZGRpY3Rpb24uIFR3ZW50eS1laWdodCBtaWxsaW9uLCBvciAxIGluIDEwLCBBbWVyaWNhbnMgYWdlcyZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=Cr0BL2dvdG8_dXJsPUNBRVNnUUVCNnpzd0ZmcU5RbkdiTUM5R2F6dTFSNkpsWGVfZXJQdXlaM09KTnd2Snd0bEdXQ3BHT3hIaERucnhXcXBvZmdpV05hTlpuSTI2d3JDa3AyNTVGYTBpZzRfUFJGVi0yQkFhbF9Rc3hFd0tIdEJjTmtXaVNrYzVqTzNZLVc0NGdsd08tVXFxc3BKQ1JxQ25UbTAyT3JRcU5rSE92QTlWSDhBeUxQY2MwMzMxdi1VEgQaAggAGvADEgIIABoAIgAqADIGCAMSAnVzOgBCBAgBEABKAFoAcgB6AIJAygMIABAAGAAgACoOCgdhbGNvaG9sFXp4lkAqCwoEaGFybRVPQa0-Mr0BL2dvdG8_dXJsPUNBRVNnUUVCNnpzd0ZmcU5RbkdiTUM5R2F6dTFSNkpsWGVfZXJQdXlaM09KTnd2Snd0bEdXQ3BHT3hIaERucnhXcXBvZmdpV05hTlpuSTI2d3JDa3AyNTVGYTBpZzRfUFJGVi0yQkFhbF9Rc3hFd0tIdEJjTmtXaVNrYzVqTzNZLVc0NGdsd08tVXFxc3BKQ1JxQ25UbTAyT3JRcU5rSE92QTlWSDhBeUxQY2MwMzMxdi1VOjtUaGUgSGVhbHRoIFJpc2tzIG9mIERyaW5raW5nIDxiPkFsY29ob2w8L2I-IHwgSm9obnMgSG9wa2luc0KlAUNvbnN1bWluZyA8Yj5hbGNvaG9sPC9iPiBoYXMgYmVlbiBzaG93biB0byBpbmNyZWFzZSB0aGUgcmlzayBvZiBzZWxmLTxiPmhhcm08L2I-ICwgc3VpY2lkZSAsIGFuZCBhZGRpY3Rpb24uIFR3ZW50eS1laWdodCBtaWxsaW9uLCBvciAxIGluIDEwLCBBbWVyaWNhbnMgYWdlcyZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "Johns Hopkins Bloomberg School of Public Health",
+      "read_more_link": "https://publichealth.jhu.edu/2025/the-health-risks-of-drinking-alcohol#:~:text=Consuming%20alcohol%20has%20been%20shown,1%20in%2010%2C%20Americans%20ages"
+    },
+    {
+      "position": 8,
+      "title": "Hazardous and Harmful Alcohol Consumption in Primary ...",
+      "link": "https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/1105638",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAEShAEB6zswFWanz-O5ndDFjFdXDB916uojyWAyirY2Hs_jjC-YQQTWRuTfSL0aGKCndpN92fI3U8L2IqenQ1lcszmfCWTVqhcz29zTcRoeZ-_x849X4MUCCskFtxYnMbXH4BMi9Eu7dLbjvtb15o6TDXhJYNzbnljtkBD5i8f_NGhI3QB983Q&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECD0QAQ&uoh=1",
+      "displayed_link": "https://jamanetwork.com › JAMA Internal Medicine",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAASFBMVEVHcEzZHjfZHjfZHjfZHjfZHjfZHjfZHjfZHjfZHjfXACPZFTLYByvwtLn87e_mf4ncN0rzxcr____WABT42t3qlp3gV2XtqK84XYUiAAAACnRSTlMANnidsQuW_8_lw9aaywAAAOJJREFUeAFk0AeChCAQBECJszvkxvD_nx5iOtkxW8SenhJSaa2kmH7KWLrLmrdJepX8bx8a6vPYl37qO_Yb-47zjfOa84OZyTG7_urb3TS0p4UYOMWYHXGJqalteHUsKDUBcyWesTSklsuAWN2FYpIjxnqhnNQb5wb1RDXpAVfgQt3RMd9YC7ZyoWq2xsI3ZuAeVu4I1Hoi8wZcCxLUFAgLsPCOxBeKHkJvDDifEJl8OvGMr6ZSNnJuXfbceFlWR2Sv4D0z7-N737-8O4P_G84owxfZhJIJ4QSGmTSJSNR4swMAOq0YVWbs80EAAAAASUVORK5CYII.png",
+      "author": "by MC Reid",
+      "snippet": "Harmful drinking is defined as alcohol consumption that results in physical or psychological harm. This disorder is also recognized by the WHO and is defined by ...",
+      "snippet_highlighted_words": [
+        "Harmful",
+        "alcohol",
+        "harm"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Harmful drinking is defined as alcohol consumption that results in physical or psychological harm. This disorder is also recognized by the WHO and is defined by ...",
+          "source_info_link": "https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/1105638",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAASFBMVEVHcEzZHjfZHjfZHjfZHjfZHjfZHjfZHjfZHjfZHjfXACPZFTLYByvwtLn87e_mf4ncN0rzxcr____WABT42t3qlp3gV2XtqK84XYUiAAAACnRSTlMANnidsQuW_8_lw9aaywAAAOJJREFUeAFk0AeChCAQBECJszvkxvD_nx5iOtkxW8SenhJSaa2kmH7KWLrLmrdJepX8bx8a6vPYl37qO_Yb-47zjfOa84OZyTG7_urb3TS0p4UYOMWYHXGJqalteHUsKDUBcyWesTSklsuAWN2FYpIjxnqhnNQb5wb1RDXpAVfgQt3RMd9YC7ZyoWq2xsI3ZuAeVu4I1Hoi8wZcCxLUFAgLsPCOxBeKHkJvDDifEJl8OvGMr6ZSNnJuXfbceFlWR2Sv4D0z7-N737-8O4P_G84owxfZhJIJ4QSGmTSJSNR4swMAOq0YVWbs80EAAAAASUVORK5CYII.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CsEBL2dvdG8_dXJsPUNBRVNoQUVCNnpzd0ZTdEVOVl9PVFZ4eV9KWnRsOTFFQzJXRkN0alBQODVEYVBOVkFCOVFRRThSaHJGODYxNkpNc1FIcDZCcmcxMkhUVDdzWXlzOFFGMWl4ODh6NGhWVFJ0b0NKc1lMMnpsYi1iV0FsSDY0WlNvZjRSUFBZcWxRU3dBUVJxTjVmTVExekJaZUNFS3lIMXhuMnp1dFRNWkh1dms1WUFvSFlqYS1wOGJrVTdodEpCbxIEGgIIABqSBBICCAAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQOwDCAAQABgAIAAqDgoHYWxjb2hvbBVvnXhAKgsKBGhhcm0VbQtsQDLBAS9nb3RvP3VybD1DQUVTaEFFQjZ6c3dGU3RFTlZfT1RWeHlfSlp0bDkxRUMyV0ZDdGpQUDg1RGFQTlZBQjlRUUU4UmhyRjg2MTZKTXNRSHA2QnJnMTJIVFQ3c1l5czhRRjFpeDg4ejRoVlRSdG9DSnNZTDJ6bGItYldBbEg2NFpTb2Y0UlBQWXFsUVN3QVFScU41Zk1RMXpCWmVDRUt5SDF4bjJ6dXRUTVpIdXZrNVlBb0hZamEtcDhia1U3aHRKQm86QEhhemFyZG91cyBhbmQgPGI-SGFybWZ1bCBBbGNvaG9sPC9iPiBDb25zdW1wdGlvbiBpbiBQcmltYXJ5IENhcmVCvgE8Yj5IYXJtZnVsPC9iPiBkcmlua2luZyBpcyBkZWZpbmVkIGFzIDxiPmFsY29ob2w8L2I-IGNvbnN1bXB0aW9uIHRoYXQgcmVzdWx0cyBpbiBwaHlzaWNhbCBvciBwc3ljaG9sb2dpY2FsIDxiPmhhcm08L2I-LiBUaGlzIGRpc29yZGVyIGlzIGFsc28gcmVjb2duaXplZCBieSB0aGUgV0hPIGFuZCBpcyBkZWZpbmVkIGJ5Jm5ic3A7Li4uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CsEBL2dvdG8_dXJsPUNBRVNoQUVCNnpzd0ZTdEVOVl9PVFZ4eV9KWnRsOTFFQzJXRkN0alBQODVEYVBOVkFCOVFRRThSaHJGODYxNkpNc1FIcDZCcmcxMkhUVDdzWXlzOFFGMWl4ODh6NGhWVFJ0b0NKc1lMMnpsYi1iV0FsSDY0WlNvZjRSUFBZcWxRU3dBUVJxTjVmTVExekJaZUNFS3lIMXhuMnp1dFRNWkh1dms1WUFvSFlqYS1wOGJrVTdodEpCbxIEGgIIABqSBBICCAAaACIAKgAyBggDEgJ1czoAQgQIARAASgBaAHIAegCCQOwDCAAQABgAIAAqDgoHYWxjb2hvbBVvnXhAKgsKBGhhcm0VbQtsQDLBAS9nb3RvP3VybD1DQUVTaEFFQjZ6c3dGU3RFTlZfT1RWeHlfSlp0bDkxRUMyV0ZDdGpQUDg1RGFQTlZBQjlRUUU4UmhyRjg2MTZKTXNRSHA2QnJnMTJIVFQ3c1l5czhRRjFpeDg4ejRoVlRSdG9DSnNZTDJ6bGItYldBbEg2NFpTb2Y0UlBQWXFsUVN3QVFScU41Zk1RMXpCWmVDRUt5SDF4bjJ6dXRUTVpIdXZrNVlBb0hZamEtcDhia1U3aHRKQm86QEhhemFyZG91cyBhbmQgPGI-SGFybWZ1bCBBbGNvaG9sPC9iPiBDb25zdW1wdGlvbiBpbiBQcmltYXJ5IENhcmVCvgE8Yj5IYXJtZnVsPC9iPiBkcmlua2luZyBpcyBkZWZpbmVkIGFzIDxiPmFsY29ob2w8L2I-IGNvbnN1bXB0aW9uIHRoYXQgcmVzdWx0cyBpbiBwaHlzaWNhbCBvciBwc3ljaG9sb2dpY2FsIDxiPmhhcm08L2I-LiBUaGlzIGRpc29yZGVyIGlzIGFsc28gcmVjb2duaXplZCBieSB0aGUgV0hPIGFuZCBpcyBkZWZpbmVkIGJ5Jm5ic3A7Li4uIgIQAUgAWABoAA",
+      "source": "JAMA",
+      "read_more_link": "https://jamanetwork.com/journals/jamainternalmedicine/fullarticle/1105638#:~:text=Harmful%20drinking%20is%20defined%20as,WHO9%20and%20is%20defined%20by"
+    },
+    {
+      "position": 9,
+      "title": "Alcohol Use Disorder (AUD)",
+      "link": "https://medlineplus.gov/alcoholusedisorderaud.html",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESbQHrOzAV3qBIPza4ZFTgAE9YP74t7nFdilsy3ND8uhIuJFI3URjvGvukn7FeDjVGV-t3FgugakVCBdV2oQmTArGg_5D4seRw9gr1GyILa4Lhvg8QAchJG5gHYHi5sn08CsQw02Bnwzevwa3s7Ew&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECD4QAQ&uoh=1",
+      "displayed_link": "https://medlineplus.gov › Health Topics",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAhFBMVEX____d8N_U7NaS0ZkQrS0jsDmKz5Iys0Q4tEkqsT5pw3RhwG3L6M5HuFY_tk96sdsAfscAgcgAgsgAfMaWweO137mu3LMAesVxrdnP4vEAdcP4_P4Ad8TJ3e_l8Pjc6vWO0JaIuN7w-fFLmdF1xn6y0OmlyOUpjMxfotVnqNcAccIzj82W0lcTAAABBUlEQVR4AZSPhaLCMAwAD3fWJkDnw_X_vw-ZPEWv3qskvEmtnlPjDo1mK6fZviM73ZLWM9n79Ga_tJ3BHVlvlReH3GFUXB3zE89Y0QlMe3k4M5g4scYHCEJrbRgBva9w4ttWACROxHikGY2r7c3JUjwj4pJSxikLn2Wz220u8Rak8bc0KzAuYt3p9EEVVqaSt3Hj3JZ6q1Vnq7ohiStpBXZWdjAawU5us10ldUtQfDKd3e5IHLDVXAahwt5I_nP-m5g9aJ4KB4_0qGolTCENxaoeMxZ7fiDWeOAZMfzHWnERKo-kbjfuobSnk30o5dbuSmMlx-od6YcuJzxwhyDJCS4jMg8AADMnGX0WJNKKAAAAAElFTkSuQmCC.png",
+      "date": "Jul 27, 2026",
+      "snippet": "For most adults, moderate alcohol use is probably not harmful. Your ... Alcohol misuse means that drinking causes distress and harm.",
+      "snippet_highlighted_words": [
+        "alcohol",
+        "harmful",
+        "Alcohol",
+        "harm"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "For most adults, moderate alcohol use is probably not harmful. Your ... Alcohol misuse means that drinking causes distress and harm.",
+          "source_info_link": "https://medlineplus.gov/alcoholusedisorderaud.html",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAhFBMVEX____d8N_U7NaS0ZkQrS0jsDmKz5Iys0Q4tEkqsT5pw3RhwG3L6M5HuFY_tk96sdsAfscAgcgAgsgAfMaWweO137mu3LMAesVxrdnP4vEAdcP4_P4Ad8TJ3e_l8Pjc6vWO0JaIuN7w-fFLmdF1xn6y0OmlyOUpjMxfotVnqNcAccIzj82W0lcTAAABBUlEQVR4AZSPhaLCMAwAD3fWJkDnw_X_vw-ZPEWv3qskvEmtnlPjDo1mK6fZviM73ZLWM9n79Ga_tJ3BHVlvlReH3GFUXB3zE89Y0QlMe3k4M5g4scYHCEJrbRgBva9w4ttWACROxHikGY2r7c3JUjwj4pJSxikLn2Wz220u8Rak8bc0KzAuYt3p9EEVVqaSt3Hj3JZ6q1Vnq7ohiStpBXZWdjAawU5us10ldUtQfDKd3e5IHLDVXAahwt5I_nP-m5g9aJ4KB4_0qGolTCENxaoeMxZ7fiDWeOAZMfzHWnERKo-kbjfuobSnk30o5dbuSmMlx-od6YcuJzxwhyDJCS4jMg8AADMnGX0WJNKKAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqEBL2dvdG8_dXJsPUNBRVNiUUhyT3pBVlFuc2VPcmJ3OXZ6dzhzQU1HUEJ5eGkweDdvT1p2dENqMURVRGlEYm5pTFNTSU10eUliMUxyRUI1WVhvVEhid2NVbGZNTC1hNFVuTlZOMi1saXVHNW0wMVJuMmVHUzJveUwwazQxR0s4MURoZVZ0eE1CdGNsUGdBTmxCNU5fSF9DUnE0YUZmdlZoM1ESBBoCCAAawwMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCdAwgAEAAYACAAKg4KB2FsY29ob2wV5y2vQCoLCgRoYXJtFSoTvT8yoQEvZ290bz91cmw9Q0FFU2JRSHJPekFWUW5zZU9yYnc5dnp3OHNBTUdQQnl4aTB4N29PWnZ0Q2oxRFVEaURibmlMU1NJTXR5SWIxTHJFQjVZWG9USGJ3Y1VsZk1MLWE0VW5OVk4yLWxpdUc1bTAxUm4yZUdTMm95TDBrNDFHSzgxRGhlVnR4TUJ0Y2xQZ0FObEI1Tl9IX0NScTRhRmZ2VmgzUTovPGI-QWxjb2hvbDwvYj4gVXNlIERpc29yZGVyIChBVUQpIC0gTWVkbGluZVBsdXNCoAFGb3IgbW9zdCBhZHVsdHMsIG1vZGVyYXRlIDxiPmFsY29ob2w8L2I-IHVzZSBpcyBwcm9iYWJseSBub3QgPGI-aGFybWZ1bDwvYj4uIFlvdXIgLi4uIDxiPkFsY29ob2w8L2I-IG1pc3VzZSBtZWFucyB0aGF0IGRyaW5raW5nIGNhdXNlcyBkaXN0cmVzcyBhbmQgPGI-aGFybTwvYj4uIgIQAUgAWABoAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqEBL2dvdG8_dXJsPUNBRVNiUUhyT3pBVlFuc2VPcmJ3OXZ6dzhzQU1HUEJ5eGkweDdvT1p2dENqMURVRGlEYm5pTFNTSU10eUliMUxyRUI1WVhvVEhid2NVbGZNTC1hNFVuTlZOMi1saXVHNW0wMVJuMmVHUzJveUwwazQxR0s4MURoZVZ0eE1CdGNsUGdBTmxCNU5fSF9DUnE0YUZmdlZoM1ESBBoCCAAawwMSAggBGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkCdAwgAEAAYACAAKg4KB2FsY29ob2wV5y2vQCoLCgRoYXJtFSoTvT8yoQEvZ290bz91cmw9Q0FFU2JRSHJPekFWUW5zZU9yYnc5dnp3OHNBTUdQQnl4aTB4N29PWnZ0Q2oxRFVEaURibmlMU1NJTXR5SWIxTHJFQjVZWG9USGJ3Y1VsZk1MLWE0VW5OVk4yLWxpdUc1bTAxUm4yZUdTMm95TDBrNDFHSzgxRGhlVnR4TUJ0Y2xQZ0FObEI1Tl9IX0NScTRhRmZ2VmgzUTovPGI-QWxjb2hvbDwvYj4gVXNlIERpc29yZGVyIChBVUQpIC0gTWVkbGluZVBsdXNCoAFGb3IgbW9zdCBhZHVsdHMsIG1vZGVyYXRlIDxiPmFsY29ob2w8L2I-IHVzZSBpcyBwcm9iYWJseSBub3QgPGI-aGFybWZ1bDwvYj4uIFlvdXIgLi4uIDxiPkFsY29ob2w8L2I-IG1pc3VzZSBtZWFucyB0aGF0IGRyaW5raW5nIGNhdXNlcyBkaXN0cmVzcyBhbmQgPGI-aGFybTwvYj4uIgIQAUgAWABoAA",
+      "source": "MedlinePlus (.gov)",
+      "read_more_link": "https://medlineplus.gov/alcoholusedisorderaud.html#:~:text=For%20most%20adults%2C%20moderate%20alcohol,is%20probably%20not%20harmful.%20Your&text=Alcohol%20misuse%20means%20that%20drinking,causes%20distress%20and%20harm."
+    },
+    {
+      "position": 10,
+      "title": "Health effects associated with alcohol consumption",
+      "link": "https://www.nature.com/articles/s44360-026-00139-5",
+      "redirect_link": "https://www.google.com/url?sa=t&source=web&rct=j&opi=89978449&url=CAESbQHrOzAV2w-ilhkntp8DCb2dmy-5VU8M89N2Zm7bPUyerYpuj5AmjfttqHWWcAPKbUg99AqnKOzy_Oqu9zRN-FTR11ikrZZV-o9JI6YXpIiAgmVoo6razdRnJzjCeLgnodw4u_pjkqe7fv97EuA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQFnoECEQQAQ&uoh=1",
+      "displayed_link": "https://www.nature.com › nature health › articles",
+      "favicon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAQlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuLi6Dg4Ojo6Ovr69NTU1mZmby8vL___-7u7ve3t6Pj4-VlZV0ywd4AAAACnRSTlMAOIbC7f1h_xjfm5QXegAAALxJREFUeAF9kwUCxCAMBHGo4v__6pFD6tkqGTRChijjQkrBGSV3KaGHhLogM-mLJkOGqH6IImxQo19VZ-7rzUt51m3d27rAlAbZzXmnNw_aKoU91zOEYozJV831RGM3c7G5uNg_X_qemK4CI3zX8s3VxAhv0DWYDsiJ-IaCyG8oUYhOi2-I3WA-H4XezglwHYERHVa3gXtDXXI4fgdoy08EJw_H15DtSxEEawHVkGHBxtMETzA8NfGkRsrhByj7FrwZFRPtAAAAAElFTkSuQmCC.png",
+      "author": "by X Dai",
+      "snippet": "Alcohol consumption showed a gradually increasing harmful association with oesophageal cancer risk (Fig. ... harm reduction and responsible ...",
+      "snippet_highlighted_words": [
+        "Alcohol",
+        "harmful",
+        "harm"
+      ],
+      "about_this_result": {
+        "source": {
+          "description": "Alcohol consumption showed a gradually increasing harmful association with oesophageal cancer risk (Fig. ... harm reduction and responsible ...",
+          "source_info_link": "https://www.nature.com/articles/s44360-026-00139-5",
+          "icon": "https://serpapi.com/images/i/iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAMAAABF0y-mAAAAQlBMVEVHcEwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuLi6Dg4Ojo6Ovr69NTU1mZmby8vL___-7u7ve3t6Pj4-VlZV0ywd4AAAACnRSTlMAOIbC7f1h_xjfm5QXegAAALxJREFUeAF9kwUCxCAMBHGo4v__6pFD6tkqGTRChijjQkrBGSV3KaGHhLogM-mLJkOGqH6IImxQo19VZ-7rzUt51m3d27rAlAbZzXmnNw_aKoU91zOEYozJV831RGM3c7G5uNg_X_qemK4CI3zX8s3VxAhv0DWYDsiJ-IaCyG8oUYhOi2-I3WA-H4XezglwHYERHVa3gXtDXXI4fgdoy08EJw_H15DtSxEEawHVkGHBxtMETzA8NfGkRsrhByj7FrwZFRPtAAAAAElFTkSuQmCC.png"
+        },
+        "languages": [
+          "en"
+        ],
+        "regions": [
+          "US"
+        ]
+      },
+      "about_page_link": "https://www.google.com/search/about-this-result?origin=www.google.com&req=CqEBL2dvdG8_dXJsPUNBRVNiUUhyT3pBVnNYbUhVODh0NnhZanVSa3NpR2xIMFg4UkJDZjduUG56eUpqQzNNUmh2VmltUUxRUW5RcXpqMmFvWUk3bFpRLVdRVFNXQkJyMFZ2Zm9QQ1oyOEJNTXVsSmpQa0E5SUMtMF95X1JSS1h4TmxvNVk1YWFvdFotMW8yXy1DN3ZlNEQ3SGZIaHhSb29HSFESBBoCCAAa3wMSAggAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkC5AwgAEAAYACAAKg4KB2FsY29ob2wVl7I8QCoLCgRoYXJtFd4afz4yoQEvZ290bz91cmw9Q0FFU2JRSHJPekFWc1htSFU4OHQ2eFlqdVJrc2lHbEgwWDhSQkNmN25Qbnp5SmpDM01SaHZWaW1RTFFRblFxemoyYW9ZSTdsWlEtV1FUU1dCQnIwVnZmb1BDWjI4Qk1NdWxKalBrQTlJQy0wX3lfUlJLWHhObG81WTVhYW90Wi0xbzJfLUM3dmU0RDdIZkhoeFJvb0dIUTpCSGVhbHRoIGVmZmVjdHMgYXNzb2NpYXRlZCB3aXRoIDxiPmFsY29ob2w8L2I-IGNvbnN1bXB0aW9uIC0gTmF0dXJlQqkBPGI-QWxjb2hvbDwvYj4gY29uc3VtcHRpb24gc2hvd2VkIGEgZ3JhZHVhbGx5IGluY3JlYXNpbmcgPGI-aGFybWZ1bDwvYj4gYXNzb2NpYXRpb24gd2l0aCBvZXNvcGhhZ2VhbCBjYW5jZXIgcmlzayAoRmlnLiAuLi4gPGI-aGFybTwvYj4gcmVkdWN0aW9uIGFuZCByZXNwb25zaWJsZSZuYnNwOy4uLiICEAFIAFgAaAA",
+      "about_page_serpapi_link": "https://serpapi.com/search.json?engine=google_about_this_result&google_domain=google.com&req_token=CqEBL2dvdG8_dXJsPUNBRVNiUUhyT3pBVnNYbUhVODh0NnhZanVSa3NpR2xIMFg4UkJDZjduUG56eUpqQzNNUmh2VmltUUxRUW5RcXpqMmFvWUk3bFpRLVdRVFNXQkJyMFZ2Zm9QQ1oyOEJNTXVsSmpQa0E5SUMtMF95X1JSS1h4TmxvNVk1YWFvdFotMW8yXy1DN3ZlNEQ3SGZIaHhSb29HSFESBBoCCAAa3wMSAggAGgAiACoAMgYIAxICdXM6AEIECAEQAEoAWgByAHoAgkC5AwgAEAAYACAAKg4KB2FsY29ob2wVl7I8QCoLCgRoYXJtFd4afz4yoQEvZ290bz91cmw9Q0FFU2JRSHJPekFWc1htSFU4OHQ2eFlqdVJrc2lHbEgwWDhSQkNmN25Qbnp5SmpDM01SaHZWaW1RTFFRblFxemoyYW9ZSTdsWlEtV1FUU1dCQnIwVnZmb1BDWjI4Qk1NdWxKalBrQTlJQy0wX3lfUlJLWHhObG81WTVhYW90Wi0xbzJfLUM3dmU0RDdIZkhoeFJvb0dIUTpCSGVhbHRoIGVmZmVjdHMgYXNzb2NpYXRlZCB3aXRoIDxiPmFsY29ob2w8L2I-IGNvbnN1bXB0aW9uIC0gTmF0dXJlQqkBPGI-QWxjb2hvbDwvYj4gY29uc3VtcHRpb24gc2hvd2VkIGEgZ3JhZHVhbGx5IGluY3JlYXNpbmcgPGI-aGFybWZ1bDwvYj4gYXNzb2NpYXRpb24gd2l0aCBvZXNvcGhhZ2VhbCBjYW5jZXIgcmlzayAoRmlnLiAuLi4gPGI-aGFybTwvYj4gcmVkdWN0aW9uIGFuZCByZXNwb25zaWJsZSZuYnNwOy4uLiICEAFIAFgAaAA",
+      "source": "Nature",
+      "read_more_link": "https://www.nature.com/articles/s44360-026-00139-5#:~:text=Alcohol%20consumption%20showed%20a%20gradually,with%20oesophageal%20cancer%20risk%20(Fig.&text=harm%20reduction%20and%20responsible%20drinking."
+    }
+  ],
+  "scholarly_articles": {
+    "title": "Scholarly articles for \"alcohol\" \"harm\" OR \"harmful\"",
+    "link": "https://scholar.google.com/scholar?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&hl=en&as_sdt=0&as_vis=1&oi=scholart",
+    "serpapi_link": "https://serpapi.com/search.json?as_sdt=0&as_vis=1&engine=google_scholar&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off",
+    "articles": [
+      {
+        "title": "Harmful alcohol use",
+        "link": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6676694/",
+        "highlighted_words": [
+          "Harmful alcohol"
+        ],
+        "author": "‎Gmel"
+      },
+      {
+        "title": "Reducing harm from alcohol: call to action",
+        "link": "https://www.uniad.org.br/wp-content/uploads/2009/07/alcohol_-_lancet_-_call_for_action.pdf",
+        "highlighted_words": [
+          "harm",
+          "alcohol"
+        ],
+        "author": "‎Casswell"
+      },
+      {
+        "title": "… and harmful alcohol consumption in primary care",
+        "link": "https://jamanetwork.com/journals/jamainternalmedicine/articlepdf/1105638/ira80645.pdf",
+        "highlighted_words": [
+          "harmful alcohol"
+        ],
+        "author": "‎Reid"
+      }
+    ]
+  },
+  "pagination": {
+    "current": 1,
+    "next": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=10&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8NMDegQIPBAW",
+    "other_pages": {
+      "2": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=10&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAE",
+      "3": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=20&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAG",
+      "4": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=30&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAI",
+      "5": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=40&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAK",
+      "6": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=50&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAM",
+      "7": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=60&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAO",
+      "8": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=70&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAQ",
+      "9": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=80&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAS",
+      "10": "https://www.google.com/search?q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&sca_esv=46301957b105dbed&hl=en&sxsrf=APpeQnuY3HdS0AOM97yUY4t5y2xsOpre9Q:1793197221924&ei=pQTiarv0N9yZruEP9Nzy0Q4&start=90&sa=N&sstk=AS6-VmKyZi7SQaEDtU1snhbx2-UE6o1TuU1dW8xD_mHQkH_dLYtLh8ONtkb6o_Fmrv79xuSo8617YhQ60ZlidgwBbjW7HRV4oZa3pA&ved=2ahUKEwj72rKb9NyXAxXcjCsGHXSuPOoQ8tMDegQIPBAU"
+    }
+  },
+  "serpapi_pagination": {
+    "current": 1,
+    "next_link": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=10",
+    "next": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=10",
+    "other_pages": {
+      "2": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=10",
+      "3": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=20",
+      "4": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=30",
+      "5": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=40",
+      "6": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=50",
+      "7": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=60",
+      "8": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=70",
+      "9": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=80",
+      "10": "https://serpapi.com/search.json?device=desktop&engine=google&google_domain=google.com&hl=en&q=%22alcohol%22+%22harm%22+OR+%22harmful%22&safe=off&start=90"
+    }
+  }
+}
