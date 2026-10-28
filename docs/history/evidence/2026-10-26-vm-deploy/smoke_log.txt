@@ -1,0 +1,28 @@
+desktop list: Monitoring of non-cigarette tobacco use using Google Trends | Cavazos-Rehg, Patricia A, Krauss, Melissa J, Spitznagel, Edward L, Lowery, Ashley, Grucza, Richard A, Chaloupka, Frank J, Bierut, Laura Jean · Tobacco Control 2014 · doi:10.1136/tobaccocontrol-2013-051276 | 0 przebiegów w tej instalacji
+desktop cr2014/overview overflow px: 0
+desktop cr2014/measure overflow px: 0
+measure cost: 1 zapytanie SerpApi; limit dzienny 100, dziś zostało 100
+measure blocked: none
+launch disabled before approval: true
+desktop cr2014/runs overflow px: 0
+desktop cr2014/protocol overflow px: 0
+desktop cr2014/discrepancies overflow px: 0
+desktop cr2014/registry overflow px: 0
+desktop cr2014/evidence overflow px: 0
+cr2014 gaps: Luki w dowodach (1) | cigar_youth_pearson: żaden kompletny przebieg jeszcze nie ocenia tego kryterium |  | sha256 grafu f53c968560d4cc645f32e14c92d54a28990cf71552ccad305796ce63a2f5ef16 · węzły 26 · krawędzie 12
+desktop cr2014/manuscript overflow px: 0
+desktop jh2016/evidence overflow px: 0
+jh2016 gaps: Luki w dowodach (2) | Zmiana sposobu szacowania przez Google od 2014 r.: wpis diagnozy ze statusem „prawdopodobna” nie wskazuje dowodu | Region Google: wpis diagnozy ze statusem „wykluczona” nie wskazuje dowodu |  | sha256 grafu 4d4f3c728183df17469910f87742660262108bb2742064ca96b7353152e99e42 · węzły 46 · krawędzie 53
+desktop jh2016/protocol overflow px: 0
+jh2016 protocol preview (not frozen): Zostanie zamrożone: 1. Główna: harm_index_vs_reference_pearson (holm); 2. Rodzina 2: popularity_ranking_stability (holm); bramkowanie serial.
+phone list: Monitoring of non-cigarette tobacco use using Google Trends | Cavazos-Rehg, Patricia A, Krauss, Melissa J, Spitznagel, Edward L, Lowery, Ashley, Grucza, Richard A, Chaloupka, Frank J, Bierut, Laura Jean · Tobacco Control 2014 · doi:10.1136/tobaccocontrol-2013-051276 | 0 przebiegów w tej instalacji
+phone cr2014/overview overflow px: 0
+phone cr2014/measure overflow px: 0
+phone cr2014/runs overflow px: 0
+phone cr2014/protocol overflow px: 0
+phone cr2014/discrepancies overflow px: 0
+phone cr2014/registry overflow px: 0
+phone cr2014/evidence overflow px: 0
+phone cr2014/manuscript overflow px: 0
+phone jh2016/evidence overflow px: 0
+phone jh2016/protocol overflow px: 0

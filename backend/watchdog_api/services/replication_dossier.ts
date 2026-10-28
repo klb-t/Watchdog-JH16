@@ -180,7 +180,7 @@ export function buildManuscript(t: ReplicationTarget, runs: readonly RunSummary[
   sec('method_original', 'Metoda pracy oryginalnej', [{ type: 'list', items: dossier?.original_method ?? [] }]);
   sec('method_replication', 'Metoda replikacji i odstępstwa', [
     { type: 'list', items: dossier?.replication_method ?? [], sources: [{ path: dossier?.protocol?.document ?? '' }] },
-    { type: 'table', columns: ['Element', 'Oryginał', 'Replikacja', 'Powód'], rows: (dossier?.deviations ?? []).map((d: any) => [d.item, d.original, d.replication, d.reason]) },
+    { type: 'table', columns: ['Element', 'Oryginał', 'Replikacja', 'Powód'], rows: (dossier?.deviations ?? []).map((d: any) => [d.item, d.original, d.replication, d.reason]), sources: [{ config: 'dossier' }] },
     { type: 'list', items: target.claims.map((c: any) => `Kryterium ${c.claim_key}: ${c.statistic}, ${c.tolerance_kind} ${c.tolerance_kind === 'interval' ? `[${c.tolerance_value}; ${c.interval_upper}]` : `≥ ${c.tolerance_value}`} — ustalone przed danymi (commit ${target._pre_registration?.bands_proposed_in_commit?.slice(0, 7) ?? '—'}).`), sources: [{ config: 'claims' }] }]);
   sec('data', 'Dane i ich pochodzenie', [{ type: 'table', columns: ['Przebieg', 'Pochodzenie', 'Wariant/region', 'Pobranie (UTC)', 'Kod', 'Stan'],
     rows: runs.map(r => [short(r.run_id), r.provenance_label, r.variant ?? '—', r.acquired_utc ? `${r.acquired_utc[0].slice(0, 16)}–${r.acquired_utc[1].slice(11, 16)}` : '—', r.git_commit?.slice(0, 7) ?? 'nie zapisano',
@@ -248,7 +248,7 @@ function buildCorrelationManuscript(t: ReplicationTarget, runs: readonly RunSumm
   sec('method_original', 'Metoda pracy oryginalnej', [{ type: 'list', items: dossier.original_method ?? [] }]);
   sec('method_replication', 'Metoda replikacji i odstępstwa', [
     { type: 'list', items: dossier.replication_method ?? [], sources: [{ path: dossier.protocol?.document ?? '' }] },
-    { type: 'table', columns: ['Element', 'Oryginał', 'Replikacja', 'Powód'], rows: (dossier.deviations ?? []).map((d: any) => [d.item, d.original, d.replication, d.reason]) },
+    { type: 'table', columns: ['Element', 'Oryginał', 'Replikacja', 'Powód'], rows: (dossier.deviations ?? []).map((d: any) => [d.item, d.original, d.replication, d.reason]), sources: [{ config: 'dossier' }] },
     { type: 'list', items: target.claims.map((c: any) => `Kryterium ${c.claim_key}: ${c.statistic}, ${c.tolerance_kind} ${c.tolerance_kind === 'interval' ? `[${c.tolerance_value}; ${c.interval_upper}]` : `≥ ${c.tolerance_value}`} — ustalone przed danymi (commit ${dossier.protocol?.registered_in_commit ?? '—'}).`), sources: [{ config: 'claims' }] }]);
   sec('not_replicated', 'Czego nie powtórzono', [{ type: 'table', columns: ['Wynik pracy', 'Powód'], rows: (dossier.not_replicated ?? []).map((x: any) => [x.endpoint, x.reason]), sources: [{ config: 'dossier' }] }]);
   sec('data', 'Dane i ich pochodzenie', [{ type: 'table', columns: ['Przebieg', 'Pochodzenie', 'Pobranie (UTC)', 'Kod', 'Stan'],

@@ -125,3 +125,35 @@ test('a query longer than the provider accepts is refused before it is sent', as
   assert.strictEqual(raw.status, 'FETCH_FAILED'); assert.match(String(raw.metadata.detail), /at most 100; nothing was sent/); assert.deepStrictEqual(urls, []);
   assert.ok(measurementPlan(target())!.plan[0].renderedQuery.length <= 100, 'the shipped preset (v2) fits the limit');
 });
+
+test('evidence graph: hypothesis → claim ← protocol, run → claim with its verdict, files and manuscript citations; gaps are named', async () => {
+  const { buildEvidenceGraph } = await import('../../backend/watchdog_api/services/evidence_graph');
+  const published = JSON.parse(fs.readFileSync('fixtures/cr2014/paper_reported.json', 'utf8'));
+  const empty = buildEvidenceGraph(target(), [], [], buildManuscript(target(), [], published, null, '2026-10-26T00:00:00Z'));
+  assert.deepStrictEqual(empty.gaps.map(g => g.node), ['claim:cigar_youth_pearson']);
+  const protocols = new StudyProtocolRepository(db);
+  const p = protocols.freeze('owner', target(), { name: 'g', primary: ['cigar_youth_pearson'], families: [{ label: 'A', endpoints: ['cigar_youth_pearson'], multiplicity: 'holm' }],
+    alpha: 0.05, rationale: 'graph test', expectedDossierHash: target().hashes.dossier });
+  await new Promise(r => setTimeout(r, 5));
+  const { id } = await measure(synthetic(), { data_role: 'confirmation', protocol_id: p.id, protocol_hash: p.content_hash });
+  const runs = await collectRuns(db, new LocalFileSystemStore(STORE), 'owner', target().dossier), list = [{ ...p, evaluation: evaluateProtocol(p, runs) }];
+  const build = () => buildEvidenceGraph(target(), runs, list, buildManuscript(target(), runs, published, null, '2026-10-26T00:00:00Z', list));
+  const g = build(), has = (from: string, to: string, kind: string) => g.edges.some(e => e.from === from && e.to === to && e.kind === kind);
+  assert.ok(has('hypothesis:H-cigar-youth', 'claim:cigar_youth_pearson', 'tested_by'));
+  assert.ok(has(`protocol:${p.id}`, 'claim:cigar_youth_pearson', 'fixes'));
+  assert.ok(has('file:docs/replication/CR2014_2026-10-26/PROTOCOL.md', 'claim:cigar_youth_pearson', 'fixes'));
+  assert.ok(g.edges.some(e => e.from === `run:${id}` && e.to === 'claim:cigar_youth_pearson' && e.kind === 'evaluates' && ['reproduced', 'deviates'].includes(e.label!)));
+  assert.ok(has(`run:${id}`, `protocol:${p.id}`, 'confirms'));
+  assert.ok(has(`run:${id}`, 'section:results', 'cited_in'));
+  assert.ok(has('file:fixtures/cr2014/paper_reported.json', `run:${id}`, 'uses'));
+  assert.deepStrictEqual(g.gaps, [], 'the claim now has a complete run; every diagnosis names evidence');
+  assert.strictEqual(build().graph_hash, g.graph_hash, 'deterministic');
+});
+
+test('evidence graph of JH16 with no runs: both claims are gaps, the graph still builds', async () => {
+  const { buildEvidenceGraph } = await import('../../backend/watchdog_api/services/evidence_graph');
+  const jh = listReplicationTargets().find(t => t.target.target_id === 'jh2016')!;
+  const g = buildEvidenceGraph(jh, [], [], buildManuscript(jh, [], null, null, '2026-10-26T00:00:00Z'));
+  assert.deepStrictEqual(g.gaps.filter(x => x.node.startsWith('claim:')).map(x => x.node), ['claim:harm_index_vs_reference_pearson', 'claim:popularity_ranking_stability']);
+  assert.ok(g.nodes.some(n => n.kind === 'cause'));
+});
