@@ -108,6 +108,13 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
   będzie danymi potwierdzającymi. Zakładka „Protokół” pokaże p surowe i skorygowane oraz decyzję
   względem alfa; „Przebiegi” oznaczą przebieg jako „potwierdzające”, a projekt pracy dostanie sekcję
   „Protokół potwierdzający”. Wcześniejsze przebiegi zostają eksploracyjne (z podanym powodem).
+- **Priorytet i kilka rodzin (E5.7b-2):** przy każdym porównaniu wybierz numer rodziny i priorytet;
+  każda rodzina ma własną korektę (także „Sekwencja ustalona”: test w podanej kolejności do pierwszego
+  nieodrzucenia). Przy dwóch rodzinach wybierz bramkowanie: „szeregowe” testuje rodzinę 2 tylko, gdy
+  wszystkie hipotezy rodziny 1 odrzucono. Podgląd nad uzasadnieniem pokazuje, co zostanie zamrożone.
+  Sprawdzone na kopii danych 26.10: H-harm w rodzinie 1, H-pop w rodzinie 2, nowy pomiar `51a9567b`:
+  H-harm p 0,71 (nieodrzucona), więc H-pop „nietestowane: bramka zamknięta”, mimo surowego p 1,25e-4.
+  Protokoły zamrożone wcześniej liczą się jak dotąd (jedna rodzina, bez priorytetu).
 
 **B. Nowe pomiary (kredyty SerpApi)**
 6. Ustawienia → kreator. Krok 1: „serpapi: zapisany” i, w trybie „Standardowy”, dzienny limit

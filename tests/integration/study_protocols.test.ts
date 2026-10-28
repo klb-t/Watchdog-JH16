@@ -90,3 +90,59 @@ test('only a new faithful run after the freeze that cites the protocol is confir
   const section = m.sections.find(s => s.id === 'protocol')!;
   assert.ok(section && section.blocks.some(b => b.type === 'table' && b.sources?.some(x => 'run_id' in x && x.run_id === good)));
 });
+
+// ---- E5.7b-2: prioritised hypotheses and several comparison families ----
+
+const HARM = 'harm_index_vs_reference_pearson', POP = 'popularity_ranking_stability';
+const families = (over: any = {}) => ({ name: 'prioritised', primary: [HARM], alpha: 0.01, rationale: 'harm first, popularity only if harm holds',
+  expectedDossierHash: target().hashes.dossier, families: [{ label: 'Główna', endpoints: [HARM], multiplicity: 'holm' }, { label: 'Wtórna', endpoints: [POP], multiplicity: 'holm' }], gating: 'serial', ...over });
+/** A stored-evaluation summary shaped like collectRuns output: only the fields a protocol reads. */
+const summary = (p: any, pHarm: number | null, pPop: number | null, complete = true): any => ({ run_id: `r-${pHarm}-${pPop}`, created_at: '2999-01-01T00:00:00Z', status: 'COMPLETED', provenance: 'new_fetch',
+  role_config: { data_role: 'confirmation', protocol_id: p.id, protocol_hash: p.content_hash, source_id: 'serp_result_count' },
+  evaluation: { complete, verdicts: [], hi_vs_reference: [{ statistic: 'pearson', p_two_sided: pHarm }], pi_vs_published: { p_two_sided: pPop } } });
+
+test('fixed sequence: running maximum in the declared order; a missing p-value stops the sequence', () => {
+  assert.deepStrictEqual(adjustPValues([0.001, 0.02, 0.004], 'fixed_sequence'), [0.001, 0.02, 0.02]);
+  assert.deepStrictEqual(adjustPValues([0.001, null, 0.003], 'fixed_sequence'), [0.001, null, null]);
+});
+
+test('families keep the declared order and are validated; the single-family form refuses a fixed sequence', () => {
+  const repo = new StudyProtocolRepository(db);
+  const p = repo.freeze('owner', target(), families({ families: [{ label: 'Jedna', endpoints: [POP, HARM], multiplicity: 'fixed_sequence' }] }));
+  assert.deepStrictEqual(p.body.families!.map(f => [f.id, f.endpoints.map(e => e.claim_key)]), [['F1', [POP, HARM]]], 'priority order is not sorted away');
+  assert.strictEqual(p.body.multiplicity, 'fixed_sequence');
+  assert.strictEqual(repo.list('owner', 'jh2016')[0].content_hash, p.content_hash);
+  assert.throws(() => repo.freeze('owner', target(), families({ families: [{ label: 'A', endpoints: [HARM], multiplicity: 'holm' }, { label: 'B', endpoints: [HARM], multiplicity: 'holm' }] })), /more than one place/);
+  assert.throws(() => repo.freeze('owner', target(), families({ gating: 'whatever' })), /Unknown gating/);
+  assert.throws(() => repo.freeze('owner', target(), families({ families: [{ label: 'A', endpoints: [HARM], multiplicity: 'magic' }] })), /Unknown multiplicity/);
+  assert.throws(() => repo.freeze('owner', target(), families({ family: [HARM] })), /not both/);
+  assert.throws(() => repo.freeze('owner', target(), families({ primary: [POP], families: [{ label: 'A', endpoints: [HARM], multiplicity: 'holm' }] })), /members of a comparison family/);
+  assert.throws(() => repo.freeze('owner', target(), input({ multiplicity: 'fixed_sequence' })), /explicit order/);
+});
+
+test('serial gating: the second family is tested only when the first is fully rejected; independent families are not gated', () => {
+  const repo = new StudyProtocolRepository(db);
+  const serial = repo.freeze('owner', target(), families());
+  const open = evaluateProtocol(serial, [summary(serial, 0.001, 0.004)]).confirmation_runs[0].endpoints;
+  assert.deepStrictEqual(open.map(e => [e.family_id, e.priority, e.tested, e.significant]), [['F1', 1, true, true], ['F2', 1, true, true]]);
+  const closed = evaluateProtocol(serial, [summary(serial, 0.5, 0.004)]).confirmation_runs[0].endpoints;
+  assert.deepStrictEqual(closed.map(e => [e.tested, e.significant, e.p_adjusted]), [[true, false, 0.5], [false, null, null]]);
+  assert.match(closed[1].not_tested_reason!, /gate closed: family F1/);
+  assert.strictEqual(closed[1].p_raw, 0.004, 'the raw value stays visible even when it is not tested');
+  const independent = repo.freeze('owner', target(), families({ gating: 'independent' }));
+  assert.strictEqual(evaluateProtocol(independent, [summary(independent, 0.5, 0.004)]).confirmation_runs[0].endpoints[1].significant, true);
+  const seq = repo.freeze('owner', target(), families({ families: [{ label: 'S', endpoints: [HARM, POP], multiplicity: 'fixed_sequence' }] }));
+  const stopped = evaluateProtocol(seq, [summary(seq, null, 0.001)]).confirmation_runs[0].endpoints;
+  assert.deepStrictEqual(stopped.map(e => e.not_tested_reason), ['p-value not available', 'sequence stopped at an earlier hypothesis']);
+  const m = buildManuscript(target(), [], paper, null, '2026-10-26T00:00:00Z', [{ ...serial, evaluation: evaluateProtocol(serial, [summary(serial, 0.5, 0.004)]) }]);
+  const text = JSON.stringify(m.sections.find(s => s.id === 'protocol'));
+  assert.match(text, /bramkowanie szeregowe/); assert.match(text, /nietestowane: bramka zamknięta/);
+});
+
+test('a protocol frozen in the single-family form evaluates as before', () => {
+  const p = new StudyProtocolRepository(db).freeze('owner', target(), input());
+  assert.strictEqual(p.body.families, undefined);
+  const [harm, pop] = evaluateProtocol(p, [summary(p, 0.004, 0.2)]).confirmation_runs[0].endpoints;
+  assert.deepStrictEqual([harm.p_adjusted, pop.p_adjusted, harm.significant, pop.significant, harm.tested, pop.tested], [0.008, 0.2, true, false, true, true]);
+  assert.deepStrictEqual([harm.priority, pop.priority], [null, null], 'a sorted family declares no priority');
+});

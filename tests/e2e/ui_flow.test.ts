@@ -329,6 +329,24 @@ test('E5.7b: a protocol is frozen from the Replications page and confirmation da
   assert.deepStrictEqual(protocols[0].evaluation.confirmation_runs, []);
 });
 
+test('E5.7b-2: two prioritised families with serial gating are frozen from the form', async () => {
+  await page.goto(`${baseUrl}/replications/jh2016`);
+  await page.click('[data-testid="tab-protocol"]');
+  await page.selectOption('[data-testid="family-popularity_ranking_stability"]', '2');
+  await page.locator('[data-testid="gating"]').waitFor();
+  await page.selectOption('[data-testid="multiplicity-1"]', 'fixed_sequence');
+  assert.match(await page.locator('[data-testid="protocol-preview"]').innerText(), /1\. Główna: harm_index_vs_reference_pearson \(fixed_sequence\); 2\. Rodzina 2: popularity_ranking_stability \(holm\); bramkowanie serial/);
+  await page.fill('[data-testid="protocol-rationale"]', 'Browser test: harm first, popularity gated.');
+  await page.click('[data-testid="freeze-protocol"]');
+  await page.locator('[role="status"]', { hasText: 'Zamrożono' }).waitFor();
+  const protocols = (await (await fetch(`${baseUrl}/api/replications/jh2016`)).json()).protocols;
+  const p = protocols[protocols.length - 1];
+  assert.deepStrictEqual(p.body.families.map((f: any) => [f.id, f.multiplicity, f.endpoints.map((e: any) => e.claim_key)]),
+    [['F1', 'fixed_sequence', ['harm_index_vs_reference_pearson']], ['F2', 'holm', ['popularity_ranking_stability']]]);
+  assert.strictEqual(p.body.gating, 'serial');
+  assert.match(await page.locator(`[data-testid="protocol-${p.id}"]`).innerText(), /bramkowanie szeregowe/);
+});
+
 // -------------------------------------------------------------------------
 // E1.22 — Method review page.
 // -------------------------------------------------------------------------
