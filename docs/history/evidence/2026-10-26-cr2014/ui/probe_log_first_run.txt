@@ -1,0 +1,15 @@
+console: WebSocket connection to 'ws://127.0.0.1:24678/?token=g66PGVQ7QL-j' failed: Error during WebSocket handshake: Unexpected response code: 400
+console: [vite] failed to connect to websocket (Error: WebSocket closed without opened.). 
+pageerror: WebSocket closed without opened.
+freeze: Zamrożono: 76ee2ff3aa60c41b
+cost: 1 zapytanie SerpApi; limit dzienny 300, dziś zostało 268
+roles: ["eksploracyjne (domyślnie)","potwierdzające wg protokołu „JH16 — potwierdzenie” (2026-10-26 19:24)"]
+status: Przebieg 7aa42db5: COMPLETED
+run 7aa42db5-dee8-444d-813c-9aa54712ed08 COMPLETED cb8c9fd2ae32c6d9e1bc1b3e888ddc2d8b7a14b2 role=confirmation
+overview: Werdykty i zgodność z publikacją |  | Brak kompletnych przebiegów. Nowy pomiar uruchomisz w zakładce „Nowy pomiar”. |  | „reproduced” = wartość w paśmie ustalonym przed danymi (zakładka „Rejestr kryteriów”).
+scatter: pearson — (p —), n = 0; brak pomiaru: US-AK, US-AL, US-AR, US-AZ, US-DE, US-GA, US-HI, US-IA, US-ID, US-IL, US-IN, US-KS, US-KY, US-LA, US-MA, US-MD, US-ME, US-MI, US-MS, US-MT, US-ND, US-NE, US-NH, US-NM, US-OH, US-OK, US-RI, US-SC, US-TN, US-TX, US-UT, US-VA, US-VT, US-WI, US-WV, US-WY
+protocol: Przebieg	Rodzina.priorytet	Porównanie	Główne	Werdykt	p	p skorygowane	< alfa | 7aa42db5	F1.1	Pearson RSV cygar vs YRBS 2011	tak	not_computable	—	—	nietestowane: brak wartości p
+phone overview overflow px: 0
+phone measure overflow px: 0
+phone runs overflow px: 0
+phone manuscript overflow px: 0

@@ -1,0 +1,3 @@
+{"n": 36, "missing": [], "pearson": 0.357983708652, "p_two_sided": 0.03205593}
+{"without_UT_RI": {"n": 34, "pearson": 0.193670124999, "p_two_sided": 0.2724348}}
+{"paper_rsv_extremes_vs_measured": {"highest": {"US-FL": [100, 100], "US-RI": [98, 99], "US-PA": [91, 94], "US-NY": [90, 82], "US-DC": [90, 95]}, "lowest": {"US-UT": [34, 33], "US-ID": [41, 44], "US-IA": [49, 47], "US-ND": [51, 52]}}, "measured_top5": [["US-FL", 100], ["US-RI", 99], ["US-DC", 95], ["US-PA", 94], ["US-NJ", 89]], "measured_bottom5": [["US-UT", 33], ["US-ID", 44], ["US-IA", 47], ["US-ND", 52], ["US-SD", 53]], "regions": 51}

@@ -1,6 +1,7 @@
 import { Analyzer } from './base';
 import { JH16Analyzer } from './jh16';
 import { TrendsCalibrationAnalyzer } from './trends_calibration';
+import { ReferenceCorrelationAnalyzer } from './reference_correlation';
 
 export class AnalyzerRegistry {
   private analyzers = new Map<string, Analyzer>();
@@ -8,6 +9,7 @@ export class AnalyzerRegistry {
   constructor() {
     this.register(new JH16Analyzer());
     this.register(new TrendsCalibrationAnalyzer());
+    this.register(new ReferenceCorrelationAnalyzer());
   }
 
   register(analyzer: Analyzer) {

@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "target_id": "cr2014",
+  "title": "Monitoring of non-cigarette tobacco use using Google Trends",
+  "identifier_type": "doi",
+  "identifier": "10.1136/tobaccocontrol-2013-051276",
+  "citation": {
+    "authors": [
+      "Cavazos-Rehg, Patricia A",
+      "Krauss, Melissa J",
+      "Spitznagel, Edward L",
+      "Lowery, Ashley",
+      "Grucza, Richard A",
+      "Chaloupka, Frank J",
+      "Bierut, Laura Jean"
+    ],
+    "journal": "Tobacco Control",
+    "year": 2014,
+    "volume": "23",
+    "issue": "5",
+    "pages": "445-447"
+  },
+  "_pre_registration": {
+    "protocol": "docs/replication/CR2014_2026-10-26/PROTOCOL.md",
+    "proposed_at": "2026-10-26",
+    "authority": "Proposed by the agent under the owner's standing delegation (second replication target requested by the coordinator); committed before any Google Trends request for this target.",
+    "why_this_matters": "A band chosen after seeing the result is not a band. Widening it later requires a new version of this file."
+  },
+  "claims": [
+    {
+      "claim_key": "cigar_youth_pearson",
+      "claim_type": "correlation",
+      "statistic": "pearson",
+      "claimed_value_numeric": 0.39,
+      "unit": "coefficient",
+      "tolerance_kind": "interval",
+      "tolerance_value": 0.07,
+      "interval_upper": 0.64,
+      "notes": "The paper reports r=0.39 (R-square 0.154, p=.018) between state 2011 Google Trends relative search volume for cigars and the 2011 YRBS prevalence of current cigar use among high-school students, 36 states. The band is the paper's own 95% confidence interval for r at n=36 (Fisher z: 0.0705 to 0.6369), rounded outward to [0.07, 0.64]: an observed r inside it is statistically consistent with the published estimate."
+    }
+  ],
+  "_not_registered": [
+    {
+      "claim": "adult cigar r=0.49 and adult smokeless r=0.48 (NSDUH 2010-2011)",
+      "reason": "state prevalence came from the restricted-use NSDUH R-DAS; the state values are not in an open table"
+    },
+    {
+      "claim": "youth smokeless r=0.46 (YRBS 2011, 40 states)",
+      "reason": "the open YRBSS dataset (data.cdc.gov svam-8dhg) has smokeless tobacco only from 2017; no open machine-readable 2011 state table was found"
+    }
+  ]
+}

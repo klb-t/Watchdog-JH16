@@ -1,0 +1,8 @@
+run fcf2ed4a-4f41-4756-8497-6fc9b41d3628 COMPLETED 7cec4482466c994af261527f52275e1e21743664 role=confirmation
+overview: Werdykty i zgodność z publikacją | Przebieg	Porównanie	Publikacja	Nowy pomiar	n	Werdykt	Odczyt hipotezy | Nowe pobranie (metoda wierna) fcf2ed4a	RSV „cigar” (2011) vs odsetek uczniów palących cygara (YRBS 2011)	r = 0.39 (n = 36, p = 0.018)	pearson 0.358 (p 0.0321)	36/36	reproduced	wspierają |  | „reproduced” = wartość w paśmie ustalonym przed danymi (zakładka „Rejestr kryteriów”).
+scatter: pearson 0.358 (p 0.0321), n = 36
+protocol: Przebieg	Rodzina.priorytet	Porównanie	Główne	Werdykt	p	p skorygowane	< alfa | 7aa42db5	F1.1	Pearson RSV cygar vs YRBS 2011	tak	not_computable	—	—	nietestowane: brak wartości p || Przebieg	Rodzina.priorytet	Porównanie	Główne	Werdykt	p	p skorygowane	< alfa | fcf2ed4a	F1.1	Pearson RSV cygar vs YRBS 2011	tak	reproduced	0.0321	0.0321	tak
+phone overview overflow px: 0
+phone measure overflow px: 0
+phone runs overflow px: 0
+phone manuscript overflow px: 0

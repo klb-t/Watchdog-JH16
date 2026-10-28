@@ -92,6 +92,7 @@ export function SourceCard({ source, canAcquire, submitting, onAcquire }: {
                 className="flex items-center space-x-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50">
                 <Play className="w-4 h-4" /><span>Przelicz JH16 z danych publikacji</span></button>
               : ['serp_result_count', 'trends_interest_index'].includes(source.source_id) ? <Link to="/setup" className="px-4 py-2 rounded-lg text-sm font-medium border border-indigo-300 text-indigo-800" data-testid={`source-wizard-${source.source_id}`}>Nowy pomiar w kreatorze (Ustawienia)</Link>
+              : source.source_id === 'trends_interest_by_region' ? <Link to="/replications" className="px-4 py-2 rounded-lg text-sm font-medium border border-indigo-300 text-indigo-800" data-testid={`source-replications-${source.source_id}`}>Pomiar z poziomu Replikacji („Nowy pomiar”)</Link>
               : <span className="text-sm text-slate-500" data-testid={`source-unavailable-${source.source_id}`}>Niedostępne: {source.status === 'planned' ? 'jeszcze niezaimplementowane' : source.status}</span>}
             </div>}
           </div>;

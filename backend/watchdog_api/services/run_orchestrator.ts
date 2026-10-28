@@ -1,3 +1,4 @@
+import { evaluateReplication, loadReplicationEvaluationConfig, REPLICATION_EVALUATION_ROLE } from './replication_evaluation';
 import { tracer } from '../utils/tracer';
 import { buildInfo } from '../utils/build_info';
 import { RunRepository } from '../db/repositories/runs';
@@ -267,6 +268,9 @@ export class RunOrchestrator {
           if (isJh16Run(config)) {
             stateAtFailure = 'EVALUATING_JH16';
             await this.recordJh16Evaluation(runId, obsRunId);
+          } else if (typeof config.replication_target_id === 'string') {
+            stateAtFailure = 'EVALUATING_REPLICATION';
+            await this.recordReplicationEvaluation(runId, config.replication_target_id, obsRunId);
           }
         } else tracer.emit('ANALYSIS_NOT_REQUESTED', { runType });
 
@@ -388,6 +392,17 @@ export class RunOrchestrator {
     this.artRepo.recordArtifact({ runId, kind: 'analysis', objectUri: uri, sha256, byteSize: bytes.length, mediaType: 'application/json',
       metadata: { role: JH16_EVALUATION_ROLE, evaluation_version: JH16_EVALUATION_VERSION, observations_run_id: observationsRunId } });
     tracer.emit('JH16_EVALUATED', { runId, complete: evaluation.complete, reading: evaluation.hypothesis_harm.reading });
+  }
+
+  /** The same immutable-artifact treatment for any other replication target (replication_evaluation.ts). */
+  private async recordReplicationEvaluation(runId: string, targetId: string, observationsRunId: string): Promise<void> {
+    const evaluation = evaluateReplication(this.anRepo.getByRunId(runId), loadReplicationEvaluationConfig(targetId));
+    const bytes = Buffer.from(canonicalizeJson(evaluation), 'utf-8');
+    const sha256 = createHash('sha256').update(bytes).digest('hex');
+    const uri = await this.store.put(`evaluations/${runId}.json`, bytes);
+    this.artRepo.recordArtifact({ runId, kind: 'analysis', objectUri: uri, sha256, byteSize: bytes.length, mediaType: 'application/json',
+      metadata: { role: REPLICATION_EVALUATION_ROLE, evaluation_version: evaluation.evaluation_version, target_id: targetId, observations_run_id: observationsRunId } });
+    tracer.emit('REPLICATION_EVALUATED', { runId, targetId, complete: evaluation.complete });
   }
 
   private requirePinnedSpec(config: any) {

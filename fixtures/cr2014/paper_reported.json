@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "source": "PMC4122644 (author manuscript), Results section; values as printed",
+  "reported_statistics": [
+    {
+      "id": "cigar_youth",
+      "statistic": "pearson",
+      "value": 0.39,
+      "r_square": 0.154,
+      "p": 0.018,
+      "n": 36
+    },
+    {
+      "id": "cigar_youth_without_UT_RI",
+      "statistic": "pearson",
+      "value": 0.26,
+      "r_square": 0.07,
+      "p": 0.13,
+      "n": 34
+    },
+    {
+      "id": "cigar_adult",
+      "statistic": "pearson",
+      "value": 0.49,
+      "r_square": 0.243,
+      "p_below": 0.001,
+      "n": 51,
+      "replicable": false
+    },
+    {
+      "id": "smokeless_youth",
+      "statistic": "pearson",
+      "value": 0.46,
+      "r_square": 0.209,
+      "p": 0.003,
+      "n": 40,
+      "replicable": false
+    },
+    {
+      "id": "smokeless_adult",
+      "statistic": "pearson",
+      "value": 0.48,
+      "r_square": 0.226,
+      "p_below": 0.001,
+      "n": 51,
+      "replicable": false
+    }
+  ],
+  "reported_rsv_cigar_2011": {
+    "highest": {
+      "US-FL": 100,
+      "US-RI": 98,
+      "US-PA": 91,
+      "US-NY": 90,
+      "US-DC": 90
+    },
+    "lowest": {
+      "US-UT": 34,
+      "US-ID": 41,
+      "US-IA": 49,
+      "US-ND": 51
+    }
+  },
+  "reported_youth_cigar_prevalence_2011": {
+    "highest": {
+      "US-SC": 18.3,
+      "US-GA": 17.8,
+      "US-KY": 17.5,
+      "US-LA": 17.0
+    },
+    "lowest": {
+      "US-UT": 5.0,
+      "US-HI": 6.8,
+      "US-NE": 9.6,
+      "US-AK": 10.3
+    }
+  }
+}

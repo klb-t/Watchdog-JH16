@@ -1,0 +1,1017 @@
+{
+  "run_id": "fcf2ed4a-4f41-4756-8497-6fc9b41d3628",
+  "_note": "Exported from stored results. Nothing here was recomputed at export time.",
+  "results": [
+    {
+      "entity_id": "US-AK",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 62,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-AL",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 68,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-AR",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 61,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-AZ",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 75,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-DE",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 82,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-GA",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 82,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-HI",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 70,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-IA",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 47,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-ID",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 44,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-IL",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 78,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-IN",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 70,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-KS",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 74,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-KY",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 65,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-LA",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 69,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-MA",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 84,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-MD",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 73,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-ME",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 58,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-MI",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 69,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-MS",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 62,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-MT",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 54,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-ND",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 52,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-NE",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 63,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-NH",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 75,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-NM",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 66,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-OH",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 74,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-OK",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 66,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-RI",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 99,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-SC",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 79,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-TN",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 74,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-TX",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 71,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-UT",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 33,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-VA",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 81,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-VT",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 61,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-WI",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 58,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-WV",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 67,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": "US-WY",
+      "metric_key": "cigar_youth_measured",
+      "value_numeric": 61,
+      "unit": null,
+      "is_missing": false
+    },
+    {
+      "entity_id": null,
+      "metric_key": "cigar_youth_n",
+      "value_numeric": 36,
+      "unit": "pairs",
+      "is_missing": false
+    },
+    {
+      "entity_id": null,
+      "metric_key": "cigar_youth_pearson",
+      "value_numeric": 0.35798370865208695,
+      "unit": "coefficient",
+      "is_missing": false
+    },
+    {
+      "entity_id": null,
+      "metric_key": "without_UT_RI_n",
+      "value_numeric": 34,
+      "unit": "pairs",
+      "is_missing": false
+    },
+    {
+      "entity_id": null,
+      "metric_key": "without_UT_RI_pearson",
+      "value_numeric": 0.19367012499930022,
+      "unit": "coefficient",
+      "is_missing": false
+    }
+  ],
+  "missing_observations": [],
+  "quality_flags": [
+    "RELATIVE_INTEREST_NOT_A_COUNT"
+  ],
+  "run": {
+    "preset_id": "cr2014-faithful",
+    "preset_version": "2014-faithful-v2",
+    "source_id": "trends_interest_by_region",
+    "effective_config_hash": "f97f975e1b40bb49fbb751580b4d43b73ffaf2767d035a0c7666b32a15f47b77",
+    "manifest_sha256": "1cdec2581a92489e005da12da46452303aa9c178de240904192c589c321f0e4c",
+    "git_commit": "7cec4482466c994af261527f52275e1e21743664",
+    "app_version": "0.0.0"
+  },
+  "observations": [
+    {
+      "entity_id": "US-AK",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 62,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-AL",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 68,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-AR",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 61,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-AZ",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 75,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-CA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 64,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-CO",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 66,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-CT",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 81,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-DC",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 95,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-DE",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 82,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-FL",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 100,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-GA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 82,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-HI",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 70,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-IA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 47,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-ID",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 44,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-IL",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 78,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-IN",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 70,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-KS",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 74,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-KY",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 65,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-LA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 69,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-MA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 84,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-MD",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 73,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-ME",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 58,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-MI",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 69,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-MN",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 64,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-MO",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 79,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-MS",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 62,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-MT",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 54,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-NC",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 75,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-ND",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 52,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-NE",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 63,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-NH",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 75,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-NJ",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 89,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-NM",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 66,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-NV",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 60,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-NY",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 82,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-OH",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 74,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-OK",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 66,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-OR",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 60,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-PA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 94,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-RI",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 99,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-SC",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 79,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-SD",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 53,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-TN",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 74,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-TX",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 71,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-UT",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 33,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-VA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 81,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-VT",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 61,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-WA",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 65,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-WI",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 58,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-WV",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 67,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    },
+    {
+      "entity_id": "US-WY",
+      "query_role": "cigar",
+      "query_text": "cigars+cigar+cigarillo+cigarillos+Black and Mild+Black and Milds+Swisher Sweet+Swisher Sweets",
+      "value_numeric": 61,
+      "is_missing": false,
+      "missing_reason": null,
+      "provider_id": "serpapi_google_trends_by_region",
+      "retrieved_at": "2026-10-26T19:28:21.739Z",
+      "quality_flags": [
+        "RELATIVE_INTEREST_NOT_A_COUNT"
+      ],
+      "observed_at": "2011-01-01"
+    }
+  ],
+  "evaluation": null,
+  "narrative": null
+}

@@ -1,0 +1,620 @@
+{
+  "runs": [
+    {
+      "run_id": "fcf2ed4a-4f41-4756-8497-6fc9b41d3628",
+      "created_at": "2026-10-26T19:28:20.080Z",
+      "status": "COMPLETED",
+      "git_commit": "7cec4482466c994af261527f52275e1e21743664",
+      "provenance": "new_fetch",
+      "provenance_label": "Nowe pobranie (metoda wierna)",
+      "variant": null,
+      "source_run_id": null,
+      "acquired_utc": [
+        "2026-10-26T19:28:20.184Z",
+        "2026-10-26T19:28:20.184Z"
+      ],
+      "fetches": 1,
+      "manifest_sha256": "1cdec2581a92489e005da12da46452303aa9c178de240904192c589c321f0e4c",
+      "effective_config_hash": "f97f975e1b40bb49fbb751580b4d43b73ffaf2767d035a0c7666b32a15f47b77",
+      "preset": "cr2014-faithful",
+      "role_config": {
+        "data_role": "confirmation",
+        "protocol_id": "ab477acf-0c75-4eaf-88af-acd85c808801",
+        "protocol_hash": "cfaba63576acb223f98f17cebc592737de429b5b18ccc444cfe4bccc5819745b",
+        "source_id": "trends_interest_by_region"
+      },
+      "evaluation": {
+        "attempt_kind": "independent_attempt",
+        "attempt_meaning": "Inputs were acquired independently of the paper. Verdicts here speak to whether the published finding holds against this new data.",
+        "claims_version": "2026-10-26",
+        "comparisons": [
+          {
+            "entities": [
+              {
+                "entity_id": "US-AK",
+                "measured": 62,
+                "reference": 10.2835
+              },
+              {
+                "entity_id": "US-AL",
+                "measured": 68,
+                "reference": 15.7757
+              },
+              {
+                "entity_id": "US-AR",
+                "measured": 61,
+                "reference": 14.444
+              },
+              {
+                "entity_id": "US-AZ",
+                "measured": 75,
+                "reference": 15.848
+              },
+              {
+                "entity_id": "US-DE",
+                "measured": 82,
+                "reference": 12.9135
+              },
+              {
+                "entity_id": "US-GA",
+                "measured": 82,
+                "reference": 17.8314
+              },
+              {
+                "entity_id": "US-HI",
+                "measured": 70,
+                "reference": 6.8316
+              },
+              {
+                "entity_id": "US-IA",
+                "measured": 47,
+                "reference": 12.7949
+              },
+              {
+                "entity_id": "US-ID",
+                "measured": 44,
+                "reference": 10.9702
+              },
+              {
+                "entity_id": "US-IL",
+                "measured": 78,
+                "reference": 13.1285
+              },
+              {
+                "entity_id": "US-IN",
+                "measured": 70,
+                "reference": 14.6463
+              },
+              {
+                "entity_id": "US-KS",
+                "measured": 74,
+                "reference": 10.7414
+              },
+              {
+                "entity_id": "US-KY",
+                "measured": 65,
+                "reference": 17.5154
+              },
+              {
+                "entity_id": "US-LA",
+                "measured": 69,
+                "reference": 17.0138
+              },
+              {
+                "entity_id": "US-MA",
+                "measured": 84,
+                "reference": 14.2941
+              },
+              {
+                "entity_id": "US-MD",
+                "measured": 73,
+                "reference": 12.9331
+              },
+              {
+                "entity_id": "US-ME",
+                "measured": 58,
+                "reference": 12.6297
+              },
+              {
+                "entity_id": "US-MI",
+                "measured": 69,
+                "reference": 12.0617
+              },
+              {
+                "entity_id": "US-MS",
+                "measured": 62,
+                "reference": 14.6404
+              },
+              {
+                "entity_id": "US-MT",
+                "measured": 54,
+                "reference": 16.1065
+              },
+              {
+                "entity_id": "US-ND",
+                "measured": 52,
+                "reference": 13.4669
+              },
+              {
+                "entity_id": "US-NE",
+                "measured": 63,
+                "reference": 9.5951
+              },
+              {
+                "entity_id": "US-NH",
+                "measured": 75,
+                "reference": 16.3686
+              },
+              {
+                "entity_id": "US-NM",
+                "measured": 66,
+                "reference": 15.0888
+              },
+              {
+                "entity_id": "US-OH",
+                "measured": 74,
+                "reference": 13.6807
+              },
+              {
+                "entity_id": "US-OK",
+                "measured": 66,
+                "reference": 14.1227
+              },
+              {
+                "entity_id": "US-RI",
+                "measured": 99,
+                "reference": 13.2816
+              },
+              {
+                "entity_id": "US-SC",
+                "measured": 79,
+                "reference": 18.3121
+              },
+              {
+                "entity_id": "US-TN",
+                "measured": 74,
+                "reference": 15.5293
+              },
+              {
+                "entity_id": "US-TX",
+                "measured": 71,
+                "reference": 15.9617
+              },
+              {
+                "entity_id": "US-UT",
+                "measured": 33,
+                "reference": 4.9575
+              },
+              {
+                "entity_id": "US-VA",
+                "measured": 81,
+                "reference": 11.9786
+              },
+              {
+                "entity_id": "US-VT",
+                "measured": 61,
+                "reference": 12.8392
+              },
+              {
+                "entity_id": "US-WI",
+                "measured": 58,
+                "reference": 14.7745
+              },
+              {
+                "entity_id": "US-WV",
+                "measured": 67,
+                "reference": 11.6698
+              },
+              {
+                "entity_id": "US-WY",
+                "measured": 61,
+                "reference": 16.5617
+              }
+            ],
+            "expected_n": 36,
+            "id": "cigar_youth",
+            "label": "RSV „cigar” (2011) vs odsetek uczniów palących cygara (YRBS 2011)",
+            "missing_entities": [],
+            "n": 36,
+            "p_two_sided": 0.03205592600267951,
+            "required_n": 36,
+            "statistic": "pearson",
+            "value": 0.35798370865208695
+          }
+        ],
+        "complete": true,
+        "evaluation_version": "1.0.0",
+        "exploratory": [
+          {
+            "comparison": "cigar_youth",
+            "excluded": [
+              "US-RI",
+              "US-UT"
+            ],
+            "id": "without_UT_RI",
+            "n": 34,
+            "p_two_sided": 0.2724348046421028,
+            "reason": "the paper's own influence check (published r=0.26, p=.130, n=34); descriptive, never a verdict",
+            "value": 0.19367012499930022
+          }
+        ],
+        "interpretation": {
+          "id": "cr2014-interpretation",
+          "protocol": "docs/replication/CR2014_2026-10-26/PROTOCOL.md",
+          "version": "2026-10-26-v1"
+        },
+        "readings": [
+          {
+            "comparison": "cigar_youth",
+            "hypothesis_id": "H-cigar-youth",
+            "reading": "supports",
+            "rule": "supports: pearson > 0 and two-sided p < 0.05; contradicts: pearson <= 0; otherwise undecided; n must be 36"
+          }
+        ],
+        "target_id": "cr2014",
+        "verdicts": [
+          {
+            "claim_key": "cigar_youth_pearson",
+            "claimed_value": 0.39,
+            "deviation": 0.28798370865208694,
+            "observed_value": 0.35798370865208695,
+            "rationale": "pearson 0.3580 falls inside the pre-registered interval [0.07, 0.64].",
+            "statistic": "pearson",
+            "verdict": "reproduced",
+            "within_tolerance": true
+          }
+        ]
+      },
+      "calibration": null,
+      "data_role": {
+        "role": "confirmation",
+        "protocol_id": "ab477acf-0c75-4eaf-88af-acd85c808801"
+      }
+    },
+    {
+      "run_id": "7aa42db5-dee8-444d-813c-9aa54712ed08",
+      "created_at": "2026-10-26T19:24:18.007Z",
+      "status": "COMPLETED",
+      "git_commit": "cb8c9fd2ae32c6d9e1bc1b3e888ddc2d8b7a14b2",
+      "provenance": "new_fetch",
+      "provenance_label": "Nowe pobranie (metoda wierna)",
+      "variant": null,
+      "source_run_id": null,
+      "acquired_utc": [
+        "2026-10-26T19:24:18.113Z",
+        "2026-10-26T19:24:18.113Z"
+      ],
+      "fetches": 1,
+      "manifest_sha256": "b3399b3984a2c10f606d72273a629deee8989124002679ceaccc199afe0f5910",
+      "effective_config_hash": "cc9e0734edff965311d25fc7fd0c78fdf4d3133e4d6cda269d3d2f75a6d2cc88",
+      "preset": "cr2014-faithful",
+      "role_config": {
+        "data_role": "confirmation",
+        "protocol_id": "c4cf1588-d7b1-4e14-abfb-44ff5c29ea74",
+        "protocol_hash": "76ee2ff3aa60c41bae7437e1b47a756f34e3d5442ef5bb0c49b22f33e35b133f",
+        "source_id": "trends_interest_by_region"
+      },
+      "evaluation": {
+        "attempt_kind": "independent_attempt",
+        "attempt_meaning": "Inputs were acquired independently of the paper. Verdicts here speak to whether the published finding holds against this new data.",
+        "claims_version": "2026-10-26",
+        "comparisons": [
+          {
+            "entities": [],
+            "expected_n": 36,
+            "id": "cigar_youth",
+            "label": "RSV „cigar” (2011) vs odsetek uczniów palących cygara (YRBS 2011)",
+            "missing_entities": [
+              "US-AK",
+              "US-AL",
+              "US-AR",
+              "US-AZ",
+              "US-DE",
+              "US-GA",
+              "US-HI",
+              "US-IA",
+              "US-ID",
+              "US-IL",
+              "US-IN",
+              "US-KS",
+              "US-KY",
+              "US-LA",
+              "US-MA",
+              "US-MD",
+              "US-ME",
+              "US-MI",
+              "US-MS",
+              "US-MT",
+              "US-ND",
+              "US-NE",
+              "US-NH",
+              "US-NM",
+              "US-OH",
+              "US-OK",
+              "US-RI",
+              "US-SC",
+              "US-TN",
+              "US-TX",
+              "US-UT",
+              "US-VA",
+              "US-VT",
+              "US-WI",
+              "US-WV",
+              "US-WY"
+            ],
+            "n": 0,
+            "p_two_sided": null,
+            "required_n": 36,
+            "statistic": "pearson",
+            "value": null
+          }
+        ],
+        "complete": false,
+        "evaluation_version": "1.0.0",
+        "exploratory": [
+          {
+            "comparison": "cigar_youth",
+            "excluded": [
+              "US-RI",
+              "US-UT"
+            ],
+            "id": "without_UT_RI",
+            "n": 0,
+            "p_two_sided": null,
+            "reason": "the paper's own influence check (published r=0.26, p=.130, n=34); descriptive, never a verdict",
+            "value": null
+          }
+        ],
+        "interpretation": {
+          "id": "cr2014-interpretation",
+          "protocol": "docs/replication/CR2014_2026-10-26/PROTOCOL.md",
+          "version": "2026-10-26-v1"
+        },
+        "readings": [
+          {
+            "comparison": "cigar_youth",
+            "hypothesis_id": "H-cigar-youth",
+            "reading": "not_computable",
+            "rule": "supports: pearson > 0 and two-sided p < 0.05; contradicts: pearson <= 0; otherwise undecided; n must be 36"
+          }
+        ],
+        "target_id": "cr2014",
+        "verdicts": [
+          {
+            "claim_key": "cigar_youth_pearson",
+            "claimed_value": 0.39,
+            "deviation": null,
+            "observed_value": null,
+            "rationale": "Not computable: 0 of 36 required pairs (missing: US-AK, US-AL, US-AR, US-AZ, US-DE, US-GA, US-HI, US-IA, US-ID, US-IL, US-IN, US-KS, US-KY, US-LA, US-MA, US-MD, US-ME, US-MI, US-MS, US-MT, US-ND, US-NE, US-NH, US-NM, US-OH, US-OK, US-RI, US-SC, US-TN, US-TX, US-UT, US-VA, US-VT, US-WI, US-WV, US-WY).",
+            "statistic": "pearson",
+            "verdict": "not_computable",
+            "within_tolerance": null
+          }
+        ]
+      },
+      "calibration": null,
+      "data_role": {
+        "role": "confirmation",
+        "protocol_id": "c4cf1588-d7b1-4e14-abfb-44ff5c29ea74"
+      }
+    }
+  ],
+  "protocols": [
+    {
+      "id": "c4cf1588-d7b1-4e14-abfb-44ff5c29ea74",
+      "target_id": "cr2014",
+      "name": "JH16 — potwierdzenie",
+      "frozen_at": "2026-10-26T19:24:17.714Z",
+      "content_hash": "76ee2ff3aa60c41bae7437e1b47a756f34e3d5442ef5bb0c49b22f33e35b133f",
+      "body": {
+        "name": "JH16 — potwierdzenie",
+        "target_id": "cr2014",
+        "hypotheses": [
+          {
+            "id": "H-cigar-youth",
+            "statement": "Stany z większym względnym zainteresowaniem wyszukiwaniem cygar w Google (2011) mają wyższy odsetek uczniów szkół średnich palących cygara (YRBS 2011).",
+            "tested_by": [
+              "cigar_youth_pearson"
+            ],
+            "kind": "primary"
+          }
+        ],
+        "primary": [
+          "cigar_youth_pearson"
+        ],
+        "family": [
+          {
+            "claim_key": "cigar_youth_pearson",
+            "label": "Pearson RSV cygar vs YRBS 2011",
+            "hypothesis": "H-cigar-youth",
+            "p_value": "comparisons.cigar_youth",
+            "claim": {
+              "claim_key": "cigar_youth_pearson",
+              "claim_type": "correlation",
+              "statistic": "pearson",
+              "claimed_value_numeric": 0.39,
+              "unit": "coefficient",
+              "tolerance_kind": "interval",
+              "tolerance_value": 0.07,
+              "interval_upper": 0.64,
+              "notes": "The paper reports r=0.39 (R-square 0.154, p=.018) between state 2011 Google Trends relative search volume for cigars and the 2011 YRBS prevalence of current cigar use among high-school students, 36 states. The band is the paper's own 95% confidence interval for r at n=36 (Fisher z: 0.0705 to 0.6369), rounded outward to [0.07, 0.64]: an observed r inside it is statistically consistent with the published estimate."
+            }
+          }
+        ],
+        "multiplicity": "holm",
+        "alpha": 0.05,
+        "rationale": "Jedno wcześniej zarejestrowane porównanie (H-cigar-youth), Holm w rodzinie jednoelementowej, alfa 0,05 jak w pracy. Zamrożone przed pomiarem.",
+        "claims_hash": "1dedc007d7b16acf075d4808f9d32d3cc10af0d46074d13d04b88b6d3cd14c5c",
+        "interpretation_hash": "6666a59a481452bf20fd9e4248d2d55278ce52a9d12819e00d3175b3cb7c4c6a",
+        "dossier_hash": "5053398526a101813224984124f3d33b99a4f400ffb2c57aeabde5142973e4dc",
+        "confirmation_sources": [
+          "trends_interest_by_region"
+        ],
+        "frozen_at": "2026-10-26T19:24:17.714Z",
+        "protocol_version": 2,
+        "families": [
+          {
+            "id": "F1",
+            "label": "Główna",
+            "multiplicity": "holm",
+            "endpoints": [
+              {
+                "claim_key": "cigar_youth_pearson",
+                "label": "Pearson RSV cygar vs YRBS 2011",
+                "hypothesis": "H-cigar-youth",
+                "p_value": "comparisons.cigar_youth",
+                "claim": {
+                  "claim_key": "cigar_youth_pearson",
+                  "claim_type": "correlation",
+                  "statistic": "pearson",
+                  "claimed_value_numeric": 0.39,
+                  "unit": "coefficient",
+                  "tolerance_kind": "interval",
+                  "tolerance_value": 0.07,
+                  "interval_upper": 0.64,
+                  "notes": "The paper reports r=0.39 (R-square 0.154, p=.018) between state 2011 Google Trends relative search volume for cigars and the 2011 YRBS prevalence of current cigar use among high-school students, 36 states. The band is the paper's own 95% confidence interval for r at n=36 (Fisher z: 0.0705 to 0.6369), rounded outward to [0.07, 0.64]: an observed r inside it is statistically consistent with the published estimate."
+                }
+              }
+            ]
+          }
+        ],
+        "gating": "serial"
+      },
+      "evaluation": {
+        "protocol_id": "c4cf1588-d7b1-4e14-abfb-44ff5c29ea74",
+        "gating": "serial",
+        "confirmation_runs": [
+          {
+            "run_id": "7aa42db5-dee8-444d-813c-9aa54712ed08",
+            "created_at": "2026-10-26T19:24:18.007Z",
+            "complete": false,
+            "endpoints": [
+              {
+                "claim_key": "cigar_youth_pearson",
+                "label": "Pearson RSV cygar vs YRBS 2011",
+                "primary": true,
+                "family_id": "F1",
+                "priority": 1,
+                "verdict": "not_computable",
+                "p_raw": null,
+                "p_adjusted": null,
+                "significant": null,
+                "tested": false,
+                "not_tested_reason": "p-value not available"
+              }
+            ]
+          }
+        ],
+        "exploratory_runs": 1
+      }
+    },
+    {
+      "id": "ab477acf-0c75-4eaf-88af-acd85c808801",
+      "target_id": "cr2014",
+      "name": "JH16 — potwierdzenie",
+      "frozen_at": "2026-10-26T19:28:19.774Z",
+      "content_hash": "cfaba63576acb223f98f17cebc592737de429b5b18ccc444cfe4bccc5819745b",
+      "body": {
+        "name": "JH16 — potwierdzenie",
+        "target_id": "cr2014",
+        "hypotheses": [
+          {
+            "id": "H-cigar-youth",
+            "statement": "Stany z większym względnym zainteresowaniem wyszukiwaniem cygar w Google (2011) mają wyższy odsetek uczniów szkół średnich palących cygara (YRBS 2011).",
+            "tested_by": [
+              "cigar_youth_pearson"
+            ],
+            "kind": "primary"
+          }
+        ],
+        "primary": [
+          "cigar_youth_pearson"
+        ],
+        "family": [
+          {
+            "claim_key": "cigar_youth_pearson",
+            "label": "Pearson RSV cygar vs YRBS 2011",
+            "hypothesis": "H-cigar-youth",
+            "p_value": "comparisons.cigar_youth",
+            "claim": {
+              "claim_key": "cigar_youth_pearson",
+              "claim_type": "correlation",
+              "statistic": "pearson",
+              "claimed_value_numeric": 0.39,
+              "unit": "coefficient",
+              "tolerance_kind": "interval",
+              "tolerance_value": 0.07,
+              "interval_upper": 0.64,
+              "notes": "The paper reports r=0.39 (R-square 0.154, p=.018) between state 2011 Google Trends relative search volume for cigars and the 2011 YRBS prevalence of current cigar use among high-school students, 36 states. The band is the paper's own 95% confidence interval for r at n=36 (Fisher z: 0.0705 to 0.6369), rounded outward to [0.07, 0.64]: an observed r inside it is statistically consistent with the published estimate."
+            }
+          }
+        ],
+        "multiplicity": "holm",
+        "alpha": 0.05,
+        "rationale": "Jedno wcześniej zarejestrowane porównanie (H-cigar-youth), Holm w rodzinie jednoelementowej, alfa 0,05 jak w pracy. Zamrożone przed pomiarem.",
+        "claims_hash": "1dedc007d7b16acf075d4808f9d32d3cc10af0d46074d13d04b88b6d3cd14c5c",
+        "interpretation_hash": "6666a59a481452bf20fd9e4248d2d55278ce52a9d12819e00d3175b3cb7c4c6a",
+        "dossier_hash": "5f873ac83918f66c7326797f98ed9d128a8dbe19360138501473ab197d715a6e",
+        "confirmation_sources": [
+          "trends_interest_by_region"
+        ],
+        "frozen_at": "2026-10-26T19:28:19.774Z",
+        "protocol_version": 2,
+        "families": [
+          {
+            "id": "F1",
+            "label": "Główna",
+            "multiplicity": "holm",
+            "endpoints": [
+              {
+                "claim_key": "cigar_youth_pearson",
+                "label": "Pearson RSV cygar vs YRBS 2011",
+                "hypothesis": "H-cigar-youth",
+                "p_value": "comparisons.cigar_youth",
+                "claim": {
+                  "claim_key": "cigar_youth_pearson",
+                  "claim_type": "correlation",
+                  "statistic": "pearson",
+                  "claimed_value_numeric": 0.39,
+                  "unit": "coefficient",
+                  "tolerance_kind": "interval",
+                  "tolerance_value": 0.07,
+                  "interval_upper": 0.64,
+                  "notes": "The paper reports r=0.39 (R-square 0.154, p=.018) between state 2011 Google Trends relative search volume for cigars and the 2011 YRBS prevalence of current cigar use among high-school students, 36 states. The band is the paper's own 95% confidence interval for r at n=36 (Fisher z: 0.0705 to 0.6369), rounded outward to [0.07, 0.64]: an observed r inside it is statistically consistent with the published estimate."
+                }
+              }
+            ]
+          }
+        ],
+        "gating": "serial"
+      },
+      "evaluation": {
+        "protocol_id": "ab477acf-0c75-4eaf-88af-acd85c808801",
+        "gating": "serial",
+        "confirmation_runs": [
+          {
+            "run_id": "fcf2ed4a-4f41-4756-8497-6fc9b41d3628",
+            "created_at": "2026-10-26T19:28:20.080Z",
+            "complete": true,
+            "endpoints": [
+              {
+                "claim_key": "cigar_youth_pearson",
+                "label": "Pearson RSV cygar vs YRBS 2011",
+                "primary": true,
+                "family_id": "F1",
+                "priority": 1,
+                "verdict": "reproduced",
+                "p_raw": 0.03205592600267951,
+                "p_adjusted": 0.03205592600267951,
+                "significant": true,
+                "tested": true,
+                "not_tested_reason": null
+              }
+            ]
+          }
+        ],
+        "exploratory_runs": 1
+      }
+    }
+  ]
+}

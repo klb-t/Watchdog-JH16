@@ -51,6 +51,8 @@ import { buildResearchRouter } from './backend/watchdog_api/api/research_routes'
 import { AssistantService } from './backend/watchdog_api/services/assistant';
 import { ResearchPlans } from './backend/watchdog_api/services/research_plans';
 import { PersonalSearch } from './backend/watchdog_api/services/personal_search';
+import { ReplicationMeasurements } from './backend/watchdog_api/services/replication_measurements';
+import { buildReplicationMeasurementRouter } from './backend/watchdog_api/api/replication_measurement_routes';
 import { latestLiveJh16Run } from './backend/watchdog_api/services/jh16_trends';
 import { StudyProtocolRepository } from './backend/watchdog_api/db/repositories/study_protocols';
 import { RunOrchestrator } from './backend/watchdog_api/services/run_orchestrator';
@@ -145,6 +147,9 @@ export async function configureApp() {
   app.use('/api/memory', buildMemoryRouter(automationRepository));
   app.use('/api/source-access',buildSourceAccessRouter(new SourceAccessService(automationRepository.access,loadSourceAccessProfile(),automation.profile)));
   app.use('/api/diagnostics', buildDiagnosticRouter(new AuditRepository(sqlite)));
+  const measurements = new ReplicationMeasurements(settings, vault, assistantProfile,
+    new RunOrchestrator(db, store, (id, owner, personal) => search.resolve(id, owner, personal)), (owner, id) => new StudyProtocolRepository(db).get(owner, id));
+  app.use('/api/replications', buildReplicationMeasurementRouter(measurements, new AuditRepository(sqlite)));
   app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite), assistant));
   app.use(errorHandler);
 
