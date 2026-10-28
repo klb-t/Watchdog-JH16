@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "config_id": "text-requests",
-  "version": "2026-10-28-v1",
+  "version": "2026-10-28-v2",
   "_note": "A pasted text from a researcher becomes a request: identifiers, the work they point to, what the text asks for, the literal part started at once and proposals that wait for acceptance. Rules are deterministic and versioned; each recognised intent quotes the fragment that triggered it.",
   "identifier_patterns": {
     "doi": "\\b10\\.\\d{4,9}/[^\\s\"<>,;]+[^\\s\"<>,;.)]",
@@ -76,5 +76,14 @@
     "serpapi_eur_per_request": 0.014,
     "daily_auto_spend_eur": 1.0,
     "_source": "Assumed price: SerpApi's smallest paid plan, USD 75 per 5000 searches (~EUR 0.014). The account is on the free plan (monthly pool used) and spends extra credits whose price is not known here; the owner should confirm. The cap limits what a request starts by itself."
+  },
+  "full_text": {
+    "europepmc_search": "https://www.ebi.ac.uk/europepmc/webservices/rest/search",
+    "europepmc_fulltext": "https://www.ebi.ac.uk/europepmc/webservices/rest/{pmcid}/fullTextXML",
+    "_how": "For every resolved DOI: Europe PMC search by DOI; if the work has a PMCID and is open access, its JATS full text is fetched and converted (jats-text). This is the legal route for PubMed Central papers; publisher pages are never scraped around their protection."
+  },
+  "contact": {
+    "email": "",
+    "_note": "Optional contact sent as mailto to Crossref (its 'polite pool'). Empty by default; WatchDog never fills it with an account's address."
   }
 }

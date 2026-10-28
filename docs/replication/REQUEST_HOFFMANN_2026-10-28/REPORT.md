@@ -74,3 +74,12 @@ The engine is general; this quote is its first test case.
   - an HTTP 202 protection page would have been taken as the paper's text for a work outside the register.
 
 A work outside the register goes to paper intake with what could be fetched. Its methodology assessment by a model stays where it was ("Tekst, metodologia i ekstrakcja") and needs a configured model.
+
+## Addendum (2026-10-28, after the coordinator's notes)
+
+- **Full text, legally.**
+  - **How it works:** for every resolved DOI, WatchDog searches Europe PMC. When the work has a PMCID and is open access, it fetches the JATS full text (`fullTextXML`) and converts it deterministically (`jats-text 1`: title, abstract and body; references left out). That text is what goes to intake and to the optional model reading. Configured in `config/requests/text-requests.json` → `full_text`.
+  - **Checked live on the quote** (preview only, no spend): JH16 has PMCID PMC4786686, with 19,925 characters, sections Introduction / Methods / Results / Discussion, and 6 tables.
+  - **Bug found by the live check:** Europe PMC answers 406 when JSON is requested, so full text is now requested as XML. A test covers this.
+- **Contact.** No address is sent anywhere. `contact.email` in the configuration is empty by default and is used as Crossref `mailto` only when someone fills it in. A test checks that no request carries `mailto`.
+- **SerpApi price.** `account.json` (read free) gives the plan (Free Plan, USD 0), the monthly pool (250, used) and 2578 extra credits, but no price for the credits. The assumption of €0.014 per request and the €1/day cap stay.

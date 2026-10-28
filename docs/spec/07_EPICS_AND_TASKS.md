@@ -41,6 +41,7 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
     - Intents come from versioned rules, each quoting its fragment. An optional Vertex reading keeps only verbatim-quoted proposals; it is off until a real call is verified.
     - From the dossier: literal actions start on send within a daily automatic spending cap; proposals start only on acceptance; questions do not block.
     - Works outside the register go to paper intake.
+    - Open-access full text comes from Europe PMC (JATS by PMCID); a publisher's protection is never worked around. No contact address is sent unless configured.
   - **Real run on a copy:** request `abf0ae08`.
     - Recomputation `b4b6f5cc` gave 0.8162, reproduced.
     - The new measurement `ea2b7078` was not computable: 14 of 32 counts collapsed, and the khat harm query was empty. This is a shown cause, added to the JH16 diagnosis.

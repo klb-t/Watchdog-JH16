@@ -19,6 +19,8 @@ function AnalysisView({ a, children }: { a: any; children?: any }) {
     <section className={card} data-testid="request-work"><h2 className="font-semibold">Wskazana praca</h2>
       <ul className="text-sm list-disc ml-5">{a.identifiers.map((i: any) => <li key={i.value} className="break-all">{i.kind === 'url' ? 'adres' : 'DOI'}: {i.value}</li>)}</ul>
       {a.works.map((w: any) => <p key={w.doi} className="text-sm">Rozpoznano <b>doi:{w.doi}</b>{w.title ? ` — „${w.title}”` : ''} <span className="text-slate-500">({w.via})</span></p>)}
+      {a.full_text ? <p className="text-sm" data-testid="request-fulltext">Pełny tekst: {a.full_text.via}, {a.full_text.pmcid}: {a.full_text.characters} znaków, sekcje {a.full_text.sections.join(', ') || '—'}, tabele {a.full_text.tables} (konwersja {a.full_text.parser}).</p>
+        : a.works.length > 0 && <p className="text-sm text-slate-600" data-testid="request-fulltext">Pełnego tekstu w otwartym dostępie (Europe PMC) nie znaleziono.</p>}
       {a.identifiers.length > 0 && a.works.length === 0 && <p className="text-sm text-amber-900">Nie udało się jednoznacznie rozpoznać pracy. Wpisz w tekście jej DOI.</p>}
       {a.target ? <p className="text-sm" data-testid="request-target">Praca jest w rejestrze replikacji: <Link className="underline" to={`/replications/${a.target.target_id}`}>{a.target.title}</Link>.</p>
         : a.intake ? <p className="text-sm" data-testid="request-intake">Praca nie jest w rejestrze replikacji. Po wysłaniu trafi do „Tekst, metodologia i ekstrakcja” ({a.intake.coverage === 'full_text' ? 'z pełnym tekstem strony' : 'tylko identyfikator, bo strony nie udało się pobrać'}); tam zaproponujesz metodę do przeglądu.</p> : null}

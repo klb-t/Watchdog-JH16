@@ -38,6 +38,11 @@ function fetcher(log: string[], pages: Record<string, { status: number; type: st
     if (page) return { status: page.status, url, contentType: page.type, body: Buffer.from(page.body) };
     if (url.startsWith('https://www.jmir.org/')) return { status: 202, url, contentType: 'text/html', body: Buffer.alloc(0) };
     if (url.includes('filter=issn:1438-8871')) return { status: 200, url, contentType: 'application/json', body: Buffer.from(JSON.stringify(crossrefYear)) };
+    if (url.includes('europepmc/webservices/rest/search')) { const doi = decodeURIComponent(url).match(/DOI:"([^"]+)"/)![1];
+      const result = doi === '10.2196/jmir.4033' ? [{ doi, pmcid: 'PMC4786686', isOpenAccess: 'Y' }] : doi === '10.5555/open.1' ? [{ doi, pmcid: 'PMC1000001', isOpenAccess: 'Y' }] : [];
+      return { status: 200, url, contentType: 'application/json', body: Buffer.from(JSON.stringify({ resultList: { result } })) }; }
+    if (url.endsWith('/fullTextXML') && init.headers.Accept !== 'application/xml') return { status: 406, url, contentType: 'text/plain', body: Buffer.from('not acceptable') };
+    if (url.endsWith('/fullTextXML')) return { status: 200, url, contentType: 'application/xml', body: Buffer.from('<article><front><article-meta><title-group><article-title>Open paper &amp; data</article-title></title-group><abstract><p>Short abstract.</p></abstract></article-meta></front><body><sec><title>Methods</title><p>We measured X.</p><table-wrap><table><tr><td>a</td><td>1</td></tr></table></table-wrap></sec></body><back><ref-list><ref>Cited work</ref></ref-list></back></article>') };
     if (url.startsWith('https://api.crossref.org/works/')) return { status: 200, url, contentType: 'application/json', body: Buffer.from(JSON.stringify({ message: { title: ['An unregistered paper'] } })) };
     return { status: 404, url, contentType: 'text/plain', body: Buffer.from('not found') };
   };
@@ -50,6 +55,8 @@ test('the quote: the work is resolved through open metadata, intents are quoted,
   assert.match(a.retrievals[0].note!, /HTTP 202 \(0 B\) is not the document .* not worked around/); assert.ok(log.every(l => /UA=WatchDog research platform/.test(l)), 'honestly identified, never a browser');
   assert.deepStrictEqual(a.works.map(w => w.doi), ['10.2196/jmir.4033']); assert.match(a.works[0].via, /registered landing page equals/);
   assert.strictEqual(a.target?.target_id, 'jh2016');
+  assert.deepStrictEqual(a.full_text && [a.full_text.pmcid, a.full_text.title, a.full_text.sections, a.full_text.tables], ['PMC4786686', 'Open paper & data', ['Methods'], 1]);
+  assert.ok(!log.some(l => /mailto/.test(l)), 'no contact address is sent unless configured');
   assert.deepStrictEqual(a.intents.map(i => [i.id, i.source]), [['replicate', 'rule'], ['period_update', 'rule'], ['regional', 'rule']]);
   assert.match(a.intents[0].fragment, /^zacząć można od bardzo prostych prac/);
   assert.ok(a.intents.every(i => QUOTE.includes(i.fragment)), 'every intent quotes the text');
@@ -102,6 +109,12 @@ test('a work outside the register goes to paper intake with what could be fetche
   assert.deepStrictEqual(r.events.map(e => [e.kind, e.body.action, e.body.documentId]), [['launched', 'intake', 'doc-1']]);
   const challenge = await analyzeText('Proszę powtórzyć analizę jak w artykule https://example.org/guarded', deps([], { pages: { 'https://example.org/guarded': { status: 202, type: 'text/html', body: '<html><title>Just a moment</title><body>checking your browser</body></html>' } } }));
   assert.deepStrictEqual(challenge.intake && [challenge.intake.coverage, challenge.intake.title], ['identifier_only', 'https://example.org/guarded'], 'a bot-protection page is never taken as the paper');
+  const intakes2: any[] = [], service2 = new TextRequests(new TextRequestRepository(db), deps([]), { jh16Plan: () => ({ runIds: [] }), measurement: () => ({ runIds: [] }),
+    intake: (_o, d) => { intakes2.push(d); return { documentId: 'doc-2' }; }, searchesToday: () => 0 });
+  const openText = 'Proszę powtórzyć jak w artykule doi 10.5555/open.1 dla innych krajów', oa = await service2.preview(openText);
+  assert.deepStrictEqual(oa.intake && [oa.intake.source, oa.intake.coverage, oa.intake.text_from], ['doi:10.5555/open.1; PMC1000001', 'full_text', 'europepmc']);
+  await service2.submit('owner', openText, oa.plan_hash);
+  assert.match(intakes2[0].text, /Open paper & data[\s\S]*Short abstract[\s\S]*We measured X/); assert.ok(!/Cited work/.test(intakes2[0].text), 'references are left out');
   const onlyDoi = await analyzeText('See doi 10.5555/xyz.1 please replicate it.', deps([]));
   assert.deepStrictEqual(onlyDoi.intake && [onlyDoi.intake.source, onlyDoi.intake.coverage], ['doi:10.5555/xyz.1', 'identifier_only']);
 });

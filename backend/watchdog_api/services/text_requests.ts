@@ -6,7 +6,7 @@ import type { ObjectStore } from '../storage/object_store';
 import { listReplicationTargets, type ReplicationTarget } from './replication_dossier';
 import { measurementPlan } from './replication_measurements';
 import { readTrendsCalibration, trendsRequestsPerRegion } from './jh16_trends';
-import { htmlToText } from '../sources/document_conversion';
+import { htmlToText, jatsToText } from '../sources/document_conversion';
 import { vertexGenerate, type Transport, type VertexProvider } from './vertex';
 import { AutomationError } from '../db/repositories/automation';
 import type { TextRequestRepository } from '../db/repositories/text_requests';
@@ -48,7 +48,8 @@ export interface Analysis {
   intents: { id: string; label: string; fragment: string; rule: string; source: 'rule' | 'model' }[];
   model: { status: 'disabled' | 'used' | 'failed'; reason: string | null; notes: { statement: string; quote: string }[] };
   literal: Action[]; proposals: Action[]; questions: { id: string; to: string; text: string; matched_intents: string[] }[];
-  intake: { title: string; source: string; coverage: 'full_text' | 'abstract' | 'identifier_only'; retrieval: string | null } | null;
+  full_text: { doi: string; pmcid: string; via: string; retrieval: string; characters: number; title: string | null; sections: string[]; tables: number; parser: string } | null;
+  intake: { title: string; source: string; coverage: 'full_text' | 'abstract' | 'identifier_only'; retrieval: string | null; text_from: 'europepmc' | 'page' | null } | null;
   cost: { eur_per_request: number; literal_requests: number; literal_eur: number; daily_auto_spend_eur: number };
   plan_hash: string;
 }
@@ -67,7 +68,7 @@ export interface AnalyzeDeps { fetcher: Fetcher; store: ObjectStore; root?: stri
 
 async function retrieve(deps: AnalyzeDeps, cfg: any, purpose: string, url: string): Promise<{ r: Retrieval; body: Buffer | null; contentType: string }> {
   try {
-    const res = await deps.fetcher(url, { headers: { 'User-Agent': cfg.fetch.user_agent, Accept: purpose === 'page' ? 'text/html,application/pdf' : 'application/json' }, signal: AbortSignal.timeout(cfg.fetch.timeout_ms) });
+    const res = await deps.fetcher(url, { headers: { 'User-Agent': cfg.fetch.user_agent, Accept: purpose === 'page' ? 'text/html,application/pdf' : purpose.includes('full text') ? 'application/xml' : 'application/json' }, signal: AbortSignal.timeout(cfg.fetch.timeout_ms) });
     const sha = res.body.length ? createHash('sha256').update(res.body).digest('hex') : null;
     const uri = sha ? await deps.store.put(`raw/${sha}`, res.body) : null;
     // Only a 200 is the document itself; a 202 or similar is typically a bot-protection page and is kept as evidence, not as text.
@@ -89,6 +90,7 @@ function estimateRequests(t: ReplicationTarget, launch: any, root: string): numb
 export async function analyzeText(text: string, deps: AnalyzeDeps): Promise<Analysis> {
   const root = deps.root ?? process.cwd(), { config: cfg, hash } = readRequestConfig(root);
   const textSha = createHash('sha256').update(text).digest('hex');
+  const mailto = cfg.contact?.email ? `&mailto=${encodeURIComponent(cfg.contact.email)}` : '';
   const ids: Analysis['identifiers'] = [];
   for (const m of text.matchAll(new RegExp(cfg.identifier_patterns.url, 'gi'))) ids.push({ kind: 'url', value: m[0] });
   for (const m of text.matchAll(new RegExp(cfg.identifier_patterns.doi, 'gi'))) if (!ids.some(i => i.kind === 'url' && i.value.includes(m[0]))) ids.push({ kind: 'doi', value: m[0].toLowerCase() });
@@ -109,7 +111,7 @@ export async function analyzeText(text: string, deps: AnalyzeDeps): Promise<Anal
       const m = u.host.endsWith(res.host_suffix) ? u.pathname.match(new RegExp(res.path_pattern)) : null;
       if (!m) continue;
       const year = m[res.year_group];
-      const q = `${cfg.crossref_endpoint}?filter=issn:${res.issn},from-pub-date:${year}-01-01,until-pub-date:${year}-12-31&rows=1000&select=DOI,title,resource`;
+      const q = `${cfg.crossref_endpoint}?filter=issn:${res.issn},from-pub-date:${year}-01-01,until-pub-date:${year}-12-31&rows=1000&select=DOI,title,resource${mailto}`;
       const cr = await retrieve(deps, cfg, `crossref (${res.id})`, q); retrievals.push(cr.r);
       if (!cr.body) continue;
       const hit = (JSON.parse(cr.body.toString('utf-8')).message?.items ?? []).find((it: any) => normUrl(it.resource?.primary?.URL ?? '') === normUrl(id.value));
@@ -117,10 +119,23 @@ export async function analyzeText(text: string, deps: AnalyzeDeps): Promise<Anal
     }
   }
   for (const id of ids.filter(i => i.kind === 'doi')) {
-    const cr = await retrieve(deps, cfg, 'crossref (doi)', `${cfg.crossref_endpoint}/${encodeURIComponent(id.value)}`); retrievals.push(cr.r);
+    const cr = await retrieve(deps, cfg, 'crossref (doi)', `${cfg.crossref_endpoint}/${encodeURIComponent(id.value)}${mailto ? `?${mailto.slice(1)}` : ''}`); retrievals.push(cr.r);
     if (cr.body) { const it = JSON.parse(cr.body.toString('utf-8')).message; works.push({ doi: id.value, title: it?.title?.[0] ?? null, via: 'Crossref DOI record' }); }
   }
   const dedupWorks = [...new Map(works.map(w => [w.doi, w])).values()];
+  // Open-access full text through Europe PMC (JATS), the legal route for PubMed Central papers.
+  let fullText: Analysis['full_text'] = null;
+  for (const w of dedupWorks) {
+    const search = await retrieve(deps, cfg, 'europepmc (search)', `${cfg.full_text.europepmc_search}?query=${encodeURIComponent(`DOI:"${w.doi}"`)}&format=json&resultType=lite`); retrievals.push(search.r);
+    const hit = search.body ? (JSON.parse(search.body.toString('utf-8')).resultList?.result ?? []).find((x: any) => String(x.doi ?? '').toLowerCase() === w.doi) : null;
+    if (!hit?.pmcid || hit.isOpenAccess !== 'Y') continue;
+    const xml = await retrieve(deps, cfg, 'europepmc (full text)', cfg.full_text.europepmc_fulltext.replace('{pmcid}', hit.pmcid)); retrievals.push(xml.r);
+    if (!xml.body) continue;
+    const j = jatsToText(xml.body.toString('utf-8'));
+    if (!j.text.trim()) continue;
+    fullText = { doi: w.doi, pmcid: hit.pmcid, via: 'Europe PMC (open access, JATS)', retrieval: xml.r.sha256!, characters: j.text.length, title: j.title, sections: j.sections, tables: j.tables, parser: `${j.parser.id} ${j.parser.version}` };
+    break;
+  }
   const targets = listReplicationTargets(root), match = targets.find(t => dedupWorks.some(w => w.doi === String(t.target.identifier).toLowerCase()));
   const target = match ? { target_id: match.target.target_id, title: match.target.title, matched_doi: String(match.target.identifier).toLowerCase() } : null;
 
@@ -129,7 +144,8 @@ export async function analyzeText(text: string, deps: AnalyzeDeps): Promise<Anal
     const m = new RegExp(p, 'i').exec(text);
     if (m) { intents.push({ id: rule.id, label: rule.label, fragment: sentenceAt(text, m.index), rule: p, source: 'rule' }); break; }
   }
-  const model = await modelReading(text, pageText?.text ?? null, cfg, intents, deps.modelTransport);
+  const paperText = fullText ? jatsToText((await deps.store.get(retrievals.find(r => r.sha256 === fullText!.retrieval)!.object_uri!)).toString('utf-8')).text : pageText?.text ?? null;
+  const model = await modelReading(text, paperText, cfg, intents, deps.modelTransport);
   for (const x of model.intents) if (!intents.some(i => i.id === x.id)) intents.push(x);
 
   const recognised = intents.map(i => i.id), acts = match?.dossier?.request_actions ?? { literal: [], proposals: [], questions: [] };
@@ -138,13 +154,15 @@ export async function analyzeText(text: string, deps: AnalyzeDeps): Promise<Anal
   const literal = pick(acts.literal), proposals = pick(acts.proposals);
   const questions = (acts.questions ?? []).map((q: any) => ({ id: q.id, to: q.to, text: q.text, matched_intents: q.intents.filter((i: string) => recognised.includes(i)) })).filter((q: any) => q.matched_intents.length);
   const doi = dedupWorks[0]?.doi, firstUrl = ids.find(i => i.kind === 'url')?.value;
-  const intake = match || (!doi && !firstUrl) ? null : { title: pageText?.title ?? dedupWorks[0]?.title ?? (doi ? `doi:${doi}` : firstUrl!), source: doi ? `doi:${doi}` : firstUrl!,
-    coverage: pageText?.text.trim() ? 'full_text' as const : 'identifier_only' as const, retrieval: pageText?.retrieval ?? null };
+  const intake = match || (!doi && !firstUrl) ? null : fullText
+    ? { title: fullText.title ?? dedupWorks[0]?.title ?? `doi:${fullText.doi}`, source: `doi:${fullText.doi}; ${fullText.pmcid}`, coverage: 'full_text' as const, retrieval: fullText.retrieval, text_from: 'europepmc' as const }
+    : { title: pageText?.title ?? dedupWorks[0]?.title ?? (doi ? `doi:${doi}` : firstUrl!), source: doi ? `doi:${doi}` : firstUrl!,
+      coverage: pageText?.text.trim() ? 'full_text' as const : 'identifier_only' as const, retrieval: pageText?.retrieval ?? null, text_from: pageText ? 'page' as const : null };
   const eur = cfg.cost.serpapi_eur_per_request, literalRequests = literal.reduce((k, a) => k + (a.requests ?? 0), 0);
   const plan = { identifiers: ids, works: dedupWorks.map(w => w.doi), target: target?.target_id ?? null, intents: recognised,
-    literal: literal.map(a => [a.id, a.requests]), proposals: proposals.map(a => [a.id, a.requests]), questions: questions.map((q: any) => q.id), intake: intake ? [intake.source, intake.coverage] : null, config: hash };
+    literal: literal.map(a => [a.id, a.requests]), proposals: proposals.map(a => [a.id, a.requests]), questions: questions.map((q: any) => q.id), full_text: fullText?.pmcid ?? null, intake: intake ? [intake.source, intake.coverage] : null, config: hash };
   return { config_version: cfg.version, config_hash: hash, text_sha256: textSha, identifiers: ids, retrievals, works: dedupWorks, target, intents,
-    model: { status: model.status, reason: model.reason, notes: model.notes }, literal, proposals, questions, intake,
+    model: { status: model.status, reason: model.reason, notes: model.notes }, literal, proposals, questions, full_text: fullText, intake,
     cost: { eur_per_request: eur, literal_requests: literalRequests, literal_eur: Number((literalRequests * eur).toFixed(4)), daily_auto_spend_eur: cfg.cost.daily_auto_spend_eur },
     plan_hash: canonicalHash(plan) };
 }
@@ -199,7 +217,7 @@ export class TextRequests {
       const uri = analysis.retrievals.find(x => x.sha256 === analysis.intake!.retrieval)?.object_uri ?? null;
       const page = uri ? await this.deps.store.get(uri).catch(() => null) : null;
       try {
-        const body = page ? htmlToText(page.toString('utf-8')).text : '';
+        const body = page ? (analysis.intake.text_from === 'europepmc' ? jatsToText(page.toString('utf-8')).text : htmlToText(page.toString('utf-8')).text) : '';
         const r = this.launch.intake(owner, { title: analysis.intake.title, source: analysis.intake.source, text: body, coverage: body.trim() ? 'full_text' : 'identifier_only' });
         this.repo.event(owner, stored.id, 'launched', { action: 'intake', documentId: r.documentId });
       } catch (e) { this.repo.event(owner, stored.id, 'failed', { action: 'intake', message: (e as Error).message.slice(0, 300) }); }
