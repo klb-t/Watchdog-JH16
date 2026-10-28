@@ -1,0 +1,264 @@
+{
+ "server": "PostgreSQL 16.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit",
+ "migrations": 25,
+ "statements": 235,
+ "applied_postgres_statements": 286,
+ "failed": 0,
+ "manual": 0,
+ "tables": 102,
+ "triggers": 51,
+ "worm": {
+  "table": "study_protocols",
+  "update_refused": true,
+  "error": "WORM study protocol"
+ },
+ "perMigration": [
+  {
+   "id": "001_initial_schema",
+   "statements": 51,
+   "applied": 51,
+   "failed": [],
+   "manual": [],
+   "rules": []
+  },
+  {
+   "id": "002_assertions",
+   "statements": 10,
+   "applied": 10,
+   "failed": [],
+   "manual": [],
+   "rules": []
+  },
+  {
+   "id": "003_query_plan_identity",
+   "statements": 2,
+   "applied": 2,
+   "failed": [],
+   "manual": [],
+   "rules": []
+  },
+  {
+   "id": "004_principals",
+   "statements": 5,
+   "applied": 5,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "INSERT OR IGNORE → ON CONFLICT DO NOTHING"
+   ]
+  },
+  {
+   "id": "005_role_profiles",
+   "statements": 2,
+   "applied": 2,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "INSERT OR IGNORE → ON CONFLICT DO NOTHING"
+   ]
+  },
+  {
+   "id": "006_field_reference",
+   "statements": 22,
+   "applied": 22,
+   "failed": [],
+   "manual": [],
+   "rules": []
+  },
+  {
+   "id": "007_workbench",
+   "statements": 7,
+   "applied": 7,
+   "failed": [],
+   "manual": [],
+   "rules": []
+  },
+  {
+   "id": "008_workbench_profiles",
+   "statements": 3,
+   "applied": 5,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "009_geometry_layers",
+   "statements": 3,
+   "applied": 4,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "010_automation",
+   "statements": 15,
+   "applied": 17,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "011_personal_settings",
+   "statements": 14,
+   "applied": 18,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "012_assistant_profiles",
+   "statements": 6,
+   "applied": 9,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "013_research_intake",
+   "statements": 14,
+   "applied": 20,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "014_extraction_mapping_templates",
+   "statements": 3,
+   "applied": 4,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "015_paper_operations",
+   "statements": 3,
+   "applied": 4,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "016_reference_observations",
+   "statements": 8,
+   "applied": 13,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "AUTOINCREMENT → identity",
+    "WHEN with subquery → guard in function body",
+    "trigger → plpgsql function wd_trg_*",
+    "trigger → plpgsql function wd_trg_* (conditional)"
+   ]
+  },
+  {
+   "id": "017_collection_context",
+   "statements": 4,
+   "applied": 6,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "json_valid → jsonb cast",
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "018_source_watches",
+   "statements": 4,
+   "applied": 6,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "019_source_access",
+   "statements": 11,
+   "applied": 17,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "AUTOINCREMENT → identity",
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "020_admission",
+   "statements": 7,
+   "applied": 9,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "AUTOINCREMENT → identity",
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "021_research_projects",
+   "statements": 8,
+   "applied": 12,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "022_paper_comparisons",
+   "statements": 11,
+   "applied": 17,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "AUTOINCREMENT → identity",
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "023_accounts",
+   "statements": 14,
+   "applied": 14,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "INSERT OR IGNORE → ON CONFLICT DO NOTHING"
+   ]
+  },
+  {
+   "id": "024_manuscript_editions",
+   "statements": 4,
+   "applied": 6,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  },
+  {
+   "id": "025_study_protocols",
+   "statements": 4,
+   "applied": 6,
+   "failed": [],
+   "manual": [],
+   "rules": [
+    "trigger → plpgsql function wd_trg_*"
+   ]
+  }
+ ]
+}

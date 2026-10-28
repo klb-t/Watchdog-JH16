@@ -35,6 +35,8 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
 
 - [x] **E5.8b-2 — PDF tables.** `pdf-layout-1` (pdf.js positions, PDF sha256), proposed column boundaries from shared gaps (review only), and an explicit PDF table plan (page, range, boundaries, names, row tolerance, join gap, raised-text marker and window) with per-cell provenance (page, baseline, fragment indices, bbox). Verified on arXiv 1706.03762 Table 2 through the UI. Tests in `tests/integration/document_conversion.test.ts`; gate 644/644.
 
+- [x] **E3.5-1 — PostgreSQL design and schema portability (first package of E3.5's database half).** Design, inventory, options and phased plan: `../architecture/E3_5_POSTGRES_DESIGN.md`. `db/postgres_dialect.ts` translates all 25 migrations (WORM triggers → plpgsql, subquery WHEN moved into the body, identity, BYTEA, jsonb checks, ON CONFLICT); `scripts/pg_portability_probe.ts` applied them to real PostgreSQL 16.15 with 0 failures, 51/51 triggers, and a ported WORM trigger refused an UPDATE (evidence `../history/evidence/2026-10-26-e3-5/`). `WATCHDOG_DB_BACKEND=postgres` fails closed with NotImplementedError. Test: `tests/unit/postgres_dialect.test.ts`. Not done: async repositories, PostgreSQL query semantics, isolation, data migration, backup; the owner's VM stays on SQLite.
+
 ## Completed resumed acceptance — 2026-10-02
 
 - [x] **E4.7 follow-up:** explicit OIDC fails closed without its audience; legacy-managed addresses cannot receive conflicting new grants through invitations/applications. Recheck inside all three grant transactions rejects intervening legacy writes without consuming evidence.
@@ -701,7 +703,7 @@ just because the schema for all three already exists.
 
 - **Owner's live test on the VM (2026-10-25):** the tested image is deployed in local-owner mode behind the coordinator's Caddy; accounts/SMTP/OAuth and a full restore drill on that VM remain unverified. Instructions: `../replication/JH16_2026-10-25/OWNER_TEST.md`.
 - **Actual owner VM deployment and restore activation:** no validated VM session, SMTP/OAuth installation configuration or real HTTPS acceptance is recorded. Code integration and local tests can proceed. No live resources were changed by this audit.
-- **E3.5 / PostgreSQL:** a validated transactional database arrangement is required before Cloud Run support. GCS blob storage does not validate SQLite on GCS FUSE. PostgreSQL remains planned; build and test the adapter before provisioning.
+- **E3.5 / PostgreSQL:** a validated transactional database arrangement is required before Cloud Run support. GCS blob storage does not validate SQLite on GCS FUSE. PostgreSQL remains planned; schema portability is shown (E3.5-1), the async repository port is not started. Provisioning Cloud SQL is paid spending and needs the owner's decision (options in `../architecture/E3_5_POSTGRES_DESIGN.md`).
 Browser runtime recovery is complete: initial 525/552 + 27 launch failures became 552/552 on the original base, then 604/604 on the combined implementation. No test was disabled. The failed attempt remains recorded in the experiment history.
 
 [Historical resolved publication blockers](../history/LEDGER_BLOCKERS_BEFORE_2026-10-01.md) are retained for provenance. They do not block a new claim or imply current push failure.
