@@ -32,9 +32,9 @@ test('API GET /api/sources - Lists sources', async () => {
   assert.strictEqual(res.status, 200);
   const data: any = await res.json();
   assert.ok(data.sources);
-  const offlineFixture = data.sources.find((s: any) => s.source_id === 'offline_fixture');
-  assert.ok(offlineFixture);
-  assert.strictEqual(offlineFixture.status, 'fixture');
+  // Test-only data never appears in the product (owner rule, 2026-10-25); the paper's counts do.
+  assert.strictEqual(data.sources.find((s: any) => s.source_id === 'offline_fixture'), undefined);
+  assert.strictEqual(data.sources.find((s: any) => s.source_id === 'fixture_jh2016')?.status, 'fixture');
 });
 
 test('API GET /api/analyzers - Lists analyzers', async () => {

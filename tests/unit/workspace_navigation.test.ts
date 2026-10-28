@@ -67,14 +67,16 @@ test('rendered main navigation separates utility links and marks nested run/resu
   assert.doesNotMatch(utility, /\/diagnostics|\/settings\/access/);
 });
 
-test('source cards cannot offer runnable planned or credential-blocked entries, or acquisition to viewers', () => {
-  const base: Source = { source_id: 'fixture:test', adapter: 'Fixture', status: 'fixture', capabilities: ['result_count'], description: 'Fictional test source.' };
+test('source cards offer only actions that work: no action for planned or blocked entries, none for viewers', () => {
+  const base: Source = { source_id: 'chemical_reference', adapter: 'Unknown', status: 'planned', capabilities: ['entity_reference'], description: 'Reference record.' };
   for (const status of ['planned', 'blocked', 'blocked-by-license/auth'] as const) {
     const output = renderToStaticMarkup(createElement(SourceCard, { source: { ...base, status }, canAcquire: true, submitting: false, onAcquire: () => {} }));
-    assert.match(output, /disabled=""/); assert.match(output, new RegExp(`data-source-status="${status}"`));
+    assert.doesNotMatch(output, /<button|href=/); assert.match(output, /Niedostępne/); assert.match(output, new RegExp(`data-source-status="${status}"`));
   }
-  const fixture = renderToStaticMarkup(createElement(SourceCard, { source: base, canAcquire: true, submitting: false, onAcquire: () => {} }));
-  assert.match(fixture, /Uruchom źródło testowe/); assert.doesNotMatch(fixture, /disabled=""/);
-  const viewer = renderToStaticMarkup(createElement(SourceCard, { source: base, canAcquire: false, submitting: false, onAcquire: () => {} }));
+  const paper = renderToStaticMarkup(createElement(SourceCard, { source: { ...base, source_id: 'fixture_jh2016', status: 'fixture' }, canAcquire: true, submitting: false, onAcquire: () => {} }));
+  assert.match(paper, /Przelicz JH16 z danych publikacji/); assert.doesNotMatch(paper, /disabled=""/);
+  const live = renderToStaticMarkup(createElement(MemoryRouter, null, createElement(SourceCard, { source: { ...base, source_id: 'serp_result_count', status: 'implemented' }, canAcquire: true, submitting: false, onAcquire: () => {} })));
+  assert.match(live, /href="\/setup"/);
+  const viewer = renderToStaticMarkup(createElement(SourceCard, { source: { ...base, source_id: 'fixture_jh2016', status: 'fixture' }, canAcquire: false, submitting: false, onAcquire: () => {} }));
   assert.doesNotMatch(viewer, /<button/);
 });

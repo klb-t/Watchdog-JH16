@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { CopyPlanSchema, SubstitutionSchema, type CopyPlan, type SubstitutionInput } from '../../shared/research';
 import profile from '../../config/research-workbench.json';
@@ -27,17 +27,26 @@ export function SubstitutionEditor({ value,onChange,requirements,busy,onSave }: 
   </div>;
 }
 
-export function CopyPlanBuilder({ format,busy,onSave }: {format:'json'|'csv'|'html';busy:boolean;onSave:(plan:CopyPlan)=>void}) {
-  const [name,setName]=useState(''),[rows,setRows]=useState(''),[fields,setFields]=useState([{name:'',selector:'',required:true}]),[table,setTable]=useState({index:0,headerRowIndex:0});
-  const value={version:'copy-plan-1' as const,name,format,rowsPointer:format==='json'?rows:'',fields,...(format==='html'?{table}:{})};
+export function CopyPlanBuilder({ format,busy,onSave,pdfDefaults }: {format:'json'|'csv'|'html'|'pdf';busy:boolean;onSave:(plan:CopyPlan)=>void;pdfDefaults?:{page:number;top:number;bottom:number;boundaries:number[]}}) {
+  const [name,setName]=useState(''),[rows,setRows]=useState(''),[fields,setFields]=useState([{name:'',selector:'',required:true}]),[table,setTable]=useState({index:0,headerRowIndex:0}),
+    [pdf,setPdf]=useState({page:1,top:800,bottom:0,boundaries:'',names:'',rowTolerance:2,joinGap:1,raisedMarker:'^',raisedWindow:0});
+  useEffect(()=>{ if(pdfDefaults) setPdf(p=>({...p,page:pdfDefaults.page,top:pdfDefaults.top,bottom:pdfDefaults.bottom,boundaries:pdfDefaults.boundaries.join(', ')})); },[pdfDefaults?.page,pdfDefaults?.top,pdfDefaults?.bottom,pdfDefaults?.boundaries.join(',')]);
+  const pdfTable={page:pdf.page,top:pdf.top,bottom:pdf.bottom,columnBoundaries:pdf.boundaries.split(',').map(x=>x.trim()).filter(Boolean).map(Number),columnNames:pdf.names.split(',').map(x=>x.trim()).filter(Boolean),rowTolerance:pdf.rowTolerance,joinGap:pdf.joinGap,raisedMarker:pdf.raisedMarker===''?null:pdf.raisedMarker,raisedWindow:pdf.raisedWindow};
+  const value={version:'copy-plan-1' as const,name,format,rowsPointer:format==='json'?rows:'',fields,...(format==='html'?{table}:{}),...(format==='pdf'?{pdfTable}:{})};
   const change=(index:number,patch:Partial<CopyPlan['fields'][number]>)=>setFields(fields.map((f,i)=>i===index?{...f,...patch}:f));
   return <div className="space-y-3" data-testid="copy-plan-builder">
     <h3 className="font-semibold">Zdefiniuj kopiowanie bez klucza LLM</h3>
     <label className="block">Nazwa parsera<input className={formClass} value={name} onChange={e=>setName(e.target.value)}/></label>
     {format==='html' && <div className="grid sm:grid-cols-2 gap-3"><label>Numer tabeli (od 0, w kolejności dokumentu)<input type="number" min={0} className={formClass} value={table.index} onChange={e=>setTable({...table,index:Number(e.target.value)})} data-testid="html-table-index"/></label>
       <label>Wiersz nagłówków w tej tabeli (od 0)<input type="number" min={0} className={formClass} value={table.headerRowIndex} onChange={e=>setTable({...table,headerRowIndex:Number(e.target.value)})}/></label></div>}
+    {format==='pdf' && <fieldset className="rounded border p-3 space-y-2" data-testid="pdf-table-spec"><legend>Odczyt tabeli z PDF (jednostki PDF, y rośnie w górę)</legend>
+      <div className="grid sm:grid-cols-3 gap-3">{([['page','Strona'],['top','Góra (y)'],['bottom','Dół (y)'],['rowTolerance','Tolerancja wiersza'],['joinGap','Sklejanie przy przerwie <'],['raisedWindow','Okno tekstu podniesionego (0 = wyłączone)']] as const).map(([k,l])=>
+        <label key={k}>{l}<input type="number" step="any" className={formClass} value={(pdf as any)[k]} onChange={e=>setPdf({...pdf,[k]:Number(e.target.value)})}/></label>)}
+        <label>Znacznik tekstu podniesionego<input className={formClass} value={pdf.raisedMarker} onChange={e=>setPdf({...pdf,raisedMarker:e.target.value})}/></label></div>
+      <label className="block">Granice kolumn x (rosnąco, przecinki)<input className={formClass} value={pdf.boundaries} onChange={e=>setPdf({...pdf,boundaries:e.target.value})} data-testid="pdf-boundaries"/></label>
+      <label className="block">Nazwy kolumn (o jedną więcej niż granic, przecinki)<input className={formClass} value={pdf.names} onChange={e=>setPdf({...pdf,names:e.target.value})} data-testid="pdf-names"/></label></fieldset>}
     {format==='json' && <label className="block">Ścieżka do listy rekordów<input className={formClass} value={rows} onChange={e=>setRows(e.target.value)} placeholder="np. /rows; puste dla listy na poziomie głównym"/></label>}
-    <p className="text-xs">{format==='json'?'Ścieżki JSON Pointer: /wartosc wskazuje pole rekordu, ~1 oznacza ukośnik w nazwie, ~0 tyldę.':format==='html'?'Wpisz dokładny tekst komórki nagłówka tabeli HTML (scalone komórki colspan/rowspan są rozwijane).':'Wpisz dokładną nazwę nagłówka kolumny CSV.'} Każde pole wyniku kopiuje pojedynczą wartość. Wartości liczbowe zachowują zapis ze źródła.</p>
+    <p className="text-xs">{format==='json'?'Ścieżki JSON Pointer: /wartosc wskazuje pole rekordu, ~1 oznacza ukośnik w nazwie, ~0 tyldę.':format==='pdf'?'Wpisz nazwę kolumny z listy nazw powyżej.':format==='html'?'Wpisz dokładny tekst komórki nagłówka tabeli HTML (scalone komórki colspan/rowspan są rozwijane).':'Wpisz dokładną nazwę nagłówka kolumny CSV.'} Każde pole wyniku kopiuje pojedynczą wartość. Wartości liczbowe zachowują zapis ze źródła.</p>
     {fields.map((f,i)=><fieldset key={i} className="rounded border p-3 space-y-2"><legend>Pole {i+1}</legend>
       <div className="grid sm:grid-cols-2 gap-3"><label>Nazwa pola wyniku {i+1}<input className={formClass} value={f.name} onChange={e=>change(i,{name:e.target.value})} placeholder="np. wartosc"/></label>
       <label>{format==='json'?'Ścieżka w rekordzie':'Nagłówek kolumny'} {i+1}<input className={formClass} value={f.selector} onChange={e=>change(i,{selector:e.target.value})}/></label></div>

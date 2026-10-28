@@ -30,11 +30,17 @@ export interface PaperDocument { id: string; hash: string; body: PaperInput; cre
 
 const Pointer = z.string().max(1000).refine(v => v === '' || v.startsWith('/') && !/~(?![01])/.test(v), 'Use an RFC 6901 JSON Pointer');
 export const CopyPlanSchema = z.object({ version: z.literal('copy-plan-1'), name: z.string().trim().min(1).max(160),
-  format: z.enum(['json', 'csv', 'html']), rowsPointer: Pointer, fields: z.array(z.object({ name: z.string().regex(/^[A-Za-z][A-Za-z0-9_]{0,59}$/),
+  format: z.enum(['json', 'csv', 'html', 'pdf']), rowsPointer: Pointer, fields: z.array(z.object({ name: z.string().regex(/^[A-Za-z][A-Za-z0-9_]{0,59}$/),
     selector: z.string().max(1000), required: z.boolean() }).strict()).min(1).max(30),
   // HTML: which table (0-based, document order, nested tables counted) and which of its rows holds the column headers.
-  table: z.object({ index: z.number().int().min(0).max(199), headerRowIndex: z.number().int().min(0).max(50) }).strict().optional() }).strict()
+  table: z.object({ index: z.number().int().min(0).max(199), headerRowIndex: z.number().int().min(0).max(50) }).strict().optional(),
+  // PDF: an explicit reading of positioned text (PDF units, y grows upwards); nothing is inferred at copy time.
+  pdfTable: z.object({ page: z.number().int().min(1).max(500), top: z.number(), bottom: z.number(), columnBoundaries: z.array(z.number()).max(59),
+    columnNames: z.array(z.string().trim().min(1).max(200)).min(1).max(60), rowTolerance: z.number().min(0).max(50), joinGap: z.number().min(0).max(50),
+    raisedMarker: z.string().max(4).nullable(), raisedWindow: z.number().min(0).max(50) }).strict().optional() }).strict()
   .refine(v => new Set(v.fields.map(f => f.name)).size === v.fields.length, 'Output field names must be unique')
   .refine(v => v.format === 'json' ? v.fields.every(f => Pointer.safeParse(f.selector).success) : v.rowsPointer === '', 'CSV and HTML use column headers; JSON uses pointer paths')
-  .refine(v => (v.format === 'html') === (v.table !== undefined), 'An HTML plan names its table; other formats do not');
+  .refine(v => (v.format === 'html') === (v.table !== undefined), 'An HTML plan names its table; other formats do not')
+  .refine(v => (v.format === 'pdf') === (v.pdfTable !== undefined), 'A PDF plan states its table reading; other formats do not')
+  .refine(v => !v.pdfTable || new Set(v.pdfTable.columnNames).size === v.pdfTable.columnNames.length, 'PDF column names must be unique');
 export type CopyPlan = z.infer<typeof CopyPlanSchema>;

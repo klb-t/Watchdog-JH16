@@ -6,7 +6,7 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
-import { htmlToText, htmlTableStructure, htmlTableRecords, pdfToText } from '../../backend/watchdog_api/sources/document_conversion';
+import { htmlToText, htmlTableStructure, htmlTableRecords, pdfToText, pdfLayout, pdfPageLines, pdfTableRecords } from '../../backend/watchdog_api/sources/document_conversion';
 import { copySource } from '../../backend/watchdog_api/sources/copy_plan';
 import { CopyPlanSchema } from '../../shared/research';
 import { ResearchRepository } from '../../backend/watchdog_api/db/repositories/research';
@@ -51,14 +51,15 @@ test('an HTML copy plan copies lexical cell text with provenance; empty cells ar
   assert.throws(() => CopyPlanSchema.parse({ ...plan, format: 'csv' }), /names its table/);
 });
 
-/** A minimal two-page PDF with a standard font, written byte by byte. */
-function pdf(pages: string[]): Buffer {
+/** A minimal PDF with a standard font, written byte by byte; a page is text runs [x, y, size, text] or one string. */
+function pdf(pages: (string | [number, number, number, string][])[]): Buffer {
   const objects: string[] = [];
   const add = (s: string) => { objects.push(s); return objects.length; };
   const font = add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>');
   const kids: number[] = [], pagesId = 2 + pages.length * 2;
   for (const text of pages) {
-    const stream = `BT /F1 12 Tf 72 720 Td (${text}) Tj ET`;
+    const runs = typeof text === 'string' ? [[72, 720, 12, text] as [number, number, number, string]] : text;
+    const stream = runs.map(([x, y, size, t]) => `BT /F1 ${size} Tf 1 0 0 1 ${x} ${y} Tm (${t}) Tj ET`).join('\n');
     const content = add(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
     kids.push(add(`<< /Type /Page /Parent ${pagesId} 0 R /MediaBox [0 0 612 792] /Contents ${content} 0 R /Resources << /Font << /F1 ${font} 0 R >> >> >>`));
   }
@@ -108,4 +109,30 @@ test('the conversion endpoint takes the file as its body from this origin only, 
     assert.strictEqual((await fetch(`${url}?format=html`, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: HTML })).status, 415);
     assert.strictEqual((await fetch(`${url}?format=pdf`, { method: 'POST', headers: { 'Content-Type': 'application/pdf', Origin: 'https://evil.example' }, body: pdf(['x']) })).status, 403);
   } finally { server.close(); }
+});
+
+test('a PDF table is read only as the plan states: rows by baseline, columns by boundaries, exponents marked, every cell traced', async () => {
+  const page: [number, number, number, string][] = [[72, 700, 10, 'Model'], [200, 700, 10, 'Score'], [300, 700, 10, 'Cost'],
+    [72, 680, 10, 'Alpha'], [200, 680, 10, '27.3'], [300, 680, 10, '3.3'], [316, 680, 10, 'x 10'], [334.9, 684, 7, '18'],
+    [72, 660, 10, 'Beta'], [300, 660, 10, '1.0'], [72, 600, 10, 'Outside the table']];
+  const layout = await pdfLayout(pdf([page]));
+  const lines = pdfPageLines(layout, 1, 2, 710, 650, 5);
+  assert.strictEqual(lines.lines.length, 3, 'the raised exponent joins its row');
+  assert.ok(lines.proposedBoundaries.some(b => b > 110 && b < 200) && lines.proposedBoundaries.some(b => b > 220 && b < 300), JSON.stringify(lines.proposedBoundaries));
+  const spec = { page: 1, top: 690, bottom: 650, columnBoundaries: [150, 250], columnNames: ['model', 'score', 'cost'], rowTolerance: 2, joinGap: 1, raisedMarker: '^', raisedWindow: 5 };
+  const rows = pdfTableRecords(layout, spec);
+  assert.deepStrictEqual(rows.map(r => r.cells.map(c => c.text)), [['Alpha', '27.3', '3.3 x 10^18'], ['Beta', '', '1.0']]);
+  assert.strictEqual(rows[0].cells[2].raised, true);
+  const plan = CopyPlanSchema.parse({ version: 'copy-plan-1', name: 'pdf', format: 'pdf', rowsPointer: '', pdfTable: spec,
+    fields: [{ name: 'model', selector: 'model', required: true }, { name: 'score', selector: 'score', required: true }] });
+  const out = copySource(JSON.stringify(layout), plan);
+  assert.deepStrictEqual(out.records.map(r => ({ ...r })), [{ model: 'Alpha', score: '27.3' }, { model: 'Beta', score: null }]);
+  assert.strictEqual(out.provenance[0].score.pdfSha256, layout.rawSha256);
+  assert.strictEqual(out.provenance[0].score.page, 1);
+  assert.ok(out.provenance[0].score.bbox[0] >= 199 && out.provenance[0].score.itemIndices.length === 1);
+  assert.strictEqual(out.provenance[1].score.missing, true, 'an empty cell is missing, never zero');
+  assert.throws(() => copySource('{"not":"a layout"}', plan), /pdf-layout-1/);
+  assert.throws(() => pdfTableRecords(layout, { ...spec, columnNames: ['a', 'b'] }), /one column name more/);
+  assert.throws(() => CopyPlanSchema.parse({ ...plan, pdfTable: undefined }), /PDF plan/);
+  assert.throws(() => CopyPlanSchema.parse({ ...plan, pdfTable: { ...spec, columnNames: ['a', 'a', 'b'] } }), /unique/);
 });

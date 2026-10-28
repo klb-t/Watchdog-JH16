@@ -135,7 +135,7 @@ Limits: 2,000,000 source bytes, 10,000 output rows, 30 fields, 64 JSON levels an
 Model structure discovery visits at most 500 paths and the first member of each array.
 The HTTP JSON body limit is 2 MiB including expected output and encoding, so practical input
 size can be lower; oversized requests return 413. A fixture test validates that fixture,
-not all future pages. Arbitrary generated adapters and PDF tables are not implemented.
+not all future pages. Arbitrary generated adapters are not implemented.
 
 **HTML and PDF (E5.8b-1).** „Wczytaj HTML lub PDF” converts a file to the document text in code:
 HTML with parse5 7.3.0 (the WHATWG parsing algorithm; scripts, styles and templates dropped),
@@ -145,6 +145,17 @@ conversion is saved without that record. A scanned PDF without a text layer yiel
 not OCR. In the extractor, „HTML (tabele)” copies cells of one table (0-based, document order;
 colspan/rowspan expanded and marked) by header text, with each cell's source span. Limits:
 HTML 2 MB, PDF 20 MB and 500 pages, 200 tables, 10,000 rows, 60 columns.
+
+**PDF tables (E5.8b-2).** A PDF has positioned text, not tables. „PDF (tabela, odczyt jawny)” first
+turns the file into a `pdf-layout-1` document (pdf.js text fragments with positions, the PDF's
+sha256). „Pokaż wiersze tekstu” lists the lines of a page region and proposes column boundaries from
+gaps shared by most rows — a proposal to review. The plan then states the whole reading: page,
+vertical range, column boundaries, column names, row tolerance, the gap under which fragments join
+without a space, and how raised text (exponents) is marked and how far above its line it may sit.
+Each copied cell records the PDF sha256, parser, page, row baseline, fragment indices and bounding
+box. Cells that span several columns in the original split at the boundaries, visibly; nothing is
+guessed. Scanned PDFs (no text layer) are not supported. The layout document counts against the
+2 MB extractor input limit.
 
 ## Repeated reviews and interrupted work
 

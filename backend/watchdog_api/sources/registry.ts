@@ -7,6 +7,8 @@ import type { Source } from '../../../src/types';
 export interface SourceRegistryEntry {
   adapter?: SourceAdapter;
   status: 'implemented' | 'fixture' | 'planned' | 'blocked' | 'blocked-by-license/auth';
+  /** Test-only data: resolvable for tests, never listed in the product (no trace in normal use). */
+  internal?: boolean;
   capabilities: string[];
   description: string;
   /**
@@ -33,14 +35,15 @@ export class SourceRegistry {
       adapter: new FixtureSourceAdapter(),
       status: 'fixture',
       capabilities: ['result_count'],
-      description: 'Frozen JH2016 fixtures read from fixtures/jh2016/ — the E1 offline source'
+      description: 'Liczby wyników z Tabel 1 i 3 publikacji JH16 (2014), zapisane w repozytorium — do przeliczenia i kontroli obliczeń, nie nowy pomiar.'
     });
 
     this.register('offline_fixture', {
       adapter: new OfflineFixtureAdapter(),
       status: 'fixture',
+      internal: true,
       capabilities: ['result_count', 'numeric_reference_table'],
-      description: 'Frozen offline data for reproducibility testing'
+      description: 'Test-only frozen data for reproducibility tests; not listed in the product.'
     });
 
     // Formerly a 'fixture' adapter that answered every query with the same
@@ -165,8 +168,8 @@ export class SourceRegistry {
     return { status: entry.status, remediation: '' };
   }
 
-  public async listWithLiveStatus() {
-    return Promise.all(this.listSources().map(async s => ({
+  public async listWithLiveStatus(includeInternal = false) {
+    return Promise.all(this.listSources(includeInternal).map(async s => ({
       ...s,
       ...(await this.describe(s.source_id)),
     })));
@@ -185,8 +188,8 @@ export class SourceRegistry {
     return this.sources.get(id);
   }
 
-  public listSources(): Source[] {
-    return Array.from(this.sources.entries()).map(([id, entry]) => ({
+  public listSources(includeInternal = false): Source[] {
+    return Array.from(this.sources.entries()).filter(([, entry]) => includeInternal || !entry.internal).map(([id, entry]) => ({
       source_id: id,
       adapter: entry.adapter ? entry.adapter.constructor.name : 'Unknown',
       status: entry.status,

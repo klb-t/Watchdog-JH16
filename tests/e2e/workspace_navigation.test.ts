@@ -63,7 +63,7 @@ test('seven main groups retain paper run deep links, contextual tools and a cont
   await section.getByRole('link', { name: 'Źródła pomiarów', exact: true }).click();
   await page.getByRole('heading', { name: 'Źródła pomiarów', exact: true }).waitFor();
   const plannedSource = page.locator('[data-source-status="planned"]').first();
-  await plannedSource.waitFor(); assert.equal(await plannedSource.getByRole('button').isDisabled(), true);
+  await plannedSource.waitFor(); assert.equal(await plannedSource.getByRole('button').count(), 0, 'a planned source offers no action'); assert.match(await plannedSource.innerText(), /Niedostępne/);
   await main.getByRole('link', { name: 'Projekty badawcze', exact: true }).click();
   await page.waitForSelector('[data-testid="research-projects-page"]');
   await main.getByRole('link', { name: 'Baza i wyszukiwanie', exact: true }).click();
@@ -82,7 +82,7 @@ test('seven main groups retain paper run deep links, contextual tools and a cont
 
 test('E7.7: language, persistent preset, real projects and keyboard palette preserve focus and routes', async()=>{
   await page.goto(baseUrl);
-  await page.getByLabel('Język',{exact:true}).selectOption('en');
+  await page.getByLabel('Język menu',{exact:true}).selectOption('en');
   await page.getByLabel('Workspace layout',{exact:true}).selectOption('claude');
   const trigger=page.getByTestId('open-command-palette');
   await trigger.focus(); await page.keyboard.press('Control+k');

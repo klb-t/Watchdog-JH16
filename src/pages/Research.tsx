@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { automationApi as api, formClass, buttonClass, sectionClass } from '../lib/automation_client';
 import { useAccess } from '../lib/access';
+import { useLlmReadiness } from '../lib/llm_readiness';
 import type { PaperInput, SubstitutionInput } from '../../shared/research';
 import { CopyPlanBuilder, SubstitutionEditor, ExpectedRecordsForm, ExtractionResult } from '../components/ResearchControls';
 import { ExtractionDatasetForm } from '../components/ExtractionDatasetForm';
@@ -13,11 +14,11 @@ export function Research() {
 }
 
 function ResearchContent() {
-  const access = useAccess(), [params] = useSearchParams();
+  const access = useAccess(), [params] = useSearchParams(), llm = useLlmReadiness();
   const requestedDocument = params.get('document');
   const [data,setData] = useState<any>(null), [tab,setTab] = useState('papers'), [error,setError] = useState(''), [notice,setNotice] = useState(''), [busy,setBusy] = useState(false);
   const [paper,setPaper] = useState<PaperInput>({ title:'', source:'', text:'', coverage:'excerpt', language:null, geography:[] });
-  const [raw,setRaw] = useState(''), [format,setFormat] = useState<'json'|'csv'|'html'>('json'), [converted,setConverted] = useState<any>(null), [htmlTables,setHtmlTables] = useState<any[]|null>(null), [goal,setGoal] = useState(''), [plan,setPlan] = useState(''), [expected,setExpected] = useState('');
+  const [raw,setRaw] = useState(''), [format,setFormat] = useState<'json'|'csv'|'html'|'pdf'>('json'), [pdfLines,setPdfLines] = useState<any>(null), [lineQuery,setLineQuery] = useState({page:1,top:800,bottom:0,tolerance:2,raisedWindow:0}), [converted,setConverted] = useState<any>(null), [htmlTables,setHtmlTables] = useState<any[]|null>(null), [goal,setGoal] = useState(''), [plan,setPlan] = useState(''), [expected,setExpected] = useState('');
   const [selected,setSelected] = useState<any>(null), [trial,setTrial] = useState<any>(null), [substitution,setSubstitution] = useState<SubstitutionInput|null>(null), [openedSource,setOpenedSource]=useState<any>(null);
   const [trials,setTrials]=useState<any[]>([]);
   const [operationDocument,setOperationDocument]=useState<string|undefined>();
@@ -80,7 +81,7 @@ function ResearchContent() {
             {openedSource.origins?.map((o:any)=><p key={o.hash} className="text-xs break-all"><a className="underline" href={`/api/memory/receipts/${o.receiptId}/raw`}>Pobierz oryginalną odpowiedź źródła literatury</a> · wersja odkrycia: {o.discoveryHash}</p>)}
           </details>}
           {d.body.coverage!=='identifier_only' && <button className={buttonClass} onClick={()=>{setOperationDocument(d.id);setTab('operations');}}>Powiąż operację z danymi bez LLM</button>}
-          <button className={buttonClass} disabled={busy||d.body.coverage==='identifier_only'||!access.capabilities.includes('run.create')||data.assessments.some((a:any)=>a.documentId===d.id&&a.status!=='FAILED')||data.jobs.some((j:any)=>j.request.documentId===d.id&&['QUEUED','RUNNING'].includes(j.status))} onClick={()=>act(()=>api(`/api/research/papers/${d.id}/assess`,{consent:true,retryFailed:data.assessments.some((a:any)=>a.documentId===d.id&&a.status==='FAILED')}),'Ocena dodana do kolejki. Korzysta z Twojego LLM i jego limitu kosztów.')}>Oceń metodologię w ramach mojego budżetu</button>
+          <button className={buttonClass} title={llm.ready?undefined:llm.reason} disabled={busy||!llm.ready||d.body.coverage==='identifier_only'||!access.capabilities.includes('run.create')||data.assessments.some((a:any)=>a.documentId===d.id&&a.status!=='FAILED')||data.jobs.some((j:any)=>j.request.documentId===d.id&&['QUEUED','RUNNING'].includes(j.status))} onClick={()=>act(()=>api(`/api/research/papers/${d.id}/assess`,{consent:true,retryFailed:data.assessments.some((a:any)=>a.documentId===d.id&&a.status==='FAILED')}),'Ocena dodana do kolejki. Korzysta z Twojego LLM i jego limitu kosztów.')}>Oceń metodologię w ramach mojego budżetu</button>
           {data.assessments.filter((a:any)=>a.documentId===d.id).map((a:any)=><div key={a.id} className="bg-slate-50 p-3 rounded space-y-2 text-sm"><p className="font-semibold">{a.status} · {a.body?.replicability??'próba w toku lub przerwana'}</p>
             {a.body?.error && <p>Próba nie została ukończona. Możesz ponowić ją po sprawdzeniu <Link to="/setup" className="underline">konfiguracji i budżetu LLM</Link>. Poprzednia próba pozostaje w historii.</p>}
             {a.body?.assessment && <><p>Propozycja do sprawdzenia. Zgodność cytatu nie potwierdza interpretacji metody ani wykonalności replikacji.</p>
@@ -97,15 +98,22 @@ function ResearchContent() {
       </details>
     </> : <>
       <section className={sectionClass}><h2 className="font-semibold">Ekstraktor, który kopiuje wartości ze źródła</h2>
-        <p className="text-sm">JSON i CSV. Model proponuje ścieżki na podstawie struktury. Kopiowanie, test i późniejsze wykonanie odbywają się w kodzie, bez LLM.</p>
-        <label className="block">Format źródła<select aria-label="Format źródła" className={formClass} value={format} onChange={e=>setFormat(e.target.value as 'json'|'csv'|'html')}><option value="json">JSON</option><option value="csv">CSV</option><option value="html">HTML (tabele)</option></select></label>
+        {!llm.ready && <p className="text-xs text-amber-900" data-testid="llm-unavailable">Propozycje i oceny przez model są wyłączone: {llm.reason} Ręczne definiowanie kopiowania działa bez modelu.</p>}
+        <p className="text-sm">JSON, CSV, HTML i PDF. Model proponuje ścieżki na podstawie struktury. Kopiowanie, test i późniejsze wykonanie odbywają się w kodzie, bez LLM.</p>
+        <label className="block">Format źródła<select aria-label="Format źródła" className={formClass} value={format} onChange={e=>setFormat(e.target.value as 'json'|'csv'|'html'|'pdf')}><option value="json">JSON</option><option value="csv">CSV</option><option value="html">HTML (tabele)</option><option value="pdf">PDF (tabela, odczyt jawny)</option></select></label>
         <label className="block">Źródło do testu / wykonania<textarea className={formClass} rows={5} value={raw} onChange={e=>setRaw(e.target.value)}/></label>
         <input aria-label="Plik danych dla ekstraktora" className="max-w-full" type="file" accept=".json,.csv,.html,.htm,text/csv,application/json,text/html" onChange={e=>void fileText(e.target.files?.[0]??null,setRaw)}/>
+        {format==='pdf' && <div className="space-y-2 text-sm" data-testid="pdf-source"><label className="block">Plik PDF (zamieniany na układ tekstu z pozycjami, bez modelu)<input type="file" accept=".pdf,application/pdf" data-testid="pdf-layout-file" className="block max-w-full"
+            onChange={e=>{ const f=e.target.files?.[0]; if(!f) return; void act(async()=>{ const r=await fetch('/api/research/convert?format=pdf&layout=1',{method:'POST',headers:{'Content-Type':'application/pdf'},body:f}); const d=await r.json(); if(!r.ok) throw new Error(d.message??d.error??`HTTP ${r.status}`); setRaw(d.layout); setPdfLines(null); },'Układ PDF gotowy jako źródło ekstraktora.'); }}/></label>
+          {raw && <><div className="grid sm:grid-cols-5 gap-2">{(['page','top','bottom','tolerance','raisedWindow'] as const).map(k=><label key={k}>{({page:'Strona',top:'Góra y',bottom:'Dół y',tolerance:'Tolerancja',raisedWindow:'Okno podniesienia'} as any)[k]}<input type="number" step="any" className={formClass} value={(lineQuery as any)[k]} onChange={e=>setLineQuery({...lineQuery,[k]:Number(e.target.value)})}/></label>)}</div>
+            <button className="underline" data-testid="pdf-lines" onClick={()=>act(async()=>setPdfLines(await api('/api/research/pdf-lines',{raw,...lineQuery})))}>Pokaż wiersze tekstu i proponowane granice kolumn</button></>}
+          {pdfLines && <div data-testid="pdf-lines-result"><p>Proponowane granice kolumn (do sprawdzenia): <b>{pdfLines.proposedBoundaries.join(', ')||'brak'}</b> · strona {pdfLines.width}×{pdfLines.height}</p>
+            <ul className="text-xs font-mono max-h-64 overflow-auto">{pdfLines.lines.map((l:any,i:number)=><li key={i}>y={l.y}: {l.items.map((it:any)=>`${it.str}@${it.x}`).join('  ')}</li>)}</ul></div>}</div>}
         {format==='html' && raw && <button className="underline text-sm" onClick={()=>act(async()=>{ const r=await fetch('/api/research/convert?format=html',{method:'POST',headers:{'Content-Type':'text/html'},body:raw}); const d=await r.json(); if(!r.ok) throw new Error(d.message??`HTTP ${r.status}`); setHtmlTables(d.tables); })} data-testid="list-html-tables">Pokaż tabele w tym HTML</button>}
         {format==='html' && htmlTables && <ul className="text-xs" data-testid="html-tables">{htmlTables.length===0?<li>Brak tabel.</li>:htmlTables.map((t:any)=><li key={t.index}>Tabela {t.index}{t.caption?` „${t.caption}”`:''}: {t.rows} wierszy × {t.columns} kolumn; pierwszy wiersz: {t.firstRow.join(' | ')}</li>)}</ul>}
         <label className="block">Co chcesz skopiować?<input className={formClass} value={goal} onChange={e=>setGoal(e.target.value)}/></label>
-        <button className={buttonClass} disabled={busy||!raw||!goal} onClick={()=>act(async()=>{const r=await api('/api/research/extractors/propose',{raw,format,goal,consent:true});setSelected(r.extractor);setPlan(JSON.stringify(r.extractor.body.plan,null,2));},'Propozycja zapisana. Wymaga testu; wartości źródła nie zostały wysłane do modelu.')}>Zaproponuj parser przez mój LLM</button>
-        <CopyPlanBuilder key={format} format={format} busy={busy} onSave={value=>act(async()=>{const c=(await api('/api/research/extractors',value)).extractor;setSelected(c);setTrial(null);setPlan(JSON.stringify(c.body.plan,null,2));},'Mapowanie zapisane. Teraz porównaj wynik ze znanymi wartościami testowymi.')}/>
+        <button className={buttonClass} title={llm.ready?undefined:llm.reason} disabled={busy||!llm.ready||!raw||!goal} onClick={()=>act(async()=>{const r=await api('/api/research/extractors/propose',{raw,format,goal,consent:true});setSelected(r.extractor);setPlan(JSON.stringify(r.extractor.body.plan,null,2));},'Propozycja zapisana. Wymaga testu; wartości źródła nie zostały wysłane do modelu.')}>Zaproponuj parser przez mój LLM</button>
+        <CopyPlanBuilder key={format} format={format} busy={busy} pdfDefaults={pdfLines?{page:lineQuery.page,top:lineQuery.top,bottom:lineQuery.bottom,boundaries:pdfLines.proposedBoundaries}:undefined} onSave={value=>act(async()=>{const c=(await api('/api/research/extractors',value)).extractor;setSelected(c);setTrial(null);setPlan(JSON.stringify(c.body.plan,null,2));},'Mapowanie zapisane. Teraz porównaj wynik ze znanymi wartościami testowymi.')}/>
         <details><summary>Plan parsera JSON · także bez klucza LLM</summary><p className="text-xs">copy-plan-1: name, format, rowsPointer, fields [name, selector, required]. W JSON selektor jest ścieżką względem rekordu; w CSV nazwą kolumny. Plan nie dopuszcza stałych wartości ani kodu do wykonania.</p>
           <textarea aria-label="Plan parsera JSON" className={formClass} rows={8} value={plan} onChange={e=>setPlan(e.target.value)}/>
           <button className={buttonClass} disabled={busy||!plan} onClick={()=>act(async()=>{setSelected((await api('/api/research/extractors',JSON.parse(plan))).extractor);})}>Zapisz nową wersję parsera</button></details>
