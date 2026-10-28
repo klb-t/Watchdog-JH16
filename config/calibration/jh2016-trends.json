@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0",
+  "calibration_id": "jh2016-trends",
+  "version": "2026-10-25-v1",
+  "kind": "EXPLORATORY",
+  "_note": "Google Trends is relative search interest, never a result count. This calibration compares rankings only and has no verdicts. Plan recorded before the first fetch: docs/history/evidence/2026-10-25-jh16/independent/CALIBRATION_PLAN.md.",
+  "preset_ref": "config/presets/jh2016-faithful.json",
+  "provider_params": { "date": "2012-01-01 2026-10-24" },
+  "regions": [
+    { "id": "WORLD", "provider_params": {} },
+    { "id": "US", "provider_params": { "geo": "US" } },
+    { "id": "GB", "provider_params": { "geo": "GB" } },
+    { "id": "PL", "provider_params": { "geo": "PL" } }
+  ],
+  "groups": [
+    { "id": "G1", "terms": ["cocaine", "alcohol", "heroin", "cannabis", "LSD"] },
+    { "id": "G2", "terms": ["cocaine", "ecstasy", "GHB", "methadone", "butane"], "anchor": "cocaine", "scale_to": "G1" },
+    { "id": "G3", "terms": ["cocaine", "khat", "amphetamine", "methamphetamine", "ketamine"], "anchor": "cocaine", "scale_to": "G1" },
+    { "id": "G4", "terms": ["methadone", "mephedrone", "benzodiazepines", "buprenorphine", "khat"], "anchor": "methadone", "scale_to": "G2" }
+  ],
+  "chaining": "ratio of the anchor's summed interest over all periods in the target group to that in this group; a term keeps the value from the first group that contains it",
+  "windows": {
+    "may2012": ["2012-05"],
+    "jun2014": ["2014-06"],
+    "last12": ["2025-11", "2025-12", "2026-01", "2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08", "2026-09", "2026-10"]
+  },
+  "analyses": [
+    { "id": "A1", "label": "Trends June 2014 vs published Pi (Table 1)", "x": { "window": "jun2014" }, "y": { "reference": "published_pi" } },
+    { "id": "A2", "label": "change May 2012 -> June 2014: Trends vs Table 2 Pi", "x": { "ratio": ["jun2014", "may2012"] }, "y": { "ratio": ["published_pi", "published_pi_may2012"] } },
+    { "id": "A3", "label": "Trends last 12 months vs compared run Pi", "x": { "window": "last12" }, "y": { "reference": "compare_pi" } },
+    { "id": "A3b", "label": "same, without reachable-result counts", "x": { "window": "last12" }, "y": { "reference": "compare_pi" }, "exclude_compare_flag": "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS" },
+    { "id": "A4", "label": "change 2014 -> today: Trends vs Pi", "x": { "ratio": ["last12", "jun2014"] }, "y": { "ratio": ["compare_pi", "published_pi"] }, "exclude_compare_flag": "PROVIDER_COUNT_EQUALS_REACHABLE_RESULTS" }
+  ]
+}

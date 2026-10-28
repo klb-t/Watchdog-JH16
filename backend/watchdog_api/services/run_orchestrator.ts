@@ -1,4 +1,5 @@
 import { tracer } from '../utils/tracer';
+import { buildInfo } from '../utils/build_info';
 import { RunRepository } from '../db/repositories/runs';
 import { AcquisitionRepository } from '../db/repositories/acquisition';
 import { ObservationRepository, AnalysisResultRepository } from '../db/repositories/data';
@@ -7,16 +8,34 @@ import { sourceRegistry } from '../sources/registry';
 import { analyzerRegistry } from '../analytics/registry';
 import { ObjectStore } from '../storage/object_store';
 import { BetterSQLite3Database } from 'drizzle-orm/better-sqlite3';
-import { SourceRequest, QueryExpansionMode, QUERY_EXPANSION_MODES } from '../sources/base';
-import { Observation } from '../domain/observation';
+import { SourceRequest, QueryExpansionMode, QUERY_EXPANSION_MODES, RawFetchResult, baseObservationFields } from '../sources/base';
+import { Observation, MissingReason } from '../domain/observation';
 import { buildManifest, serializeManifest, ManifestFetchRecord, ManifestMissingObservation } from './manifest';
 import { detectDiscontinuities, annotateWithDiscontinuities } from './discontinuity';
 import { AnalysisResultValue } from '../domain/method_spec';
-import { canonicalHash } from '../domain/canonical';
+import { canonicalHash, canonicalizeJson } from '../domain/canonical';
+import { createHash } from 'node:crypto';
+import { evaluateJh16, loadJh16EvaluationConfig, JH16_EVALUATION_VERSION } from './jh16_evaluation';
 import { MethodSpecRepository } from '../db/repositories/method_specs';
 import { TypeScriptMethodExecutor } from '../analysis/executor';
 import type { SourceAdapter } from '../sources/base';
 import type { TypedSeries } from '../domain/method_spec';
+
+/** Fetch statuses (as adapters report them) mapped to the reason a count is missing. */
+const MISSING_REASON_FOR_STATUS: Record<string, MissingReason> = {
+  RATE_LIMIT: 'RATE_LIMITED', RATE_LIMITED: 'RATE_LIMITED', QUOTA_EXHAUSTED: 'QUOTA_EXHAUSTED',
+  CREDENTIAL_UNAVAILABLE: 'CREDENTIAL_UNAVAILABLE', FETCH_FAILED: 'FETCH_FAILED', PROVIDER_ZERO: 'PROVIDER_ZERO_RESULTS_UNRELIABLE',
+  REQUEST_LIMIT: 'REQUEST_LIMIT_SETTING',
+};
+export const JH16_EVALUATION_ROLE = 'jh16_evaluation';
+
+/** A run of the JH16 method, whichever of its two executors computed Pi and Hi. */
+export function isJh16Run(config: any): boolean {
+  return config?.method_spec_id === 'jh2016-faithful' || config?.method_id === 'jh16_faithful';
+}
+
+/** After these, no later request in the same run can succeed. */
+const STOPPING_STATUSES = new Set(['QUOTA_EXHAUSTED', 'CREDENTIAL_UNAVAILABLE', 'REQUEST_LIMIT']);
 
 /**
  * One (entity, dimension) pair to acquire. The preset decides both; the
@@ -76,6 +95,13 @@ export class RunOrchestrator {
     return plan;
   }
 
+  private missingObservation(request: SourceRequest, adapter: SourceAdapter, reason: MissingReason, raw?: RawFetchResult): Observation {
+    const provider = typeof raw?.metadata?.provider === 'string' ? raw.metadata.provider : undefined;
+    return { ...baseObservationFields(raw ?? { payload: null, status: 'NOT_FETCHED', request }, adapter.adapter_id, adapter.adapter_version),
+      ...(provider ? { providerId: provider, providerVersion: adapter.adapter_version } : {}),
+      isMissing: true, numericValue: null, missingReason: reason, qualityFlags: [] };
+  }
+
   private resolveLanguage(config: any): string {
     const language = config.language;
     if (typeof language !== 'string' || language.length === 0) {
@@ -106,6 +132,8 @@ export class RunOrchestrator {
         const config = JSON.parse(runRecord.effective_config ?? '{}');
         const runType = runRecord.run_type;
 
+        const build = buildInfo();
+        this.runRepo.setProvenance(runId, build.appVersion, build.gitCommit);
         this.runRepo.updateStatus(runId, 'VALIDATING');
         this.runRepo.updateStatus(runId, 'QUEUED');
         this.runRepo.updateStatus(runId, 'RUNNING');
@@ -127,6 +155,10 @@ export class RunOrchestrator {
 
           const plan = this.buildPlan(config);
           const observations: Observation[] = [];
+          // A provider state after which further requests cannot succeed in
+          // this run. Remaining items are recorded as not fetched instead of
+          // spending attempts against a rejected key or an empty quota.
+          let providerStopped: string | null = null;
 
           for (const item of plan) {
             const request: SourceRequest = {
@@ -140,28 +172,47 @@ export class RunOrchestrator {
               params: validated.normalized_params,
             };
 
+            if (providerStopped) {
+              observations.push(this.missingObservation(request, adapter, 'NOT_FETCHED'));
+              tracer.emit('FETCH_SKIPPED', { entityId: item.entityId, dimension: item.dimension, after: providerStopped });
+              continue;
+            }
+
             stateAtFailure = 'FETCHING';
+            const requestedAt = new Date().toISOString();
             const raw = await adapter.fetch(request);
 
             stateAtFailure = 'ARCHIVING_RAW';
             // Raw bytes are archived before normalisation, so evidence
             // survives a later stage breaking.
+            const provider = typeof raw.metadata?.provider === 'string' ? raw.metadata.provider : undefined;
             raw.raw_blob_id = (await this.acqRepo.recordFetch({
               runId,
               sourceId: config.source_id,
               payload: raw.payload,
               status: raw.status,
               adapterVersion: adapter.adapter_version,
+              providerId: provider,
               renderedQuery: item.renderedQuery,
+              requestHash: canonicalHash({ source: config.source_id, provider: provider ?? null, query: item.renderedQuery,
+                language, params: validated.normalized_params, request_url: raw.metadata?.request_url ?? null }),
               httpStatus: raw.http_status,
-              provenance: adapter.provenance ? adapter.provenance(raw) : undefined,
+              errorCode: raw.status === 'SUCCESS' ? undefined : String(raw.metadata?.detail ?? raw.status).slice(0, 300),
+              requestedAt,
+              provenance: { ...(adapter.provenance ? adapter.provenance(raw) : {}),
+                ...(raw.metadata?.provider_fields ? { provider_fields: raw.metadata.provider_fields } : {}) },
             })) ?? undefined;
 
-            if (raw.status !== 'SUCCESS') {
-              throw new Error(`Fetch failed with status: ${raw.status}`);
-            }
-
             stateAtFailure = 'NORMALIZING';
+            if (raw.status !== 'SUCCESS') {
+              // 03_JH2016_CONTRACT.md: a count that could not be obtained is
+              // missing with a reason, and the run continues so the missing
+              // substances are enumerated instead of the whole study vanishing.
+              observations.push(this.missingObservation(request, adapter, MISSING_REASON_FOR_STATUS[raw.status] ?? 'FETCH_FAILED', raw));
+              tracer.emit('FETCH_MISSING', { entityId: item.entityId, dimension: item.dimension, status: raw.status });
+              if (STOPPING_STATUSES.has(raw.status)) providerStopped = raw.status;
+              continue;
+            }
             observations.push(...adapter.normalize(raw));
           }
 
@@ -212,6 +263,10 @@ export class RunOrchestrator {
             stateAtFailure = 'PERSISTING_RESULTS';
             const analysisRunId = this.anRepo.createAnalysisRun(runId, { executorId: analyzer.analyzer_id, executorVersion: analyzer.analyzer_version });
             this.anRepo.insertMany(analysisRunId, results);
+          }
+          if (isJh16Run(config)) {
+            stateAtFailure = 'EVALUATING_JH16';
+            await this.recordJh16Evaluation(runId, obsRunId);
           }
         } else tracer.emit('ANALYSIS_NOT_REQUESTED', { runType });
 
@@ -319,6 +374,20 @@ export class RunOrchestrator {
 
     void (results as readonly AnalysisResultValue[]);
     tracer.emit('MANIFEST_FINALIZED', { runId, sha256 });
+  }
+
+  /**
+   * Stores the JH16 evaluation as an immutable analysis artifact, so the
+   * manifest hashes it like every other output and later reads never recompute.
+   */
+  private async recordJh16Evaluation(runId: string, observationsRunId: string): Promise<void> {
+    const evaluation = evaluateJh16(this.obsRepo.getByRunId(observationsRunId), this.anRepo.getByRunId(runId), loadJh16EvaluationConfig());
+    const bytes = Buffer.from(canonicalizeJson(evaluation), 'utf-8');
+    const sha256 = createHash('sha256').update(bytes).digest('hex');
+    const uri = await this.store.put(`evaluations/${runId}.json`, bytes);
+    this.artRepo.recordArtifact({ runId, kind: 'analysis', objectUri: uri, sha256, byteSize: bytes.length, mediaType: 'application/json',
+      metadata: { role: JH16_EVALUATION_ROLE, evaluation_version: JH16_EVALUATION_VERSION, observations_run_id: observationsRunId } });
+    tracer.emit('JH16_EVALUATED', { runId, complete: evaluation.complete, reading: evaluation.hypothesis_harm.reading });
   }
 
   private requirePinnedSpec(config: any) {

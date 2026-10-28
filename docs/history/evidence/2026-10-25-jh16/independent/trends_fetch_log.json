@@ -1,0 +1,172 @@
+[
+ {
+  "group": "G1",
+  "geo": "WORLD",
+  "rep": 0,
+  "file": "trends_raw/G1_WORLD_r0_8185e37801fd.json",
+  "sha256": "8185e37801fd8114d958d594043eb98017d770b3adb3b56b8d4a0d9f4aec6610",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:00:47 UTC"
+ },
+ {
+  "group": "G2",
+  "geo": "WORLD",
+  "rep": 0,
+  "file": "trends_raw/G2_WORLD_r0_6a9e8f063b2e.json",
+  "sha256": "6a9e8f063b2e75f2fbea29a79685db6c97e820b8c2e668b5971899b0556a60d3",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:00:50 UTC"
+ },
+ {
+  "group": "G3",
+  "geo": "WORLD",
+  "rep": 0,
+  "file": "trends_raw/G3_WORLD_r0_591cfeaf05d7.json",
+  "sha256": "591cfeaf05d7b7b17a8654f787d0d1a35ea07bd6d866b6507f331970dde52fdf",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:00:54 UTC"
+ },
+ {
+  "group": "G4",
+  "geo": "WORLD",
+  "rep": 0,
+  "file": "trends_raw/G4_WORLD_r0_619112f31389.json",
+  "sha256": "619112f313895591564a46ba5e67b042e7be4a26f05400ccc85a5f335b4551a4",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:00:57 UTC"
+ },
+ {
+  "group": "G1",
+  "geo": "US",
+  "rep": 0,
+  "file": "trends_raw/G1_US_r0_6da44e2a8b7c.json",
+  "sha256": "6da44e2a8b7cf4370276cceff620a1072dc6558f062b3887cfb09efc32832db5",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:01 UTC"
+ },
+ {
+  "group": "G2",
+  "geo": "US",
+  "rep": 0,
+  "file": "trends_raw/G2_US_r0_9204840cfe29.json",
+  "sha256": "9204840cfe2979043502ae878ef0c27ca67dfe7f2863af47964543a2674ef8bb",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:03 UTC"
+ },
+ {
+  "group": "G3",
+  "geo": "US",
+  "rep": 0,
+  "file": "trends_raw/G3_US_r0_aeb256e03f47.json",
+  "sha256": "aeb256e03f47138168794c4a30766cd27020783442b798c55f6fb2a45364393c",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:06 UTC"
+ },
+ {
+  "group": "G4",
+  "geo": "US",
+  "rep": 0,
+  "file": "trends_raw/G4_US_r0_bc2ff12294b8.json",
+  "sha256": "bc2ff12294b868a7341f00ca14b910f0a1ee01bf92c82be6331d32f39e1b695c",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:14 UTC"
+ },
+ {
+  "group": "G1",
+  "geo": "GB",
+  "rep": 0,
+  "file": "trends_raw/G1_GB_r0_7e4d1872373f.json",
+  "sha256": "7e4d1872373f4e62e9bdb7d605ad5f407f06a96cefb5e15f62648026de85e704",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:17 UTC"
+ },
+ {
+  "group": "G2",
+  "geo": "GB",
+  "rep": 0,
+  "file": "trends_raw/G2_GB_r0_e153e980c7d6.json",
+  "sha256": "e153e980c7d6ab5e705832f3d18af1d516b63b2b02de95cfea955aec1b42fe15",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:21 UTC"
+ },
+ {
+  "group": "G3",
+  "geo": "GB",
+  "rep": 0,
+  "file": "trends_raw/G3_GB_r0_bb93efc13733.json",
+  "sha256": "bb93efc13733bc5ed717321979d929592a6e812e910df6c3fcb25c60af326020",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:30 UTC"
+ },
+ {
+  "group": "G4",
+  "geo": "GB",
+  "rep": 0,
+  "file": "trends_raw/G4_GB_r0_4dfe087a18ff.json",
+  "sha256": "4dfe087a18ff55fd8ee95263bfb1a91197efb01ea95af61011ce7568420a22bb",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:32 UTC"
+ },
+ {
+  "group": "G1",
+  "geo": "PL",
+  "rep": 0,
+  "file": "trends_raw/G1_PL_r0_3bd7a6f87c34.json",
+  "sha256": "3bd7a6f87c34d3cf032e410e2b43884b97668210956bb19439ff89796fb29dce",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:35 UTC"
+ },
+ {
+  "group": "G2",
+  "geo": "PL",
+  "rep": 0,
+  "file": "trends_raw/G2_PL_r0_63440c519daf.json",
+  "sha256": "63440c519daf06e4c0dbcacc741d21aaa19f04fbb7cbbbc99d621c808c13de22",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:38 UTC"
+ },
+ {
+  "group": "G3",
+  "geo": "PL",
+  "rep": 0,
+  "file": "trends_raw/G3_PL_r0_24ae6efd9c2d.json",
+  "sha256": "24ae6efd9c2d8e350a6a053c9f5eef0132ca92285ac0eb0aa5cd200d7e19b2c6",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:43 UTC"
+ },
+ {
+  "group": "G4",
+  "geo": "PL",
+  "rep": 0,
+  "file": "trends_raw/G4_PL_r0_8a9b10393df8.json",
+  "sha256": "8a9b10393df8c1bb5b4c38c59a53718f23da8e06d8bc02d18db95c05e9265261",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:45 UTC"
+ },
+ {
+  "group": "G1",
+  "geo": "WORLD",
+  "rep": 1,
+  "file": "trends_raw/G1_WORLD_r1_05aa6a798a08.json",
+  "sha256": "05aa6a798a08e48d4a2c5690f677ed9b525c01d9afc998f3a73b839ee0087728",
+  "points": 178,
+  "error": null,
+  "created_at": "2026-10-25 14:01:48 UTC"
+ }
+]

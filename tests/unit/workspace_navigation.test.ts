@@ -23,7 +23,7 @@ test('workspace navigation preserves seven coherent groups while capabilities de
   const researcher = availableWorkspaceGroups(profile, capabilitiesFor(['researcher']));
   assert.equal(researcher.flatMap(group => group.views).some(view => view.href === '/responder'), false);
   const viewer = availableWorkspaceGroups(profile, capabilitiesFor(['viewer']));
-  assert.equal(viewer.find(group => group.id === 'papers')?.views[0].href, '/runs', 'group entry must lead to an available view');
+  assert.equal(viewer.find(group => group.id === 'papers')?.views[0].href, '/replications', 'group entry must lead to an available view');
   assert.deepEqual(availableWorkspaceGroups(profile, []).map(group => group.id), ['dashboard']);
 });
 

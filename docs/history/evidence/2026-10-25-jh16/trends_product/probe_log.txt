@@ -1,0 +1,6 @@
+plan: Kalibracja Google Trends (jh2016-trends 2026-10-25-v1): regiony GB, PL, US, WORLD · 16 zapytań · porównanie z przebiegiem 2e701755. EXPLORATORY: Google Trends is relative search interest, not a result count; rank comparisons only, no verdicts.
+budget: Zapytania SerpApi: plan potrzebuje co najmniej 16 (ponowienia zużywają dodatkowe); dziś użyto 281 z dziennego limitu 300.
+GB 407bcb23-f7ae-4f89-90ee-f376552f3926 COMPLETED commit=7c082f5146c0aacf2e9ba9e13c14f1dbd6112854 
+PL 54735b11-30d2-4f8c-82e0-bf6d83df60f4 COMPLETED commit=7c082f5146c0aacf2e9ba9e13c14f1dbd6112854 
+US 3f9640d8-77fc-4804-83dd-d3e1bc854138 COMPLETED commit=7c082f5146c0aacf2e9ba9e13c14f1dbd6112854 
+WORLD 19fe2736-c765-4a41-98c1-c5f303e041cf COMPLETED commit=7c082f5146c0aacf2e9ba9e13c14f1dbd6112854 

@@ -295,6 +295,28 @@ test('E1.21: the Study page drives a full fixture run from the UI', async () => 
   assert.match(runId, /^[0-9a-f-]{36}$/, 'the UI navigates to the created run');
 });
 
+test('E3.18: Replications shows the JH16 target, its runs with provenance, drill-down and the manuscript', async () => {
+  // The Study run above recomputes the paper's counts; wait for it to finish.
+  const runs = (await (await fetch(`${baseUrl}/api/runs`)).json()).runs;
+  for (const r of runs) for (let i = 0; i < 100; i++) { const s = (await (await fetch(`${baseUrl}/api/runs/${r.id}`)).json()).run.status; if (['COMPLETED', 'FAILED'].includes(s)) break; await new Promise(x => setTimeout(x, 100)); }
+  await page.goto(`${baseUrl}/replications`);
+  await page.locator('[data-testid="replication-jh2016"]').click();
+  await page.waitForSelector('[data-testid="overview-verdicts"]');
+  assert.match(await page.locator('[data-testid="overview-verdicts"]').innerText(), /Przeliczenie danych z publikacji[\s\S]*0\.816[\s\S]*reproduced/);
+  await page.click('[data-testid="tab-runs"]');
+  const first = page.locator('[data-testid="runs-table"] input[type=checkbox]').first(); await first.check();
+  await page.waitForSelector('[data-testid="compare"]');
+  await page.locator('[data-testid="compare-heroin"]').click();
+  await page.waitForSelector('[data-testid="drill"] td');
+  assert.match(await page.locator('[data-testid="drill"]').innerText(), /"heroin" "harm" OR "harmful"/);
+  await page.click('[data-testid="tab-discrepancies"]');
+  assert.ok(await page.locator('[data-testid="diagnosis-shown"]').count() >= 1);
+  await page.click('[data-testid="tab-manuscript"]');
+  await page.waitForSelector('[data-testid="ms-appendix"]');
+  const md = await (await fetch(`${baseUrl}/api/replications/jh2016/manuscript?format=md`)).text();
+  assert.match(md, /^# Replikacja:/); assert.ok(!/undefined|NaN/.test(md));
+});
+
 // -------------------------------------------------------------------------
 // E1.22 — Method review page.
 // -------------------------------------------------------------------------

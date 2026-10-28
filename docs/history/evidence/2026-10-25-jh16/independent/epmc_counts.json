@@ -1,0 +1,578 @@
+[
+ {
+  "canonical": "alcohol",
+  "label": "alcohol",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"alcohol\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 612093,
+  "sha256": "8a7254374334afee9d4b926d51482d70e48659ae816717b2ffc12e37f7cce445"
+ },
+ {
+  "canonical": "alcohol",
+  "label": "alcohol",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"alcohol\"",
+  "hitCount": 1775457,
+  "sha256": "6ce3df97342e5a6817d9958fc65477c714c62023924961c135f92ce7b3f74864"
+ },
+ {
+  "canonical": "alcohol",
+  "label": "alcohol",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"alcohol\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 55896,
+  "sha256": "d7fffafdf563223f81ac39c08a3733fb149c13bfde8f4d0e8534c15bfb82381e"
+ },
+ {
+  "canonical": "alcohol",
+  "label": "alcohol",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"alcohol\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 261928,
+  "sha256": "b81c667890a7f8539349694d2b3a83e0916e144eac47b9ce15dfe0b9056e6f9e"
+ },
+ {
+  "canonical": "amphetamine",
+  "label": "amphetamine",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"amphetamine\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 42723,
+  "sha256": "b31fa59e1c3a078ee63e661415936609654976aa556062e50726043be117cd78"
+ },
+ {
+  "canonical": "amphetamine",
+  "label": "amphetamine",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"amphetamine\"",
+  "hitCount": 77188,
+  "sha256": "561b4122dd2fe62abd4c73a57bded0dfb73881a6a69b7bf5296e12f0c5583d93"
+ },
+ {
+  "canonical": "amphetamine",
+  "label": "amphetamine",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"amphetamine\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 4384,
+  "sha256": "b724ad173a2bebabb472c3b353bcc1db26d20a0778095cef522a30cf6a6b336f"
+ },
+ {
+  "canonical": "amphetamine",
+  "label": "amphetamine",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"amphetamine\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 14552,
+  "sha256": "f6e69105bf120b243e1369e5f28ad08f52cffb28eafad36a176bfd44d882959d"
+ },
+ {
+  "canonical": "benzodiazepines",
+  "label": "benzodiazepines",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"benzodiazepines\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 45300,
+  "sha256": "5d0570492ad129ee20d10d9334ffb99c7b30059dd2b46dd66725361b128581ed"
+ },
+ {
+  "canonical": "benzodiazepines",
+  "label": "benzodiazepines",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"benzodiazepines\"",
+  "hitCount": 107496,
+  "sha256": "2fc3eed571ca0138ddfa9ee3c32330f387f4e88d34d7d91090300f137f986495"
+ },
+ {
+  "canonical": "benzodiazepines",
+  "label": "benzodiazepines",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"benzodiazepines\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 4983,
+  "sha256": "60414c7eaea4f8d57a94d421d64710211b8089672c89e08edfdde27bb94f2d65"
+ },
+ {
+  "canonical": "benzodiazepines",
+  "label": "benzodiazepines",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"benzodiazepines\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 22659,
+  "sha256": "f4dc4ddcb0c32b5618ecce48c6284f05515cc9abaec331002cbf96701447aee8"
+ },
+ {
+  "canonical": "buprenorphine",
+  "label": "buprenorphine",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"buprenorphine\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 13542,
+  "sha256": "d6ff98055973380d5ed6a8a43f2b9304b469ef9af68deba43a99960c07a6baad"
+ },
+ {
+  "canonical": "buprenorphine",
+  "label": "buprenorphine",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"buprenorphine\"",
+  "hitCount": 58985,
+  "sha256": "6864e9a133b3fe13be4a29629b68432cf45d3262a1a8842ca9d064d410a64996"
+ },
+ {
+  "canonical": "buprenorphine",
+  "label": "buprenorphine",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"buprenorphine\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 1940,
+  "sha256": "5ff99d32427ebc79af512b499aadf4a404c6db5b6bf698d3f725ab02cd7eb5b0"
+ },
+ {
+  "canonical": "buprenorphine",
+  "label": "buprenorphine",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"buprenorphine\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 13211,
+  "sha256": "1dc9aad0c777377f4cfe915ccdc1a3a9f545f25096982ffdcfcf9fce76455809"
+ },
+ {
+  "canonical": "butane",
+  "label": "butane",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"butane\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 7831,
+  "sha256": "88a201b910fe5850b11fc031e27c8620216d6ea0ef69d60edb03cf1986340380"
+ },
+ {
+  "canonical": "butane",
+  "label": "butane",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"butane\"",
+  "hitCount": 19524,
+  "sha256": "c4a6cae77fab18593f889623edc4a42f1a32038832c80a840aa2017e0e3ead3e"
+ },
+ {
+  "canonical": "butane",
+  "label": "butane",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"butane\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 260,
+  "sha256": "25138b5a8ffebcc4e4b9e764b02a3f20272f721f3db55ac41b52a801e4d4ca97"
+ },
+ {
+  "canonical": "butane",
+  "label": "butane",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"butane\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 1773,
+  "sha256": "68b219c593c88ad3ca48cb1a08833c7da2ee80906d246c440a2075efae10b764"
+ },
+ {
+  "canonical": "cannabis",
+  "label": "cannabis",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"cannabis\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 23704,
+  "sha256": "f14359e100b01739a0cddc61d9d713f61ad3d7a94f699e995beadc70cf91e148"
+ },
+ {
+  "canonical": "cannabis",
+  "label": "cannabis",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"cannabis\"",
+  "hitCount": 100228,
+  "sha256": "33eb77d9bb19fa94dfeb5d0f26308e5e2605b31fb994e5d732a952b035f7655b"
+ },
+ {
+  "canonical": "cannabis",
+  "label": "cannabis",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"cannabis\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 5390,
+  "sha256": "9d110b34463849f29fd2e00ef8748568f09ad0b39ac9098943e71f10185f0f91"
+ },
+ {
+  "canonical": "cannabis",
+  "label": "cannabis",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"cannabis\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 32043,
+  "sha256": "a145435d60659fb5e301a1844399a50bcdd3483ce287254573ac78a89329e479"
+ },
+ {
+  "canonical": "cocaine",
+  "label": "cocaine",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"cocaine\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 72130,
+  "sha256": "cb19b8393e2ff2d554285b745680f923b79988fc7ee6b08de036634945eb11b3"
+ },
+ {
+  "canonical": "cocaine",
+  "label": "cocaine",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"cocaine\"",
+  "hitCount": 150621,
+  "sha256": "5aaf1353768aee3b18192daedf1c006655ca850bc1a85d0ea6206a8b7667346a"
+ },
+ {
+  "canonical": "cocaine",
+  "label": "cocaine",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"cocaine\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 13273,
+  "sha256": "f2aa40bf3a02cd0960a65ad28feb4b0e3b991740f040502fa05f8242c753fdd4"
+ },
+ {
+  "canonical": "cocaine",
+  "label": "cocaine",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"cocaine\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 39282,
+  "sha256": "1b1095c26be7ce9639d2019e5283257fdf1fbf068bd7407b7cedf8d61e776edd"
+ },
+ {
+  "canonical": "ecstasy",
+  "label": "ecstasy",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"ecstasy\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 6753,
+  "sha256": "e5c1bd5df693851ee62de4daccbefdee7513e8ca90ac5362547decb9cefdd09e"
+ },
+ {
+  "canonical": "ecstasy",
+  "label": "ecstasy",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"ecstasy\"",
+  "hitCount": 15501,
+  "sha256": "7c810f8c1cbf05ca433350c7ccc1fffbd2f34147816ebe4c7dffa915e3865995"
+ },
+ {
+  "canonical": "ecstasy",
+  "label": "ecstasy",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"ecstasy\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 1794,
+  "sha256": "e47a8ad1d6bec5f82a03a129039bbc8ac566e80095834599c181fac8adda49ef"
+ },
+ {
+  "canonical": "ecstasy",
+  "label": "ecstasy",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"ecstasy\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 5928,
+  "sha256": "11c6326595642131f7f4233699e8e823802ddaf60daa89e70d14bddf506c2bb5"
+ },
+ {
+  "canonical": "gamma-hydroxybutyric acid",
+  "label": "GHB",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"GHB\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 3472,
+  "sha256": "e937d1a76c5fd19fc74fd755be8fd68952642fdb866b9a44fa0303ffa0fd5cbf"
+ },
+ {
+  "canonical": "gamma-hydroxybutyric acid",
+  "label": "GHB",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"GHB\"",
+  "hitCount": 8755,
+  "sha256": "866ab1d2049d92459fc5cfee672277536cf307bef173bc2a5a4e40a966a4d9bf"
+ },
+ {
+  "canonical": "gamma-hydroxybutyric acid",
+  "label": "GHB",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"GHB\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 494,
+  "sha256": "c9a9d685626913f60c7b60fe9c12480f8f30715339f4237201064358a8d69c41"
+ },
+ {
+  "canonical": "gamma-hydroxybutyric acid",
+  "label": "GHB",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"GHB\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 2078,
+  "sha256": "2dc5d09c4a4d9d6e8eba800f6e9b937a12e259aa7eea231b68a4e868fefc5647"
+ },
+ {
+  "canonical": "heroin",
+  "label": "heroin",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"heroin\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 31200,
+  "sha256": "a2e341b25e0367fa363fc4f205c47c087a5300b69333c45c069b3aea45b87247"
+ },
+ {
+  "canonical": "heroin",
+  "label": "heroin",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"heroin\"",
+  "hitCount": 66561,
+  "sha256": "7328f5a75db591c180df6fdd17fc6f2d400207e29e6cb7a756a5b674481c8aae"
+ },
+ {
+  "canonical": "heroin",
+  "label": "heroin",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"heroin\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 7877,
+  "sha256": "d13086352e6f6edc2d274708b92b753804115f4164a0b192aca6e83fc9c821da"
+ },
+ {
+  "canonical": "heroin",
+  "label": "heroin",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"heroin\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 25352,
+  "sha256": "abcf41b4f737fcd79dc80ba2603075120acf16971c60c9f2257f7353c36457f7"
+ },
+ {
+  "canonical": "ketamine",
+  "label": "ketamine",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"ketamine\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 65697,
+  "sha256": "f3e37988ac7598b6082faa93771b2b82300f300c0d3263fa9465e282515ab321"
+ },
+ {
+  "canonical": "ketamine",
+  "label": "ketamine",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"ketamine\"",
+  "hitCount": 201427,
+  "sha256": "bd2f910cbe4c29d3525277f00c53e29bf9f356e780cf8186dc7a957aeef84fc1"
+ },
+ {
+  "canonical": "ketamine",
+  "label": "ketamine",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"ketamine\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 3198,
+  "sha256": "3c7f9758adad2a93487fa96916133c3607346d59e25fa388b88831185564b2d3"
+ },
+ {
+  "canonical": "ketamine",
+  "label": "ketamine",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"ketamine\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 19065,
+  "sha256": "cb909cb3e33d12eefeac3e78d5f01790a512d7393cfccb50a859e3c163099eb5"
+ },
+ {
+  "canonical": "khat",
+  "label": "khat",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"khat\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 983,
+  "sha256": "007b33cf5e1936ae881d715e1fda6c2c5c27305af02b4549b99677c6501870dc"
+ },
+ {
+  "canonical": "khat",
+  "label": "khat",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"khat\"",
+  "hitCount": 5249,
+  "sha256": "60f3277d268f766ad28c866713780a2dc0467ea53a41a18ad20c1e41d3f37939"
+ },
+ {
+  "canonical": "khat",
+  "label": "khat",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"khat\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 177,
+  "sha256": "e39e9c1e0b44e30b0cbe73a2de1a08e3d7f05c89c98b01fe6db9cac25213ec4f"
+ },
+ {
+  "canonical": "khat",
+  "label": "khat",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"khat\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 1669,
+  "sha256": "f79ba996c740e5bcbb29c14ea5c8b60943fe695e1b5a9531ff94a40549833073"
+ },
+ {
+  "canonical": "lysergic acid diethylamide",
+  "label": "LSD",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"LSD\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 20601,
+  "sha256": "bcc673fd87e2f5f67ad09d485616ecdbdccfb5c872103ca60146b2b0cfa3b975"
+ },
+ {
+  "canonical": "lysergic acid diethylamide",
+  "label": "LSD",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"LSD\"",
+  "hitCount": 102381,
+  "sha256": "68d18c3386261992ee958e540caaf0a0fb06b41ffff94b8f7162074a960642ad"
+ },
+ {
+  "canonical": "lysergic acid diethylamide",
+  "label": "LSD",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"LSD\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 1940,
+  "sha256": "1df88efad082ed8823225c915426af60bac7c195891476d13b4a07492ac245ab"
+ },
+ {
+  "canonical": "lysergic acid diethylamide",
+  "label": "LSD",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"LSD\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 13655,
+  "sha256": "be7c6182a1d3e582c595559cdcd218877ba6bfa5be66656804021ab0ff9db687"
+ },
+ {
+  "canonical": "mephedrone",
+  "label": "mephedrone",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"mephedrone\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 434,
+  "sha256": "d1e3530909e9e718ffd82734bf9a63bc8558dc7cd81f62599cc55dc4f12619aa"
+ },
+ {
+  "canonical": "mephedrone",
+  "label": "mephedrone",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"mephedrone\"",
+  "hitCount": 2236,
+  "sha256": "119c76ebf614c063268004ea1d3c657cd0657b4c07938d69249b15bb69cab435"
+ },
+ {
+  "canonical": "mephedrone",
+  "label": "mephedrone",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"mephedrone\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 85,
+  "sha256": "1715ee022f97420e1910cc29f62c8fea31a99c70cdc1ba7017764a8d055f35b5"
+ },
+ {
+  "canonical": "mephedrone",
+  "label": "mephedrone",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"mephedrone\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 829,
+  "sha256": "e34bedc68d7aa88332ac3c2559f0535cd346d2788bc4366a99a975cb907364a1"
+ },
+ {
+  "canonical": "methadone",
+  "label": "methadone",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"methadone\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 23029,
+  "sha256": "fe3602e22befb4190c06f680a1d569db74e3229a1b02d08cd92ea5be923f5f9b"
+ },
+ {
+  "canonical": "methadone",
+  "label": "methadone",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"methadone\"",
+  "hitCount": 54795,
+  "sha256": "e011859c7dcd43a5204a4b90f494e5c8ad503e2e74591cb81fba529a728e9d5f"
+ },
+ {
+  "canonical": "methadone",
+  "label": "methadone",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"methadone\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 5361,
+  "sha256": "d7f457da3d2f1c2c12056d90f48b67172b4de8109fdd41955cd719947383bce2"
+ },
+ {
+  "canonical": "methadone",
+  "label": "methadone",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"methadone\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 18704,
+  "sha256": "6dcf59fddc0f2dd3bf2cd081456bc2a94e77a47fe2472b35369e586f23775c40"
+ },
+ {
+  "canonical": "methamphetamine",
+  "label": "methamphetamine",
+  "role": "popularity",
+  "period": "to2014",
+  "query": "\"methamphetamine\" AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 17111,
+  "sha256": "cdd9ebd97f675032de78f1dd63d2e4814cec28367e5b2b4ca99edb5be9d05955"
+ },
+ {
+  "canonical": "methamphetamine",
+  "label": "methamphetamine",
+  "role": "popularity",
+  "period": "to2026",
+  "query": "\"methamphetamine\"",
+  "hitCount": 49005,
+  "sha256": "757fa38192e4b1a57be6b4379f9ee3b293bbef3b185fbb124b62a54a5640661c"
+ },
+ {
+  "canonical": "methamphetamine",
+  "label": "methamphetamine",
+  "role": "harm",
+  "period": "to2014",
+  "query": "\"methamphetamine\" AND (\"harm\" OR \"harmful\") AND PUB_YEAR:[1900 TO 2014]",
+  "hitCount": 3716,
+  "sha256": "dc474076597b0c402ecc12fb5137c5621db42da5593df46d804ae5fa5b127d80"
+ },
+ {
+  "canonical": "methamphetamine",
+  "label": "methamphetamine",
+  "role": "harm",
+  "period": "to2026",
+  "query": "\"methamphetamine\" AND (\"harm\" OR \"harmful\")",
+  "hitCount": 16371,
+  "sha256": "26bcfa16c5b465376d90a78279e27504cfd4c4c46db2f6ea26ab41a45b0ad0a1"
+ }
+]

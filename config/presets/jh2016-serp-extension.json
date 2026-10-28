@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "preset_id": "jh2016-serp-extension",
+  "preset_version": "2026-10-25-v1",
+  "kind": "ENHANCED",
+  "label": "JH16 — rozszerzenie oparte na SERP API (nie jest replikacją)",
+  "derived_from": { "preset_id": "jh2016-faithful", "preset_version": "2016-faithful-v1" },
+  "_pre_registration": "docs/replication/JH16_2026-10-25/PROTOCOL.md, commit 3d74e15, before any 2026-10-25 data",
+  "unchanged_from_faithful": [
+    "the sixteen substances and their query_label",
+    "both query templates, quoted, without alias expansion",
+    "Pi and Hi formulas (the same reviewed MethodSpec)",
+    "reference set nutt-2010 and the pre-registered claims",
+    "provider SerpApi, engine google, safe=off, hl from the preset language"
+  ],
+  "provider_field_audit": "Every response keeps total_results (Google's estimate of all matches) beside the number of organic_results returned on the page; only total_results is Ni.",
+  "variants": [
+    { "variant_id": "repeat-1", "provider_params": {},
+      "differences": ["repeated measurement under the faithful conditions, to measure how much the provider estimate varies between requests"] },
+    { "variant_id": "repeat-2", "provider_params": {},
+      "differences": ["second repeated measurement under the faithful conditions"] },
+    { "variant_id": "gl-us", "provider_params": { "gl": "us", "google_domain": "google.com" },
+      "differences": ["explicit Google country gl=us on google.com; the faithful run leaves the region to the provider default, which the paper does not specify"] },
+    { "variant_id": "gl-pl", "provider_params": { "gl": "pl", "google_domain": "google.pl" },
+      "differences": ["explicit Google country gl=pl on google.pl; the authors worked in Poznań, so a Polish Google is a plausible original setting"] }
+  ]
+}

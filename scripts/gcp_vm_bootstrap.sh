@@ -113,7 +113,7 @@ fi
 # Unique tags also leave legacy tag-based release.env files unchanged on failure.
 image="watchdog:$(basename "$release")"
 printf '\nBuilding and testing %s. The previous service keeps running during the build.\n' "$commit"
-docker build --pull --tag "$image" --label "org.opencontainers.image.revision=$commit" "$release"
+docker build --pull --tag "$image" --label "org.opencontainers.image.revision=$commit" --build-arg "WATCHDOG_GIT_COMMIT=$commit" "$release"
 new_image=$(docker image inspect --format '{{.Id}}' "$image")
 [[ $new_image =~ ^sha256:[a-f0-9]{64}$ ]] || die 'Built image has no immutable ID.'
 

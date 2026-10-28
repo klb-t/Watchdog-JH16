@@ -193,6 +193,16 @@ test('wizard launches one owned JH16 fixture run through the approved MethodSpec
     assert.throws(() => h.plans.launch('another', plan.id, plan.hash, plan.body.baseline.methodHash), /not found/);
     const launch = h.plans.launch(h.owner, plan.id, plan.hash, plan.body.baseline.methodHash);
     assert.deepEqual(h.plans.launch(h.owner, plan.id, plan.hash, plan.body.baseline.methodHash), launch, 'repeated click does not double-launch');
+    await new Promise(r => setTimeout(r, 2));
+    const again = h.plans.prepare(h.owner, { name: 'Study fixture', settingsHash: settings.hash, baseline: 'fixture', refreshMemory: false, scanPapers: false, dailyScan: false, paperScope: 'substances' });
+    assert.notEqual(again.id, plan.id, 'preparing the same configuration again is a new measurement, not the old launch');
+    assert.equal(again.launch, null);
+    const trends = h.plans.prepare(h.owner, { name: 'Trends', settingsHash: settings.hash, baseline: 'none', refreshMemory: false, scanPapers: false, dailyScan: false, paperScope: 'substances', trendsRegions: ['PL', 'WORLD'] });
+    assert.deepEqual(trends.body.trendsCalibration.regions, ['PL', 'WORLD']);
+    assert.equal(trends.body.trendsCalibration.plannedRequests, 8, 'four term groups per region');
+    assert.equal(trends.body.trendsCalibration.comparedRunId, null, 'no live JH16 run exists to compare with');
+    assert.ok(trends.body.trendsCalibration.configs.every((c: any) => c.source_id === 'trends_interest_index' && c.method_id === 'jh16_trends_calibration'));
+    assert.throws(() => h.plans.launch(h.owner, trends.id, trends.hash, null), /SerpApi key/, 'nothing is sent without the personal key');
     const runs = new RunRepository(h.orm); let run;
     for (let n = 0; n < 100; n++) { run = runs.getRun(launch.runId); if (['COMPLETED', 'FAILED'].includes(run!.status)) break; await new Promise(r => setTimeout(r, 20)); }
     assert.equal(run!.status, 'COMPLETED', run!.error_details ?? '');

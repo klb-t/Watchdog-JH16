@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, Database, AlertTriangle } from 'lucide-react';
-import { fetchSources, submitRun } from '../lib/api';
+import { fetchSources } from '../lib/api';
 import { Source } from '../types';
 
 /**
@@ -11,7 +11,15 @@ import { Source } from '../types';
  * A source that is not `implemented` or `fixture` is rendered as unavailable
  * and cannot be selected. `05_PROVIDERS_AND_CAPABILITIES.md` requires that the
  * UI never present a plan as a capability.
+ *
+ * The run itself is the locked JH16 preset, assembled by the server from the
+ * preset and reference files; this page only chooses where the counts come
+ * from. Only sources that can measure the preset's result counts are offered.
  */
+const JH16_SOURCES: Record<string, string> = {
+  fixture_jh2016: 'Liczby z Tabel 1 i 3 publikacji (2014) — kontrola obliczeń, nie nowy pomiar.',
+  serp_result_count: 'Nowe liczby wyników Google przez klucz SerpApi tej instalacji. Osobisty klucz: Ustawienia → kreator.',
+};
 export function Study() {
   const [sources, setSources] = useState<Source[]>([]);
   const [selected, setSelected] = useState<string>('');
@@ -23,35 +31,21 @@ export function Study() {
     fetchSources()
       .then(s => {
         setSources(s);
-        const firstRunnable = s.find(x => x.status === 'implemented' || x.status === 'fixture');
+        const firstRunnable = s.find(x => (x.status === 'implemented' || x.status === 'fixture') && x.source_id in JH16_SOURCES);
         if (firstRunnable) setSelected(firstRunnable.source_id);
       })
       .catch(e => setError(String(e)));
   }, []);
 
-  const runnable = (s: Source) => s.status === 'implemented' || s.status === 'fixture';
+  const runnable = (s: Source) => (s.status === 'implemented' || s.status === 'fixture') && s.source_id in JH16_SOURCES;
 
   const start = async () => {
     setError(null);
     setSubmitting(true);
     try {
-      const res = await submitRun({
-        type: 'PIPELINE',
-        config: {
-          source_id: selected,
-          source_params: { fixture_set: 'faithful_2014-06-20', fixture_name: 'study' },
-          method_id: 'jh16_faithful',
-          // Part of the query plan's identity (D15); never defaulted server-side.
-          language: 'en',
-          query_expansion_mode: 'STRICT_CANONICAL',
-          entities: ['alcohol', 'cannabis', 'heroin'],
-          query_templates: {
-            popularity: '"{entity}"',
-            harm: '"{entity}" "harm" OR "harmful"',
-          },
-          method_params: { reference_scores: { alcohol: 72, cannabis: 20, heroin: 55 } },
-        },
-      });
+      const response = await fetch('/api/studies/jh2016', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ source_id: selected }) });
+      const res = await response.json();
+      if (!response.ok) throw new Error(res.message ?? res.error ?? `HTTP ${response.status}`);
       navigate(`/runs/${res.run_id}`);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -64,7 +58,7 @@ export function Study() {
     <div className="p-8 max-w-4xl mx-auto space-y-6" data-testid="study-page">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Study</h1>
-        <p className="text-slate-500 mt-1 text-sm">Choose a source and start a fixture run.</p>
+        <p className="text-slate-500 mt-1 text-sm">JH16 (zablokowany preset: 16 substancji, 32 zapytania). Wybierz, skąd pochodzą liczby wyników.</p>
       </div>
 
       {error && (
@@ -114,11 +108,13 @@ export function Study() {
                   </span>
                   {!available && (
                     <span className="flex items-center gap-1 text-xs text-slate-500">
-                      <AlertTriangle className="w-3 h-3" /> not available
+                      <AlertTriangle className="w-3 h-3" /> {s.source_id in JH16_SOURCES ? 'not available' : 'not a JH16 source'}
                     </span>
                   )}
                 </div>
                 <p className="text-sm text-slate-500 mt-1">{s.description}</p>
+                {s.source_id in JH16_SOURCES && <p className="text-xs text-slate-700 mt-1">{JH16_SOURCES[s.source_id]}</p>}
+                {!available && (s as any).remediation && <p className="text-xs text-amber-800 mt-1">{(s as any).remediation}</p>}
               </div>
             </label>
           );
@@ -132,7 +128,7 @@ export function Study() {
         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
       >
         <Play className="w-4 h-4" />
-        {submitting ? 'Starting…' : 'Start fixture run'}
+        {submitting ? 'Starting…' : selected === 'serp_result_count' ? 'Start JH16 (32 nowe zapytania SerpApi)' : 'Start JH16 run'}
       </button>
     </div>
   );

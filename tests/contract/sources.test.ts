@@ -2,8 +2,10 @@ import { test } from 'node:test';
 import * as assert from 'node:assert';
 import { sourceRegistry } from '../../backend/watchdog_api/sources/registry';
 import { OfflineFixtureAdapter } from '../../backend/watchdog_api/sources/offline_fixture';
-import { SerpAdapter } from '../../backend/watchdog_api/sources/serp';
 import { GoogleTrendsAdapter } from '../../backend/watchdog_api/sources/google_trends';
+import { SerpApiAdapter } from '../../backend/watchdog_api/sources/serpapi';
+import { loadSearchProviderConfig } from '../../backend/watchdog_api/sources/search_providers';
+import { SecretStore, EnvSecretProvider } from '../../backend/watchdog_api/secrets';
 import { NotImplementedError } from '../../backend/watchdog_api/utils/errors';
 import {
   SourceAdapter, SourceRequest, InvalidSourceRequestError
@@ -24,7 +26,7 @@ function request(over: Partial<SourceRequest> = {}): SourceRequest {
 
 test('SourceRegistry - Retrieves executable adapters and blocks planned', () => {
   assert.ok(sourceRegistry.getAdapter('offline_fixture') instanceof OfflineFixtureAdapter);
-  assert.ok(sourceRegistry.getAdapter('serp_generic') instanceof SerpAdapter);
+  assert.throws(() => sourceRegistry.getAdapter('serp_generic'), NotImplementedError);
   assert.throws(() => sourceRegistry.getAdapter('trends_interest_index'), NotImplementedError);
 
   assert.throws(() => sourceRegistry.getAdapter('chemical_reference'), NotImplementedError);
@@ -46,29 +48,17 @@ test('OfflineFixtureAdapter - normalizes to a domain observation', async () => {
   assert.strictEqual(obs[0].isMissing === false && obs[0].numericValue, 1000000);
 });
 
-test('SerpAdapter - validation and normalization', async () => {
-  const adapter = new SerpAdapter();
-  const valid = adapter.validate_params({});
-  assert.strictEqual(valid.valid, true);
-  assert.strictEqual(valid.normalized_params.safe_search, false);
-
-  const raw = await adapter.fetch(request({ renderedQuery: '"alcohol" "harm" OR "harmful"', dimension: 'harm' }));
-  const obs = adapter.normalize(raw);
-
-  assert.strictEqual(obs.length, 1);
-  assert.strictEqual(obs[0].queryRole, 'harm');
-  assert.strictEqual(obs[0].isMissing === false && obs[0].numericValue, 42000);
-  assert.strictEqual(obs[0].queryText, '"alcohol" "harm" OR "harmful"');
-  // Estimated counts must be flagged as such.
-  assert.ok(obs[0].qualityFlags.includes('PROVIDER_ESTIMATE'));
-});
-
-test('GoogleTrendsAdapter - unimplemented transport never invents a measurement', async () => {
-  const adapter = new GoogleTrendsAdapter();
+test('GoogleTrendsAdapter - without a credential nothing is sent and every term is missing, never invented', async () => {
+  const adapter = new GoogleTrendsAdapter(undefined, null, async () => { throw new Error('must not be called'); });
   assert.deepStrictEqual(adapter.capabilities(), ['interest_over_time']);
-
-  await assert.rejects(() => adapter.fetch(request({ entityId: 'cannabis', renderedQuery: 'cannabis', dimension: 'interest_index' })), NotImplementedError);
-  assert.strictEqual(sourceRegistry.getEntry('trends_interest_index')?.status, 'planned');
+  assert.strictEqual(adapter.validate_params({ provider_params: {} }).valid, false, 'the measurement window is never defaulted');
+  const params = adapter.validate_params({ provider_params: { date: '2012-01-01 2014-06-30' } }).normalized_params;
+  const raw = await adapter.fetch(request({ entityId: 'G1', renderedQuery: 'cannabis,heroin', dimension: 'interest:G1', params }));
+  assert.strictEqual(raw.status, 'CREDENTIAL_UNAVAILABLE');
+  const obs = adapter.normalize(raw);
+  assert.deepStrictEqual(obs.map(o => [o.queryText, o.isMissing]), [['cannabis', true], ['heroin', true]]);
+  assert.ok(obs.every(o => o.qualityFlags.includes('RELATIVE_INTEREST_NOT_A_COUNT')));
+  assert.notStrictEqual(sourceRegistry.getEntry('trends_interest_index')?.status, 'implemented', 'availability is derived from a credential, never a stored flag');
 });
 
 // -------------------------------------------------------------------------
@@ -83,14 +73,23 @@ function paramsFor(id: string): Record<string, any> {
   return {};
 }
 
-function executableAdapters(): [string, SourceAdapter][] {
-  return sourceRegistry.listSources()
+/** The live SERP adapter, credentialled and with a recorded-shape response instead of the network. */
+async function stubbedSerpApi(): Promise<SourceAdapter> {
+  const config = loadSearchProviderConfig().config.providers.find(p => p.provider_key === 'serpapi')!;
+  const credential = await new SecretStore([new EnvSecretProvider({ SERPAPI_API_KEY: 'neutrality-test-key-0123' })]).resolve(config.secret_ref);
+  const body = JSON.stringify({ search_metadata: { id: 'srp-n', status: 'Success' }, search_information: { total_results: 1234567 } });
+  return new SerpApiAdapter(config, credential, async () => ({ ok: true, status: 200, text: async () => body }), async () => {});
+}
+
+async function executableAdapters(): Promise<[string, SourceAdapter][]> {
+  return [...sourceRegistry.listSources()
     .filter(s => s.status === 'implemented' || s.status === 'fixture')
-    .map(s => [s.source_id, sourceRegistry.getAdapter(s.source_id)] as [string, SourceAdapter]);
+    .map(s => [s.source_id, sourceRegistry.getAdapter(s.source_id)] as [string, SourceAdapter]),
+    ['serp_result_count', await stubbedSerpApi()]];
 }
 
 test('Adapter neutrality: dimension comes from the request, never from query text', async () => {
-  const adapters = executableAdapters();
+  const adapters = await executableAdapters();
   assert.ok(adapters.length >= 3, 'expected several executable adapters to exercise');
 
   for (const [id, adapter] of adapters) {
@@ -115,7 +114,7 @@ test('Adapter neutrality: dimension comes from the request, never from query tex
 });
 
 test('Adapter neutrality: a missing dimension fails validation, never falls back to text', async () => {
-  for (const [id, adapter] of executableAdapters()) {
+  for (const [id, adapter] of await executableAdapters()) {
     const broken = { ...request({ params: paramsFor(id) }), dimension: '' } as SourceRequest;
 
     await assert.rejects(
@@ -135,7 +134,7 @@ test('Adapter neutrality: a missing dimension fails validation, never falls back
 });
 
 test('Query-plan identity: language and expansion mode are required, never defaulted (D15)', async () => {
-  for (const [id, adapter] of executableAdapters()) {
+  for (const [id, adapter] of await executableAdapters()) {
     const noLanguage = { ...request({ params: paramsFor(id) }), language: '' } as SourceRequest;
     await assert.rejects(async () => adapter.fetch(noLanguage), InvalidSourceRequestError,
       `${id}: a query plan with no language must be rejected, not assumed`);

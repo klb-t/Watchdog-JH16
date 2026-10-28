@@ -21,6 +21,14 @@ Claude owns integration and the global ledger. Completed historical task paragra
 
 E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a separate gate. Existing RESEARCH/CLINICAL/OPERATIONS packages are integrated, not awaiting claims.
 
+## Completed live JH16 acceptance before the owner's test — 2026-10-25
+
+- [x] **E3.18 — JH16 on live SerpApi data through the product.** Pre-registered protocol (`3d74e15`), historical recomputation, faithful and ENHANCED (repeats, gl=us, gl=pl) runs via the wizard, diagnostic decomposition of the OR query, independent verification. Nine product defects found by the run and fixed: fabricated `serp_generic` source, Study page with 3 hard-coded substances, abort on one failed fetch, hypothesis evaluation missing from the product, export without counts, unstamped code version, plans exceeding the request limit, re-prepared plans returning old launches, phone layout. Test: `tests/integration/jh16_live_readiness.test.ts`; full gate **622/622**. Results and diagnosis: `../replication/JH16_2026-10-25/REPORT.md`. Scientific outcome: computation reproduces the paper; new Google counts do not (Pearson −0.23…−0.10), because Google's compound-query estimates violate set logic — hypothesis unresolved by this method.
+
+- [x] **E3.19 — Google Trends as a source; observations with a period.** `trends_interest_index` via SerpApi (`config/providers/trends_interest.json`), `observedAt` stored in `observed_at`, exploratory `jh16_trends_calibration` (`config/calibration/jh2016-trends.json`) launched from the wizard and checked by `scripts/verify_trends_calibration.py`. Real runs found and fixed: SQLite variable limit on long series, near-tie ranking, panel crash on recomputation. Test: `tests/integration/jh16_trends_calibration.test.ts`; gate **626/626**. Results: `../replication/JH16_2026-10-25/CALIBRATION.md`.
+
+- [x] **E5.12 — Replications in the app and the manuscript.** `/replications` lists every target in `config/replication/`; a target with a dossier gets overview/verdicts, runs with provenance, filters, comparison, drill-down to queries and raw responses, discrepancies, calibration, criteria, and a manuscript assembled deterministically from stored results (Markdown/HTML, sources per block). Tests: `tests/integration/replication_dossier.test.ts`, browser test in `tests/e2e/ui_flow.test.ts`; gate **629/629**. Language-model editing of the manuscript is not implemented.
+
 ## Completed resumed acceptance — 2026-10-02
 
 - [x] **E4.7 follow-up:** explicit OIDC fails closed without its audience; legacy-managed addresses cannot receive conflicting new grants through invitations/applications. Recheck inside all three grant transactions rejects intervening legacy writes without consuming evidence.
@@ -685,6 +693,7 @@ just because the schema for all three already exists.
 
 ## Blocked — current evidence only
 
+- **Owner's live test on the VM (2026-10-25):** the tested image is deployed in local-owner mode behind the coordinator's Caddy; accounts/SMTP/OAuth and a full restore drill on that VM remain unverified. Instructions: `../replication/JH16_2026-10-25/OWNER_TEST.md`.
 - **Actual owner VM deployment and restore activation:** no validated VM session, SMTP/OAuth installation configuration or real HTTPS acceptance is recorded. Code integration and local tests can proceed. No live resources were changed by this audit.
 - **E3.5 / PostgreSQL:** a validated transactional database arrangement is required before Cloud Run support. GCS blob storage does not validate SQLite on GCS FUSE. PostgreSQL remains planned; build and test the adapter before provisioning.
 Browser runtime recovery is complete: initial 525/552 + 27 launch failures became 552/552 on the original base, then 604/604 on the combined implementation. No test was disabled. The failed attempt remains recorded in the experiment history.

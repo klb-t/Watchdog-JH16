@@ -1,6 +1,5 @@
 import { SourceAdapter } from './base';
 import { OfflineFixtureAdapter } from './offline_fixture';
-import { SerpAdapter } from './serp';
 import { FixtureSourceAdapter } from './fixture_source';
 import { NotImplementedError } from '../utils/errors';
 import type { Source } from '../../../src/types';
@@ -44,11 +43,14 @@ export class SourceRegistry {
       description: 'Frozen offline data for reproducibility testing'
     });
 
+    // Formerly a 'fixture' adapter that answered every query with the same
+    // invented count (42000) and could be selected for a run. A constant that
+    // ignores its input is a fabricated measurement, so it is no longer
+    // executable. Live counts come from serp_result_count.
     this.register('serp_generic', {
-      adapter: new SerpAdapter(),
-      status: 'fixture',
+      status: 'planned',
       capabilities: ['result_count'],
-      description: 'SERP API fixture (mocked until real HTTP fetch is implemented)'
+      description: 'Generic SERP adapter: not implemented. Live search result counts are the serp_result_count source.'
     });
 
     // Named for what is measured, not for who serves it: 'google_trends' is a
@@ -56,9 +58,22 @@ export class SourceRegistry {
     // as a source id is exactly the Source/Provider conflation D5 forbids, and
     // a test in tests/contract/providers.test.ts now fails if it reappears.
     this.register('trends_interest_index', {
-      status: 'planned',
+      status: 'blocked',
       capabilities: ['interest_over_time'],
-      description: 'Google Trends interest-over-time index: real transport not implemented. A distinct signal from SERP result counts — not a substitute for JH16 FAITHFUL Ni/Ni_harm.'
+      description: 'Google Trends interest over time via SerpApi. Relative search interest, a distinct signal from SERP result counts — never a substitute for JH16 FAITHFUL Ni/Ni_harm.',
+      resolve: async () => {
+        const { GoogleTrendsAdapter, loadTrendsProviderConfig } = await import('./google_trends');
+        const { secretStore } = await import('../secrets');
+        const provider = loadTrendsProviderConfig().provider;
+        return new GoogleTrendsAdapter(provider, await secretStore.resolve(provider.secret_ref));
+      },
+      liveStatus: async () => {
+        const { loadTrendsProviderConfig } = await import('./google_trends');
+        const { secretStore } = await import('../secrets');
+        const provider = loadTrendsProviderConfig().provider, cred = await secretStore.resolve(provider.secret_ref);
+        return cred.isPresent ? { status: 'implemented' as const, remediation: '' }
+          : { status: 'blocked' as const, remediation: `Set ${provider.secret_ref} for the installation, or use a personal SerpApi key in the settings wizard.` };
+      },
     });
 
     // Honest status for planned/blocked sources

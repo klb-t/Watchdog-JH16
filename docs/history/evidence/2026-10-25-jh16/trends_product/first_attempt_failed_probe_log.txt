@@ -1,0 +1,6 @@
+plan: Kalibracja Google Trends (jh2016-trends 2026-10-25-v1): regiony GB, PL, US, WORLD · 16 zapytań · porównanie z przebiegiem 2e701755. EXPLORATORY: Google Trends is relative search interest, not a result count; rank comparisons only, no verdicts.
+budget: Zapytania SerpApi: plan potrzebuje co najmniej 16 (ponowienia zużywają dodatkowe); dziś użyto 265 z dziennego limitu 300.
+GB db58f683-660c-40cf-a37b-475be954bd75 FAILED commit=58ee80c9ef46bbac0de0a504fdd69dfceb0f23a6 too many SQL variables
+PL cda6f194-9710-4609-91d6-10781d601bc7 FAILED commit=58ee80c9ef46bbac0de0a504fdd69dfceb0f23a6 too many SQL variables
+US e4b5a5d3-feee-4002-b991-f031aa34b674 FAILED commit=58ee80c9ef46bbac0de0a504fdd69dfceb0f23a6 too many SQL variables
+WORLD 3e247989-e052-4f4d-b1da-290afdd8896e FAILED commit=58ee80c9ef46bbac0de0a504fdd69dfceb0f23a6 too many SQL variables

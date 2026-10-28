@@ -30,6 +30,7 @@
       { "label": "Tekst, metodologia i ekstrakcja", "href": "/research", "anyCapability": ["method.propose"] },
       { "label": "Nowe badanie", "href": "/study", "anyCapability": ["run.create"] },
       { "label": "Przegląd metody", "href": "/method", "anyCapability": ["method.propose"] },
+      { "label": "Replikacje", "href": "/replications", "anyCapability": ["run.view"] },
       { "label": "Uruchomienia i wyniki", "href": "/runs", "anyCapability": ["run.view"] }
     ] },
     { "id": "database", "label": "Baza i wyszukiwanie", "icon": "search", "views": [

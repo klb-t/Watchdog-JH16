@@ -18,6 +18,8 @@
         "safe": "off",
         "no_cache": true
       },
+      "run_params_allowed": ["gl", "google_domain", "location"],
+      "_why_run_params_allowed": "A declared method variant (e.g. an explicit Google country) is a run setting, so it must reach the request and be recorded; every other provider parameter stays fixed here so a run cannot silently change the instrument.",
       "pacing": {
         "min_interval_ms": 1200,
         "max_attempts": 3,
