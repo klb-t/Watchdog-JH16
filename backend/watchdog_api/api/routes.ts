@@ -28,6 +28,8 @@ import { sameOriginMutation } from './automation_routes';
 import { jh16PlanItems, readJh16Preset } from '../services/jh16_plan';
 import { listReplicationTargets, collectRuns, buildManuscript, manuscriptMarkdown, manuscriptHtml, primaryRuns } from '../services/replication_dossier';
 import { buildInfo } from '../utils/build_info';
+import { editManuscript, applyEdition, readEditingSettings } from '../services/manuscript_editing';
+import { ManuscriptEditionRepository } from '../db/repositories/manuscript_editions';
 
 export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService) {
 const apiRouter = Router();
@@ -39,6 +41,7 @@ const anRepo = new AnalysisResultRepository(db);
 const artRepo = new ArtifactRepository(db);
 const acqRepo = new AcquisitionRepository(db, store);
 const specRepo = new MethodSpecRepository(db);
+const editions = new ManuscriptEditionRepository(db);
 
 // All descendants, including exports and provider narratives, share the owner gate.
 apiRouter.use('/runs/:id', (req, res, next) => {
@@ -150,13 +153,36 @@ apiRouter.get('/replications/:id/manuscript', requireCapability('run.view'), asy
   try {
     const c = await replicationContext(req.params.id, req.principal!.id);
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
-    const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit);
+    const base = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit);
+    // An edition applies only to the exact results it was made from.
+    const edition = req.query.edition ? editions.get(req.principal!.id, String(req.query.edition)) : null;
+    if (req.query.edition && !edition) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (edition && edition.manuscript_input_hash !== base.input_hash)
+      return res.status(409).json({ error: 'stale_edition', message: 'The stored results changed since this edition; make a new one.' });
+    const m = edition ? applyEdition(base, edition) : base;
     const format = String(req.query.format ?? 'json');
     res.setHeader('Cache-Control', 'no-store');
     if (format === 'md') { res.setHeader('Content-Type', 'text/markdown; charset=utf-8'); res.setHeader('Content-Disposition', `attachment; filename="replication-${req.params.id}.md"`); return res.send(manuscriptMarkdown(m)); }
     if (format === 'html') { res.setHeader('Content-Type', 'text/html; charset=utf-8'); res.setHeader('Content-Disposition', `attachment; filename="replication-${req.params.id}.html"`); return res.send(manuscriptHtml(m)); }
-    res.json({ manuscript: m });
+    res.json({ manuscript: m, edition, editions: editions.list(req.principal!.id, req.params.id),
+      editing: (({ settings }) => ({ enabled: settings.enabled === true, disabled_reason: settings._why_disabled ?? null, model: `${settings.provider.kind}:${settings.provider.model}`, location: settings.provider.location,
+        daily_budget_usd: settings.daily_budget_usd, spent_today_usd: editions.spentToday(req.principal!.id), pricing: settings.pricing_usd_per_million_tokens }))(readEditingSettings()) });
   } catch (e) { next(e); }
+});
+
+apiRouter.post('/replications/:id/manuscript/edit', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
+  try {
+    z.object({ consent: z.literal(true) }).strict().parse(req.body);
+    const c = await replicationContext(req.params.id, req.principal!.id);
+    if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
+    const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit);
+    const edition = await editManuscript(m, { spentTodayUsd: editions.spentToday(req.principal!.id) });
+    editions.save(req.principal!.id, edition);
+    audit.append(req.principal!.id, 'manuscript.edit', 'replication', req.params.id, tracer.getContext()?.request_id ?? 'manuscript-edit',
+      { edition: edition.id, model: edition.model, cost_usd: edition.estimated_cost_usd });
+    res.status(201).json({ edition: { id: edition.id, model: edition.model, usage: edition.usage, estimated_cost_usd: edition.estimated_cost_usd,
+      edited: edition.units.filter(u => u.status === 'edited').length, rejected: edition.units.filter(u => u.status === 'rejected').length } });
+  } catch (e: any) { if (e?.status) return res.status(e.status).json({ error: 'editing_failed', message: e.message }); next(e); }
 });
 
 apiRouter.get('/runs/:id', requireCapability('run.view'), (req, res) => {
