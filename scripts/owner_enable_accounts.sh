@@ -2,6 +2,7 @@
 # Turn on WatchDog's own sign-in (Google) and drop Caddy basic auth for watchdog.*, keeping all existing data.
 #
 #   sudo bash enable_accounts.sh --email YOUR_GOOGLE_EMAIL [--contact ADDRESS] [--dry-run]
+#   --contact is the public contact shown on /privacy; it is left as it is unless given (your sign-in address is never used for it).
 #
 # Requires the deployed image to contain the access package (watchdog-admin claim-local-user).
 # Steps, each checked before the next:
@@ -23,7 +24,6 @@ BACKUPS=${BACKUPS:-/var/backups/watchdog}
 while [ $# -gt 0 ]; do case "$1" in --email) EMAIL=${2,,}; shift 2;; --contact) CONTACT=$2; shift 2;; --dry-run) DRY=1; shift;; *) sed -n '2,15p' "$0"; exit 2;; esac; done
 die() { echo "STOP: $*" >&2; exit 1; }
 [[ $EMAIL =~ ^[^[:space:]@]+@[^[:space:]@]+\.[^[:space:]@]+$ ]] || die 'Give --email with the Google address you will sign in with.'
-CONTACT=${CONTACT:-$EMAIL}
 ((EUID == 0)) || die 'Run with sudo.'
 for f in "$APP_ENV" "$ALIASES" "$CADDYFILE"; do [ -f "$f" ] || die "$f not found."; done
 docker exec "$CONTAINER" node dist/watchdog-admin.cjs help 2>/dev/null | grep -q claim-local-user \
@@ -41,7 +41,8 @@ for l in lines:
 grants = json.loads(env.get('WATCHDOG_GRANTS') or '{}'); grants[email] = 'developer'
 want = {'WATCHDOG_AUTH': 'accounts', 'WATCHDOG_GRANTS': json.dumps(grants, separators=(',', ':')), 'GOOGLE_OAUTH_CLIENT_ID': client,
         'SESSION_SIGNING_KEY': env.get('SESSION_SIGNING_KEY') or secrets.token_hex(32), 'WATCHDOG_PUBLIC_URL': url, 'WATCHDOG_TRUST_PROXY': 'loopback,uniquelocal',
-        'WATCHDOG_OPERATOR_CONTACT': contact, 'WATCHDOG_DATA_LOCATION': location}
+        'WATCHDOG_DATA_LOCATION': location}
+if contact: want['WATCHDOG_OPERATOR_CONTACT'] = contact
 for k, v in want.items():
     if '\n' in v or '\r' in v: sys.exit(f'{k} cannot contain a newline')
 kept = [l for l in lines if not any(l.startswith(k + '=') for k in [*want, 'WATCHDOG_ALLOW_OPEN_INSTANCE'])]
@@ -50,6 +51,7 @@ mask = lambda k, v: v if k not in ('SESSION_SIGNING_KEY',) and 'SMTP' not in k a
 for k, v in want.items(): print(f'  {k}: {mask(k, env.get(k, "")) if k in env else "(unset)"} -> {mask(k, v)}')
 if 'WATCHDOG_ALLOW_OPEN_INSTANCE' in env: print('  WATCHDOG_ALLOW_OPEN_INSTANCE: removed')
 PY
+[ -n "$CONTACT" ] || echo "  WATCHDOG_OPERATOR_CONTACT: not set by this script (/privacy says no contact is given; add --contact ADDRESS to publish one)"
 echo "Caddy: $ALIASES watchdog basic -> none; $CADDYFILE regenerated"
 if [ "$DRY" = 1 ]; then echo 'Dry run: nothing changed.'; exit 0; fi
 

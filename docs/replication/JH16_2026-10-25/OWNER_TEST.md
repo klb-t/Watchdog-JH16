@@ -193,7 +193,7 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
 - **Do potwierdzenia:** rzeczywista cena Twoich dodatkowych kredytów SerpApi. Automat przyjmuje 0,014 € za zapytanie i limit 1 € dziennie.
 
 **A6. Logowanie Google, zaproszenia i udostępnianie (po wdrożeniu i `owner_enable_accounts.sh`)**
-- **Włączenie:** `sudo bash scripts/owner_enable_accounts.sh --email TWÓJ_ADRES_GOOGLE` (najpierw z `--dry-run`).
+- **Włączenie:** `sudo bash scripts/owner_enable_accounts.sh --email TWÓJ_ADRES_GOOGLE` (najpierw z `--dry-run`). Kontakt na stronie /privacy podajesz osobno: `--contact ADRES`. Bez tej opcji pole zostaje puste, a skrypt nie użyje Twojego adresu logowania.
   - Skrypt zrobi kopię, ustawi tryb kont z Google i przypisze Twój adres do dotychczasowego konta (Twoje przebiegi i klucz SerpApi zostają).
   - Potem zdejmie hasło Caddy z watchdog.* i wypisze polecenie cofnięcia.
 - **Logowanie:** „Zaloguj przez Google”. Trafiasz na swoje dane.
