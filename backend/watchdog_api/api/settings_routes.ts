@@ -47,7 +47,7 @@ export function buildSettingsRouter(repo: SettingsRepository, service: Assistant
     const { favoriteGoals: _previous, ...rest } = current.value;
     res.json({ settings: repo.save(req.principal!.id, ids.length ? { ...rest, favoriteGoals: ids } : rest, current.hash, service.profile.defaults) });
   }));
-  router.post('/credentials', requireCapability('provider.view'), route((req, res) => {
+  router.post('/credentials', requireCapability('credential.store'), route((req, res) => {
     if (typeof req.body?.apiKey === 'string') registerSecretValue(req.body.apiKey);
     const body = z.object({ provider: z.string(), apiKey: z.string(), consent: z.literal(true) }).strict().parse(req.body);
     if (body.provider !== 'serpapi' && !service.providers.providers.some(p => p.id === body.provider)) throw new AutomationError('Unknown provider profile');

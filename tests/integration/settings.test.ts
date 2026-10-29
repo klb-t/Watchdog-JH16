@@ -280,3 +280,23 @@ test('favourite goals: pinned per account in settings order, only goals from the
     owner = 'another'; assert.equal((await (await fetch(base)).json()).settings.value.favoriteGoals, undefined, 'favourites belong to one account');
   } finally { if (server) await new Promise<void>(r => server!.close(() => r())); h.close(); }
 });
+
+test('storing a personal API key is above viewer: a viewer is refused by the server, a researcher may store, anyone may remove their own key', async () => {
+  const h = harness(); let server: ReturnType<express.Express['listen']> | undefined;
+  try {
+    const service = new AssistantService(h.repo, h.vault, h.profile, async () => { throw new Error('No network in this test'); });
+    const app = express(); let roles = ['viewer']; app.use(express.json()); app.use(traceMiddleware);
+    app.use((req, _res, next) => { req.principal = { id: h.owner, roles, email: null, identityProvenance: 'test' }; next(); });
+    app.use('/api/settings', buildSettingsRouter(h.repo, service, h.vault, h.plans)); app.use(errorHandler);
+    server = app.listen(0, '127.0.0.1'); await new Promise<void>(r => server!.once('listening', r));
+    const base = `http://127.0.0.1:${(server.address() as any).port}/api/settings`;
+    const post = (p: string, body: unknown) => fetch(base + p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const key = { provider: 'serpapi', apiKey: 'sk-test-' + 'x'.repeat(24), consent: true };
+    assert.equal((await post('/credentials', key)).status, 403, 'a viewer cannot store a key');
+    assert.equal(h.vault.status(h.owner, 'serpapi').status, 'absent');
+    roles = ['researcher']; assert.equal((await post('/credentials', key)).status, 200);
+    assert.equal(h.vault.status(h.owner, 'serpapi').status, 'present');
+    roles = ['viewer']; assert.equal((await post('/credentials/remove', { provider: 'serpapi' })).status, 200, 'removing one\'s own key stays allowed');
+    assert.equal(h.vault.status(h.owner, 'serpapi').status, 'absent');
+  } finally { if (server) await new Promise<void>(r => server!.close(() => r())); h.close(); }
+});

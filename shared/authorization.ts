@@ -1,17 +1,21 @@
+import policy from '../config/access/policy.json';
+
 /** MVP role bundles, not an ordinal hierarchy. See decision D18. */
-export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-5';
+export const AUTHORIZATION_PROFILE_VERSION = 'mvp-capabilities-6';
 export const CAPABILITIES = [
   'run.view', 'run.create', 'method.propose', 'method.approve',
   'narrative.approve', 'export.download', 'provider.view', 'provider.approve',
   'diagnostics.view', 'diagnostics.bundle', 'principal.view', 'principal.manage', 'principal.invite', 'access.admit',
   'workbench.view', 'workbench.analyze', 'dataset.import', 'dataset.review', 'dataset.approve', 'figure.manage',
-  'responder.lookup', 'evidence.review', 'evidence.import', 'evidence.approve',
+  'responder.lookup', 'evidence.review', 'evidence.import', 'evidence.approve', 'credential.store',
 ] as const;
 export type Capability = typeof CAPABILITIES[number];
 
-const viewer: readonly Capability[] = ['run.view', 'export.download', 'provider.view'];
+// Storing an API key in a personal vault is above viewer unless the access policy says otherwise.
+const viewerBase: readonly Capability[] = ['run.view', 'export.download', 'provider.view'];
+const viewer: readonly Capability[] = policy.credentials.viewerMayStore ? [...viewerBase, 'credential.store'] : viewerBase;
 const researcher: readonly Capability[] = [
-  ...viewer, 'run.create', 'method.propose', 'method.approve', 'narrative.approve',
+  ...viewerBase, 'credential.store', 'run.create', 'method.propose', 'method.approve', 'narrative.approve',
   'evidence.review', 'evidence.import', 'evidence.approve',
   'workbench.view', 'workbench.analyze', 'dataset.import', 'dataset.review', 'dataset.approve', 'figure.manage',
 ];

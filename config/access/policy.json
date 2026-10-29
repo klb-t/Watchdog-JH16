@@ -32,5 +32,9 @@
       "count": 10,
       "windowMs": 3600000
     }
+  },
+  "credentials": {
+    "_note": "Storing an API key in a personal vault is above viewer (owner's rule of 2026-10-29: above viewer needs an administrator's approval). Set viewerMayStore to true only to let every viewer store keys.",
+    "viewerMayStore": false
   }
 }

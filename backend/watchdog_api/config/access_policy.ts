@@ -12,6 +12,7 @@ export const AccessPolicySchema=z.object({
   signin:z.object({codeLength:z.literal(8),codeMinutes:positive.max(10),maxAttempts:positive.max(5),codesPerHour:positive.max(5),operatorLinkMinutes:positive.max(15)}).strict(),
   sessionTtlSeconds:positive.max(43200),
   rateLimits:z.object({signin:rate,preview:rate,application:rate}).strict(),
+  credentials:z.object({_note:z.string().optional(),viewerMayStore:z.boolean()}).strict(),
 }).strict().refine(p=>p.invitation.defaultExpiryDays<=p.invitation.maxExpiryDays&&p.application.reasonMin<=p.application.reasonMax,'Inconsistent policy bounds');
 export const accessPolicy=AccessPolicySchema.parse(raw);
 export const accessPolicyHash=hashConfig(accessPolicy);

@@ -40,13 +40,14 @@ export function ConfigurationWizard() {
       {access.capabilities.includes('provider.view') && <>
         <h3 className="font-semibold">Własne połączenia</h3>
         <div className="grid sm:grid-cols-2 gap-3"><label>Dostawca klucza<select className={formClass} value={keyProvider} onChange={e => { setKeyProvider(e.target.value); setKey(''); }}>{data.providers.providers.map((p: any) => <option key={p.id} value={p.id}>{p.label} · LLM</option>)}<option value="serpapi">SerpApi · liczby wyników Google</option></select></label>
-          <label>Klucz API<input type="password" className={formClass} value={key} autoComplete="off" spellCheck={false} onChange={e => setKey(e.target.value)} data-testid="personal-api-key" /></label></div>
+          {access.capabilities.includes('credential.store') ? <label>Klucz API<input type="password" className={formClass} value={key} autoComplete="off" spellCheck={false} onChange={e => setKey(e.target.value)} data-testid="personal-api-key" /></label>
+            : <p className="text-sm text-slate-600" data-testid="credential-store-needs-role">Zapis własnego klucza wymaga roli powyżej viewer. Poproś administratora o jej nadanie.</p>}</div>
         <p className="text-xs text-slate-600">Klucz trafia do szyfrowanego magazynu Twojego konta na serwerze. Nie jest zapisywany w ustawieniach ani w przeglądarce. Zapis nie sprawdza jeszcze akceptacji klucza przez dostawcę.</p>
-        <button className={buttonClass} disabled={busy || !key} onClick={() => { const submitted = key; setKey(''); void act(async () => {
+        {access.capabilities.includes('credential.store') && <button className={buttonClass} disabled={busy || !key} onClick={() => { const submitted = key; setKey(''); void act(async () => {
           await api('/api/settings/credentials', { provider: keyProvider, apiKey: submitted, consent: true });
           if (keyProvider !== 'serpapi') await save({ ...value, assistant: { ...value.assistant, enabled: true, provider: keyProvider, modelPins: {} } });
           await load();
-        }, 'Klucz zapisany. Pole zostało wyczyszczone.'); }}>{keyProvider !== 'serpapi' ? 'Zapisz klucz i włącz LLM w ramach budżetu' : 'Zapisz klucz SerpApi'}</button>
+        }, 'Klucz zapisany. Pole zostało wyczyszczone.'); }}>{keyProvider !== 'serpapi' ? 'Zapisz klucz i włącz LLM w ramach budżetu' : 'Zapisz klucz SerpApi'}</button>}
         <div className="flex flex-wrap gap-3 text-sm">{data.credentials.filter((c: any) => c.status !== 'absent' || c.provider === keyProvider).map((c: any) => <div key={c.provider}><b>{c.provider}</b>: {c.status === 'present' ? 'zapisany' : c.status === 'invalid' ? 'nie można odczytać' : 'brak klucza'} {c.status !== 'absent' && <button className="underline" disabled={busy} onClick={() => act(async () => { await api('/api/settings/credentials/remove', { provider: c.provider }); await load(); }, 'Klucz usunięty.')}>Usuń</button>}</div>)}</div>
       </>}
       <h3 className="font-semibold pt-2">Koszt pracy modeli</h3>
