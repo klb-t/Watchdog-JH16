@@ -1,0 +1,28 @@
+{
+  "version": "ui-runs-1",
+  "_note": "Runs list (/runs). Placeholders in {braces}.",
+  "languages": {
+    "pl": {
+      "title": "Uruchomienia",
+      "intro": "Historia wszystkich zadań pobierania danych i analiz",
+      "col_id": "ID uruchomienia",
+      "col_type": "Typ",
+      "col_status": "Status",
+      "col_created": "Utworzono",
+      "col_action": "Akcja",
+      "empty": "Nie znaleziono uruchomień.",
+      "view_details": "Szczegóły"
+    },
+    "en": {
+      "title": "Execution Runs",
+      "intro": "History of all data acquisition and analysis jobs",
+      "col_id": "Run ID",
+      "col_type": "Type",
+      "col_status": "Status",
+      "col_created": "Created",
+      "col_action": "Action",
+      "empty": "No runs found.",
+      "view_details": "View Details"
+    }
+  }
+}

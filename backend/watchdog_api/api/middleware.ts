@@ -87,6 +87,8 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
     return res.status(500).json({
       error: 'STORAGE_ERROR',
       message: `Stored data could not be read on the server. Reference for the operator: ${String(res.getHeader('x-trace-id') ?? 'none')}.`,
+      // The interface translates by code; the reference travels as a parameter of the label.
+      params: { trace_id: String(res.getHeader('x-trace-id') ?? 'none') },
     });
   }
 

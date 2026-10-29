@@ -58,10 +58,14 @@ export class ReplicationMeasurements {
     const blocked = tooLong ? `The query for '${tooLong.dimension}' has ${tooLong.renderedQuery.length} characters; the provider accepts at most ${maxChars}. The preset needs a new version.`
       : !keyPresent ? `Add your personal ${p.credential} key in Settings → wizard, step 1.`
       : p.requests > left ? `This measurement needs ${p.requests} request(s); your daily limit (${limit}) leaves ${left} today.` : null;
+    // The same reason as a stable code with its values, so the interface can say it in the reader's language.
+    const blocked_reason = tooLong ? { code: 'query_too_long', params: { dimension: tooLong.dimension, length: tooLong.renderedQuery.length, max: maxChars! } }
+      : !keyPresent ? { code: 'key_missing', params: { credential: p.credential } }
+      : p.requests > left ? { code: 'daily_limit', params: { requests: p.requests, limit, left } } : null;
     return { preset_id: p.preset.preset_id, preset_version: p.preset.preset_version, preset_hash: p.preset_hash, label: p.preset.label,
       source_id: p.source_id, provider_params: p.provider_params, queries: p.preset.queries.map((q: any) => ({ dimension: q.dimension, terms: q.terms })),
       method_id: p.method_id, comparisons: p.preset.comparisons.map((c: any) => ({ id: c.id, label: c.label, statistic: c.statistic, reference_ref: c.reference_ref, reference_hash: p.reference_hashes[c.id] })),
-      requests: p.requests, daily_limit: limit, left_today: left, key_present: keyPresent, blocked };
+      requests: p.requests, daily_limit: limit, left_today: left, key_present: keyPresent, blocked, blocked_reason };
   }
 
   launch(owner: string, t: ReplicationTarget, body: { expectedPresetHash: string; dataRole: 'exploratory' | 'confirmation'; protocolId?: string }) {
