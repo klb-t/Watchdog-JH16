@@ -1,0 +1,25 @@
+owner me: local-user <owner-email> developer
+owner runs: 7
+viewer rule: Through a link anyone may hold, a person gets viewer at once; the higher roles you choose go to Requests for approval.
+bearer link created: true
+share link: http://127.0.0.1:8199/share#t=…
+join bearer: This link lets you in by itself, without signing in. You enter as a guest with the viewer role; an administrator decides on the other roles (researcher). Valid until 5 Nov 2026, 12:55. |  | Enter
+join overflow px: 0
+guest banner: You have the viewer role. The roles researcher are waiting for an administrator's approval.
+guest me: bearer-78c1dba1-315ea3fa@bearer.invalid okaziciel 78c1dba1 roles=viewer
+guest runs before share: 0
+share redeemed: Masz dostęp do odczytu 6 przebiegów. Właściciel może go w każdej chwili wycofać.
+share overflow px: 0
+guest shared badges: 6; share panel shown: 0
+replications runs overflow px: 0
+application card: okaziciel 78c1dba1 bearer-78c1dba1-315ea3fa@bearer.invalid |  | Wejście przez link na okaziciela 78c1dba1: role powyżej viewer wymagają zatwierdzenia administratora. |  | 29 Oct 2026, 12:55 · came in through a bearer link · invitation 78c1dba1 |  | results viewer | researcher | responder | instituti
+after approval: banner=0 roles=viewer,researcher
+stranger landed on: /apply
+stranger /api/runs: 403
+apply overflow px: 0
+privacy: contact true, location true, chars 1658
+privacy overflow px: 0
+terms: contact true, location false, chars 779
+terms overflow px: 0
+login legal links: 1
+guest after revoke: /api/runs 401
