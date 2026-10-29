@@ -56,9 +56,13 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
 - [x] **E5.7b-5 — JH16 gaps before showing it to Prof. Hoffmann (2026-10-29).**
   - **List for the owner:** `../replication/JH16_2026-10-25/GAPS_FOR_HOFFMANN_2026-10-29.md` (each gap with evidence and status).
   - **Fixed:** dossier links pinned to a commit that holds every linked file (the old branch lacked the 28.10 evidence); a recomputation no longer shows the source run's fetches as its own; verdict words defined and criteria in Polish; later incomplete new measurements named in the summary; runs-kind evidence lists the complete runs stored here or says there are none (manuscript, „Rozbieżności”, graph); calibration cells carry n and the compared run; flags in words; decimal commas; run states in Polish; a missing Pearson is no longer drawn as 0 in the run comparison; the dossier's „one day” limitation corrected.
-  - **Prepared, not decided:** `scripts/jh16_estimator_consistency.py` and `../history/evidence/2026-10-29-jh16-gaps/` (set-logic consistency of 2014 vs stored 2026 counts) for the owner's decision on the „probable” cause.
+  - **Probable cause „Zmiana sposobu szacowania przez Google”:** `scripts/jh16_estimator_consistency.py` and `../history/evidence/2026-10-29-jh16-gaps/` check whether the counts are coherent (Ni_harm ≤ Ni).
+    - Result: the 2014 paper counts break it in 0 of 16 pairs; the 2026 runs in 35 of 143.
+    - The coordinator chose option C on 2026-10-29: the status stays probable, presented as a hypothesis consistent with the data, never as shown, and the file is attached as its evidence (dossier v3, links at `a4c9a63`).
+    - The graph on the audit copy now has 0 gaps.
+  - **SerpApi balance:** the coordinator read account.json at 2026-10-29T22:01:05Z (`serpapi_balance_2026-10-29.json`). Earlier balances in the reports are marked unverified.
   - **Tests:** `tests/integration/replication_dossier.test.ts`, `tests/integration/jh16_estimator_consistency.test.ts`.
-  - **Not done:** gl=us/gl=pl on the owner's installation (160 paid credits); the owner's answer on the probable cause.
+  - **Not done (left to the owner):** gl=us/gl=pl on the owner's installation (160 paid credits); Polish version of the request report.
 
 - [x] **E5.13 — Request from a pasted text (first case: Prof. Hoffmann's quote).**
   - **Path:** `/requests`, `services/text_requests.ts`, migration 026.

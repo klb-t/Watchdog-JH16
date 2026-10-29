@@ -14,7 +14,7 @@ import { useAccess } from '../lib/access';
 const fmt = (v: number | null | undefined, d = 3) => v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(d);
 const fmtP = (v: number | null | undefined) => v === null || v === undefined ? '—' : v < 0.001 ? Number(v).toExponential(2) : Number(v).toFixed(4);
 const READING: Record<string, string> = { supports: 'wspierają', contradicts: 'przeczą', undecided: 'nie rozstrzygają', not_computable: 'nie da się ocenić' };
-const STATUS: Record<string, [string, string]> = { shown: ['wykazana', 'bg-red-50 text-red-900 border-red-200'], probable: ['prawdopodobna', 'bg-amber-50 text-amber-900 border-amber-200'],
+const STATUS: Record<string, [string, string]> = { shown: ['wykazana', 'bg-red-50 text-red-900 border-red-200'], probable: ['prawdopodobna (hipoteza zgodna z danymi, nie wykazana)', 'bg-amber-50 text-amber-900 border-amber-200'],
   unresolved: ['nierozstrzygnięta', 'bg-slate-100 text-slate-800 border-slate-300'], excluded: ['wykluczona', 'bg-emerald-50 text-emerald-900 border-emerald-200'] };
 const RUN_STATE: Record<string, string> = { COMPLETED: 'ukończony', FAILED: 'nieudany', RUNNING: 'w toku', QUEUED: 'w kolejce', CANCELLED: 'anulowany' };
 const card = 'bg-white rounded-xl border border-slate-200 p-4 sm:p-5 space-y-3 min-w-0 overflow-hidden';

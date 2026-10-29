@@ -116,7 +116,7 @@ export interface Manuscript { title: string; target_id: string; dossier_version:
 const n3 = (v: number | null | undefined) => v === null || v === undefined ? '—' : v.toFixed(3).replace('.', ',');
 const p3 = (v: number | null | undefined) => v === null || v === undefined ? '—' : v < 0.001 ? v.toExponential(2).replace('.', ',') : v.toFixed(4).replace('.', ',');
 const READING: Record<string, string> = { supports: 'dane wspierają hipotezę', contradicts: 'dane przeczą hipotezie', undecided: 'dane nie rozstrzygają', not_computable: 'nie da się ocenić (niekompletne dane)' };
-const STATUS: Record<string, string> = { shown: 'wykazana', probable: 'prawdopodobna', unresolved: 'nierozstrzygnięta', excluded: 'wykluczona' };
+const STATUS: Record<string, string> = { shown: 'wykazana', probable: 'prawdopodobna (hipoteza zgodna z danymi, nie wykazana)', unresolved: 'nierozstrzygnięta', excluded: 'wykluczona' };
 const short = (id: string) => id.slice(0, 8);
 const n2 = (v: number | null | undefined) => v === null || v === undefined ? null : v.toFixed(2).replace('.', ',');
 const dec = (v: number | null | undefined) => v === null || v === undefined ? null : String(v).replace('.', ',');

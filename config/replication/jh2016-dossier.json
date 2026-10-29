@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0",
   "target_id": "jh2016",
-  "dossier_version": "2026-10-29-v2",
+  "dossier_version": "2026-10-29-v3",
   "_note": "What a reader needs beside the numbers: hypotheses, method, deviations and the diagnosis of discrepancies, each with its evidence. Numbers are never written here; the page and the manuscript take them from stored runs. Pre-registered claims stay in jh2016.json, interpretation rules in jh2016-interpretation.json.",
   "protocol": {
     "document": "docs/replication/JH16_2026-10-25/PROTOCOL.md",
     "registered_in_commit": "3d74e15"
   },
-  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/0743eb9393ef4ca935b690d4e1f81df62c4118d7/",
+  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/a4c9a6307e725121a14e771e89a2d621737a36e1/",
   "runs_match": {
     "preset_ids": [
       "jh2016-faithful",
@@ -141,9 +141,15 @@
     },
     {
       "cause": "Zmiana sposobu szacowania przez Google od 2014 r.",
-      "test": "brak dostępu do dawnego narzędzia; dane 2014 są wewnętrznie spójne",
+      "test": "hipoteza zgodna z danymi, nie wykazana: deterministyczne sprawdzenie spójności liczb (Ni_harm ≤ Ni, bo zapytanie szkodliwości jest podzbiorem zapytania o nazwę) w liczbach publikacji z 2014 r. i w zapisanych przebiegach z 2026 r. (scripts/jh16_estimator_consistency.py); dawnego narzędzia nie da się uruchomić, więc nie wiadomo, kiedy i jak szacowanie się zmieniło",
       "status": "probable",
-      "evidence": []
+      "status_decided": "koordynator, 2026-10-29: zostaje „prawdopodobna” z dowodem spójności liczb (opcja C w GAPS_FOR_HOFFMANN_2026-10-29.md)",
+      "evidence": [
+        {
+          "label": "spójność liczb 2014 wobec 2026 (zgodna z hipotezą)",
+          "path": "docs/history/evidence/2026-10-29-jh16-gaps/estimator_consistency.json"
+        }
+      ]
     },
     {
       "cause": "Zmiana badanego zjawiska (treści w sieci)",

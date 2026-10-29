@@ -103,6 +103,8 @@ SerpApi: 18 kredytów (skrypt) i 32 (produkt: 16 w nieudanej pierwszej próbie, 
 Google Trends. Łącznie dziś 250 darmowych zapytań i 112 dokupionych kredytów; zostało 2661.
 Europe PMC i Internet Archive są bezpłatne. OpenRouter i Google Cloud nie były używane.
 
+*Uwaga 2026-10-29:* stan „zostało 2661” jest **niezweryfikowany**. Bieżący, sprawdzony stan: `docs/history/evidence/2026-10-29-jh16-gaps/serpapi_balance_2026-10-29.json` (2026-10-29T22:01:05Z).
+
 ## Granice
 
 - Kalibracja jest eksploracyjna i nie daje werdyktów. Trends nigdy nie zastępuje Ni ani Hi.

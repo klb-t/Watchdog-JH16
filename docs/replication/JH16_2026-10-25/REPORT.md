@@ -67,6 +67,10 @@ Przyspieszenie: plan uruchamia wierny przebieg i cztery warianty jednocześnie (
 zapytań); przeliczenia utrwalonych danych nie pobierają niczego ponownie. Zużycie SerpApi według konta: 312
 zapytań (cały darmowy limit 250 na październik i 62 z dokupionych kredytów; zostało 2711).
 
+*Uwaga 2026-10-29:* stan „zostało 2711” jest **niezweryfikowany** (brak zapisanego odczytu konta z 25.10).
+Bieżący, sprawdzony stan: `docs/history/evidence/2026-10-29-jh16-gaps/serpapi_balance_2026-10-29.json`
+(account.json, 2026-10-29T22:01:05Z: 2530 dodatkowych kredytów, łącznie 2521 wyszukiwań do wykorzystania).
+
 ## 3. Replikacja a rozszerzenie SERP API
 
 | | Wariant wierny (FAITHFUL) | Rozszerzenie (ENHANCED, `config/presets/jh2016-serp-extension.json`) |
@@ -174,6 +178,17 @@ nierozstrzygnięta tą metodą.**
 | Ograniczenia metody pierwotnej | przeliczenie danych z 2014 r. | Pearson zależy od alkoholu (bez niego 0,72); Spearman 0,56; n = 16; sami autorzy opisują anomalię „cat” OR „dog” | **wykazane** |
 | Test istotności w publikacji | przeliczenie p | 0,000115 zamiast 0,000143 | **nierozstrzygnięta** (rodzaj testu nieznany) |
 | Zmienność w ciągu dni | jeden dzień pomiaru | — | **nierozstrzygnięta** |
+
+*Uzupełnienie 2026-10-29 — „Zmiana algorytmu szacowania Google od 2014 r.”* To **hipoteza zgodna z
+danymi, nie wynik wykazany**. Status zostaje „prawdopodobna”; koordynator wybrał 2026-10-29 opcję C
+z [GAPS_FOR_HOFFMANN_2026-10-29.md](GAPS_FOR_HOFFMANN_2026-10-29.md).
+- **Metoda.** Deterministyczne sprawdzenie spójności liczb, skrypt `scripts/jh16_estimator_consistency.py`.
+  - Zapytanie szkodliwości jest podzbiorem zapytania o nazwę, więc prawdziwa liczba stron spełnia Ni_harm ≤ Ni.
+  - Naruszenie tej zasady wynika ze sposobu liczenia, nie z treści sieci.
+- **Wynik.** Plik `docs/history/evidence/2026-10-29-jh16-gaps/estimator_consistency.json`.
+  - Liczby z 2014 r.: zasada złamana w **0 z 16** par.
+  - 9 zapisanych przebiegów z 2026 r.: zasada złamana w **35 ze 143** par.
+- **Czego to nie pokazuje.** Ten wynik nie mówi, kiedy ani jak Google zmienił szacowanie. Dane z 2014 r. to jedna migawka z tabel publikacji.
 
 ## 6. Poprawki i ponowne sprawdzenie
 

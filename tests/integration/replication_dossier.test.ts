@@ -152,6 +152,25 @@ test('diagnosis evidence by kind of run counts only complete runs; the evidence 
   assert.ok(!regionGap([variant('bbbbbbbb-full', true)]), 'a complete variant run closes the gap');
 });
 
+test('the probable cause "Zmiana sposobu szacowania" names its consistency evidence and stays labelled a hypothesis (decision 2026-10-29, option C)', async () => {
+  const { buildEvidenceGraph } = await import('../../backend/watchdog_api/services/evidence_graph');
+  const target = listReplicationTargets().find(t => t.target.target_id === 'jh2016')!;
+  const cause = target.dossier.diagnosis.find((d: any) => d.cause.startsWith('Zmiana sposobu szacowania'));
+  assert.strictEqual(cause.status, 'probable', 'the status is not raised to shown');
+  assert.deepStrictEqual(cause.evidence.map((e: any) => e.path), ['docs/history/evidence/2026-10-29-jh16-gaps/estimator_consistency.json']);
+  const m = buildManuscript(target, [], paper, null, '2026-10-29T00:00:00Z');
+  const g = buildEvidenceGraph(target, [], [], m);
+  assert.ok(!g.gaps.some(x => x.problem.includes("'probable'")), 'the probable cause is no longer a gap');
+  const node = g.nodes.find(n => n.kind === 'cause' && n.label === cause.cause)!;
+  assert.match(node.detail!, /hipoteza zgodna z danymi, nie wykazana/);
+  assert.ok(g.edges.some(e => e.from === 'file:docs/history/evidence/2026-10-29-jh16-gaps/estimator_consistency.json' && e.to === node.id && e.kind === 'supports'));
+  const row = (m.sections.find(s => s.id === 'discrepancies')!.blocks[0] as any).rows.find((r: any[]) => r[0] === cause.cause);
+  assert.strictEqual(row[2], 'prawdopodobna (hipoteza zgodna z danymi, nie wykazana)');
+  assert.ok(!/wykazana\b(?!\))/.test(row[1].replace('nie wykazana', '')), 'the test text never calls it shown');
+  const summary = m.sections.find(s => s.id === 'summary')!.blocks.map(b => (b as any).text ?? '').join(' ');
+  assert.ok(!summary.includes('Zmiana sposobu szacowania'), 'a probable cause is not listed among the shown causes');
+});
+
 test('every file a dossier links to exists, and links point at one pinned commit', () => {
   for (const t of listReplicationTargets().filter(x => x.dossier)) {
     assert.match(t.dossier.evidence_base_url, /^https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/blob\/[0-9a-f]{40}\/$/, `${t.target.target_id}: base URL is a commit, not a branch that can move or vanish`);

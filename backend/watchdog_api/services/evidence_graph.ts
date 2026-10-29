@@ -63,7 +63,9 @@ export function buildEvidenceGraph(t: ReplicationTarget, runs: readonly RunSumma
     for (const r of runs) if (r.evaluation) edge({ from: f, to: `run:${r.run_id}`, kind: 'uses' });
   }
   for (const d of dossier.diagnosis ?? []) {
-    const id = add({ id: `cause:${canonicalHash(d.cause).slice(0, 12)}`, kind: 'cause', label: d.cause, detail: d.status });
+    const id = add({ id: `cause:${canonicalHash(d.cause).slice(0, 12)}`, kind: 'cause', label: d.cause,
+      // A probable cause stays a hypothesis even when it names evidence; the label says so.
+      detail: d.status === 'probable' ? 'probable — hipoteza zgodna z danymi, nie wykazana' : d.status });
     const files = (d.evidence ?? []).filter((e: any) => e.path), kinds = (d.evidence ?? []).filter((e: any) => e.runs_kind).map((e: any) => e.runs_kind);
     for (const e of files) edge({ from: file(e.path, e.label), to: id, kind: 'supports' });
     // Only finished, complete runs of the named kind count as evidence; a partial run shows nothing.

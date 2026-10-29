@@ -17,6 +17,8 @@ Każdy nowy pomiar (32 zapytania) zużywa kredyty SerpApi z Twojego konta: darmo
 października jest już wyczerpany, zostało ok. 2645 dokupionych kredytów (stan konta 25.10, 16:30 UTC). Plan z rozszerzeniem
 zużywa 160.
 
+*Uwaga 2026-10-29:* stan „ok. 2645” jest **niezweryfikowany**. Bieżący, sprawdzony stan konta (account.json, 2026-10-29T22:01:05Z): 2530 dodatkowych kredytów, łącznie 2521 wyszukiwań do wykorzystania — `docs/history/evidence/2026-10-29-jh16-gaps/serpapi_balance_2026-10-29.json`.
+
 ## Wdrożenie (2026-10-25 12:52 UTC)
 
 Obraz `watchdog:e33504edfdb71050d9cc6c3da2435562ffee0494` (id `sha256:f7b51bd2…c647`) zbudowano

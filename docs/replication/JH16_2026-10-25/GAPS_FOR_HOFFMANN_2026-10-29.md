@@ -11,7 +11,7 @@ zapytań (SerpApi, Vertex).
   `docs/history/evidence/2026-10-28-request-hoffmann/` i `fixtures/jh2016/paper_reported.json`.
 - Podgląd projektu pracy i grafu dowodów po poprawkach zbudowałem z **kopii** bazy audytowej
   `~/wt/jh16_audit_2026-10-25/inst_e57b2`. Kopia leżała w katalogu tymczasowym i była czytana bez
-  serwera. Wynik: 29 przebiegów, 89 węzłów, 1 luka.
+  serwera. Wynik przed decyzją: 29 przebiegów, 89 węzłów, 1 luka. Po decyzji (opcja C): 90 węzłów, 0 luk.
 - Danych syntetycznych użyto tylko w testach. Testy budują przebiegi z liczb publikacji przez
   zapisany kształt odpowiedzi SerpApi oraz ręcznie zbudowane podsumowania przebiegów. Testy:
   `tests/integration/replication_dossier.test.ts` i `tests/integration/jh16_estimator_consistency.test.ts`.
@@ -22,7 +22,7 @@ zapytań (SerpApi, Vertex).
 
 | # | Luka | Status |
 |---|---|---|
-| 1 | Przyczyna „Zmiana sposobu szacowania przez Google od 2014 r.” ma status „prawdopodobna” bez dowodu | **decyzja właściciela**; dowód deterministyczny przygotowany |
+| 1 | Przyczyna „Zmiana sposobu szacowania przez Google od 2014 r.” ma status „prawdopodobna” bez dowodu | **zamknięte decyzją koordynatora 2026-10-29 (opcja C)**: zostaje „prawdopodobna”, jako hipoteza zgodna z danymi, z dowodem spójności liczb |
 | 2 | „Region Google” na Twojej instalacji: brak przebiegów gl=us i gl=pl | **wymaga płatnych kredytów** (160) |
 | 3 | Linki do dowodów prowadziły do gałęzi bez jednego z plików | **poprawione w tej gałęzi** |
 | 4 | Aneks pracy przypisywał przeliczeniu 32 pobrania, choć nic nie pobrało | **poprawione w tej gałęzi** |
@@ -35,11 +35,26 @@ zapytań (SerpApi, Vertex).
 | 11 | Angielskie słowa i kody w polskiej pracy i interfejsie | **częściowo poprawione**; reszta poniżej |
 | 12 | Raport zlecenia z tekstu jest po angielsku i ma uwagi wewnętrzne | **decyzja właściciela**; nie przetłumaczono |
 | 13 | Brak jako 0 na wykresie porównania przebiegów | **poprawione w tej gałęzi** |
-| 14 | Stany konta SerpApi w raportach bez zapisanego źródła | **nie da się zamknąć z repozytorium** |
+| 14 | Stany konta SerpApi w raportach bez zapisanego źródła | **bieżący stan sprawdzony** (2026-10-29T22:01:05Z); dawne stany oznaczone „niezweryfikowane” |
 | 15 | Ścieżki plików w pobranej pracy (Markdown/HTML) nie są linkami | **nie zamknięte** (drobne) |
 | — | Liczby w REPORT, CALIBRATION, raporcie zlecenia wobec zapisanych danych | **sprawdzone: zgodne** |
 
-## 1. Przyczyna „prawdopodobna” bez dowodu — decyzja właściciela
+## 1. Przyczyna „prawdopodobna” bez dowodu — decyzja koordynatora: opcja C
+
+**Decyzja (koordynator, 2026-10-29): opcja C.**
+- Status zostaje „prawdopodobna”.
+- Przyczyna jest przedstawiana jako **hipoteza zgodna z danymi, nie jako wynik**. Nigdy nie pada słowo „wykazana”.
+- Dowodem w dossier jest plik `docs/history/evidence/2026-10-29-jh16-gaps/estimator_consistency.json`.
+  - Zmiana: `config/replication/jh2016-dossier.json`, wersja `2026-10-29-v3`, z polem `status_decided`.
+  - Linki wskazują commit `a4c9a6307e725121a14e771e89a2d621737a36e1`, który zawiera ten plik.
+- Graf „Dowody” pokazuje teraz krawędź „popiera” od pliku do przyczyny i nie zgłasza już luki.
+- Węzeł przyczyny ma opis „hipoteza zgodna z danymi, nie wykazana”. Ten sam napis jest w „Rozbieżnościach” i w projekcie pracy.
+- Test: „the probable cause "Zmiana sposobu szacowania" names its consistency evidence and stays labelled a hypothesis”.
+
+**Wynik w skrócie.** Zasada Ni_harm ≤ Ni jest złamana w **0 z 16** par z 2014 r. i w **35 ze 143** par z 2026 r. Szczegóły i ograniczenia są niżej.
+
+Opcje A, B, D i E zostają opisane poniżej jako alternatywy. Właściciel może do nich wrócić.
+
 
 **Dowód luki.**
 - Wpis w dossier: `config/replication/jh2016-dossier.json`, wiersz 143.
@@ -90,15 +105,13 @@ zapytań (SerpApi, Vertex).
 - Dane z 2014 r. to jedna migawka, przepisana z tabel publikacji. Nie wiadomo, czy autorzy powtarzali lub odsiewali zapytania.
 - Plik pokazuje, że **dzisiejszy** licznik jest niespójny, a liczby z 2014 r. tej niespójności nie mają. Nie pokazuje, **kiedy ani jak** Google zmienił sposób szacowania.
 
-**Pytanie do Ciebie.** Jaki status i jaki dowód ma mieć przyczyna „Zmiana sposobu szacowania przez Google od 2014 r.”?
+**Pytanie, na które odpowiedział koordynator:** jaki status i jaki dowód ma mieć ta przyczyna?
 
-Opcje:
+Opcje (wybrano C):
 - **A.** Zostawić „prawdopodobna” bez dowodu. Luka zostaje widoczna w „Dowodach” i ją zobaczy.
 - **B.** Zmienić na „nierozstrzygnięta”. Luka znika, bo ten status z definicji nie wymaga dowodu. Wniosek staje się ostrożniejszy.
 - **C.** Zostawić „prawdopodobna” i wskazać jako dowód przygotowany plik `estimator_consistency.json`, z opisem jego ograniczeń.
-  - Wymaga to zmiany `evidence` w dossier.
-  - Wymaga też przestawienia `evidence_base_url` na commit, który zawiera ten plik, czyli dopiero po scaleniu tej gałęzi.
-  - Zrobię to po Twojej decyzji.
+  - **Wybrana 2026-10-29 przez koordynatora i wykonana w tej gałęzi.**
 - **D.** Wskazać zewnętrzne źródło, np. dokumentację Google o zmianie szacunków, jeśli takie znasz.
 - **E.** Zapytać autora o surowe liczby z 20.06.2014. Pytanie „original_data” jest już w dossier. To jedyna droga, która mogłaby oddzielić zmianę narzędzia od zmiany zjawiska.
 
@@ -132,12 +145,13 @@ Na kopii audytowej wynik to: `051f9b60, 4e8ff376, d935c03b, f4c9d3d5`.
 - Gałąź jest też ruchoma: może zniknąć albo się zmienić.
 
 **Poprawka.**
-- Oba dossier (JH16 i CR2014) wskazują teraz commit `0743eb9393ef4ca935b690d4e1f81df62c4118d7` (obecny `main`).
-- Sprawdziłem, że ten commit zawiera wszystkie 14 linkowanych plików.
+- CR2014 wskazuje teraz commit `0743eb9393ef4ca935b690d4e1f81df62c4118d7` (obecny `main`).
+- JH16 wskazuje commit `a4c9a6307e725121a14e771e89a2d621737a36e1` (pierwszy commit tej gałęzi). Zawiera on wszystko z `0743eb9` i dodatkowo nowy plik dowodu (sekcja 1). Commity PR pozostają dostępne.
+- Test sprawdza, że każdy linkowany plik istnieje. Sprawdziłem też, że `0743eb9` jest przodkiem `a4c9a63`.
 - Repozytorium jest publiczne, więc linki otworzą się bez konta.
 - Test: „every file a dossier links to exists, and links point at one pinned commit”.
 
-Zmiana działa po wdrożeniu nowej wersji. Wersja dossier: `2026-10-29-v2`.
+Zmiana działa po wdrożeniu nowej wersji. Wersja dossier: JH16 `2026-10-29-v3`, CR2014 `2026-10-29-v2`.
 
 ## 4. Pobrania przeliczeń — poprawione
 
@@ -248,7 +262,21 @@ Opcje:
 
 **Poprawka.** Taki przebieg ma teraz napis „brak” i nie ma słupka.
 
-## 14. Stany konta SerpApi — nie da się zamknąć z repozytorium
+## 14. Stany konta SerpApi — bieżący stan sprawdzony, dawne niezweryfikowane
+
+**Bieżący stan, sprawdzony.**
+- Źródło: `https://serpapi.com/account.json`. Ten endpoint nie zużywa kredytów.
+- Odczytał go koordynator 2026-10-29T22:01:05Z.
+- Stan:
+  - plan „Free Plan”, 250 wyszukiwań miesięcznie;
+  - wykorzystane w tym miesiącu: 250; zostało z planu: 0;
+  - dodatkowe kredyty: **2530**;
+  - łącznie do wykorzystania: **2521**.
+- Zapis: `docs/history/evidence/2026-10-29-jh16-gaps/serpapi_balance_2026-10-29.json`. Zapisano tylko wybrane pola, bez surowej odpowiedzi, adresu e-mail i klucza.
+- Agent nie wywoływał SerpApi.
+
+**Dawne stany.** Wymienione niżej oznaczyłem w każdym raporcie datowaną uwagą „niezweryfikowane” ze wskazaniem na bieżący stan. Pierwotnego tekstu nie zmieniałem.
+
 
 **Dowód.** W repozytorium nie ma zapisanego odczytu konta, który potwierdzałby te liczby (szukałem wartości w `docs/`):
 - `REPORT.md`, wiersz 68: „zostało 2711”;
@@ -256,7 +284,7 @@ Opcje:
 - `OWNER_TEST.md`: „ok. 2645”;
 - raport zlecenia: „2578”.
 
-To dane operacyjne, nie naukowe, i prof. Hoffmann ich nie potrzebuje. Zamknąć je może tylko odczyt konta kluczem właściciela. Odczyt `account.json` jest bezpłatny, ale go nie robiłem.
+To dane operacyjne, nie naukowe, i prof. Hoffmann ich nie potrzebuje. Z `account.json` nie da się ich sprawdzić wstecz.
 
 ## 15. Ścieżki w pobranej pracy nie są linkami — nie zamknięte
 
