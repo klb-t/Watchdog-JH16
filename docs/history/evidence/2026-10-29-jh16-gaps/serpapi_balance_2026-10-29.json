@@ -1,0 +1,15 @@
+{
+  "what": "SerpApi account balance, current verified value for the JH16 reports. Selected fields only; the raw response is not stored, and no e-mail address or API key is recorded.",
+  "source": "https://serpapi.com/account.json (free endpoint, uses no search credits)",
+  "fetched_at_utc": "2026-10-29T22:01:05Z",
+  "fetched_by": "coordinator of PR #28 (not by the agent that wrote this file; the agent made no SerpApi call)",
+  "fields": {
+    "plan": "Free Plan",
+    "searches_per_month": 250,
+    "this_month_usage": 250,
+    "plan_searches_left": 0,
+    "extra_credits": 2530,
+    "total_searches_left": 2521
+  },
+  "note": "Earlier balances quoted in the reports (2711 on 2026-10-25 in REPORT.md, 2661 in CALIBRATION.md, about 2645 in OWNER_TEST.md, 2578 in REQUEST_HOFFMANN_2026-10-28/REPORT.md) cannot be verified retroactively from this endpoint and are marked unverified there."
+}

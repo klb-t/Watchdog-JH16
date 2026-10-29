@@ -21,6 +21,12 @@ Claude owns integration and the global ledger. Completed historical task paragra
 
 E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a separate gate. Existing RESEARCH/CLINICAL/OPERATIONS packages are integrated, not awaiting claims.
 
+## Review of old PRs #10–#12 — 2026-10-29
+
+- [x] **E3.23 — Source of the desktop layer running on the devbox.** `scripts/desktop_field.py`, `scripts/remote_desktop.sh`, `config/deployment/desktop-field.json` and `scripts/desktop_cloud.py` taken from `ecae0fd` (PR #11, branch alias E3.21); at `ecae0fd` their release id equals the one installed on the devbox on 2026-10-08 (`cfcd5d25…`). The `/run/keep-awake` heartbeat is then removed, because nothing reads it (restoring it: `../DEPLOY_GCP_VM.md`). Tests: `tests/integration/desktop_field.test.ts` (39 offline Python cases) and `tests/integration/remote_desktop.test.ts` (14 cases, the Desktop class of `7898068`'s `test_desktop_recovery.py`). No idle poweroff, Cloud Run gate or devbox installer is taken. Classification of #10–#12 and what was left out: `../history/PR_10_12_REVIEW_2026-10-29.md`. Not verified: a real graphical session, CRD, DCV, access through Caddy.
+
+- [x] **E3.24 — Continuous diagnostics for the live installation (from `7949967`, PR #10/#11 ancestry, branch alias E3.19).** Every mode except OFF writes daily `requests.jsonl`, `server-errors.jsonl`, `process-errors.jsonl`, `client-errors.jsonl`; error bodies carry `trace_id`; retention by days and MB; `watchdogctl errors|trace|diag-summary|diagnostics-mode` with `scripts/watchdog_diag.py`. `POST /api/client-errors` stays unauthenticated but is hardened: same-origin JSON, per-address rate limit, own body limit, all settable (`WATCHDOG_CLIENT_ERRORS_*`, defaults in `.env.example`), mounted before the installation gate for that one method and path. Installer default stays `NORMAL`. Tests: `tests/integration/client_errors_live.test.ts` (accounts mode, not signed in: foreign Origin, oversized body, rate limit, stored and redacted, no other route opened), `tests/integration/diagnostics_live.test.ts`, `tests/e2e/client_diagnostics.test.ts`, `tests/integration/deployment.test.ts`. Not deployed.
+
 ## Completed live JH16 acceptance before the owner's test — 2026-10-25
 
 - [x] **E3.18 — JH16 on live SerpApi data through the product.** Pre-registered protocol (`3d74e15`), historical recomputation, faithful and ENHANCED (repeats, gl=us, gl=pl) runs via the wizard, diagnostic decomposition of the OR query, independent verification. Nine product defects found by the run and fixed: fabricated `serp_generic` source, Study page with 3 hard-coded substances, abort on one failed fetch, hypothesis evaluation missing from the product, export without counts, unstamped code version, plans exceeding the request limit, re-prepared plans returning old launches, phone layout. Test: `tests/integration/jh16_live_readiness.test.ts`; full gate **622/622**. Results and diagnosis: `../replication/JH16_2026-10-25/REPORT.md`. Scientific outcome: computation reproduces the paper; new Google counts do not (Pearson −0.23…−0.10), because Google's compound-query estimates violate set logic — hypothesis unresolved by this method.
@@ -65,6 +71,16 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
     - Node system errors answer `STORAGE_ERROR` with a trace id instead of server paths.
     - Server refusals and the access-boundary texts appear in the reader's language.
   - **Evidence and tests.** Evidence in `../history/evidence/2026-10-29-invitee-screens/`, including what was found and not fixed (the research pages are each in one fixed language). Tests: `tests/integration/invitee_screens.test.ts`, `tests/e2e/invitee_screens.test.ts`.
+- [x] **E5.7b-5 — JH16 gaps before showing it to Prof. Hoffmann (2026-10-29).**
+  - **List for the owner:** `../replication/JH16_2026-10-25/GAPS_FOR_HOFFMANN_2026-10-29.md` (each gap with evidence and status).
+  - **Fixed:** dossier links pinned to a commit that holds every linked file (the old branch lacked the 28.10 evidence); a recomputation no longer shows the source run's fetches as its own; verdict words defined and criteria in Polish; later incomplete new measurements named in the summary; runs-kind evidence lists the complete runs stored here or says there are none (manuscript, „Rozbieżności”, graph); calibration cells carry n and the compared run; flags in words; decimal commas; run states in Polish; a missing Pearson is no longer drawn as 0 in the run comparison; the dossier's „one day” limitation corrected.
+  - **Probable cause „Zmiana sposobu szacowania przez Google”:** `scripts/jh16_estimator_consistency.py` and `../history/evidence/2026-10-29-jh16-gaps/` check whether the counts are coherent (Ni_harm ≤ Ni).
+    - Result: the 2014 paper counts break it in 0 of 16 pairs; the 2026 runs in 35 of 143.
+    - The coordinator chose option C on 2026-10-29: the status stays probable, presented as a hypothesis consistent with the data, never as shown, and the file is attached as its evidence (dossier v3, links at `a4c9a63`).
+    - The graph on the audit copy now has 0 gaps.
+  - **SerpApi balance:** the coordinator read account.json at 2026-10-29T22:01:05Z (`serpapi_balance_2026-10-29.json`). Earlier balances in the reports are marked unverified.
+  - **Tests:** `tests/integration/replication_dossier.test.ts`, `tests/integration/jh16_estimator_consistency.test.ts`.
+  - **Not done (left to the owner):** gl=us/gl=pl on the owner's installation (160 paid credits); Polish version of the request report.
 
 - [x] **E5.13 — Request from a pasted text (first case: Prof. Hoffmann's quote).**
   - **Path:** `/requests`, `services/text_requests.ts`, migration 026.

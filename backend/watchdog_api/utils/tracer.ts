@@ -104,6 +104,23 @@ class Tracer {
     fs.appendFileSync(filepath, line); // Synchronous for simplicity in dev flight recorder
   }
 
+  /**
+   * Daily, trace-independent records (requests, server/process/client errors).
+   * Written in every mode except OFF, so a live installation always keeps a
+   * findable record of what failed even when full TRACE is not enabled.
+   */
+  public record(file: 'requests.jsonl' | 'server-errors.jsonl' | 'process-errors.jsonl' | 'client-errors.jsonl', data: any) {
+    if (this.mode === 'OFF') return;
+    try {
+      const dir = path.join(this.logDir, new Date().toISOString().split('T')[0]);
+      fs.mkdirSync(dir, { recursive: true });
+      fs.appendFileSync(path.join(dir, file), JSON.stringify(redact(data)) + '\n');
+    } catch (error) {
+      // Diagnostics must never take the application down; say so once on the console.
+      console.error(`[DIAGNOSTICS] could not write ${file}: ${(error as Error).message}`);
+    }
+  }
+
   public emit(eventType: string, payload?: any) {
     if (this.mode === 'OFF') return;
     const ctx = this.getContext();
@@ -152,8 +169,12 @@ class Tracer {
       this.writeLog(ctx.trace_id, 'errors.jsonl', envelope);
       this.emit('EXCEPTION', { error_id: envelope.error_id });
     }
-    if (this.mode === 'NORMAL') {
-      console.error(redactText(`[ERROR] ${ctx.component}:${ctx.operation} ${envelope.message}`));
+    // Every mode keeps the full envelope (stack and cause chain) in a daily file,
+    // and the console line names the trace so the record can be found.
+    this.record('server-errors.jsonl', envelope);
+    if (this.mode !== 'TRACE') {
+      const top = (envelope.stack_trace ?? '').split('\n').slice(0, 4).join(' | ');
+      console.error(redactText(`[ERROR] ${ctx.component}:${ctx.operation} trace=${ctx.trace_id} ${envelope.exception_type}: ${envelope.message}${top ? ` :: ${top}` : ''}`));
     }
   }
 

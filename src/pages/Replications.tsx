@@ -15,8 +15,9 @@ import { useAccessText } from '../lib/access_i18n';
 const fmt = (v: number | null | undefined, d = 3) => v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(d);
 const fmtP = (v: number | null | undefined) => v === null || v === undefined ? '—' : v < 0.001 ? Number(v).toExponential(2) : Number(v).toFixed(4);
 const READING: Record<string, string> = { supports: 'wspierają', contradicts: 'przeczą', undecided: 'nie rozstrzygają', not_computable: 'nie da się ocenić' };
-const STATUS: Record<string, [string, string]> = { shown: ['wykazana', 'bg-red-50 text-red-900 border-red-200'], probable: ['prawdopodobna', 'bg-amber-50 text-amber-900 border-amber-200'],
+const STATUS: Record<string, [string, string]> = { shown: ['wykazana', 'bg-red-50 text-red-900 border-red-200'], probable: ['prawdopodobna (hipoteza zgodna z danymi, nie wykazana)', 'bg-amber-50 text-amber-900 border-amber-200'],
   unresolved: ['nierozstrzygnięta', 'bg-slate-100 text-slate-800 border-slate-300'], excluded: ['wykluczona', 'bg-emerald-50 text-emerald-900 border-emerald-200'] };
+const RUN_STATE: Record<string, string> = { COMPLETED: 'ukończony', FAILED: 'nieudany', RUNNING: 'w toku', QUEUED: 'w kolejce', CANCELLED: 'anulowany' };
 const card = 'bg-white rounded-xl border border-slate-200 p-4 sm:p-5 space-y-3 min-w-0 overflow-hidden';
 const scroll = 'overflow-x-auto max-w-full';
 const short = (id: string) => id.slice(0, 8);
@@ -118,7 +119,7 @@ function Runs({ data }: { data: any }) {
             {r.role_config?.data_role === 'confirmation' && r.data_role?.role !== 'confirmation' && <span className="ml-1 text-xs text-red-800" title={r.data_role?.reason}>nieuznane jako potwierdzające: {r.data_role?.reason}</span>}</td><td className="text-xs">{r.acquired_utc ? `${r.acquired_utc[0].slice(0, 16).replace('T', ' ')}` : '—'}</td>
           <td className="font-mono text-xs">{r.git_commit?.slice(0, 7) ?? 'brak'}</td><td className="font-mono">{fmt(hi(r, 'pearson')?.value)}</td>
           <td className="font-mono">{fmt(r.evaluation?.pi_vs_published?.value)}</td><td className="font-mono">{fmt(r.calibration?.A1?.spearman)}</td>
-          <td className="text-xs">{r.status}{r.evaluation && !r.evaluation.complete ? ` · braki: ${r.evaluation.missing_entities.length}` : ''}</td></tr>)}</tbody></table></div>
+          <td className="text-xs" title={r.status}>{RUN_STATE[r.status] ?? r.status}{r.evaluation && !r.evaluation.complete ? ` · braki: ${r.evaluation.missing_entities.length}` : ''}</td></tr>)}</tbody></table></div>
       <p className="text-xs text-slate-600">Zaznacz przebiegi JH16, aby je porównać. Kliknięcie substancji w porównaniu pokazuje zapytania i surowe odpowiedzi dostawcy.</p></section>
     {chosen.length > 0 && <Compare runs={chosen} onEntity={setEntity} />}
     {entity && chosen.length > 0 && <Drill runs={chosen} entity={entity} />}
@@ -129,12 +130,16 @@ function Runs({ data }: { data: any }) {
 function Compare({ runs, onEntity }: { runs: any[]; onEntity: (e: string) => void }) {
   const entities = runs[0].evaluation.entities.map((e: any) => e.entity_id) as string[];
   const val = (r: any, e: string, k: string) => r.evaluation.entities.find((x: any) => x.entity_id === e)?.[k] ?? null;
-  const pearsons = runs.map(r => hi(r, 'pearson')?.value ?? 0), W = 520, H = 160, max = Math.max(1, ...pearsons.map(Math.abs));
+  // A missing coefficient is drawn as no bar and labelled, never as zero.
+  const pearsons: (number | null)[] = runs.map(r => hi(r, 'pearson')?.value ?? null), W = 520, H = 160, max = Math.max(1, ...pearsons.filter((v): v is number => v !== null).map(Math.abs));
   return <section className={card} data-testid="compare">
     <h2 className="font-semibold">Porównanie {runs.length} przebiegów</h2>
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-xl" role="img" aria-label="Pearson Hi wobec oceny Nutta w porównywanych przebiegach">
       <line x1={40} x2={W - 10} y1={H / 2} y2={H / 2} stroke="currentColor" opacity={0.4} />
-      {runs.map((r, i) => { const x = 50 + i * ((W - 70) / runs.length), w = Math.max(8, (W - 90) / runs.length - 8), v = pearsons[i], h = Math.abs(v) / max * (H / 2 - 20);
+      {runs.map((r, i) => { const x = 50 + i * ((W - 70) / runs.length), w = Math.max(8, (W - 90) / runs.length - 8), v = pearsons[i];
+        if (v === null) return <g key={r.run_id}><text x={x + w / 2} y={H / 2 - 4} fontSize={10} textAnchor="middle" className="fill-slate-500">brak</text>
+          <text x={x + w / 2} y={H - 2} fontSize={9} textAnchor="middle" className="fill-slate-500">{short(r.run_id)}</text></g>;
+        const h = Math.abs(v) / max * (H / 2 - 20);
         return <g key={r.run_id}><rect x={x} y={v >= 0 ? H / 2 - h : H / 2} width={w} height={h} className={v >= 0 ? 'fill-indigo-500' : 'fill-rose-500'} />
           <text x={x + w / 2} y={v >= 0 ? H / 2 - h - 4 : H / 2 + h + 12} fontSize={10} textAnchor="middle" className="fill-slate-700">{fmt(v, 2)}</text>
           <text x={x + w / 2} y={H - 2} fontSize={9} textAnchor="middle" className="fill-slate-500">{short(r.run_id)}</text></g>; })}
@@ -228,10 +233,17 @@ function Discrepancies({ data }: { data: any }) {
   return <section className={card} data-testid="discrepancies"><h2 className="font-semibold">Rozbieżności i ich przyczyny</h2>
     <div className="flex flex-wrap gap-2 text-xs">{Object.entries(STATUS).map(([k, [l, c]]) => <span key={k} className={`px-2 py-0.5 rounded border ${c}`}>{l}</span>)}</div>
     <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Możliwa przyczyna</th><th>Test rozróżniający</th><th>Status</th><th>Dowód</th></tr></thead>
-      <tbody>{data.dossier.diagnosis.map((d: any) => <tr key={d.cause} className="border-t border-slate-100 align-top" data-testid={`diagnosis-${d.status}`}><td className="py-1.5 pr-2">{d.cause}</td><td className="pr-2">{d.test}</td>
+      <tbody>{data.dossier.diagnosis.map((d: any, i: number) => <tr key={d.cause} className="border-t border-slate-100 align-top" data-testid={`diagnosis-${d.status}`}><td className="py-1.5 pr-2">{d.cause}</td><td className="pr-2">{d.test}</td>
         <td className="pr-2"><span className={`text-xs px-2 py-0.5 rounded border ${STATUS[d.status]?.[1] ?? ''}`}>{STATUS[d.status]?.[0] ?? d.status}</span></td>
-        <td className="text-xs">{(d.evidence ?? []).map((e: any) => e.path ? <a key={e.path} className="underline block" href={`${base}${e.path}`} target="_blank" rel="noreferrer">{e.label}</a> : <span key={e.label} className="block">{e.label}</span>)}{!(d.evidence ?? []).length && '—'}</td></tr>)}</tbody></table></div>
+        <td className="text-xs">{(d.evidence ?? []).map((e: any) => e.path ? <a key={e.path} className="underline block" href={`${base}${e.path}`} target="_blank" rel="noreferrer">{e.label}</a>
+          : e.runs_kind ? <RunsEvidence key={e.label} label={e.label} ids={data.diagnosis_evidence_runs?.[i] ?? []} /> : <span key={e.label} className="block">{e.label}</span>)}{!(d.evidence ?? []).length && '—'}</td></tr>)}</tbody></table></div>
     <h3 className="font-medium text-sm">Ograniczenia</h3><ul className="text-sm list-disc ml-5">{data.dossier.limitations.map((l: string) => <li key={l}>{l}</li>)}</ul></section>;
+}
+
+// Evidence that names a kind of run lists the complete runs of that kind stored here, or says there are none.
+function RunsEvidence({ label, ids }: { label: string; ids: string[] }) {
+  return <span className="block" data-testid="runs-evidence">{label}: {ids.length ? ids.map(id => <Link key={id} className="underline mr-1 font-mono" to={`/runs/${id}/results`}>{short(id)}</Link>)
+    : <span className="text-amber-900">brak kompletnych przebiegów tego rodzaju w tej instalacji (luka w zakładce „Dowody”)</span>}</span>;
 }
 
 function Calibration({ data }: { data: any }) {
@@ -328,7 +340,7 @@ function GenericRuns({ data }: { data: any }) {
           {r.role_config?.data_role === 'confirmation' && r.data_role?.role !== 'confirmation' && <span className="ml-1 text-xs text-red-800">nieuznane jako potwierdzające: {r.data_role?.reason}</span>}</td>
         <td className="text-xs">{r.acquired_utc ? r.acquired_utc[0].slice(0, 16).replace('T', ' ') : '—'}</td><td className="font-mono text-xs">{r.git_commit?.slice(0, 7) ?? 'brak'}</td>
         {ids.map(i => { const c = r.evaluation?.comparisons?.find((x: any) => x.id === i); return <td key={i} className="font-mono">{c ? `${fmt(c.value)} · n${c.n}` : '—'}</td>; })}
-        <td className="text-xs">{r.status}{r.evaluation && !r.evaluation.complete ? ' · niekompletny' : ''}</td></tr>)}</tbody></table></div>
+        <td className="text-xs" title={r.status}>{RUN_STATE[r.status] ?? r.status}{r.evaluation && !r.evaluation.complete ? ' · niekompletny' : ''}</td></tr>)}</tbody></table></div>
     <p className="text-xs text-slate-600">Wybierz przebieg, aby zobaczyć pomiar i referencję dla każdego podmiotu; kliknięcie podmiotu pokazuje zapytanie i surową odpowiedź.</p></section>
     {chosen && chosen.evaluation.comparisons.map((c: any) => <Scatter key={c.id} c={c} onEntity={setEntity} />)}
     {chosen && entity && <Drill runs={[chosen]} entity={entity} />}
@@ -409,7 +421,8 @@ const KIND: [string, string][] = [['hypothesis', 'Hipotezy'], ['claim', 'Kryteri
 const EDGE: Record<string, string> = { tested_by: 'testowana przez', fixes: 'ustala', evaluates: 'ocenia', confirms: 'potwierdza wg', uses: 'używane przez', supports: 'popiera', cited_in: 'cytowane w' };
 const GAP: Record<string, string> = { 'no complete run evaluates this claim yet': 'żaden kompletny przebieg jeszcze nie ocenia tego kryterium',
   'no pre-registered claim tests this hypothesis': 'żadne wcześniej zarejestrowane kryterium nie testuje tej hipotezy', };
-const gapText = (p: string) => GAP[p] ?? (p.match(/^a diagnosis marked '(\w+)' names no evidence$/) ? `wpis diagnozy ze statusem „${STATUS[p.match(/'(\w+)'/)![1]]?.[0] ?? p}” nie wskazuje dowodu` : p);
+const gapText = (p: string) => GAP[p] ?? (p.match(/^a diagnosis marked '(\w+)' names no evidence$/) ? `wpis diagnozy ze statusem „${STATUS[p.match(/'(\w+)'/)![1]]?.[0] ?? p}” nie wskazuje dowodu`
+  : p.match(/^table (\d+) has no source$/) ? `tabela ${p.match(/\d+/)![0]} nie wskazuje źródła` : p);
 
 function EvidenceGraphView({ id, base }: { id: string; base: string }) {
   const [g, setG] = useState<any>(null), [error, setError] = useState(''), [sel, setSel] = useState<string | null>(null), [manifests, setManifests] = useState(false);

@@ -3,6 +3,8 @@ import * as assert from 'node:assert';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { clientErrorLimitsFromEnv } from '../../backend/watchdog_api/api/client_errors';
+import { retentionFromEnv } from '../../backend/watchdog_api/diag/retention';
 
 const read = (...p: string[]) => fs.readFileSync(path.join(process.cwd(), ...p), 'utf-8');
 
@@ -86,6 +88,25 @@ test('E3.5: .env.example lists names only, and matches what the code reads', () 
   ]) {
     assert.ok(env.includes(name), `${name} is read by the code and must be documented`);
   }
+});
+
+test('E3.24: the diagnostics and client-error settings are documented with their defaults', () => {
+  const env = read('.env.example');
+  for (const [name, fallback] of [
+    ['WATCHDOG_CLIENT_ERRORS_MAX_BYTES', 'default 16384'], ['WATCHDOG_CLIENT_ERRORS_RATE_LIMIT', 'default 30'],
+    ['WATCHDOG_CLIENT_ERRORS_RATE_WINDOW_SECONDS', 'default 600'], ['WATCHDOG_DIAGNOSTICS_RETENTION_DAYS', 'defaults 14 days'],
+    ['WATCHDOG_DIAGNOSTICS_MAX_MB', '2048 MB'], ['WATCHDOG_SLOW_REQUEST_MS', 'default 2000 ms'],
+  ]) {
+    assert.match(env, new RegExp(`^${name}=$`, 'm'), `${name} is listed without a value`);
+    assert.ok(env.includes(fallback), `the default for ${name} (${fallback}) is documented`);
+  }
+  // The documented defaults are the ones the code uses.
+  assert.deepStrictEqual(clientErrorLimitsFromEnv({}), { maxBytes: 16384, rateLimit: 30, rateWindowMs: 600_000 });
+  assert.deepStrictEqual(retentionFromEnv({}), { days: 14, maxBytes: 2048 * 1024 * 1024 });
+  assert.throws(() => clientErrorLimitsFromEnv({ WATCHDOG_CLIENT_ERRORS_MAX_BYTES: '16kb' }), /MAX_BYTES/);
+  assert.throws(() => clientErrorLimitsFromEnv({ WATCHDOG_CLIENT_ERRORS_RATE_LIMIT: '0' }), /RATE_LIMIT/);
+  assert.deepStrictEqual(clientErrorLimitsFromEnv({ WATCHDOG_CLIENT_ERRORS_MAX_BYTES: '4096', WATCHDOG_CLIENT_ERRORS_RATE_LIMIT: '5',
+    WATCHDOG_CLIENT_ERRORS_RATE_WINDOW_SECONDS: '60' }), { maxBytes: 4096, rateLimit: 5, rateWindowMs: 60_000 });
 });
 
 test('E3.5: every environment variable the code reads is documented', () => {

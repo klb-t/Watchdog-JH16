@@ -17,6 +17,8 @@ Każdy nowy pomiar (32 zapytania) zużywa kredyty SerpApi z Twojego konta: darmo
 października jest już wyczerpany, zostało ok. 2645 dokupionych kredytów (stan konta 25.10, 16:30 UTC). Plan z rozszerzeniem
 zużywa 160.
 
+*Uwaga 2026-10-29:* stan „ok. 2645” jest **niezweryfikowany**. Bieżący, sprawdzony stan konta (account.json, 2026-10-29T22:01:05Z): 2530 dodatkowych kredytów, łącznie 2521 wyszukiwań do wykorzystania — `docs/history/evidence/2026-10-29-jh16-gaps/serpapi_balance_2026-10-29.json`.
+
 ## Wdrożenie (2026-10-25 12:52 UTC)
 
 Obraz `watchdog:e33504edfdb71050d9cc6c3da2435562ffee0494` (id `sha256:f7b51bd2…c647`) zbudowano
@@ -173,6 +175,7 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
   - zostawić ją jako prawdopodobną bez dowodu, a luka zostaje widoczna;
   - zmienić status na „nierozstrzygnięta”;
   - wskazać źródło, np. dokumentację Google o zmianie szacunków, jeśli takie znasz.
+  - Uzupełnienie 2026-10-29: przygotowano deterministyczne porównanie spójności liczb z 2014 i 2026 r. z zapisanych plików (bez nowych zapytań), z ograniczeniami i dodatkowymi opcjami: [GAPS_FOR_HOFFMANN_2026-10-29.md, sekcja 1](GAPS_FOR_HOFFMANN_2026-10-29.md#1-przyczyna-prawdopodobna-bez-dowodu--decyzja-właściciela).
 
 **A5. Zlecenie z tekstu: wklej cytat prof. Hoffmanna (ok. 32 kredyty SerpApi)**
 - Menu → Prace i replikacje → **„Zlecenie z tekstu”**. Wklej cytat razem z linkiem i kliknij „Rozpoznaj”.
