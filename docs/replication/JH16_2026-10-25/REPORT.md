@@ -213,6 +213,10 @@ Surowe odpowiedzi SerpApi (warunki dostawcy) i baza instancji audytowej są na V
   z zapisanych wyników; opcja z modelem nie jest jeszcze zrobiona;
 
 - stabilności szacunków Google w kolejnych dniach (tylko 25.10.2026);
+  *uzupełnienie 2026-10-29:* kopie testowe mają pomiary z 26.10 (`c17d1147`, `51a9567b`) i 28.10
+  (`ea2b7078`). 28.10 Google zwrócił wyniki osiągalne dla 14 z 32 zapytań, więc szacunki nie są
+  stabilne nawet w skali dni. Lista otwartych luk przed pokazaniem prof. Hoffmannowi:
+  [GAPS_FOR_HOFFMANN_2026-10-29.md](GAPS_FOR_HOFFMANN_2026-10-29.md);
 - czy flaga „osiągalne wyniki” wyłapuje wszystkie zapadnięte liczby (reguła heurystyczna,
   sprawdzona na 192 odpowiedziach);
 - dawnego zachowania Google z 2014 r. (niedostępne);

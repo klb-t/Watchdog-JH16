@@ -173,6 +173,7 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
   - zostawić ją jako prawdopodobną bez dowodu, a luka zostaje widoczna;
   - zmienić status na „nierozstrzygnięta”;
   - wskazać źródło, np. dokumentację Google o zmianie szacunków, jeśli takie znasz.
+  - Uzupełnienie 2026-10-29: przygotowano deterministyczne porównanie spójności liczb z 2014 i 2026 r. z zapisanych plików (bez nowych zapytań), z ograniczeniami i dodatkowymi opcjami: [GAPS_FOR_HOFFMANN_2026-10-29.md, sekcja 1](GAPS_FOR_HOFFMANN_2026-10-29.md#1-przyczyna-prawdopodobna-bez-dowodu--decyzja-właściciela).
 
 **A5. Zlecenie z tekstu: wklej cytat prof. Hoffmanna (ok. 32 kredyty SerpApi)**
 - Menu → Prace i replikacje → **„Zlecenie z tekstu”**. Wklej cytat razem z linkiem i kliknij „Rozpoznaj”.

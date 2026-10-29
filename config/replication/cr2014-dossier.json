@@ -1,14 +1,14 @@
 {
   "schema_version": "1.0",
   "target_id": "cr2014",
-  "dossier_version": "2026-10-26-v1",
+  "dossier_version": "2026-10-29-v2",
   "_note": "Second replication target (generality check). Pre-data parts written before any Google Trends request; diagnosis and assessment entries after the data carry their date.",
   "evaluation_kind": "reference_correlation",
   "protocol": {
     "document": "docs/replication/CR2014_2026-10-26/PROTOCOL.md",
     "registered_in_commit": "aa7e2ea"
   },
-  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/claude/second-replication-target-20261026/",
+  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/0743eb9393ef4ca935b690d4e1f81df62c4118d7/",
   "measurement": {
     "preset_ref": "config/presets/cr2014-faithful.json",
     "credential": "serpapi",

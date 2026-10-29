@@ -110,3 +110,14 @@ Europe PMC i Internet Archive są bezpłatne. OpenRouter i Google Cloud nie był
   na osobnym pobraniu; jego surowe odpowiedzi zostają na VM w
   `~/wt/jh16_audit_2026-10-25/independent/trends_raw/` (sha256 w `trends_fetch_log.json`).
   Eksporty i weryfikacje przebiegów produktu: `docs/history/evidence/2026-10-25-jh16/trends_product/`.
+
+## Uzupełnienie 2026-10-29 (bez zmiany powyższego tekstu)
+
+Zdanie „Popularność da się więc nadal mierzyć liczbą wyników” opisuje stan z 25.10. Późniejszy
+pomiar mu przeczy. W przebiegu `ea2b7078` z 28.10 (kopia testowa) 14 z 32 liczb to wyniki
+osiągalne (0–73), a Spearman Pi wobec Tabeli 1 wynosi 0,019
+(`docs/history/evidence/2026-10-28-request-hoffmann/export_ea2b7078.json`, pole
+`evaluation.pi_vs_published`; indeks surowych odpowiedzi `raw/index_ea2b7078.json`).
+Kalibracje z 28.10 porównywały Trends z tym właśnie przebiegiem (`compare_run_id` w konfiguracji
+przebiegów `52eedd1f`, `df6be58d`, `11f82e98`, `a44e493a`), stąd ich niskie A3. A3b i A4 mają tam
+n = 4–6. Projekt pracy pokazuje teraz przy każdej wartości n oraz przebieg, z którym porównano Trends.

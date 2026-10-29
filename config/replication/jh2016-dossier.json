@@ -1,13 +1,13 @@
 {
   "schema_version": "1.0",
   "target_id": "jh2016",
-  "dossier_version": "2026-10-25-v1",
+  "dossier_version": "2026-10-29-v2",
   "_note": "What a reader needs beside the numbers: hypotheses, method, deviations and the diagnosis of discrepancies, each with its evidence. Numbers are never written here; the page and the manuscript take them from stored runs. Pre-registered claims stay in jh2016.json, interpretation rules in jh2016-interpretation.json.",
   "protocol": {
     "document": "docs/replication/JH16_2026-10-25/PROTOCOL.md",
     "registered_in_commit": "3d74e15"
   },
-  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/claude/jh16-hoffmann-test-20261025/",
+  "evidence_base_url": "https://github.com/klb-t/Watchdog-JH16/blob/0743eb9393ef4ca935b690d4e1f81df62c4118d7/",
   "runs_match": {
     "preset_ids": [
       "jh2016-faithful",
@@ -181,7 +181,7 @@
     }
   ],
   "limitations": [
-    "Pomiar z jednego dnia; stabilność szacunków Google w czasie nie jest znana.",
+    "Pomiary z trzech dni (25.10.2026 na instalacji audytowej i właściciela, 26 i 28.10.2026 na kopiach testowych). 28.10 Google zwrócił dla wielu zapytań liczbę wyników osiągalnych zamiast szacunku (ostatni wpis diagnozy), więc szacunki nie są stabilne nawet w skali dni; stabilność w dłuższym okresie nie jest znana.",
     "Reguła flagi „osiągalne wyniki” jest heurystyczna.",
     "Google Trends to względne zainteresowanie wyszukiwaniem, nie liczba wyników; kalibracja porównuje wyłącznie rangi.",
     "Dawne narzędzie Google z 2014 r. jest niedostępne; danych autorów nie zachowano."
