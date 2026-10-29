@@ -298,3 +298,46 @@ Nie zastępuje to pierwszej instalacji w konkretnym projekcie GCP. Agent nie uru
 provisioningu ani nie zmieniał ustawień Twojego konta GCP.
 
 Uzupełnienie 2026-10-02: `recovery-required` blokuje również people/grant/invite/open-link/signin-link przed uruchomieniem kontenera CLI. Nawet people ładuje bazę i może wykonać migracje, więc diagnostykę awarii prowadź przez status/logs i zachowany marker. Nie usuwaj markera tylko po to, aby ominąć odmowę komendy.
+
+## Pulpit zdalny na wspólnym devboxie (warstwa `desktop-field/1`)
+
+Kod warstwy pulpitu, która faktycznie działa na maszynie testowej, jest w repozytorium od
+2026-10-29: `scripts/desktop_field.py`, `scripts/remote_desktop.sh`,
+`config/deployment/desktop-field.json` oraz sterownik Cloud Shell `scripts/desktop_cloud.py`.
+Pliki przeniesiono **bajt w bajt** z `ecae0fd` (gałąź `astra/desktop-field-ready-20261007`,
+PR #11); raport autora z ograniczeniami: [DESKTOP_FIELD_2026-10-07](reports/DESKTOP_FIELD_2026-10-07.md).
+Ocena PR #10–#12: [PR_10_12_REVIEW_2026-10-29](history/PR_10_12_REVIEW_2026-10-29.md).
+
+Stan odczytany na devboxie 2026-10-29, bez żadnej zmiany na maszynie:
+
+| Element | Stan |
+|---|---|
+| Wydanie | `/opt/watchdog-desktop/releases/cfcd5d25811e2132b05473bc5adbe20ef43025f8b9608cabbe239309d73da919`, z 2026-10-08. Ten identyfikator to SHA-256 trzech plików liczony przez `desktop_field.py launch`; z plików w repozytorium wychodzi ten sam. |
+| `watchdog-vnc.service` | aktywna: TigerVNC `:1` tylko na loopback, konto właściciela |
+| `watchdog-novnc.service` | aktywna: websockify `127.0.0.1:6080` → `127.0.0.1:5901` |
+| `xrdp`, `xrdp-sesman` | aktywne |
+| `watchdog-desktop-install.service` | oneshot, nieaktywna (instalacja zakończona) |
+
+Dwie rzeczy różnią się od raportu z 7.10:
+
+- noVNC jest dostępny także z internetu jako `desktop.<IP>.sslip.io` z basic auth. Ten wpis
+  Caddy generuje `tools/gcp/aliases.sh` z osobnego repozytorium `chatadhd`, nie ten
+  instalator. Raport opisuje wyłącznie tunel SSH.
+- Pulpit zostawia sygnały w `/run/keep-awake`, ale na maszynie nie ma usypiania
+  (brak `watchdog-idle.timer`); sygnały nie mają odbiorcy i niczego nie zmieniają.
+
+Devbox jest maszyną współdzieloną (Caddy, inne usługi). **Nie uruchamiaj na nim
+`deploy_gcp_vm.sh` ani `gcp_vm_bootstrap.sh`**: instalator zakłada maszynę przeznaczoną
+dla Watchdoga i ustawia UFW oraz reguły zapory na wyłączność. Aplikację aktualizuje się
+tam przez podmianę obrazu w `/etc/watchdog/release.env`
+(zob. [OWNER_TEST](replication/JH16_2026-10-25/OWNER_TEST.md)).
+`desktop_cloud.py install` instaluje pakiety i jednostki systemd na VM; to decyzja
+właściciela, nie krok aktualizacji aplikacji.
+
+Testy offline (nie instalują pakietów, nie dotykają systemd ani GCP):
+
+```bash
+node --import tsx --test tests/integration/desktop_field.test.ts tests/integration/remote_desktop.test.ts
+```
+
+Nie sprawdzają rzeczywistej sesji graficznej, CRD, DCV ani połączenia przez Caddy.
