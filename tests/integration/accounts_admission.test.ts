@@ -202,7 +202,7 @@ test('E4.5: approving an application takes effect on the applicant\'s very next 
 // Email-bound invitations: exact address, not transferable, single use.
 // -------------------------------------------------------------------------
 
-test('E4.5: an email invitation works only for the invited address, and a forwarded link does not burn it', async () => {
+test('E4.5 + owner rule: an email invitation used by another address gives viewer and an application, and is then used up', async () => {
   const created = await owner.post('/api/access/invitations', {
     kind: 'email', email: 'Bob@Uni.Example', roles: ['researcher', 'responder'], note: 'Please test the responder view.',
     link_base: 'http://ignored.example', language: 'en',
@@ -222,26 +222,44 @@ test('E4.5: an email invitation works only for the invited address, and a forwar
   assert.strictEqual(anonPreview.body.invitation.emailHint.startsWith('b'), true);
   assert.ok(!JSON.stringify(anonPreview.body).includes('bob@uni.example'), 'the preview masks the address');
 
-  // Carol got the link forwarded.
+  // Carol got the link forwarded: viewer now, the rest waits for an administrator.
   const carol = new Client();
   await signIn(carol, 'carol@elsewhere.example');
-  const stolen = await carol.post('/api/auth/invitations/redeem', { token });
-  assert.strictEqual(stolen.status, 403);
-  assert.strictEqual(stolen.body.error.code, 'invitation_address_mismatch');
-  assert.strictEqual((await carol.get('/api/runs')).status, 403, 'carol gained nothing');
+  const forwarded = await carol.post('/api/auth/invitations/redeem', { token });
+  assert.strictEqual(forwarded.status, 200, JSON.stringify(forwarded.body));
+  assert.deepStrictEqual([forwarded.body.roles, forwarded.body.pending_roles], [['viewer'], ['researcher', 'responder']]);
+  const carolMe = await carol.get('/api/auth/me');
+  assert.deepStrictEqual(carolMe.body.principal.roles, ['viewer']);
+  assert.deepStrictEqual(carolMe.body.pending_application.requested_roles, ['researcher', 'responder']);
+  assert.strictEqual(carolMe.body.pending_application.origin, 'address_mismatch');
+  assert.strictEqual((await carol.get('/api/runs')).status, 200, 'a viewer can read');
+  assert.strictEqual((await carol.post('/api/runs', {})).status, 403, 'but cannot start runs');
 
-  // …and the invitation is still intact for Bob.
+  const overview = await owner.get('/api/access/overview');
+  const app = overview.body.applications.find((a: any) => a.email === 'carol@elsewhere.example' && a.status === 'pending');
+  assert.ok(app, 'the administrator sees the application');
+  assert.deepStrictEqual([app.origin, app.invitation_id, app.requested_roles], ['address_mismatch', created.body.invitation.id, ['researcher', 'responder']]);
+  assert.match(app.reason, /b•+@uni\.example użyte przez carol@elsewhere\.example/);
+
+  // The single use is gone; Bob needs a new invitation.
   const bob = new Client();
   await signIn(bob, 'bob@uni.example');
-  const accepted = await bob.post('/api/auth/invitations/redeem', { token });
-  assert.strictEqual(accepted.status, 200, JSON.stringify(accepted.body));
-  assert.deepStrictEqual(accepted.body.roles, ['researcher', 'responder']);
-  assert.strictEqual((await bob.get('/api/runs')).status, 200);
-
-  const replay = await bob.post('/api/auth/invitations/redeem', { token });
-  assert.strictEqual(replay.body.already_redeemed, true, 'redeeming twice is harmless');
-  const late = await carol.post('/api/auth/invitations/redeem', { token });
+  const late = await bob.post('/api/auth/invitations/redeem', { token });
   assert.strictEqual(late.status, 410, 'a used single-use invitation is gone');
+  const replay = await carol.post('/api/auth/invitations/redeem', { token });
+  assert.strictEqual(replay.body.already_redeemed, true, 'redeeming twice is harmless');
+
+  // Exact address: the invited roles at once, no application.
+  const again = await owner.post('/api/access/invitations', { kind: 'email', email: 'bob@uni.example', roles: ['researcher'] });
+  const accepted = await bob.post('/api/auth/invitations/redeem', { token: again.body.token });
+  assert.deepStrictEqual([accepted.body.roles, accepted.body.pending_roles], [['researcher'], []]);
+  assert.strictEqual((await bob.get('/api/auth/me')).body.pending_application, null);
+
+  // The administrator decides Carol's application.
+  const approved = await owner.post(`/api/access/applications/${app.id}/approve`, { roles: ['researcher'] });
+  assert.strictEqual(approved.status, 200, JSON.stringify(approved.body));
+  assert.deepStrictEqual((await carol.get('/api/auth/me')).body.principal.roles, ['viewer', 'researcher']);
+  assert.strictEqual((await carol.get('/api/auth/me')).body.pending_application, null);
 });
 
 test('E4.5: sending an invitation goes through SMTP and only then says "sent"', async () => {
@@ -275,6 +293,50 @@ test('E4.5: sending an invitation goes through SMTP and only then says "sent"', 
 // Open links: any address, bounded, never an administrator.
 // -------------------------------------------------------------------------
 
+test('owner rule: a bearer link signs its holder in as a guest viewer; roles above viewer wait; revoking it ends the guests', async () => {
+  assert.strictEqual((await owner.post('/api/access/invitations', { kind: 'email', email: 'z@y.example', roles: ['viewer'], signs_in: true })).status, 400,
+    'only an open link can sign in by itself');
+  const created = await owner.post('/api/access/invitations', { kind: 'open_link', roles: ['researcher'], max_uses: 2, signs_in: true, note: 'Dla prof. H.' });
+  assert.strictEqual(created.status, 201, JSON.stringify(created.body));
+  assert.strictEqual(created.body.invitation.signsIn, true);
+  const token = created.body.token, id = created.body.invitation.id;
+  assert.strictEqual((await new Client().post('/api/auth/invitations/preview', { token })).body.invitation.signsIn, true);
+
+  const guest = new Client();
+  assert.strictEqual((await guest.get('/api/runs')).status, 401, 'nobody before the link');
+  const entered = await guest.post('/api/auth/invitations/bearer', { token });
+  assert.strictEqual(entered.status, 200, JSON.stringify(entered.body));
+  assert.deepStrictEqual([entered.body.principal.roles, entered.body.pending_roles], [['viewer'], ['researcher']]);
+  assert.strictEqual(entered.body.principal.display_name, `okaziciel ${id.slice(0, 8)}`);
+  assert.match(entered.body.principal.email, /^bearer-[0-9a-f]{8}-[0-9a-f]{8}@bearer\.invalid$/);
+  assert.strictEqual((await guest.get('/api/runs')).status, 200, 'the link alone signed the guest in');
+  const me = await guest.get('/api/auth/me');
+  assert.deepStrictEqual([me.body.principal.roles, me.body.pending_application.origin, me.body.pending_application.requested_roles], [['viewer'], 'bearer_link', ['researcher']]);
+  const anon = await new Client().post('/api/auth/invitations/redeem', { token });
+  assert.strictEqual(anon.status, 401, 'the sign-in-first path still needs a session');
+
+  const second = new Client(); await second.post('/api/auth/invitations/bearer', { token });
+  const third = await new Client().post('/api/auth/invitations/bearer', { token });
+  assert.strictEqual(third.status, 410, 'each use is one guest; the limit holds');
+
+  const overview = await owner.get('/api/access/overview');
+  const guests = overview.body.members.filter((m: any) => m.email.endsWith('@bearer.invalid'));
+  assert.strictEqual(guests.length, 2); assert.ok(guests.every((g: any) => g.displayName === `okaziciel ${id.slice(0, 8)}` && g.signInMethods.includes('bearer')));
+  const apps = overview.body.applications.filter((a: any) => a.origin === 'bearer_link' && a.status === 'pending');
+  assert.strictEqual(apps.length, 2); assert.ok(apps.every((a: any) => a.invitation_id === id));
+
+  const revoked = await owner.post(`/api/access/invitations/${id}/revoke`, {});
+  assert.strictEqual(revoked.status, 200, JSON.stringify(revoked.body));
+  assert.strictEqual((await guest.get('/api/runs')).status, 401, 'the guest session ends with the link');
+  const after = await owner.get('/api/access/overview');
+  assert.ok(after.body.applications.filter((a: any) => apps.some((x: any) => x.id === a.id)).every((a: any) => a.status === 'denied'));
+  assert.strictEqual((await new Client().post('/api/auth/invitations/bearer', { token })).status, 410);
+
+  const plain = await owner.post('/api/access/invitations', { kind: 'open_link', roles: ['viewer'] });
+  const refused = await new Client().post('/api/auth/invitations/bearer', { token: plain.body.token });
+  assert.deepStrictEqual([refused.status, refused.body.error.code], [409, 'invitation_needs_sign_in'], 'a plain open link does not sign anyone in');
+});
+
 test('E4.5: an open link admits any address up to its use limit, and never grants admin', async () => {
   const barred = await owner.post('/api/access/invitations', { kind: 'open_link', roles: ['access_admin'] });
   assert.strictEqual(barred.status, 403, 'a transferable link cannot create someone who admits others');
@@ -297,6 +359,13 @@ test('E4.5: an open link admits any address up to its use limit, and never grant
   const inv = overview.body.invitations.find((i: any) => i.id === created.body.invitation.id);
   assert.deepStrictEqual(inv.redeemedBy.map((r: any) => r.email).sort(), ['dave@anywhere.example', 'erin@other.example'],
     'who actually used a transferable link is recorded');
+
+  // Owner's rule: a link anyone may hold grants viewer; a role above viewer becomes an application.
+  const higher = await owner.post('/api/access/invitations', { kind: 'open_link', roles: ['researcher'] });
+  const r = await erin.post('/api/auth/invitations/redeem', { token: higher.body.token });
+  assert.deepStrictEqual([r.status, r.body.roles, r.body.pending_roles], [200, ['viewer'], ['researcher']]);
+  const me = await erin.get('/api/auth/me');
+  assert.deepStrictEqual([me.body.pending_application.origin, me.body.pending_application.requested_roles], ['open_link', ['researcher']]);
 });
 
 // -------------------------------------------------------------------------

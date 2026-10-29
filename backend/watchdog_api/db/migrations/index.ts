@@ -2,6 +2,7 @@ import { MIGRATION_023_ACCOUNTS } from './023_accounts';
 import { MIGRATION_024_MANUSCRIPT_EDITIONS } from './024_manuscript_editions';
 import { MIGRATION_025_STUDY_PROTOCOLS } from './025_study_protocols';
 import { MIGRATION_026_TEXT_REQUESTS } from './026_text_requests';
+import { MIGRATION_027_BEARER_AND_RUN_SHARES } from './027_bearer_and_run_shares';
 import type { Database } from 'better-sqlite3';
 import { MIGRATION_001_INITIAL_SCHEMA } from './001_initial_schema';
 import { MIGRATION_002_ASSERTIONS } from './002_assertions';
@@ -62,7 +63,8 @@ export const MIGRATIONS: readonly Migration[] = [
   { id: '023_accounts', sql: MIGRATION_023_ACCOUNTS },
   { id: '024_manuscript_editions', sql: MIGRATION_024_MANUSCRIPT_EDITIONS },
   { id: '025_study_protocols', sql: MIGRATION_025_STUDY_PROTOCOLS },
-  { id: '026_text_requests', sql: MIGRATION_026_TEXT_REQUESTS }
+  { id: '026_text_requests', sql: MIGRATION_026_TEXT_REQUESTS },
+  { id: '027_bearer_and_run_shares', sql: MIGRATION_027_BEARER_AND_RUN_SHARES }
 ];
 
 const MIGRATIONS_TABLE = `

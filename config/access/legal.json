@@ -1,0 +1,134 @@
+{
+  "schema_version": "1.0",
+  "legal_id": "watchdog-legal",
+  "version": "2026-10-29-v1",
+  "_note": "Public privacy policy and terms (no sign-in needed). {instance}, {contact}, {location} and {url} come from the installation's settings (WATCHDOG_OPERATOR_CONTACT, WATCHDOG_DATA_LOCATION, WATCHDOG_PUBLIC_URL), never from this file. Statements describe what the code actually stores.",
+  "languages": {
+    "pl": {
+      "privacy_title": "Polityka prywatności",
+      "terms_title": "Warunki korzystania",
+      "updated": "Wersja {version}",
+      "contact_missing": "operator nie podał jeszcze kontaktu",
+      "location_missing": "operator nie podał jeszcze miejsca przechowywania",
+      "privacy": [
+        [
+          "Kto odpowiada za dane",
+          "{instance} ({url}) prowadzi operator tej instalacji. Kontakt: {contact}."
+        ],
+        [
+          "Co zbieramy",
+          "Przy logowaniu przez Google: adres e-mail, nazwę wyświetlaną i identyfikator konta Google. Przy logowaniu kodem: adres e-mail. Przy wniosku o dostęp: to, co wpiszesz (powód, afiliacja, nazwa, żądane role). Gość wchodzący linkiem na okaziciela nie podaje żadnych danych; dostaje wewnętrzny identyfikator."
+        ],
+        [
+          "Dziennik działań",
+          "Decyzje o dostępie (zaproszenia, wnioski, nadania, odwołania) i uruchomienia badań są zapisywane w dzienniku audytu: kto, co i kiedy. Dziennik służy rozliczalności i bezpieczeństwu."
+        ],
+        [
+          "Ciasteczka",
+          "Jedno ciasteczko sesji, niezbędne do logowania (HttpOnly). Nie używamy analityki ani reklam."
+        ],
+        [
+          "Klucze i dane badawcze",
+          "Klucze API, które sam zapiszesz, są przechowywane zaszyfrowane w Twoim sejfie. Przebiegi badań i surowe odpowiedzi źródeł danych są przypisane do Twojego konta i widoczne tylko dla Ciebie oraz osób, którym je jawnie udostępnisz."
+        ],
+        [
+          "Gdzie",
+          "Dane są przechowywane tutaj: {location}. Kopie zapasowe powstają na tej samej infrastrukturze."
+        ],
+        [
+          "Komu przekazujemy",
+          "Google (tylko w celu logowania). Zapytania badawcze, które sam uruchomisz, trafiają do wybranych dostawców danych (np. SerpApi); nie wysyłamy im Twoich danych osobowych. Jeśli operator skonfigurował pocztę, maile z kodami i zaproszeniami wysyła jego dostawca poczty."
+        ],
+        [
+          "Jak długo",
+          "Konto, nadania i dziennik audytu nie są usuwane automatycznie, żeby można było odtworzyć, kto i kiedy miał dostęp. Dostęp można w każdej chwili odwołać. O wgląd, sprostowanie lub usunięcie danych poproś operatora: {contact}."
+        ]
+      ],
+      "terms": [
+        [
+          "Czym jest {instance}",
+          "Narzędzie badawcze do obserwacji sygnałów dotyczących substancji psychoaktywnych, z jawnym pochodzeniem danych. Wyniki są materiałem badawczym, nie poradą medyczną ani prawną."
+        ],
+        [
+          "Dostęp",
+          "Zalogować może się każdy. Dostęp do danych daje dopiero operator lub administrator: przez zaproszenie albo zatwierdzenie wniosku. Dostęp może zostać w każdej chwili odwołany."
+        ],
+        [
+          "Twoje obowiązki",
+          "Korzystaj zgodnie z prawem i celem badawczym. Nie udostępniaj dalej linków ani danych, które zostały Ci udostępnione. Za treści, które wprowadzasz, odpowiadasz Ty."
+        ],
+        [
+          "Bez gwarancji",
+          "Instalacja jest udostępniana bez gwarancji dostępności i poprawności. Liczby pochodzą z zapisanych przebiegów i źródeł opisanych przy każdym wyniku."
+        ],
+        [
+          "Kontakt",
+          "Pytania i zgłoszenia: {contact}."
+        ]
+      ]
+    },
+    "en": {
+      "privacy_title": "Privacy policy",
+      "terms_title": "Terms of use",
+      "updated": "Version {version}",
+      "contact_missing": "the operator has not set a contact yet",
+      "location_missing": "the operator has not stated the storage location yet",
+      "privacy": [
+        [
+          "Who is responsible",
+          "{instance} ({url}) is run by the operator of this installation. Contact: {contact}."
+        ],
+        [
+          "What we collect",
+          "When you sign in with Google: your email address, display name and Google account identifier. When you sign in with a code: your email address. When you request access: what you type (reason, affiliation, name, requested roles). A guest entering through a bearer link gives no data; it gets an internal identifier."
+        ],
+        [
+          "Activity log",
+          "Access decisions (invitations, requests, grants, revocations) and research runs are recorded in an audit log: who, what and when. It exists for accountability and security."
+        ],
+        [
+          "Cookies",
+          "One session cookie, needed to stay signed in (HttpOnly). No analytics, no advertising."
+        ],
+        [
+          "Keys and research data",
+          "API keys you store are kept encrypted in your vault. Research runs and raw source responses belong to your account and are visible only to you and to people you explicitly share them with."
+        ],
+        [
+          "Where",
+          "Data are stored here: {location}. Backups are made on the same infrastructure."
+        ],
+        [
+          "Who receives data",
+          "Google (for sign-in only). Research queries you start go to the data providers you choose (e.g. SerpApi); your personal data are not sent to them. If the operator configured mail, codes and invitations are sent by the operator's mail provider."
+        ],
+        [
+          "How long",
+          "Accounts, grants and the audit log are not deleted automatically, so that who had access and when can be reconstructed. Access can be revoked at any time. To see, correct or delete your data, ask the operator: {contact}."
+        ]
+      ],
+      "terms": [
+        [
+          "What {instance} is",
+          "A research tool for monitoring psychoactive-substance signals with explicit data provenance. Results are research material, not medical or legal advice."
+        ],
+        [
+          "Access",
+          "Anyone may sign in. Access to data is given only by the operator or an administrator, through an invitation or an approved request. Access can be revoked at any time."
+        ],
+        [
+          "Your responsibilities",
+          "Use it lawfully and for research. Do not pass on links or data shared with you. You are responsible for what you enter."
+        ],
+        [
+          "No warranty",
+          "The installation is provided without any guarantee of availability or correctness. Numbers come from stored runs and from the sources described with each result."
+        ],
+        [
+          "Contact",
+          "Questions and reports: {contact}."
+        ]
+      ]
+    }
+  }
+}

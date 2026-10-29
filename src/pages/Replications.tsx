@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useAccess } from '../lib/access';
 
 /**
  * Replications: one entry per registered target. The target page shows the
@@ -71,7 +72,8 @@ const verdict = (r: any, k: string) => r.evaluation?.verdicts?.find((v: any) => 
 function ProvenanceBadge({ r }: { r: any }) {
   const color: Record<string, string> = { recomputation_of_published_data: 'bg-sky-50 text-sky-900 border-sky-200', new_fetch: 'bg-indigo-50 text-indigo-900 border-indigo-200',
     enhanced_variant: 'bg-violet-50 text-violet-900 border-violet-200', recomputation_of_stored_data: 'bg-slate-100 text-slate-800 border-slate-300', exploratory_calibration: 'bg-amber-50 text-amber-900 border-amber-200' };
-  return <span className={`text-xs px-2 py-0.5 rounded border ${color[r.provenance] ?? ''}`} data-testid={`provenance-${r.run_id}`}>{r.provenance_label}{r.variant ? ` · ${r.variant}` : ''}</span>;
+  return <><span className={`text-xs px-2 py-0.5 rounded border ${color[r.provenance] ?? ''}`} data-testid={`provenance-${r.run_id}`}>{r.provenance_label}{r.variant ? ` · ${r.variant}` : ''}</span>
+    {r.shared && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-slate-50 text-slate-700 border-slate-300" data-testid={`shared-${r.run_id}`}>udostępniony (tylko odczyt)</span>}</>;
 }
 
 function Overview({ data }: { data: any }) {
@@ -119,6 +121,7 @@ function Runs({ data }: { data: any }) {
       <p className="text-xs text-slate-600">Zaznacz przebiegi JH16, aby je porównać. Kliknięcie substancji w porównaniu pokazuje zapytania i surowe odpowiedzi dostawcy.</p></section>
     {chosen.length > 0 && <Compare runs={chosen} onEntity={setEntity} />}
     {entity && chosen.length > 0 && <Drill runs={chosen} entity={entity} />}
+    <SharePanel data={data} />
   </div>;
 }
 
@@ -323,7 +326,8 @@ function GenericRuns({ data }: { data: any }) {
         <td className="text-xs">{r.status}{r.evaluation && !r.evaluation.complete ? ' · niekompletny' : ''}</td></tr>)}</tbody></table></div>
     <p className="text-xs text-slate-600">Wybierz przebieg, aby zobaczyć pomiar i referencję dla każdego podmiotu; kliknięcie podmiotu pokazuje zapytanie i surową odpowiedź.</p></section>
     {chosen && chosen.evaluation.comparisons.map((c: any) => <Scatter key={c.id} c={c} onEntity={setEntity} />)}
-    {chosen && entity && <Drill runs={[chosen]} entity={entity} />}</div>;
+    {chosen && entity && <Drill runs={[chosen]} entity={entity} />}
+    <SharePanel data={data} /></div>;
 }
 
 /** Measured vs reference for one comparison: the evidence behind a correlation, drawn from the stored evaluation. */
@@ -342,6 +346,44 @@ function Scatter({ c, onEntity }: { c: any; onEntity: (e: string) => void }) {
         <title>{`${e.entity_id}: pomiar ${e.measured}, referencja ${e.reference}`}</title></g>)}</svg>
     <details className="text-xs"><summary className="cursor-pointer">Tabela ({c.entities.length})</summary><div className={scroll}><table className="min-w-full"><thead className="text-left text-slate-500"><tr><th className="pr-2">Podmiot</th><th className="pr-2">Pomiar</th><th>Referencja</th></tr></thead>
       <tbody>{c.entities.map((e: any) => <tr key={e.entity_id} className="border-t border-slate-100 cursor-pointer hover:bg-indigo-50" onClick={() => onEntity(e.entity_id)} data-testid={`entity-${e.entity_id}`}><td className="pr-2 underline">{e.entity_id}</td><td className="pr-2 font-mono">{e.measured}</td><td className="font-mono">{e.reference}</td></tr>)}</tbody></table></div></details></section>;
+}
+
+/** Read-only sharing of one's own runs with an address or by link (services/run_shares.ts). */
+function SharePanel({ data }: { data: any }) {
+  const access = useAccess();
+  const own = data.runs.filter((r: any) => !r.shared);
+  const [sel, setSel] = useState<string[]>(() => own.filter((r: any) => data.primary_run_ids.includes(r.run_id)).map((r: any) => r.run_id));
+  const [kind, setKind] = useState<'email' | 'link'>('email'), [target, setTarget] = useState(''), [note, setNote] = useState(''), [days, setDays] = useState('30');
+  const [shares, setShares] = useState<any[]>([]), [msg, setMsg] = useState(''), [link, setLink] = useState('');
+  const load = () => fetch('/api/run-shares').then(r => r.ok ? r.json() : { shares: [] }).then(d => setShares(d.shares));
+  useEffect(() => { void load(); }, []);
+  if (!own.length || !access.capabilities.includes('run.create')) return null;
+  const ids = new Set(own.map((r: any) => r.run_id)), mine = shares.filter(x => ids.has(x.run_id) && !x.via_share_id);
+  const groups = [...mine.reduce((m: Map<string, any[]>, x: any) => m.set(x.target_kind === 'link' ? `link:${x.token_hash}` : `${x.target_kind}:${x.target}:${x.created_at}`, [...(m.get(x.target_kind === 'link' ? `link:${x.token_hash}` : `${x.target_kind}:${x.target}:${x.created_at}`) ?? []), x]), new Map()).values()];
+  const share = async () => { setMsg(''); setLink('');
+    const r = await fetch('/api/run-shares', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ run_ids: sel, kind, target: kind === 'email' ? target : undefined, note, expires_in_days: days ? Number(days) : null }) });
+    const d = await r.json(); if (!r.ok) { setMsg(d.error?.message ?? `HTTP ${r.status}`); return; }
+    if (d.link_path) setLink(new URL(d.link_path, window.location.origin).href); else setMsg(`Udostępniono ${d.shares.length} przebiegów dla ${target}.`);
+    void load(); };
+  const revoke = async (id: string) => { await fetch(`/api/run-shares/${id}/revoke`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }); void load(); };
+  return <section className={card} data-testid="share-panel"><h2 className="font-semibold">Udostępnij przebiegi (tylko do odczytu)</h2>
+    <p className="text-sm text-slate-600">Osoba z dostępem zobaczy wybrane przebiegi: wyniki, ocenę, surowe odpowiedzi i miejsce w Replikacjach. Nie może ich zmienić ani udostępnić dalej. Przeliczenie zabiera ze sobą przebieg źródłowy. Odwołanie działa od razu.</p>
+    <div className="max-h-48 overflow-auto text-sm space-y-1">{own.map((r: any) => <label key={r.run_id} className="flex gap-2 items-center"><input type="checkbox" checked={sel.includes(r.run_id)}
+      onChange={e => setSel(e.target.checked ? [...sel, r.run_id] : sel.filter(x => x !== r.run_id))} data-testid={`share-run-${r.run_id}`} /><span className="font-mono">{short(r.run_id)}</span> {r.provenance_label}</label>)}</div>
+    <div className="flex flex-wrap gap-3 text-sm items-end">
+      <label>Komu <select className="border rounded" value={kind} onChange={e => setKind(e.target.value as any)} data-testid="share-kind"><option value="email">adres e-mail (konto)</option><option value="link">link (dla zalogowanych, którzy go dostaną)</option></select></label>
+      {kind === 'email' && <label>Adres <input className="border rounded px-1" type="email" value={target} onChange={e => setTarget(e.target.value)} data-testid="share-target" /></label>}
+      <label>Ważne (dni) <input className="border rounded w-16 px-1" type="number" min="1" max="365" value={days} onChange={e => setDays(e.target.value)} /></label>
+      <label className="flex-1 min-w-[10rem]">Notatka <input className="border rounded px-1 w-full" value={note} onChange={e => setNote(e.target.value)} /></label></div>
+    <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!sel.length || (kind === 'email' && !target.trim())} onClick={share} data-testid="share-create">Udostępnij {sel.length} {sel.length === 1 ? 'przebieg' : 'przebiegów'}</button>
+    {msg && <p role="status" className="text-sm">{msg}</p>}
+    {link && <p className="text-sm break-all" data-testid="share-link">Link (widoczny tylko teraz, skopiuj go): <code>{link}</code></p>}
+    {groups.length > 0 && <div className={scroll}><table className="w-full text-sm" data-testid="share-list"><thead className="text-left text-slate-500"><tr><th>Komu</th><th>Przebiegi</th><th>Od</th><th>Do</th><th>Stan</th><th></th></tr></thead>
+      <tbody>{groups.map((g: any[]) => { const x = g[0], active = !x.revoked_at && (!x.expires_at || x.expires_at > new Date().toISOString());
+        return <tr key={x.id} className="border-t border-slate-100"><td className="pr-2">{x.target_kind === 'link' ? 'link' : x.target}</td><td className="font-mono text-xs pr-2">{g.map(y => short(y.run_id)).join(' ')}</td>
+          <td className="text-xs pr-2">{x.created_at.slice(0, 10)}</td><td className="text-xs pr-2">{x.expires_at?.slice(0, 10) ?? 'bez terminu'}</td><td className="text-xs pr-2">{x.revoked_at ? 'odwołane' : active ? 'aktywne' : 'wygasło'}</td>
+          <td>{active && <button className="underline text-xs" onClick={() => void Promise.all(g.map(y => revoke(y.id)))} data-testid={`share-revoke-${x.id}`}>odwołaj</button>}</td></tr>; })}</tbody></table></div>}
+  </section>;
 }
 
 function GenericRegistry({ data }: { data: any }) {

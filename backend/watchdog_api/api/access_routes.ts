@@ -71,6 +71,7 @@ export function buildAccessRouter(admission: AdmissionService, mail: MailService
         id: a.id, email: a.email, display_name: a.display_name, affiliation: a.affiliation, reason: a.reason,
         requested_roles: JSON.parse(a.requested_roles_json), status: a.status, submitted_at: a.submitted_at,
         decided_at: a.decided_at, decided_by: a.decided_by, decision_note: a.decision_note,
+        origin: a.origin, invitation_id: a.invitation_id,
       })),
       invitations: admission.invitations(actor),
       roles: ROLES,
@@ -88,6 +89,7 @@ export function buildAccessRouter(admission: AdmissionService, mail: MailService
     const { invitation, token } = admission.createInvitation(actorOf(req), {
       kind: req.body?.kind, email: req.body?.email, roles: req.body?.roles, note: req.body?.note,
       expiresInDays: req.body?.expires_in_days, maxUses: req.body?.max_uses, accessExpiresAt: req.body?.access_expires_at,
+      signsIn: req.body?.signs_in,
     });
     const base = mail.publicUrl() ?? clientBase(req.body?.link_base);
     res.status(201).json({ invitation, token, ...draftFor(req, invitation, token, req.body?.language, base) });

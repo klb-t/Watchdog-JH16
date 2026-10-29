@@ -38,13 +38,15 @@ interface Access {
   email: string | null;
   methods: SignInMethods;
   instanceName: string;
+  /** Roles above viewer waiting for an administrator (bearer link, open link, another address). */
+  pendingApplication: { requested_roles: string[]; origin: string | null; submitted_at: string } | null;
   refresh: () => void;
 }
 
 const noMethods: SignInMethods = { google: null, email_code: false };
 const empty: Access = {
   loading: true, admission: 'loading', mode: null, roles: [], capabilities: [], grantableRoles: [],
-  principalId: null, email: null, methods: noMethods, instanceName: 'WatchDog', refresh: () => {},
+  principalId: null, email: null, methods: noMethods, instanceName: 'WatchDog', pendingApplication: null, refresh: () => {},
 };
 const AccessContext = createContext<Access>(empty);
 export const useAccess = () => useContext(AccessContext);
@@ -81,7 +83,8 @@ export function AccessProvider({ children }: { children: ReactNode }) {
           roles: me?.principal.roles ?? [], capabilities: me?.capabilities ?? [],
           grantableRoles: me?.grantable_roles ?? [],
           principalId: me?.principal.id ?? null, email: me?.principal.email ?? legacyAdmission?.email ?? null,
-          methods: config?.methods ?? noMethods, instanceName: config?.instance_name ?? 'WatchDog', refresh,
+          methods: config?.methods ?? noMethods, instanceName: config?.instance_name ?? 'WatchDog',
+          pendingApplication: me?.pending_application ?? null, refresh,
         });
       } catch {
         // No network. A responder with a valid, principal-bound snapshot keeps

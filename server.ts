@@ -19,6 +19,7 @@ import { WorkbenchService } from './backend/watchdog_api/workbench/service';
 import { loadWorkbenchProfile } from './backend/watchdog_api/config/workbench';
 import { buildWorkbenchRouter } from './backend/watchdog_api/api/workbench_routes';
 import path from 'path';
+import fs from 'fs';
 import url from 'node:url';
 import { buildApiRouter } from './backend/watchdog_api/api/routes';
 import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middleware';
@@ -57,6 +58,9 @@ import { TextRequests, httpFetcher, readRequestConfig } from './backend/watchdog
 import { TextRequestRepository } from './backend/watchdog_api/db/repositories/text_requests';
 import { buildTextRequestRouter } from './backend/watchdog_api/api/text_request_routes';
 import { RunRepository } from './backend/watchdog_api/db/repositories/runs';
+import { RunShareRepository } from './backend/watchdog_api/db/repositories/run_shares';
+import { RunShares } from './backend/watchdog_api/services/run_shares';
+import { buildRunShareRouter } from './backend/watchdog_api/api/run_share_routes';
 import { latestLiveJh16Run } from './backend/watchdog_api/services/jh16_trends';
 import { StudyProtocolRepository } from './backend/watchdog_api/db/repositories/study_protocols';
 import { RunOrchestrator } from './backend/watchdog_api/services/run_orchestrator';
@@ -122,6 +126,14 @@ export async function configureApp() {
     app.use('/api/auth',buildAccountsRouter(authDeps));
   }
   app.use('/api/auth', buildAuthRouter(authDeps));
+  // Public privacy policy and terms (needed before sign-in, e.g. for Google's OAuth consent screen).
+  // Contact and storage location are the operator's settings, never part of the code.
+  app.get('/api/public/legal', (_req, res) => {
+    const legal = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'config/access/legal.json'), 'utf-8'));
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({ ...legal, settings: { contact: process.env.WATCHDOG_OPERATOR_CONTACT?.trim() || null, location: process.env.WATCHDOG_DATA_LOCATION?.trim() || null,
+      url: process.env.WATCHDOG_PUBLIC_URL?.trim() || null, instance: 'WatchDog' } });
+  });
   app.use('/api', requireInstallationAccess);
   if (admission && mail) app.use('/api/access',buildAccessRouter(admission,mail));
   app.use('/api/search', buildSearchRouter(new SearchRepository(sqlite, store)));
@@ -169,7 +181,9 @@ export async function configureApp() {
     searchesToday: owner => settings.searchesToday(owner),
   });
   app.use('/api/text-requests', buildTextRequestRouter(textRequests, textRequestRepo, new RunRepository(db), new AuditRepository(sqlite)));
-  app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite), assistant));
+  const runShares = new RunShares(new RunShareRepository(sqlite), new RunRepository(db), (...event) => appendAudit(sqlite, ...event));
+  app.use('/api/run-shares', buildRunShareRouter(runShares));
+  app.use('/api', buildApiRouter(db, store, new AuditRepository(sqlite), assistant, runShares));
   app.use(errorHandler);
 
   return { app, identity, automation };

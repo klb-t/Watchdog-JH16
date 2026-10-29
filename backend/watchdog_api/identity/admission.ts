@@ -65,6 +65,17 @@ export const OPERATOR_ACTOR: AdmissionActor = Object.freeze({
 
 export const APPLICATION_LIMITS = accessPolicy.application;
 
+/**
+ * Owner's rule (2026-10-29): access through a link anyone may hold (an open or
+ * bearer link), or through an email invitation used by a different verified
+ * address, gives viewer at once; every role above viewer is an application an
+ * administrator decides.
+ */
+export const IMMEDIATE_ROLE: Role = 'viewer';
+/** Guests who entered by a bearer link get an address that can never receive mail (RFC 2606). */
+export const BEARER_DOMAIN = 'bearer.invalid';
+export const isBearerAddress = (email: string | null | undefined) => !!email && email.endsWith(`@${BEARER_DOMAIN}`);
+
 const EMAIL = /^[^\s@]{1,64}@[^\s@]{1,253}\.[^\s@]{2,63}$/;
 
 export function normalizeEmail(raw: unknown): string {
@@ -149,6 +160,8 @@ export interface InvitationView {
   deliveryDetail: string | null;
   lastDeliveryAt: string | null;
   redeemedBy: { email: string; redeemedAt: string }[];
+  /** The link signs its holder in as a guest; no account is needed. */
+  signsIn: boolean;
 }
 
 export interface InvitationPreview {
@@ -159,6 +172,7 @@ export interface InvitationPreview {
   inviter?: string | null;
   expiresAt?: string;
   emailHint?: string | null;
+  signsIn?: boolean;
 }
 
 export interface MemberView {
@@ -318,11 +332,13 @@ export class AdmissionService {
 
   createInvitation(actor: AdmissionActor, input: {
     kind?: unknown; email?: unknown; roles?: unknown; note?: unknown; expiresInDays?: unknown;
-    maxUses?: unknown; accessExpiresAt?: unknown;
+    maxUses?: unknown; accessExpiresAt?: unknown; signsIn?: unknown;
   }): { invitation: InvitationView; token: string } {
     const actorRoles = this.requireAdmit(actor);
     const kind = input.kind === 'open_link' ? 'open_link' : input.kind === 'email' ? 'email' : null;
     if (!kind) throw new AdmissionError('validation_error', 400, "kind must be 'email' or 'open_link'.");
+    const signsIn = input.signsIn === true;
+    if (signsIn && kind !== 'open_link') throw new AdmissionError('validation_error', 400, 'Only an open link can sign its holder in.');
     const roles = requireRoles(input.roles);
     this.requireGrantable(actorRoles, roles);
 
@@ -358,11 +374,11 @@ export class AdmissionService {
       roles_json: JSON.stringify(roles), note: boundedText(input.note, INVITATION_LIMITS.noteMax, 'The note'),
       max_uses: maxUses, expires_at: new Date(now.getTime() + days * 86_400_000).toISOString(),
       access_expires_at: futureIso(input.accessExpiresAt, now, 'Access expiry'),
-      created_by: actor.principalId, created_at: now.toISOString(),
+      created_by: actor.principalId, created_at: now.toISOString(), signs_in: signsIn ? 1 : 0,
     } as const;
     this.repo.insertInvitation(row);
     this.audit(actor.principalId, 'access.invitation.created', 'invitation', row.id, actor.requestId,
-      { kind, email, roles, maxUses, expiresAt: row.expires_at, accessExpiresAt: row.access_expires_at });
+      { kind, email, roles, maxUses, expiresAt: row.expires_at, accessExpiresAt: row.access_expires_at, signsIn });
     return { invitation: this.invitationView(this.repo.invitation(row.id)!), token };
   }
 
@@ -380,6 +396,7 @@ export class AdmissionService {
       createdBy: i.created_by, createdAt: i.created_at, status: this.invitationStatus(i),
       deliveryStatus: i.delivery_status, deliveryDetail: i.delivery_detail, lastDeliveryAt: i.last_delivery_at,
       redeemedBy: this.repo.redemptionsOf(i.id).map(r => ({ email: r.email, redeemedAt: r.redeemed_at })),
+      signsIn: i.signs_in === 1,
     };
   }
 
@@ -409,7 +426,7 @@ export class AdmissionService {
       status: status === 'active' ? 'valid' : status, kind: i.kind, roles: parseRoles(i.roles_json),
       note: i.note, inviter: i.created_by === OPERATOR ? 'the installation operator'
         : inviter?.display_name ?? inviter?.email ?? null, expiresAt: i.expires_at,
-      emailHint: i.email ? maskEmail(i.email) : null,
+      emailHint: i.email ? maskEmail(i.email) : null, signsIn: i.signs_in === 1,
     };
     if (status === 'active' && !this.inviterStillAuthorized(i)) return { ...base, status: 'inviter_no_longer_authorized' };
     return base;
@@ -418,12 +435,13 @@ export class AdmissionService {
   /**
    * Turns a token plus a verified identity into a grant.
    *
-   * For an email invitation the verified address must be the invited one. A
-   * forwarded link therefore does nothing for the person it was forwarded to,
-   * and — importantly — does not burn the invitation either, so the intended
-   * recipient can still use it.
+   * An email invitation used by the invited address grants its roles. Used by a
+   * different verified address, or through an open link anyone may hold, it
+   * grants viewer at once and turns every role above viewer into an application
+   * an administrator decides (owner's rule, 2026-10-29). Either way the use is
+   * consumed, so a forwarded single-use link cannot be passed on further.
    */
-  redeem(actor: AdmissionActor, token: unknown): { grantId: string; roles: Role[]; alreadyRedeemed: boolean } {
+  redeem(actor: AdmissionActor, token: unknown): { grantId: string; roles: Role[]; pendingRoles: Role[]; alreadyRedeemed: boolean } {
     if (!actor.email) throw new AdmissionError('unauthenticated', 401, 'Sign in first.');
     const i = this.byToken(token);
     if (!i) throw new AdmissionError('invitation_invalid', 404, 'This invitation link is not valid.');
@@ -433,27 +451,13 @@ export class AdmissionService {
     this.requireNoLegacyOverride(actor.email);
 
     const previous = this.repo.redemption(i.id, actor.principalId);
-    if (previous) return { grantId: previous.grant_id, roles: parseRoles(i.roles_json), alreadyRedeemed: true };
+    if (previous) return { grantId: previous.grant_id, roles: parseRoles(this.repo.grant(previous.grant_id)?.roles_json ?? '[]'),
+      pendingRoles: [], alreadyRedeemed: true };
+    this.requireActiveInvitation(i);
 
-    const status = this.invitationStatus(i);
-    if (status !== 'active') {
-      const messages = {
-        revoked: 'This invitation was withdrawn.', expired: 'This invitation has expired.',
-        used_up: 'This invitation has already been used.',
-      } as const;
-      throw new AdmissionError(`invitation_${status}`, 410, messages[status]);
-    }
-    if (i.kind === 'email' && i.email !== actor.email) {
-      throw new AdmissionError('invitation_address_mismatch', 403,
-        `This invitation was sent to ${maskEmail(i.email!)}. You are signed in as ${actor.email}. ` +
-        'Sign in with the invited address; the invitation stays valid for it.');
-    }
-    if (!this.inviterStillAuthorized(i)) {
-      throw new AdmissionError('invitation_inviter_unauthorized', 410,
-        'The person who created this invitation can no longer grant these roles. Ask for a new invitation.');
-    }
-
-    const roles = parseRoles(i.roles_json);
+    const invited = parseRoles(i.roles_json), exact = i.kind === 'email' && i.email === actor.email;
+    const roles = exact ? invited : [IMMEDIATE_ROLE], pendingRoles = exact ? [] : invited.filter(r => r !== IMMEDIATE_ROLE);
+    const origin = i.kind === 'email' ? 'address_mismatch' as const : 'open_link' as const;
     const at = this.now().toISOString();
     const grantId = randomUUID();
     this.repo.transaction(() => {
@@ -467,15 +471,71 @@ export class AdmissionService {
       this.repo.insertRedemption({ id: randomUUID(), invitationId: i.id, principalId: actor.principalId,
         email: actor.email!, grantId, at });
       const pending = this.repo.pendingApplicationOf(actor.principalId);
-      if (pending) {
+      if (exact && pending) {
         this.repo.decideApplication(pending.id, { status: 'withdrawn', by: actor.principalId,
           note: 'Superseded by an accepted invitation.', grantId, at });
       }
+      if (pendingRoles.length && !pending) this.invitationApplication(actor.principalId, actor.email!, null, i, pendingRoles, origin, at,
+        i.kind === 'email' ? `Zaproszenie dla ${maskEmail(i.email!)} użyte przez ${actor.email}: role powyżej viewer wymagają zatwierdzenia administratora.`
+          : `Wejście przez otwarty link ${i.id.slice(0, 8)}: role powyżej viewer wymagają zatwierdzenia administratora.`);
       this.repo.mirrorRoles(actor.principalId, this.effective(actor.email).roles);
     });
     this.audit(actor.principalId, 'access.invitation.redeemed', 'invitation', i.id, actor.requestId,
-      { kind: i.kind, email: actor.email, roles, grantId });
-    return { grantId, roles, alreadyRedeemed: false };
+      { kind: i.kind, email: actor.email, roles, pendingRoles, exact, grantId });
+    return { grantId, roles, pendingRoles, alreadyRedeemed: false };
+  }
+
+  private requireActiveInvitation(i: InvitationRow) {
+    const status = this.invitationStatus(i);
+    if (status !== 'active') {
+      const messages = {
+        revoked: 'This invitation was withdrawn.', expired: 'This invitation has expired.',
+        used_up: 'This invitation has already been used.',
+      } as const;
+      throw new AdmissionError(`invitation_${status}`, 410, messages[status]);
+    }
+    if (!this.inviterStillAuthorized(i)) {
+      throw new AdmissionError('invitation_inviter_unauthorized', 410,
+        'The person who created this invitation can no longer grant these roles. Ask for a new invitation.');
+    }
+  }
+
+  /** The application for roles above viewer that an invitation could not grant by itself. */
+  private invitationApplication(principalId: string, email: string, displayName: string | null, i: InvitationRow, roles: Role[],
+    origin: 'bearer_link' | 'address_mismatch' | 'open_link', at: string, reason: string) {
+    this.repo.insertApplication({ id: randomUUID(), principal_id: principalId, email, display_name: displayName, affiliation: null,
+      reason, requested_roles_json: JSON.stringify(sortedRoles(roles)), status: 'pending', submitted_at: at, origin, invitation_id: i.id });
+  }
+
+  /**
+   * A bearer link: whoever holds it signs in as a new guest (`okaziciel <id>`),
+   * with viewer at once and an application for any role above viewer. Each use
+   * is one guest; the guest's address is reserved and can never receive mail.
+   */
+  redeemBearer(token: unknown, requestId: string): { principalId: string; sessionVersion: number; email: string; displayName: string;
+    roles: Role[]; pendingRoles: Role[]; accessExpiresAt: string | null } {
+    const i = this.byToken(token);
+    if (!i) throw new AdmissionError('invitation_invalid', 404, 'This invitation link is not valid.');
+    if (i.kind !== 'open_link' || i.signs_in !== 1) throw new AdmissionError('invitation_needs_sign_in', 409, 'This invitation needs you to sign in first.');
+    this.requireActiveInvitation(i);
+    const invited = parseRoles(i.roles_json), pendingRoles = invited.filter(r => r !== IMMEDIATE_ROLE);
+    const at = this.now().toISOString(), principalId = `u_${randomUUID()}`, short = i.id.slice(0, 8);
+    const email = `bearer-${short}-${principalId.slice(2, 10)}@${BEARER_DOMAIN}`, displayName = `okaziciel ${short}`;
+    const grantId = randomUUID();
+    this.repo.transaction(() => {
+      if (!this.repo.consumeInvitationUse(i.id, at)) throw new AdmissionError('invitation_used_up', 410, 'This invitation has already been used.');
+      this.repo.createPrincipal({ id: principalId, email, displayName, provenance: 'bearer-link', at });
+      this.repo.linkIdentity({ provider: 'bearer', subject: principalId, principalId, email, at });
+      this.repo.insertGrant({ id: grantId, email, roles_json: JSON.stringify([IMMEDIATE_ROLE]), source: 'open_link', source_id: i.id,
+        granted_by: i.created_by, granted_at: at, expires_at: i.access_expires_at, note: i.note });
+      this.repo.insertRedemption({ id: randomUUID(), invitationId: i.id, principalId, email, grantId, at });
+      if (pendingRoles.length) this.invitationApplication(principalId, email, displayName, i, pendingRoles, 'bearer_link', at,
+        `Wejście przez link na okaziciela ${short}: role powyżej viewer wymagają zatwierdzenia administratora.`);
+      this.repo.mirrorRoles(principalId, this.effective(email).roles);
+    });
+    this.audit(principalId, 'access.invitation.bearer_signed_in', 'invitation', i.id, requestId, { email, roles: [IMMEDIATE_ROLE], pendingRoles, grantId });
+    const principal = this.repo.principal(principalId)!;
+    return { principalId, sessionVersion: principal.session_version, email, displayName, roles: [IMMEDIATE_ROLE], pendingRoles, accessExpiresAt: i.access_expires_at };
   }
 
   private manageableInvitation(actor: AdmissionActor, id: string): InvitationRow {
@@ -486,11 +546,26 @@ export class AdmissionService {
     return i;
   }
 
+  /**
+   * Withdraws an invitation. For a bearer link the guests it created have no
+   * other identity, so their access ends with it: grants revoked, pending
+   * applications denied, sessions ended.
+   */
   revokeInvitation(actor: AdmissionActor, id: string): InvitationView {
-    const i = this.manageableInvitation(actor, id);
-    if (this.repo.revokeInvitation(id, actor.principalId, this.now().toISOString())) {
-      this.audit(actor.principalId, 'access.invitation.revoked', 'invitation', id, actor.requestId, { kind: i.kind });
-    }
+    const i = this.manageableInvitation(actor, id), at = this.now().toISOString();
+    let guests = 0;
+    this.repo.transaction(() => {
+      if (!this.repo.revokeInvitation(id, actor.principalId, at)) return;
+      if (i.signs_in === 1) for (const r of this.repo.redemptionsOf(id)) {
+        this.repo.revokeActiveGrants(r.email, actor.principalId, 'bearer invitation revoked', at);
+        const pending = this.repo.pendingApplicationOf(r.principal_id);
+        if (pending) this.repo.decideApplication(pending.id, { status: 'denied', by: actor.principalId, note: 'The bearer invitation was revoked.', grantId: null, at });
+        this.repo.bumpSessionVersion(r.principal_id);
+        this.repo.mirrorRoles(r.principal_id, this.effective(r.email).roles);
+        guests++;
+      }
+      this.audit(actor.principalId, 'access.invitation.revoked', 'invitation', id, actor.requestId, { kind: i.kind, signsIn: i.signs_in === 1, guestsEnded: guests });
+    });
     return this.invitationView(this.repo.invitation(id)!);
   }
 

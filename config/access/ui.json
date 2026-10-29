@@ -113,7 +113,7 @@
       "claim_title": "Dane sprzed włączenia logowania",
       "claim_body": "Runy utworzone zanim włączono logowanie należą do „local-user”. Możesz je przejąć na swoje konto.",
       "claim_button": "Przejmij dane local-user",
-      "claim_done": "Przeniesiono {count} wierszy.",
+      "claim_done": "Twoje konto przejęło już dane sprzed logowania (local-user); nic do przeniesienia.",
       "error_generic": "Coś poszło nie tak: {message}",
       "account": "Konto",
       "roles_none": "brak",
@@ -128,7 +128,21 @@
       "profile_name": "Twoje imię i nazwisko (tak podpiszesz zaproszenia)",
       "profile_save": "Zapisz",
       "profile_saved": "Zapisano.",
-      "role_access_admin": "Administrator dostępu"
+      "role_access_admin": "Administrator dostępu",
+      "invite_kind_bearer": "Na okaziciela",
+      "invite_kind_bearer_hint": "Kto otworzy link, wchodzi od razu jako gość, bez logowania. Od razu ma tylko rolę viewer; wyższe role czekają na Twoje zatwierdzenie. Odwołanie linku kończy dostęp jego gości.",
+      "invite_viewer_rule": "Przez link, który może mieć każdy, osoba dostaje od razu tylko rolę viewer; wybrane wyższe role trafią do Wniosków do zatwierdzenia.",
+      "app_origin_bearer_link": "weszła przez link na okaziciela",
+      "app_origin_address_mismatch": "użyła zaproszenia wysłanego na inny adres",
+      "app_origin_open_link": "weszła przez otwarty link",
+      "app_invitation": "zaproszenie {id}",
+      "join_bearer": "Ten link sam Cię wpuszcza, bez logowania. Wejdziesz jako gość z rolą viewer{pending}.",
+      "join_bearer_pending": "; o pozostałe role ({roles}) zdecyduje administrator",
+      "join_bearer_enter": "Wejdź",
+      "join_viewer_rule": "Jeśli ten link nie był wysłany na Twój adres albo może go mieć każdy, od razu dostaniesz rolę viewer, a wyższe role zatwierdzi administrator.",
+      "pending_banner": "Masz rolę viewer. Role {roles} czekają na zatwierdzenie przez administratora.",
+      "legal_privacy": "Polityka prywatności",
+      "legal_terms": "Warunki korzystania"
     },
     "en": {
       "language_name": "English",
@@ -240,7 +254,7 @@
       "claim_title": "Data from before sign-in was enabled",
       "claim_body": "Runs created before sign-in was switched on belong to “local-user”. You can move them to your account.",
       "claim_button": "Claim local-user data",
-      "claim_done": "Moved {count} rows.",
+      "claim_done": "Your account already holds the data from before sign-in (local-user); nothing to move.",
       "error_generic": "Something went wrong: {message}",
       "account": "Account",
       "roles_none": "none",
@@ -255,7 +269,21 @@
       "profile_name": "Your name (how your invitations are signed)",
       "profile_save": "Save",
       "profile_saved": "Saved.",
-      "role_access_admin": "Access administrator"
+      "role_access_admin": "Access administrator",
+      "invite_kind_bearer": "Bearer link",
+      "invite_kind_bearer_hint": "Whoever opens the link enters at once as a guest, without signing in. They get viewer only; higher roles wait for your approval. Revoking the link ends its guests' access.",
+      "invite_viewer_rule": "Through a link anyone may hold, a person gets viewer at once; the higher roles you choose go to Requests for approval.",
+      "app_origin_bearer_link": "came in through a bearer link",
+      "app_origin_address_mismatch": "used an invitation sent to another address",
+      "app_origin_open_link": "came in through an open link",
+      "app_invitation": "invitation {id}",
+      "join_bearer": "This link lets you in by itself, without signing in. You enter as a guest with the viewer role{pending}.",
+      "join_bearer_pending": "; an administrator decides on the other roles ({roles})",
+      "join_bearer_enter": "Enter",
+      "join_viewer_rule": "If this link was not sent to your address, or anyone may hold it, you get viewer at once and an administrator approves the higher roles.",
+      "pending_banner": "You have the viewer role. The roles {roles} are waiting for an administrator's approval.",
+      "legal_privacy": "Privacy policy",
+      "legal_terms": "Terms of use"
     }
   }
 }

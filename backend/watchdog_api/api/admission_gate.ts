@@ -26,6 +26,7 @@ export const OPEN_ENDPOINTS: ReadonlySet<string> = new Set([
   'POST /auth/profile',
   'POST /auth/invitations/preview',
   'POST /auth/invitations/redeem',
+  'POST /auth/invitations/bearer',
   'GET /auth/application',
   'POST /auth/application',
   'POST /auth/application/withdraw',

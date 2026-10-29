@@ -104,7 +104,7 @@ function applicationView(a: ReturnType<AdmissionRepository['application']> & obj
   return {
     id: a.id, status: a.status, submitted_at: a.submitted_at, decided_at: a.decided_at,
     decision_note: a.decision_note, reason: a.reason, affiliation: a.affiliation, display_name: a.display_name,
-    requested_roles: JSON.parse(a.requested_roles_json),
+    requested_roles: JSON.parse(a.requested_roles_json), origin: a.origin, invitation_id: a.invitation_id,
   };
 }
 
@@ -118,6 +118,8 @@ export function buildAuthRouter(deps: AuthDeps): Router {
   // Per-address limits live in the database (SignInService); these bound what
   // one client can throw at the public endpoints regardless of address.
   const signInLimiter = new RateLimiter(accessPolicy.rateLimits.signin.count,accessPolicy.rateLimits.signin.windowMs);
+  // A bearer link creates a guest per use; bounded like sign-in, counted on its own.
+  const bearerLimiter = new RateLimiter(accessPolicy.rateLimits.signin.count,accessPolicy.rateLimits.signin.windowMs);
   const previewLimiter = new RateLimiter(accessPolicy.rateLimits.preview.count,accessPolicy.rateLimits.preview.windowMs);
   const applicationLimiter = new RateLimiter(accessPolicy.rateLimits.application.count,accessPolicy.rateLimits.application.windowMs);
 
@@ -186,6 +188,9 @@ export function buildAuthRouter(deps: AuthDeps): Router {
         identity_provenance: req.principal.identityProvenance,
       },
       admission: deps.identity.mode === 'local' ? 'local' : roles.length > 0 ? 'member' : 'applicant',
+      // A member who came in by a link anyone may hold sees what is still waiting for an administrator.
+      pending_application: (() => { const a = deps.admissionRepository?.pendingApplicationOf(req.principal!.id);
+        return a ? { requested_roles: JSON.parse(a.requested_roles_json), origin: a.origin, submitted_at: a.submitted_at } : null; })(),
       // Sent so the UI hides what the user cannot do, rather than offering
       // buttons that fail. The server still enforces every one of them.
       capabilities: capabilitiesFor(roles),
@@ -265,7 +270,16 @@ export function buildAuthRouter(deps: AuthDeps): Router {
   router.post('/invitations/redeem', limitByIp(previewLimiter, 'redeem'), admissionRoute((req, res) => {
     if (!accounts || !deps.admission) return needAccounts(res);
     const result = deps.admission.redeem(actorOf(req), req.body?.token);
-    res.json({ redeemed: true, roles: result.roles, already_redeemed: result.alreadyRedeemed });
+    res.json({ redeemed: true, roles: result.roles, pending_roles: result.pendingRoles, already_redeemed: result.alreadyRedeemed });
+  }));
+
+  /** A bearer link signs its holder in as a guest; the session ends no later than the link's access expiry. */
+  router.post('/invitations/bearer', limitByIp(bearerLimiter, 'bearer'), admissionRoute((req, res) => {
+    if (!accounts || !deps.admission) return needAccounts(res);
+    const g = deps.admission.redeemBearer(req.body?.token, requestId());
+    const expiresAt = issueSession(res, g.principalId, g.sessionVersion, g.accessExpiresAt ? new Date(g.accessExpiresAt).getTime() : undefined);
+    res.json({ principal: { id: g.principalId, email: g.email, display_name: g.displayName, roles: g.roles }, pending_roles: g.pendingRoles,
+      admission: 'member', expires_at: expiresAt });
   }));
 
   // ------------------------------------------------------------ applications (applicant side)

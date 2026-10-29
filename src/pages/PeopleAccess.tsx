@@ -9,13 +9,13 @@ interface Member {
 }
 interface ApplicationRow {
   id: string; email: string; display_name: string | null; affiliation: string | null; reason: string;
-  requested_roles: string[]; status: string; submitted_at: string; decision_note: string | null;
+  requested_roles: string[]; status: string; submitted_at: string; decision_note: string | null; origin?: string | null; invitation_id?: string | null;
 }
 interface Invitation {
   id: string; kind: 'email' | 'open_link'; email: string | null; roles: string[]; note: string | null;
   maxUses: number; uses: number; expiresAt: string; status: 'active' | 'expired' | 'revoked' | 'used_up';
   deliveryStatus: 'draft' | 'link_shared' | 'sent' | 'send_failed'; deliveryDetail: string | null;
-  redeemedBy: { email: string; redeemedAt: string }[];
+  redeemedBy: { email: string; redeemedAt: string }[]; signsIn?: boolean;
 }
 interface Overview {
   members: Member[]; applications: ApplicationRow[]; invitations: Invitation[];
@@ -98,7 +98,7 @@ export function PeopleAccess() {
       {data && tab === 'invitations' && <Invitations data={data} canAdmit={canAdmit} run={run} lang={lang} load={load}
         onError={setError} />}
 
-      {access.capabilities.includes('principal.manage') && <ClaimLocalUser />}
+      {access.capabilities.includes('principal.manage') && access.principalId !== 'local-user' && <ClaimLocalUser />}
     </div>
   );
 
@@ -127,7 +127,7 @@ function ApplicationCard({ a, data, canAdmit, run }: { a: ApplicationRow; data: 
     <p className="font-medium">{a.display_name ?? a.email} <span className="text-sm text-slate-500">{a.email}</span></p>
     {a.affiliation && <p className="text-sm text-slate-600">{a.affiliation}</p>}
     <p className="mt-2 whitespace-pre-wrap text-sm">{a.reason}</p>
-    <p className="text-xs text-slate-500 mt-1">{date(a.submitted_at)}</p>
+    <p className="text-xs text-slate-500 mt-1">{date(a.submitted_at)}{a.origin ? ` · ${t(`app_origin_${a.origin}` as AccessKey)}` : ''}{a.invitation_id ? ` · ${t('app_invitation', { id: a.invitation_id.slice(0, 8) })}` : ''}</p>
     {canAdmit && <div className="mt-3 space-y-2">
       <RolePicker options={data.grantable_roles} value={roles} onChange={setRoles} testId="approve-roles" />
       <label className="field-control">{t('application_note')}
@@ -197,7 +197,7 @@ function Invitations({ data, canAdmit, run, lang, load, onError }: { data: Overv
     {fresh && <FreshInvitation fresh={fresh} data={data} lang={lang} onChange={load} />}
     {data.invitations.length === 0 && <p className="text-sm text-slate-600">{t('invitations_empty')}</p>}
     {data.invitations.map(i => <article key={i.id} className="field-panel text-sm" data-testid={`invitation-${i.id}`}>
-      <p className="font-medium">{i.kind === 'email' ? i.email : t('invite_kind_open')} — {visible(i.roles).map(role).join(', ')}</p>
+      <p className="font-medium">{i.kind === 'email' ? i.email : t(i.signsIn ? 'invite_kind_bearer' : 'invite_kind_open')} — {visible(i.roles).map(role).join(', ')}</p>
       <p className="text-xs text-slate-600 mt-1">
         {t(`inv_status_${i.status}` as AccessKey)} · {t(`delivery_${i.deliveryStatus}` as AccessKey)} · {t('uses_of', { uses: i.uses, max: i.maxUses })} · {t('join_expires', { date: date(i.expiresAt) })}
       </p>
@@ -216,7 +216,7 @@ function Invitations({ data, canAdmit, run, lang, load, onError }: { data: Overv
 
 function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDone: () => void }) {
   const { t, languageName } = useAccessText();
-  const [kind, setKind] = useState<'email' | 'open_link'>('email');
+  const [kind, setKind] = useState<'email' | 'open_link' | 'bearer'>('email');
   const [email, setEmail] = useState('');
   const [roles, setRoles] = useState<string[]>([]);
   const [note, setNote] = useState('');
@@ -233,8 +233,8 @@ function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDo
     setBusy(true); setError(null);
     try {
       setFresh(await postJson<Fresh>('/api/access/invitations', {
-        kind, email: kind === 'email' ? email : undefined, roles: roles.filter(r => options.includes(r)), note,
-        expires_in_days: days, max_uses: kind === 'open_link' ? uses : undefined,
+        kind: kind === 'bearer' ? 'open_link' : kind, signs_in: kind === 'bearer', email: kind === 'email' ? email : undefined, roles: roles.filter(r => options.includes(r)), note,
+        expires_in_days: days, max_uses: kind !== 'email' ? uses : undefined,
         link_base: window.location.origin, language,
       }));
       onDone();
@@ -250,12 +250,12 @@ function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDo
   return <form onSubmit={submit} className="field-panel space-y-4" data-testid="invite-form">
     <fieldset>
       <legend className="font-semibold text-sm mb-2">{t('invite_kind')}</legend>
-      <div className="grid sm:grid-cols-2 gap-2">
-        {(['email', 'open_link'] as const).map(k => <label key={k}
+      <div className="grid sm:grid-cols-3 gap-2">
+        {(['email', 'open_link', 'bearer'] as const).map(k => <label key={k}
           className={`border rounded p-3 cursor-pointer text-sm ${kind === k ? 'border-indigo-600 bg-indigo-50' : 'border-slate-300'}`}>
           <input type="radio" name="kind" className="mr-2" checked={kind === k} onChange={() => setKind(k)} data-testid={`kind-${k}`} />
-          <span className="font-medium">{t(k === 'email' ? 'invite_kind_email' : 'invite_kind_open')}</span>
-          <span className="block text-xs text-slate-600 mt-1">{t(k === 'email' ? 'invite_kind_email_hint' : 'invite_kind_open_hint')}</span>
+          <span className="font-medium">{t(k === 'email' ? 'invite_kind_email' : k === 'bearer' ? 'invite_kind_bearer' : 'invite_kind_open')}</span>
+          <span className="block text-xs text-slate-600 mt-1">{t(k === 'email' ? 'invite_kind_email_hint' : k === 'bearer' ? 'invite_kind_bearer_hint' : 'invite_kind_open_hint')}</span>
         </label>)}
       </div>
     </fieldset>
@@ -265,6 +265,7 @@ function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDo
     <fieldset>
       <legend className="font-semibold text-sm mb-2">{t('invite_roles')}</legend>
       <RolePicker options={options} value={roles} onChange={setRoles} testId="invite-roles" />
+      {kind !== 'email' && <p className="text-xs text-slate-600 mt-2" data-testid="invite-viewer-rule">{t('invite_viewer_rule')}</p>}
     </fieldset>
     <label className="field-control">{t('invite_note')}
       <textarea rows={3} value={note} onChange={e => setNote(e.target.value)} maxLength={1000} />
@@ -273,7 +274,7 @@ function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDo
       <label className="field-control">{t('invite_days')}
         <input type="number" min={1} max={data.limits.maxExpiryDays} value={days} onChange={e => setDays(Number(e.target.value))} />
       </label>
-      {kind === 'open_link' && <label className="field-control">{t('invite_uses')}
+      {kind !== 'email' && <label className="field-control">{t('invite_uses')}
         <input type="number" min={1} max={data.limits.maxOpenLinkUses} value={uses} onChange={e => setUses(Number(e.target.value))} data-testid="invite-uses" />
       </label>}
       <label className="field-control">{t('invite_language')}
