@@ -102,6 +102,28 @@ scenario, not an edge case.
 Context propagates: browser → API → service → queue → worker → adapter, repository, analyser,
 exporter.
 
+## Live-installation records (E3.24; owner requirement of 2026-10-04, from `7949967`)
+
+Owner requirement for the test VM: a complete, continuously collected log so a failure can be
+located immediately. Every mode except `OFF` writes daily `requests.jsonl` (every API request:
+status, duration, actor, error code/message, trace ID), `server-errors.jsonl` (full envelope
+with stack and cause chain), `process-errors.jsonl` (crash or refused start) and
+`client-errors.jsonl` (browser-reported uncaught errors, rejected promises, 5xx and network
+failures via `POST /api/client-errors`). Error bodies carry `trace_id`. New VM installations
+stay at `NORMAL` (the branch version defaulted to `TRACE`; not taken, `watchdogctl
+diagnostics-mode TRACE` switches it). Retention (days, MB cap) bounds the directory.
+`watchdogctl errors|trace|diag-summary` read it over SSH. Node's exit-on-unhandled-rejection
+behaviour is kept; the cause is written first.
+
+`POST /api/client-errors` is the one write reachable without an account, mounted before the
+installation gate for exactly that method and path. In order: same-origin JSON
+(`sameOriginMutation`, after the accounts-mode `crossSiteGuard`), a per-address limit
+(`RateLimiter`), then its own body parser under a byte limit (the app's 2 MB parser skips the
+path). Defaults 16 KB and 30 reports per 10 minutes, set by `WATCHDOG_CLIENT_ERRORS_*`.
+Metadata only; queries and fragments are dropped from paths and from URLs in message and
+stack, and the record passes the central redaction. Test:
+`tests/integration/client_errors_live.test.ts`.
+
 ## Redaction
 
 A central redaction layer runs before every sink, without exception. It knows credential-shaped

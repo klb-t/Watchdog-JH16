@@ -17,5 +17,10 @@ Mapa naprawia kolizje zaobserwowane na `31b813f` i `9dea9aa`. Historycznych comm
 | Claude E7.1: siedem obszarów | E7.1 (branch-local history) | Zachowane w źródłowej spec 14 |
 | Konsolidacja nawigacji obu wersji | **E7.7** | Otwarte; E7.2–E7.6 zarezerwowane przez spec 14 |
 | E5 remainder / E6 remainder | **E5.11 / E6.6** | Otwarte; opisy zachowane w rejestrze |
+| E3.19 ciągła diagnostyka, `7949967` (PR #10/#11) | **E3.24** | Przeniesione z utwardzeniem `POST /api/client-errors`; E3.19 w main to Google Trends |
+| E3.20 usypiana VM i bramka Cloud Run, `469ac73` | nieprzypisany | Poza main; nieaktualne (VM działa stale) |
+| E3.21 `--shared-host` i bezczynność, `80c10cc`; E3.21 pulpit, `7898068`/`ecae0fd` (PR #11) | **E3.23** (tylko warstwa pulpitu) | Pulpit w main; bezczynność poza main |
+| E3.22 devbox, `0f2ebda`/`d0f2f4a` (PR #10); E3.22 pulpit, `41e525b` | nieprzypisany | Poza main; zastąpione przez E3.23 |
+| E0.7 strażnik zasad, `e8a48d2`; E5.7b.1/1a rodziny porównań, `7322329`/`b2f808f` | E0.7 nieprzypisany; E5.7b-1/-2 | Strażnik poza main; rodziny porównań zrealizowane inaczej w main |
 
 Nowe migracje mają odrębną numerację: 020 admission, 021 projects, 022 comparisons pozostają niezmienione. 023 jest rezerwacją następnej konsolidacji, wymagającą ponownego sprawdzenia zdalnych zmian przed użyciem.

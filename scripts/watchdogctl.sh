@@ -48,6 +48,23 @@ case "${1:-help}" in
     exit "$code"
     ;;
   logs) require_commands journalctl; journalctl -u watchdog.service -n 150 --no-pager ;;
+  errors|trace|diag-summary)
+    diag="$root/usr/local/lib/watchdog/watchdog_diag.py"
+    [[ -f $diag ]] || die 'Diagnostics reader missing; update the installation.'
+    sub=$1; shift; [[ $sub == diag-summary ]] && sub=summary
+    WATCHDOG_ROOT="${root:-/}" python3 "$diag" "$sub" "$@" ;;
+  diagnostics-mode)
+    (($# == 2)) && [[ $2 =~ ^(OFF|ERRORS|NORMAL|TRACE)$ ]] || die 'Usage: watchdogctl diagnostics-mode OFF|ERRORS|NORMAL|TRACE'
+    require_admin; require_commands systemctl
+    python3 - "$root/etc/watchdog/app.env" "$2" <<'PYEOF'
+import os, sys
+path, mode = sys.argv[1:3]
+lines = [l for l in open(path).read().splitlines() if not l.startswith('WATCHDOG_DIAGNOSTICS_MODE=')] + [f'WATCHDOG_DIAGNOSTICS_MODE={mode}']
+tmp = path + '.tmp'
+open(tmp, 'w').write('\n'.join(lines) + '\n'); os.chmod(tmp, 0o600); os.replace(tmp, path)
+PYEOF
+    systemctl restart watchdog.service
+    printf 'Diagnostics mode %s. Daily request/error records are kept in every mode except OFF.\n' "$2" ;;
   restart)
     require_admin; require_commands systemctl; lock
     [[ ! -e $root/etc/watchdog/recovery-required ]] || die 'Recovery required; inspect /etc/watchdog/recovery-required before starting.'
@@ -93,5 +110,5 @@ case "${1:-help}" in
     (($# == 3)) || die 'Usage: watchdogctl restore ARCHIVE NEW_ABSOLUTE_DIRECTORY'
     # Staging only: never touches the active installation or invokes Docker/systemd.
     python3 "$helper" restore --archive "$2" --destination "$3" ;;
-  *) printf '%s\n' 'Usage: watchdogctl status | logs | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY | people | grant | invite | open-link | signin-link | enable-accounts EMAIL | enable-public HOST | disable-public | proxy-logs | set-public-url URL | set-mail'; [[ ${1:-help} == help ]] ;;
+  *) printf '%s\n' 'Usage: watchdogctl status | logs | errors [N] | trace TRACE_ID | diag-summary | diagnostics-mode MODE | restart | backup [ABSOLUTE_ARCHIVE] | verify ARCHIVE | restore ARCHIVE NEW_ABSOLUTE_DIRECTORY | people | grant | invite | open-link | signin-link | enable-accounts EMAIL | enable-public HOST | disable-public | proxy-logs | set-public-url URL | set-mail'; [[ ${1:-help} == help ]] ;;
 esac
