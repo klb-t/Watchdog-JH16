@@ -134,6 +134,52 @@ rola → cofnięcie w istniejącej sesji → restart z danymi → weryfikacja ba
 odtworzenie → osobno kontrolowana aktywacja. Lokalny test skryptów nie zamyka tych punktów.
 Nie używaj szerokiego wyjątku produkcyjnego local-user do ominięcia awarii logowania.
 
+## Diagnostyka: gdzie szukać, gdy coś nie działa
+
+Diagnostyka trafia do `/var/lib/watchdog/diagnostics/RRRR-MM-DD/`. Nowa instalacja ma tryb
+`NORMAL`; w każdym trybie poza `OFF` każdego dnia powstają pliki:
+
+| Plik | Co zawiera |
+|---|---|
+| `requests.jsonl` | każde żądanie API: status, czas, kto, kod i komunikat błędu, `trace_id` |
+| `server-errors.jsonl` | każdy nieoczekiwany błąd serwera z pełnym stosem i łańcuchem przyczyn |
+| `process-errors.jsonl` | awaria procesu lub odmowa startu (np. zła konfiguracja) z przyczyną |
+| `client-errors.jsonl` | błędy z przeglądarek użytkowników: wyjątki JS, odrzucone obietnice, odpowiedzi 5xx, zerwane połączenia |
+| `<trace_id>/events.jsonl` | w TRACE: każdy krok żądania lub analizy po kolei, z danymi wejściowymi i decyzjami |
+
+Każda odpowiedź z błędem zawiera `trace_id` (też w nagłówku `x-trace-id`), a konsola
+(`watchdogctl logs`) wypisuje każde nieudane lub wolne żądanie razem z nim. Dane są
+redagowane przed zapisem (hasła, tokeny, klucze); przeglądarka wysyła tylko metadane, bez
+treści formularzy i bez parametrów adresu.
+
+`POST /api/client-errors` działa także przed zalogowaniem (strona logowania też może się
+zepsuć), więc jest jedynym zapisem bez konta. Przyjmuje tylko JSON z tej samej domeny
+(`request_security.ts`), najwyżej 30 zgłoszeń na adres w 10 minut (`rate_limit.ts`) i ciało do
+16 KB; wartości zmienisz w `app.env` (`WATCHDOG_CLIENT_ERRORS_*`, opis w `.env.example`).
+Otwarta jest wyłącznie ta metoda i ścieżka. Ścieżki i adresy URL w komunikacie i stosie tracą
+query i fragment, a całość przechodzi przez centralną redakcję.
+
+Przez SSH na VM, bez otwierania aplikacji:
+
+```bash
+sudo watchdogctl errors          # ostatnie awarie: serwer, proces, przeglądarki, nieudane żądania
+sudo watchdogctl trace TRACE_ID  # wszystko o jednym zdarzeniu, krok po kroku
+sudo watchdogctl diag-summary    # dzisiejsze liczby, tryb, zajęte miejsce
+sudo watchdogctl logs            # konsola usługi (journald)
+sudo watchdogctl proxy-logs      # HTTPS / certyfikat
+sudo watchdogctl diagnostics-mode TRACE    # pełny ślad na czas szukania błędu; potem NORMAL
+```
+
+Retencja: 14 dni i maks. 2048 MB (`WATCHDOG_DIAGNOSTICS_RETENTION_DAYS`,
+`WATCHDOG_DIAGNOSTICS_MAX_MB` w `/etc/watchdog/app.env`); dzisiejszy dzień nie jest usuwany.
+Starsze instalacje zachowują swój tryb; przełącz go komendą `diagnostics-mode`.
+
+Na wspólnym devboxie `watchdogctl` i czytnik `watchdog_diag.py` nie są zainstalowane w
+`/usr/local/lib/watchdog` (instalator nie był tam uruchamiany). Pliki są w
+`/var/lib/watchdog/diagnostics/` i można je czytać przez `sudo`, albo uruchomić czytnik z
+checkoutu: `sudo WATCHDOG_ROOT=/ python3 scripts/watchdog_diag.py errors`. Pliki dzienne
+powstają dopiero w obrazie z tą zmianą.
+
 ## Utrzymanie i dane
 
 Polecenia wykonywane **przez SSH na VM**:

@@ -23,6 +23,10 @@ import fs from 'fs';
 import url from 'node:url';
 import { buildApiRouter } from './backend/watchdog_api/api/routes';
 import { traceMiddleware, errorHandler } from './backend/watchdog_api/api/middleware';
+import { CLIENT_ERRORS_PATH, buildClientErrorHandlers, clientErrorLimitsFromEnv, isClientErrorPath } from './backend/watchdog_api/api/client_errors';
+import { pruneDiagnostics, retentionFromEnv } from './backend/watchdog_api/diag/retention';
+import { tracer } from './backend/watchdog_api/utils/tracer';
+import { buildErrorEnvelope } from './backend/watchdog_api/utils/errors';
 import { ExtractionDatasetService } from './backend/watchdog_api/services/extraction_dataset';
 import { buildIdentity, assertAuthSafeForEnvironment, readAuthConfig } from './backend/watchdog_api/identity';
 import { buildAuthRouter, principalMiddleware, requireInstallationAccess } from './backend/watchdog_api/api/auth_routes';
@@ -87,7 +91,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json({ limit: '2mb' }));
+// Browser error reports parse their own body under a small limit (client_errors.ts);
+// this parser must not read it first, or that limit would never apply.
+const jsonBody = express.json({ limit: '2mb' });
+app.use((req, res, next) => isClientErrorPath(req.path) ? next() : jsonBody(req, res, next));
 app.use(traceMiddleware);
 
 /**
@@ -134,6 +141,10 @@ export async function configureApp() {
     res.json({ ...legal, settings: { contact: process.env.WATCHDOG_OPERATOR_CONTACT?.trim() || null, location: process.env.WATCHDOG_DATA_LOCATION?.trim() || null,
       url: process.env.WATCHDOG_PUBLIC_URL?.trim() || null, instance: 'WatchDog' } });
   });
+  // The one unauthenticated write: before the installation gate, so a page that is not signed in
+  // yet (or an applicant) can report its own failure; exactly this method and path, nothing else.
+  // The accounts-mode cross-site guard above still applies.
+  app.post(CLIENT_ERRORS_PATH, ...buildClientErrorHandlers(clientErrorLimitsFromEnv()));
   app.use('/api', requireInstallationAccess);
   if (admission && mail) app.use('/api/access',buildAccessRouter(admission,mail));
   app.use('/api/search', buildSearchRouter(new SearchRepository(sqlite, store)));
@@ -189,7 +200,28 @@ export async function configureApp() {
   return { app, identity, automation };
 }
 
+/** Crashes and stray rejections leave a full record, not just whatever Node prints. */
+function installProcessDiagnostics() {
+  const record = (kind: string, error: unknown) => {
+    const err = error instanceof Error ? error : new Error(String(error));
+    tracer.record('process-errors.jsonl', { kind, ...buildErrorEnvelope(err, { component: 'process', operation: kind }) });
+    console.error(`[PROCESS] ${kind}: ${err.stack ?? err.message}`);
+  };
+  // Node's own behaviour is kept — both still end the process (systemd restarts
+  // it); the difference is that the cause is written down first.
+  process.on('unhandledRejection', reason => { record('unhandledRejection', reason); process.exit(1); });
+  process.on('uncaughtException', error => { record('uncaughtException', error); process.exit(1); });
+  const retention = retentionFromEnv();
+  const prune = () => { try {
+    const r = pruneDiagnostics(tracer.getLogDir(), retention);
+    if (r.removed.length) console.log(`[DIAGNOSTICS] retention removed ${r.removed.join(', ')}; ${Math.round(r.bytes / 1048576)} MB kept`);
+  } catch (error) { console.error(`[DIAGNOSTICS] retention failed: ${(error as Error).message}`); } };
+  prune(); setInterval(prune, 3_600_000).unref();
+  console.log(`Diagnostics: mode ${tracer.getMode()}, directory ${tracer.getLogDir()}, keep ${retention.days} days / ${Math.round(retention.maxBytes / 1048576)} MB`);
+}
+
 async function startServer() {
+  installProcessDiagnostics();
   const { identity, automation } = await configureApp();
   automation.start();
   console.log(`Authentication: ${identity.mode} — ${identity.config.reason}`);
