@@ -32,7 +32,7 @@ function writePending(token: string | null) {
  */
 export function Join() {
   const access = useAccess();
-  const { t, role, date } = useAccessText();
+  const { t, role, date, lang } = useAccessText();
   const [token] = useState<string | null>(() => new URLSearchParams(window.location.hash.slice(1)).get('t') ?? readPending());
   const [preview, setPreview] = useState<Preview | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +58,7 @@ export function Join() {
     if (!token) return;
     setBusy(true); setError(null);
     try {
-      await postJson('/api/auth/invitations/redeem', { token });
+      await postJson('/api/auth/invitations/redeem', { token, language: lang });
       writePending(null);
       setAccepted(true);
       announceSessionChange();
@@ -81,7 +81,7 @@ export function Join() {
     if (!token) return;
     setBusy(true); setError(null);
     try {
-      await postJson('/api/auth/invitations/bearer', { token });
+      await postJson('/api/auth/invitations/bearer', { token, language: lang });
       writePending(null);
       setAccepted(true);
       announceSessionChange();

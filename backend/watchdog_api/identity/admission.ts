@@ -1,4 +1,5 @@
 import { accessPolicy } from '../config/access_policy';
+import { reasonLanguage, renderReason, type ReasonOrigin } from './application_reasons';
 import { createHash, randomBytes, randomUUID, timingSafeEqual } from 'node:crypto';
 import {
   Role, ROLES, isRole, capabilitiesFor, can, grantableRoles, openLinkAllowsRole,
@@ -441,7 +442,7 @@ export class AdmissionService {
    * an administrator decides (owner's rule, 2026-10-29). Either way the use is
    * consumed, so a forwarded single-use link cannot be passed on further.
    */
-  redeem(actor: AdmissionActor, token: unknown): { grantId: string; roles: Role[]; pendingRoles: Role[]; alreadyRedeemed: boolean } {
+  redeem(actor: AdmissionActor, token: unknown, language?: unknown): { grantId: string; roles: Role[]; pendingRoles: Role[]; alreadyRedeemed: boolean } {
     if (!actor.email) throw new AdmissionError('unauthenticated', 401, 'Sign in first.');
     const i = this.byToken(token);
     if (!i) throw new AdmissionError('invitation_invalid', 404, 'This invitation link is not valid.');
@@ -476,8 +477,7 @@ export class AdmissionService {
           note: 'Superseded by an accepted invitation.', grantId, at });
       }
       if (pendingRoles.length && !pending) this.invitationApplication(actor.principalId, actor.email!, null, i, pendingRoles, origin, at,
-        i.kind === 'email' ? `Zaproszenie dla ${maskEmail(i.email!)} użyte przez ${actor.email}: role powyżej viewer wymagają zatwierdzenia administratora.`
-          : `Wejście przez otwarty link ${i.id.slice(0, 8)}: role powyżej viewer wymagają zatwierdzenia administratora.`);
+        i.kind === 'email' ? { invited: maskEmail(i.email!), email: actor.email! } : { link: i.id.slice(0, 8) }, language);
       this.repo.mirrorRoles(actor.principalId, this.effective(actor.email).roles);
     });
     this.audit(actor.principalId, 'access.invitation.redeemed', 'invitation', i.id, actor.requestId,
@@ -502,9 +502,11 @@ export class AdmissionService {
 
   /** The application for roles above viewer that an invitation could not grant by itself. */
   private invitationApplication(principalId: string, email: string, displayName: string | null, i: InvitationRow, roles: Role[],
-    origin: 'bearer_link' | 'address_mismatch' | 'open_link', at: string, reason: string) {
+    origin: ReasonOrigin, at: string, params: Record<string, string>, language: unknown) {
+    const lang = reasonLanguage(language);
     this.repo.insertApplication({ id: randomUUID(), principal_id: principalId, email, display_name: displayName, affiliation: null,
-      reason, requested_roles_json: JSON.stringify(sortedRoles(roles)), status: 'pending', submitted_at: at, origin, invitation_id: i.id });
+      reason: renderReason(origin, params, lang), requested_roles_json: JSON.stringify(sortedRoles(roles)), status: 'pending', submitted_at: at,
+      origin, invitation_id: i.id, reason_language: lang, reason_params_json: JSON.stringify(params) });
   }
 
   /**
@@ -512,7 +514,7 @@ export class AdmissionService {
    * with viewer at once and an application for any role above viewer. Each use
    * is one guest; the guest's address is reserved and can never receive mail.
    */
-  redeemBearer(token: unknown, requestId: string): { principalId: string; sessionVersion: number; email: string; displayName: string;
+  redeemBearer(token: unknown, requestId: string, language?: unknown): { principalId: string; sessionVersion: number; email: string; displayName: string;
     roles: Role[]; pendingRoles: Role[]; accessExpiresAt: string | null } {
     const i = this.byToken(token);
     if (!i) throw new AdmissionError('invitation_invalid', 404, 'This invitation link is not valid.');
@@ -530,7 +532,7 @@ export class AdmissionService {
         granted_by: i.created_by, granted_at: at, expires_at: i.access_expires_at, note: i.note });
       this.repo.insertRedemption({ id: randomUUID(), invitationId: i.id, principalId, email, grantId, at });
       if (pendingRoles.length) this.invitationApplication(principalId, email, displayName, i, pendingRoles, 'bearer_link', at,
-        `Wejście przez link na okaziciela ${short}: role powyżej viewer wymagają zatwierdzenia administratora.`);
+        { link: short }, language);
       this.repo.mirrorRoles(principalId, this.effective(email).roles);
     });
     this.audit(principalId, 'access.invitation.bearer_signed_in', 'invitation', i.id, requestId, { email, roles: [IMMEDIATE_ROLE], pendingRoles, grantId });

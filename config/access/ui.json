@@ -142,7 +142,8 @@
       "join_viewer_rule": "Jeśli ten link nie był wysłany na Twój adres albo może go mieć każdy, od razu dostaniesz rolę viewer, a wyższe role zatwierdzi administrator.",
       "pending_banner": "Masz rolę viewer. Role {roles} czekają na zatwierdzenie przez administratora.",
       "legal_privacy": "Polityka prywatności",
-      "legal_terms": "Warunki korzystania"
+      "legal_terms": "Warunki korzystania",
+      "app_reason_original": "Oryginał ({language})"
     },
     "en": {
       "language_name": "English",
@@ -283,7 +284,8 @@
       "join_viewer_rule": "If this link was not sent to your address, or anyone may hold it, you get viewer at once and an administrator approves the higher roles.",
       "pending_banner": "You have the viewer role. The roles {roles} are waiting for an administrator's approval.",
       "legal_privacy": "Privacy policy",
-      "legal_terms": "Terms of use"
+      "legal_terms": "Terms of use",
+      "app_reason_original": "Original ({language})"
     }
   }
 }

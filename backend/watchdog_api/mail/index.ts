@@ -31,6 +31,7 @@ const LanguageSchema = z.object({
   open_link: z.object({ subject: Text, body: Text }),
   sign_in_code: z.object({ subject: Text, body: Text }),
   fragments: z.object({ note: Text, uses: Text, link: Text }),
+  application_reason: z.object({ address_mismatch: Text, open_link: Text, bearer_link: Text }),
 });
 const MessagesSchema = z.object({
   schema_version: z.string(),

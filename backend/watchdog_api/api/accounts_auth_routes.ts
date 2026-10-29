@@ -16,6 +16,7 @@ import { MailService } from '../mail';
 import { Principal } from '../domain/principal';
 import { tracer } from '../utils/tracer';
 import { RateLimiter, limitByIp } from './rate_limit';
+import { reasonTranslations } from '../identity/application_reasons';
 
 /**
  * The authentication and admission surface (E4.1, E4.5).
@@ -105,6 +106,7 @@ function applicationView(a: ReturnType<AdmissionRepository['application']> & obj
     id: a.id, status: a.status, submitted_at: a.submitted_at, decided_at: a.decided_at,
     decision_note: a.decision_note, reason: a.reason, affiliation: a.affiliation, display_name: a.display_name,
     requested_roles: JSON.parse(a.requested_roles_json), origin: a.origin, invitation_id: a.invitation_id,
+    reason_language: a.reason_language, reason_translations: reasonTranslations(a),
   };
 }
 
@@ -269,14 +271,14 @@ export function buildAuthRouter(deps: AuthDeps): Router {
 
   router.post('/invitations/redeem', limitByIp(previewLimiter, 'redeem'), admissionRoute((req, res) => {
     if (!accounts || !deps.admission) return needAccounts(res);
-    const result = deps.admission.redeem(actorOf(req), req.body?.token);
+    const result = deps.admission.redeem(actorOf(req), req.body?.token, req.body?.language);
     res.json({ redeemed: true, roles: result.roles, pending_roles: result.pendingRoles, already_redeemed: result.alreadyRedeemed });
   }));
 
   /** A bearer link signs its holder in as a guest; the session ends no later than the link's access expiry. */
   router.post('/invitations/bearer', limitByIp(bearerLimiter, 'bearer'), admissionRoute((req, res) => {
     if (!accounts || !deps.admission) return needAccounts(res);
-    const g = deps.admission.redeemBearer(req.body?.token, requestId());
+    const g = deps.admission.redeemBearer(req.body?.token, requestId(), req.body?.language);
     const expiresAt = issueSession(res, g.principalId, g.sessionVersion, g.accessExpiresAt ? new Date(g.accessExpiresAt).getTime() : undefined);
     res.json({ principal: { id: g.principalId, email: g.email, display_name: g.displayName, roles: g.roles }, pending_roles: g.pendingRoles,
       admission: 'member', expires_at: expiresAt });

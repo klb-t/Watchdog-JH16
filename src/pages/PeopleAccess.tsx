@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { postJson, useAccess } from '../lib/access';
-import { useAccessText, type AccessKey } from '../lib/access_i18n';
+import { useAccessText, ACCESS_LANGUAGES, type AccessKey, type AccessLanguage } from '../lib/access_i18n';
 
 interface GrantSource { kind: 'environment' | 'grant'; source: string; roles: string[]; expiresAt: string | null }
 interface Member {
@@ -8,7 +8,7 @@ interface Member {
   active: boolean; lastSeenAt: string | null; signInMethods: string[]; modifiable: boolean; notModifiableReason: string | null;
 }
 interface ApplicationRow {
-  id: string; email: string; display_name: string | null; affiliation: string | null; reason: string;
+  id: string; email: string; display_name: string | null; affiliation: string | null; reason: string; reason_language?: string | null; reason_translations?: Record<string, string>;
   requested_roles: string[]; status: string; submitted_at: string; decision_note: string | null; origin?: string | null; invitation_id?: string | null;
 }
 interface Invitation {
@@ -120,13 +120,18 @@ function Applications({ data, canAdmit, run }: { data: Overview; canAdmit: boole
 }
 
 function ApplicationCard({ a, data, canAdmit, run }: { a: ApplicationRow; data: Overview; canAdmit: boolean; run: Run }) {
-  const { t, date } = useAccessText();
+  const { t, date, lang, languageName } = useAccessText();
   const [roles, setRoles] = useState<string[]>(a.requested_roles.filter(r => data.grantable_roles.includes(r)));
   const [note, setNote] = useState('');
   return <article className="field-panel" data-testid={`application-${a.email}`}>
     <p className="font-medium">{a.display_name ?? a.email} <span className="text-sm text-slate-500">{a.email}</span></p>
     {a.affiliation && <p className="text-sm text-slate-600">{a.affiliation}</p>}
-    <p className="mt-2 whitespace-pre-wrap text-sm">{a.reason}</p>
+    {(() => { const translated = a.reason_language && a.reason_language !== lang ? a.reason_translations?.[lang] : undefined;
+      return translated ? <>
+        <p className="mt-2 whitespace-pre-wrap text-sm" data-testid="application-reason">{translated}</p>
+        <p className="mt-1 whitespace-pre-wrap text-xs text-slate-500" data-testid="application-reason-original">
+          {t('app_reason_original', { language: (ACCESS_LANGUAGES as string[]).includes(a.reason_language!) ? languageName(a.reason_language as AccessLanguage) : a.reason_language! })}: {a.reason}</p>
+      </> : <p className="mt-2 whitespace-pre-wrap text-sm" data-testid="application-reason">{a.reason}</p>; })()}
     <p className="text-xs text-slate-500 mt-1">{date(a.submitted_at)}{a.origin ? ` · ${t(`app_origin_${a.origin}` as AccessKey)}` : ''}{a.invitation_id ? ` · ${t('app_invitation', { id: a.invitation_id.slice(0, 8) })}` : ''}</p>
     {canAdmit && <div className="mt-3 space-y-2">
       <RolePicker options={data.grantable_roles} value={roles} onChange={setRoles} testId="approve-roles" />
