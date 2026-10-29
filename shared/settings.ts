@@ -12,6 +12,8 @@ export const SettingsSchema = z.object({
   research: z.object({ languages: z.array(z.string().regex(/^[a-z]{2,3}(?:-[A-Za-z0-9]{2,8})*$/)).min(1).max(20),
     geographies: z.array(z.string().regex(/^[A-Z]{2}(?:-[A-Z0-9]{1,8})?$/)).max(30), dialects: z.array(z.string().trim().min(1).max(80)).max(30),
     slang: z.boolean(), sentiment: z.boolean() }).strict(),
+  // Goals from config/goal-navigation.json the person pinned, in the order they pinned them.
+  favoriteGoals: z.array(z.string().regex(/^[a-z][a-z0-9_]{0,63}$/)).max(30).refine(ids => new Set(ids).size === ids.length, 'Duplicate favourite').optional(),
 }).strict();
 export type PersonalSettings = z.infer<typeof SettingsSchema>;
 export interface SettingsRecord { value: PersonalSettings; hash: string; updatedAt: string | null }
