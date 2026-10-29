@@ -32,7 +32,7 @@ export function Layout() {
       <main className="flex-1 min-w-0 overflow-auto bg-slate-50">
         <WorkspaceTabs capabilities={access.capabilities} pathname={location.pathname} />
         {access.pendingApplication && <p role="status" className="mx-4 sm:mx-8 mt-3 rounded border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900" data-testid="pending-approval">
-          {t('pending_banner', { roles: access.pendingApplication.requested_roles.map(role).join(', ') })}</p>}
+          {t('pending_banner', { viewer: role('viewer'), roles: access.pendingApplication.requested_roles.map(role).join(', ') })}</p>}
         <Outlet />
       </main>
     </div>

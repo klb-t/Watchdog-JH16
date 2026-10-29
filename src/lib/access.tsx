@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation } from 'react-router-dom';
 import { clearFieldCache, readFieldCache } from './field_client';
 import type { AdmissionStatus } from '../../shared/admission';
 import type { Capability, Role } from '../../shared/authorization';
+import { useAccessText } from './access_i18n';
 
 /**
  * Where the current visitor stands (E4.5), from the server's own answer:
@@ -112,7 +113,8 @@ export function AccessProvider({ children }: { children: ReactNode }) {
 export function AdmissionGate({ children }: { children: ReactNode }) {
   const access = useAccess();
   const location = useLocation();
-  if (access.loading) return <p className="p-6" role="status">Checking access…</p>;
+  const { t } = useAccessText();
+  if (access.loading) return <p className="p-6" role="status">{t('access_checking')}</p>;
   const next = encodeURIComponent(`${location.pathname}${location.search}`);
   if (access.admission === 'anonymous') return <Navigate to={`/login?next=${next}`} replace />;
   if (access.admission === 'applicant') return <Navigate to="/apply" replace />;
@@ -121,11 +123,12 @@ export function AdmissionGate({ children }: { children: ReactNode }) {
 
 export function AccessBoundary({ capability, children }: { capability: Capability; children: ReactNode }) {
   const access = useAccess();
-  if (access.loading) return <p className="p-6" role="status">Checking access…</p>;
+  const { t } = useAccessText();
+  if (access.loading) return <p className="p-6" role="status">{t('access_checking')}</p>;
   if (!access.capabilities.includes(capability)) return <div className="p-6" data-testid="access-denied">
-    <h1 className="text-xl font-semibold">Access unavailable</h1>
-    <p className="mt-2">Your current profiles do not grant access to this view.</p>
-    <Link className="underline" to="/setup">Account and access</Link>
+    <h1 className="text-xl font-semibold">{t('access_unavailable_title')}</h1>
+    <p className="mt-2">{t('access_unavailable_body')}</p>
+    <Link className="underline" to="/setup">{t('access_unavailable_link')}</Link>
   </div>;
   return children;
 }

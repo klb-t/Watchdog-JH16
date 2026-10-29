@@ -9,11 +9,12 @@ import { useAccessText } from '../lib/access_i18n';
  * address from the installation's settings.
  */
 export function Legal({ page }: { page: 'privacy' | 'terms' }) {
-  const { lang } = useAccessText();
+  const { lang, t } = useAccessText();
   const [d, setD] = useState<any>(null), [error, setError] = useState('');
   useEffect(() => { fetch('/api/public/legal').then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(setD).catch(e => setError(e.message)); }, []);
-  if (error) return <AccessShell title="WatchDog"><p role="alert">{error}</p></AccessShell>;
-  if (!d) return <AccessShell title="WatchDog"><p>…</p></AccessShell>;
+  // The status code stays in the console; the reader gets a sentence in their language.
+  if (error) return <AccessShell title="WatchDog"><p role="alert" data-testid="legal-error" title={error}>{t('legal_unavailable')}</p></AccessShell>;
+  if (!d) return <AccessShell title="WatchDog"><p role="status">{t('legal_loading')}</p></AccessShell>;
   const text = d.languages[lang] ?? d.languages.pl, st = d.settings;
   const fill = (s: string) => s.replace(/\{instance\}/g, st.instance).replace(/\{contact\}/g, st.contact ?? text.contact_missing)
     .replace(/\{location\}/g, st.location ?? text.location_missing).replace(/\{url\}/g, st.url ?? window.location.origin).replace(/\{version\}/g, d.version);

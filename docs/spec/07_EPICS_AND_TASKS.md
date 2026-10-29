@@ -53,6 +53,19 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
   - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
   - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
 
+- [x] **E4.8b — Invitee screens audit (2026-10-29).**
+  - **Scope.** Every screen a guest or invited researcher meets, walked on a copy of the owner's data in the production image: email, open and bearer invitations, `/apply`, the pending banner, `/share`, Replications JH16 and CR2014 as a shared viewer, run detail and raw artifacts, `/privacy`, `/terms`, login. Checked in English and Polish, at 390 px and 1280 px.
+  - **Fixed.**
+    - One interface language: the access-screen selector now changes the page, and the workspace follows it.
+    - `/share` is translated.
+    - Invitations no longer show the `local-user` placeholder name or the owner's sign-in address.
+    - Role labels replace raw role ids in the banner and join texts.
+    - The Replications list counts shared runs.
+    - A read-only guest gets a note instead of the protocol-freeze, measurement-launch and manuscript-edit controls.
+    - Node system errors answer `STORAGE_ERROR` with a trace id instead of server paths.
+    - Server refusals and the access-boundary texts appear in the reader's language.
+  - **Evidence and tests.** Evidence in `../history/evidence/2026-10-29-invitee-screens/`, including what was found and not fixed (the research pages are each in one fixed language). Tests: `tests/integration/invitee_screens.test.ts`, `tests/e2e/invitee_screens.test.ts`.
+
 - [x] **E5.13 — Request from a pasted text (first case: Prof. Hoffmann's quote).**
   - **Path:** `/requests`, `services/text_requests.ts`, migration 026.
     - The work is resolved through open metadata: an honestly identified page request, then Crossref with an exact landing-page match.

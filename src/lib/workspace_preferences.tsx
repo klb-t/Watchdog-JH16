@@ -3,6 +3,7 @@ import {Navigate,useNavigate} from 'react-router-dom';
 import {resolveWorkspace,workspacePreferences as config,type WorkspaceLanguage} from '../../shared/workspace_preferences';
 import {availableWorkspaceGroups} from '../../shared/workspace_navigation';
 import {useAccess} from './access';
+import {chooseLanguage,isLanguage,LANGUAGE_EVENT,pickLanguage} from './access_i18n';
 
 const defaults={preset:config.default_preset,language:config.default_language};
 const Context=createContext({...defaults,profile:resolveWorkspace(defaults.preset,defaults.language),setPreset:(_v:string)=>{},setLanguage:(_v:WorkspaceLanguage)=>{}});
@@ -12,10 +13,16 @@ export function WorkspacePreferencesProvider({children}:{children:ReactNode}) {
     try {const v=JSON.parse(localStorage.getItem('watchdog-workspace-preferences')??'null');
       if(v&&config.presets[v.preset]&&['pl','en'].includes(v.language)) return v as typeof defaults;
     } catch { /* default is an explicit versioned setting */ }
-    return defaults;
+    // No saved workspace choice yet: the same language as the sign-in and invitation screens
+    // (the reader's choice there, then the browser), so a guest is not switched language on entry.
+    const language=pickLanguage();
+    return {...defaults,language:(['pl','en'] as string[]).includes(language)?language as WorkspaceLanguage:defaults.language};
   });
   useEffect(()=>{try{localStorage.setItem('watchdog-workspace-preferences',JSON.stringify(prefs));}catch{}},[prefs]);
-  return <Context.Provider value={{...prefs,profile:resolveWorkspace(prefs.preset,prefs.language),setPreset:preset=>{if(config.presets[preset])setPrefs(p=>({...p,preset}));},setLanguage:language=>setPrefs(p=>({...p,language}))}}>{children}</Context.Provider>;
+  // One language for the whole interface: a choice in either selector moves both.
+  useEffect(()=>{const follow=(e:Event)=>{const next=(e as CustomEvent).detail;if(isLanguage(next)&&(['pl','en'] as string[]).includes(next))setPrefs(p=>p.language===next?p:{...p,language:next as WorkspaceLanguage});};
+    window.addEventListener(LANGUAGE_EVENT,follow);return()=>window.removeEventListener(LANGUAGE_EVENT,follow);},[]);
+  return <Context.Provider value={{...prefs,profile:resolveWorkspace(prefs.preset,prefs.language),setPreset:preset=>{if(config.presets[preset])setPrefs(p=>({...p,preset}));},setLanguage:language=>{setPrefs(p=>({...p,language}));chooseLanguage(language);}}}>{children}</Context.Provider>;
 }
 export function WorkspaceLanding({group}:{group:string}) {
   const {profile,language}=useWorkspace(),access=useAccess();

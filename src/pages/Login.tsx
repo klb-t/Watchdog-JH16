@@ -24,7 +24,7 @@ export function Login() {
   const access = useAccess();
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const { t } = useAccessText();
+  const { t, errorText } = useAccessText();
   const [operatorError, setOperatorError] = useState<string | null>(null);
 
   // Read purely (React may run an initializer twice); wiped in an effect.
@@ -51,7 +51,7 @@ export function Login() {
     spent.current = true;
     postJson('/api/auth/operator/verify', { token: fragment.signin })
       .then(() => { announceSessionChange(); after(); })
-      .catch(e => setOperatorError((e as Error).message))
+      .catch(e => setOperatorError(errorText(e)))
       .finally(() => setOperatorPending(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

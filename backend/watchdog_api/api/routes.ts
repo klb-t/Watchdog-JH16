@@ -138,8 +138,10 @@ apiRouter.post('/studies/jh2016', requireCapability('run.create'), async (req, r
 
 apiRouter.get('/replications', requireCapability('run.view'), async (req, res, next) => {
   try {
+    // The same runs the target page lists: one's own plus those shared with one (read-only).
+    const shared = [...sharedWith(req)];
     const targets = await Promise.all(listReplicationTargets().map(async t => ({ target_id: t.target.target_id, title: t.target.title, citation: t.target.citation,
-      identifier: t.target.identifier, has_dossier: !!t.dossier, runs: t.dossier ? (await collectRuns(db, store, req.principal!.id, t.dossier)).length : 0 })));
+      identifier: t.target.identifier, has_dossier: !!t.dossier, runs: t.dossier ? (await collectRuns(db, store, req.principal!.id, t.dossier, shared)).length : 0 })));
     res.setHeader('Cache-Control', 'no-store'); res.json({ targets });
   } catch (e) { next(e); }
 });

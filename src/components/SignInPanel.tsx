@@ -34,7 +34,7 @@ export function SignInPanel({ onSignedIn, initialEmail = '', initialCode = '' }:
   onSignedIn: () => void; initialEmail?: string; initialCode?: string;
 }) {
   const access = useAccess();
-  const { t, lang } = useAccessText();
+  const { t, lang, errorText } = useAccessText();
   const googleRef = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState(initialEmail);
   const [code, setCode] = useState(initialCode);
@@ -56,13 +56,13 @@ export function SignInPanel({ onSignedIn, initialEmail = '', initialCode = '' }:
         callback: async ({ credential }) => {
           setBusy(true); setError(null);
           try { await postJson('/api/auth/session', { id_token: credential }); done(); }
-          catch (e) { setError((e as Error).message); }
+          catch (e) { setError(errorText(e)); }
           finally { setBusy(false); }
         },
       });
       window.google.accounts.id.renderButton(googleRef.current,
         { theme: 'outline', size: 'large', text: 'signin_with', width: 300, locale: lang });
-    }).catch(e => { if (active) setError((e as Error).message); });
+    }).catch(e => { if (active) setError(errorText(e)); });
     return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [access.methods.google?.client_id, lang]);
@@ -83,7 +83,7 @@ export function SignInPanel({ onSignedIn, initialEmail = '', initialCode = '' }:
     try {
       await postJson('/api/auth/email/start', { email, language: lang });
       setStep('code'); setNotice(t('email_sent', { email }));
-    } catch (e) { setError((e as Error).message); }
+    } catch (e) { setError(errorText(e)); }
     finally { setBusy(false); }
   }
 
@@ -91,7 +91,7 @@ export function SignInPanel({ onSignedIn, initialEmail = '', initialCode = '' }:
     event?.preventDefault();
     setBusy(true); setError(null);
     try { await postJson('/api/auth/email/verify', { email: address, code: value }); done(); }
-    catch (e) { setError((e as Error).message); setStep('code'); }
+    catch (e) { setError(errorText(e)); setStep('code'); }
     finally { setBusy(false); }
   }
 

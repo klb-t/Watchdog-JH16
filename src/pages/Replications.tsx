@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAccess } from '../lib/access';
+import { useAccessText } from '../lib/access_i18n';
 
 /**
  * Replications: one entry per registered target. The target page shows the
@@ -182,6 +183,7 @@ function Protocols({ data, reload }: { data: any; reload: () => void }) {
     body: JSON.stringify({ consent: true, name, primary: primary.filter(inProtocol), families, gating, alpha: Number(alpha), rationale, expectedDossierHash: data.hashes.dossier }) });
     const d = await r.json(); if (!r.ok) setMsg(d.message ?? `HTTP ${r.status}`); else { setMsg(`Zamrożono: ${d.protocol.content_hash.slice(0, 16)}`); reload(); } };
   const set = (k: string, patch: Partial<{ family: number; priority: number }>) => setAssign({ ...assign, [k]: { ...assign[k], ...patch } });
+  const access = useAccess(), { t } = useAccessText(), canFreeze = access.capabilities.includes('method.approve');
   const togglePrimary = (k: string, on: boolean) => setPrimary(on ? [...new Set([...primary, k])] : primary.filter(x => x !== k));
   return <div className="space-y-4">
     <section className={card}><h2 className="font-semibold">Protokoły zamrożone przed danymi potwierdzającymi</h2>
@@ -196,6 +198,7 @@ function Protocols({ data, reload }: { data: any; reload: () => void }) {
             <td className="font-mono">{e.priority === null ? e.family_id : `${e.family_id}.${e.priority}`}</td><td>{e.label}</td><td>{e.primary ? 'tak' : 'nie'}</td><td>{e.verdict}</td><td className="font-mono">{fmtP(e.p_raw)}</td><td className="font-mono">{fmtP(e.p_adjusted)}</td>
             <td>{e.tested === false ? <span title={e.not_tested_reason}>nietestowane: {notTested(e.not_tested_reason)}</span> : e.significant ? 'tak' : 'nie'}</td></tr>))}</tbody></table></div>}
       </div>)}</section>
+    {!canFreeze ? <p className="text-sm text-slate-600" data-testid="protocol-readonly">{t('readonly_protocol_freeze')}</p> :
     <section className={card} data-testid="protocol-form"><h2 className="font-semibold">Zamroź nowy protokół</h2>
       <label className="block text-sm">Nazwa<input className="border rounded px-2 py-1 w-full" value={name} onChange={e => setName(e.target.value)} /></label>
       <fieldset className="text-sm space-y-1"><legend className="font-medium">Porównania: rodzina, priorytet, punkt główny</legend>
@@ -216,7 +219,7 @@ function Protocols({ data, reload }: { data: any; reload: () => void }) {
       <p className="text-xs text-slate-600" data-testid="protocol-preview">Zostanie zamrożone: {families.length ? families.map((f, i) => `${i + 1}. ${f.label}: ${f.endpoints.join(' → ')} (${f.multiplicity})`).join('; ') : 'brak porównań'}{families.length > 1 ? `; bramkowanie ${gating}` : ''}.</p>
       <label className="block text-sm">Uzasadnienie (wymagane)<textarea className="border rounded w-full px-2 py-1" rows={3} value={rationale} onChange={e => setRationale(e.target.value)} data-testid="protocol-rationale" /></label>
       <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!rationale.trim() || !families.length || !primary.some(inProtocol)} onClick={freeze} data-testid="freeze-protocol">Zamroź protokół (nieodwracalne)</button>
-      {msg && <p role="status" className="text-sm">{msg}</p>}</section>
+      {msg && <p role="status" className="text-sm">{msg}</p>}</section>}
   </div>;
 }
 
@@ -285,6 +288,7 @@ function GenericOverview({ data }: { data: any }) {
 function Measurement({ data, reload }: { data: any; reload: () => void }) {
   const [m, setM] = useState<any>(null), [error, setError] = useState(''), [approved, setApproved] = useState(false), [role, setRole] = useState('exploratory'), [msg, setMsg] = useState(''), [runId, setRunId] = useState(''), [status, setStatus] = useState('');
   const id = data.target.target_id;
+  const access = useAccess(), { t } = useAccessText(), canRun = access.capabilities.includes('run.create');
   useEffect(() => { fetch(`/api/replications/${id}/measurement`).then(async r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(d => setM(d.measurement)).catch(e => setError(e.message)); }, [id]);
   useEffect(() => { if (!runId) return; const t = setInterval(async () => { const r = (await (await fetch(`/api/runs/${runId}`)).json()).run; setStatus(r.status);
     if (['COMPLETED', 'FAILED'].includes(r.status)) { clearInterval(t); reload(); } }, 1500); return () => clearInterval(t); }, [runId]);
@@ -301,12 +305,13 @@ function Measurement({ data, reload }: { data: any; reload: () => void }) {
       <dt className="text-slate-500">Metoda</dt><dd>{m.method_id}: {m.comparisons.map((c: any) => `${c.label} (${c.statistic}; referencja ${c.reference_ref}, sha256 ${c.reference_hash.slice(0, 12)})`).join('; ')}</dd>
       <dt className="text-slate-500">Koszt</dt><dd data-testid="measurement-cost">{m.requests} zapytanie SerpApi; limit dzienny {m.daily_limit}, dziś zostało {m.left_today}</dd>
       <dt className="text-slate-500">Preset</dt><dd className="font-mono text-xs break-all">{m.preset_id} {m.preset_version} · sha256 {m.preset_hash}</dd></dl>
+    {!canRun ? <p className="text-sm text-slate-600" data-testid="measurement-readonly">{t('readonly_measurement')}</p> : <>
     <label className="block text-sm">Rola nowych danych <select className="border rounded" value={role} onChange={e => setRole(e.target.value)} data-testid="measurement-role">
       <option value="exploratory">eksploracyjne (domyślnie)</option>{data.protocols.map((p: any) => <option key={p.id} value={`protocol:${p.id}`}>potwierdzające wg protokołu „{p.name}” ({p.frozen_at.slice(0, 16).replace('T', ' ')})</option>)}</select></label>
     <label className="flex gap-2 text-sm"><input type="checkbox" checked={approved} onChange={e => setApproved(e.target.checked)} data-testid="approve-preset" />Zatwierdzam ten preset (hash powyżej) i jego metodę dla tego pomiaru</label>
     {m.blocked && <p className="text-sm text-amber-900" data-testid="measurement-blocked">{m.blocked}</p>}
     <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!approved || !!m.blocked || !!runId} onClick={launch} data-testid="launch-measurement">Uruchom pomiar</button>
-    {msg && <p role="alert" className="text-sm">{msg}</p>}
+    {msg && <p role="alert" className="text-sm">{msg}</p>}</>}
     {runId && <p role="status" className="text-sm" data-testid="measurement-status">Przebieg <Link className="underline font-mono" to={`/runs/${runId}/results`}>{short(runId)}</Link>: {status}</p>}</section>;
 }
 
@@ -448,6 +453,7 @@ function EvidenceGraphView({ id, base }: { id: string; base: string }) {
 
 function ManuscriptView({ id }: { id: string }) {
   const [data, setData] = useState<any>(null), [error, setError] = useState(''), [edition, setEdition] = useState<string>(''), [busy, setBusy] = useState(false), [note, setNote] = useState('');
+  const access = useAccess(), { t } = useAccessText(), canEdit = access.capabilities.includes('narrative.approve');
   const load = (ed = edition) => fetch(`/api/replications/${id}/manuscript${ed ? `?edition=${ed}` : ''}`).then(async r => r.ok ? r.json() : Promise.reject(new Error((await r.json().catch(() => ({}))).message ?? `HTTP ${r.status}`)))
     .then(d => { setData(d); setError(''); }).catch(e => setError(e.message));
   useEffect(() => { load(); }, [id]);
@@ -469,7 +475,8 @@ function ManuscriptView({ id }: { id: string }) {
         <option value="">bez redakcji (z wyników)</option>{data.editions.map((e: any) => <option key={e.id} value={e.id}>{e.created_at.slice(0, 16).replace('T', ' ')} · {e.model}</option>)}</select></label></div>
     <details className="text-sm" data-testid="editing"><summary className="cursor-pointer">Redakcja językowa przez model ({data.editing.model}, region {data.editing.location})</summary>
       <p className="mt-2">Model dostaje tylko zdania (tabele nie są wysyłane) i może zmienić styl, nie fakty. Każde zdanie musi zachować te same liczby, identyfikatory i hashe; inaczej zostaje oryginał. Dzienny limit {data.editing.daily_budget_usd} USD, dziś wydano {data.editing.spent_today_usd.toFixed(4)} USD (ceny z konfiguracji: {data.editing.pricing.input}/{data.editing.pricing.output} USD za mln tokenów).</p>
-      <button className="mt-2 px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={busy || !data.editing.enabled} onClick={edit} data-testid="edit-manuscript">{busy ? 'Redagowanie…' : 'Zezwól i zredaguj'}</button>
+      {canEdit ? <button className="mt-2 px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={busy || !data.editing.enabled} onClick={edit} data-testid="edit-manuscript">{busy ? 'Redagowanie…' : 'Zezwól i zredaguj'}</button>
+        : <p className="mt-2 text-slate-600" data-testid="manuscript-edit-readonly">{t('readonly_manuscript_edit')}</p>}
       {!data.editing.enabled && <p className="mt-2 text-amber-900" data-testid="editing-disabled">Wyłączone w konfiguracji: {data.editing.disabled_reason}</p>}
       {note && <p role="status" className="mt-2">{note}</p>}</details>
     <h2 className="text-xl font-semibold">{m.title}</h2>

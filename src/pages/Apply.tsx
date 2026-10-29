@@ -24,7 +24,7 @@ const REASON_MIN = 20;
  */
 export function Apply() {
   const access = useAccess();
-  const { t, role, date } = useAccessText();
+  const { t, role, date, errorText } = useAccessText();
   const [applications, setApplications] = useState<Application[] | null>(null);
   const [name, setName] = useState('');
   const [affiliation, setAffiliation] = useState('');
@@ -53,14 +53,14 @@ export function Apply() {
     try {
       await postJson('/api/auth/application', { display_name: name, affiliation, reason, requested_roles: requested });
       await load();
-    } catch (e) { setError((e as Error).message); }
+    } catch (e) { setError(errorText(e)); }
     finally { setBusy(false); }
   }
 
   async function withdraw() {
     setBusy(true); setError(null);
     try { await postJson('/api/auth/application/withdraw'); await load(); }
-    catch (e) { setError((e as Error).message); }
+    catch (e) { setError(errorText(e)); }
     finally { setBusy(false); }
   }
 

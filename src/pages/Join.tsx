@@ -32,10 +32,10 @@ function writePending(token: string | null) {
  */
 export function Join() {
   const access = useAccess();
-  const { t, role, date, lang } = useAccessText();
+  const { t, role, date, lang, errorText } = useAccessText();
   const [token] = useState<string | null>(() => new URLSearchParams(window.location.hash.slice(1)).get('t') ?? readPending());
   const [preview, setPreview] = useState<Preview | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [accepted, setAccepted] = useState(false);
   const [busy, setBusy] = useState(false);
   const autoAccepted = useRef(false);
@@ -49,7 +49,7 @@ export function Join() {
     if (!token || access.mode !== 'accounts') return;
     postJson<{ invitation: Preview }>('/api/auth/invitations/preview', { token })
       .then(r => setPreview(r.invitation))
-      .catch(e => setError((e as Error).message));
+      .catch(e => setError(e));
   }, [token, access.mode, access.email]);
 
   const signedIn = access.admission === 'member' || access.admission === 'applicant';
@@ -63,7 +63,7 @@ export function Join() {
       setAccepted(true);
       announceSessionChange();
     } catch (e) {
-      setError((e as Error).message);
+      setError(e);
     } finally { setBusy(false); }
   }
 
@@ -86,7 +86,7 @@ export function Join() {
       setAccepted(true);
       announceSessionChange();
     } catch (e) {
-      setError((e as Error).message);
+      setError(e);
     } finally { setBusy(false); }
   }
 
@@ -96,7 +96,7 @@ export function Join() {
   }
 
   if (access.mode === 'local') {
-    return <AccessShell title={t('join_title')}><p>This installation runs without sign-in; invitations are not needed.</p>
+    return <AccessShell title={t('join_title')}><p>{t('join_local_mode')}</p>
       <Link className="underline" to="/">WatchDog</Link></AccessShell>;
   }
 
@@ -109,11 +109,11 @@ export function Join() {
         <p className="field-error" data-testid="join-status">{t(`join_status_${preview.status}` as AccessKey)}</p>}
 
       {preview && preview.status === 'valid' && !accepted && <div className="space-y-3" data-testid="join-preview">
-        <p>{t('join_valid', { inviter: preview.inviter ?? 'WatchDog', roles: (preview.roles ?? []).map(role).join(', ') })}</p>
+        <p>{t('join_valid', { inviter: preview.inviter ?? t('join_inviter_operator'), roles: (preview.roles ?? []).map(role).join(', ') })}</p>
         {preview.note && <blockquote className="border-l-4 border-indigo-200 pl-3 text-sm text-slate-700 whitespace-pre-wrap">
           <span className="block text-xs text-slate-500 mb-1">{t('join_note')}</span>{preview.note}</blockquote>}
         {preview.signsIn ? <div className="space-y-3" data-testid="join-bearer">
-          <p className="text-sm">{t('join_bearer', { pending: (preview.roles ?? []).some(r => r !== 'viewer')
+          <p className="text-sm">{t('join_bearer', { viewer: role('viewer'), pending: (preview.roles ?? []).some(r => r !== 'viewer')
             ? t('join_bearer_pending', { roles: (preview.roles ?? []).filter(r => r !== 'viewer').map(role).join(', ') }) : '' })}{' '}{t('join_expires', { date: date(preview.expiresAt) })}</p>
           <button className="field-button primary w-full" onClick={() => void enterAsGuest()} disabled={busy} data-testid="join-bearer-enter">
             {busy ? t('working') : t('join_bearer_enter')}</button>
@@ -122,7 +122,7 @@ export function Join() {
           {preview.kind === 'email' ? t('join_email_bound', { hint: preview.emailHint ?? '' }) : t('join_open')}
           {' '}{t('join_expires', { date: date(preview.expiresAt) })}
         </p>
-        <p className="text-xs text-slate-600" data-testid="join-viewer-rule">{t('join_viewer_rule')}</p>
+        <p className="text-xs text-slate-600" data-testid="join-viewer-rule">{t('join_viewer_rule', { viewer: role('viewer') })}</p>
 
         {signedIn ? <div className="space-y-3">
           <p className="text-sm">{t('join_signed_in_as', { email: access.email ?? '' })}</p>
@@ -139,7 +139,7 @@ export function Join() {
         <Link className="field-button primary w-full" to="/">{t('join_go')}</Link>
       </div>}
 
-      {error && <p className="field-error" role="alert" data-testid="join-error">{error}</p>}
+      {error && <p className="field-error" role="alert" data-testid="join-error">{errorText(error)}</p>}
     </AccessShell>
   );
 }
