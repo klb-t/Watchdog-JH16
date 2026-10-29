@@ -26,12 +26,10 @@
 #  * menedżer logowania (gdm3/sddm) na maszynie bez ekranu: wyłączony;
 #  * konto Google Cloud bez hasła: logowanie RDP wymaga hasła, skrypt prosi o jego ustawienie;
 #  * indeksowanie plików i kompozycja okien zjadające CPU bez karty graficznej: wyłączone w KDE;
-#  * usypianie maszyny w trakcie pracy na pulpicie: pulpit zostawia sygnał w /run/keep-awake.
 set -Eeuo pipefail
 umask 022
 MARKER='Managed by remote_desktop.sh'
 CONF=/etc/remote-desktop.conf
-SIGNALS=/run/keep-awake
 FAILED=0
 declare -a REPORT=()
 
@@ -177,7 +175,7 @@ install_all() {
   say "== Zdalny pulpit dla $user na $PRETTY_NAME: pulpity $desktops (domyślny $default), dostęp $protocols"
   say '== Pakiety (to potrwa kilka–kilkanaście minut)'
   "${APT[@]}" update || { sleep 5; "${APT[@]}" update; }
-  local base=(python3 dbus-x11 dbus-user-session x11-utils x11-xserver-utils xauth xprintidle xserver-xorg-video-dummy fonts-dejavu-core curl ca-certificates iproute2)
+  local base=(python3 dbus-x11 dbus-user-session x11-utils x11-xserver-utils xauth xserver-xorg-video-dummy fonts-dejavu-core curl ca-certificates iproute2)
   "${APT[@]}" install "${base[@]}" || die 'Nie udało się zainstalować pakietów podstawowych (sieć? apt?).'
   ok 'pakiety podstawowe'
 
@@ -230,14 +228,10 @@ install_all() {
   write_managed "$CONF" 0644 "# $MARKER — ustawienia wspólne dla RDP, CRD i VNC
 DEFAULT_DESKTOP=$default
 KEYBOARD='$keyboard'
-RD_USER='$user'
-# Ile sekund między sprawdzeniami i od ilu milisekund bez wejścia pulpit uznaje się za nieużywany.
-HEARTBEAT_SECONDS=60
-HEARTBEAT_ACTIVE_MS=300000"
+RD_USER='$user'"
   install_launchers
   configure_desktop_defaults "$kde" "$gnome" "$keyboard"
   configure_polkit
-  configure_signals
   configure_user "$user" "$home" "$default" "$ask_password" "$rdp"
   if $rdp; then configure_rdp "$user" "$home" "$rdp_listen"; fi
   if $vnc; then configure_vnc "$user" "$home"; fi
@@ -295,7 +289,6 @@ if [ -n "$KEYBOARD" ]; then
   case "$KEYBOARD" in *\(*\)) variant=${KEYBOARD#*(}; variant=${variant%)} ;; esac
   setxkbmap -layout "$layout" -variant "$variant" || echo "setxkbmap $KEYBOARD nie zadziałał"
 fi
-/usr/local/bin/remote-desktop-heartbeat &
 case "$desktop" in
   gnome)
     if [ -r /usr/share/gnome-session/sessions/ubuntu.session ]; then
@@ -316,30 +309,6 @@ case "$desktop" in
     exec dbus-run-session -- startplasma-x11 ;;
 esac
 echo "Nie ma zainstalowanego pulpitu KDE ani GNOME."; sleep 30'
-  write_managed /usr/local/bin/remote-desktop-heartbeat 0755 '#!/bin/bash
-# '"$MARKER"' — dopóki ktoś faktycznie używa tego pulpitu (wejście z klawiatury/myszy w ostatnich
-# minutach), zostawia sygnał w /run/keep-awake, żeby usypianie maszyny nie przerwało pracy.
-HEARTBEAT_SECONDS=60; HEARTBEAT_ACTIVE_MS=300000
-[ -r /etc/remote-desktop.conf ] && . /etc/remote-desktop.conf
-dir=/run/keep-awake
-name=$(printf "desktop-%s-%s" "$(id -un)" "${DISPLAY#:}" | tr -c "A-Za-z0-9._-" "_")
-file="$dir/$name"
-trap "rm -f \"$file\"" EXIT
-fails=0
-[ ! -d "$dir" ] || touch "$file"
-while sleep "$HEARTBEAT_SECONDS"; do
-  xprop -root >/dev/null 2>&1 || exit 0
-  if idle=$(xprintidle 2>/dev/null); then
-    fails=0
-    if [ "$idle" -lt "$HEARTBEAT_ACTIVE_MS" ] && [ -d "$dir" ]; then
-      touch -d "@$(( $(date +%s) - idle / 1000 ))" "$file"
-    fi
-  else
-    fails=$((fails + 1))
-    [ ! -d "$dir" ] || touch "$file"
-    [ "$fails" -eq 3 ] && echo "$(date -Is) xprintidle nie działa na $DISPLAY: brak pomiaru bezczynności: utrzymuję maszynę włączoną" >&2
-  fi
-done'
   write_managed /usr/share/xsessions/remote-desktop.desktop 0644 "[Desktop Entry]
 # $MARKER
 Name=Remote desktop (KDE or GNOME)
@@ -427,14 +396,6 @@ ResultInactive=no
 ResultActive=no"
   fi
   ok 'polkit: bez zbędnych okienek autoryzacji, bez usypiania z pulpitu'
-}
-
-configure_signals() {
-  # Ten sam mechanizm co w usypianiu maszyny (WatchDog E3.20): plik w /run/keep-awake = maszyna w użyciu.
-  write_managed /etc/tmpfiles.d/keep-awake.conf 0644 "# $MARKER
-d /run/keep-awake 1777 root root -"
-  install -d -m 1777 "$SIGNALS"
-  ok "sygnał używania pulpitu dla usypiania maszyny ($SIGNALS)"
 }
 
 configure_user() {
@@ -663,7 +624,6 @@ cmd_status() {
     say "CRD:  $(systemctl is-active "chrome-remote-desktop@$user.service" 2>/dev/null) zarejestrowany: $reg"
   fi
   say "Hasło $user: $(passwd -S "$user" 2>/dev/null | awk '{print ($2=="P")?"jest":"brak"}')   start systemu: $(systemctl get-default)"
-  say "Sygnały używania ($SIGNALS): $(ls -1 "$SIGNALS" 2>/dev/null | xargs || true)"
 }
 
 cmd_doctor() {

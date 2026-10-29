@@ -1,7 +1,8 @@
 """Offline regressions for scripts/remote_desktop.sh. Does not install packages or launch desktops.
 
-The Desktop class is copied unchanged from tests/test_desktop_recovery.py at 7898068
-(astra/desktop-field-ready-20261007, PR #11). Its Idle and Workstation classes are not
+The Desktop class is copied from tests/test_desktop_recovery.py at 7898068
+(astra/desktop-field-ready-20261007, PR #11); only test_generated_launchers_parse changed,
+because the heartbeat launcher is no longer generated. Its Idle and Workstation classes are not
 carried over: they test the idle poweroff and the Cloud Shell workstation entry, which are
 not part of this repository (see docs/history/PR_10_12_REVIEW_2026-10-29.md).
 """
@@ -86,8 +87,10 @@ class Desktop(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             r = self.shell('write_managed() { printf "%s\n" "$3" > "$DIR/$(basename "$1")"; }; DIR=$1; install_launchers', temp)
             self.assertEqual(r.returncode, 0, r.stderr)
-            for name in ['remote-desktop-session', 'remote-desktop-heartbeat']:
-                subprocess.run(['bash', '-n', str(Path(temp) / name)], check=True)
+            subprocess.run(['bash', '-n', str(Path(temp) / 'remote-desktop-session')], check=True)
+            # The /run/keep-awake heartbeat is no longer generated or started (E3.23).
+            self.assertFalse((Path(temp) / 'remote-desktop-heartbeat').exists())
+            self.assertNotIn('remote-desktop-heartbeat', (Path(temp) / 'remote-desktop-session').read_text())
 
     def test_crd_paste_is_not_executed_by_shell(self):
         s = SCRIPT.read_text(); block = s.split("<<'PYCRD'\n", 1)[1].split('\nPYCRD', 1)[0]

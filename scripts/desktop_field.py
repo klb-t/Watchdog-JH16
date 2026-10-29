@@ -38,6 +38,8 @@ SETTINGS = Path('/etc/watchdog-desktop/settings.json')
 RUNTIME = SETTINGS.with_name('runtime.json')
 UNIT = 'watchdog-desktop-install.service'
 MARKER = '# Managed by watchdog desktop-field/1'
+# The heartbeat path stays listed: an earlier release installed it, so it is still backed up and
+# drift-checked, although this release no longer writes or starts it.
 GENERATED = [
  '/usr/local/bin/remote-desktop-session', '/usr/local/bin/remote-desktop-heartbeat',
  '/usr/local/sbin/remote-desktop', '/etc/chrome-remote-desktop-session',
@@ -130,8 +132,7 @@ def validate(cfg):
     if cfg['default_desktop'] not in cfg['desktops']: raise Blocked('Default desktop is not requested.')
     if not re.fullmatch(r'[a-z]{2,3}(\([a-z0-9_]+\))?', cfg['keyboard']): raise Blocked('Invalid keyboard.')
     if not re.fullmatch(r'[1-9][0-9]{2,4}x[1-9][0-9]{2,4}', cfg['geometry']): raise Blocked('Invalid geometry.')
-    for key, low, high in [('heartbeat_seconds',10,600),('heartbeat_active_ms',1000,3600000),
-                            ('novnc_port',2000,65000),('dcv_port',1024,65000),('minimum_free_gib',1,100)]:
+    for key, low, high in [('novnc_port',2000,65000),('dcv_port',1024,65000),('minimum_free_gib',1,100)]:
         if type(cfg[key]) is not int or not low <= cfg[key] <= high: raise Blocked(f'Invalid {key}.')
     if cfg['dcv_port'] == cfg['novnc_port'] or 3389 in (cfg['dcv_port'],cfg['novnc_port']):
         raise Blocked('Conflicting configured ports.')
@@ -319,9 +320,8 @@ class Installer:
         stored=load(SETTINGS)
         if stored is None:
             stored={'schema_version':1,'legacy_import_keys':sorted(old)}
-            for src,dst in [('DEFAULT_DESKTOP','default_desktop'),('KEYBOARD','keyboard'),
-                            ('HEARTBEAT_SECONDS','heartbeat_seconds'),('HEARTBEAT_ACTIVE_MS','heartbeat_active_ms')]:
-                if old.get(src): stored[dst]=int(old[src]) if src.startswith('HEARTBEAT') else old[src]
+            for src,dst in [('DEFAULT_DESKTOP','default_desktop'),('KEYBOARD','keyboard')]:
+                if old.get(src): stored[dst]=old[src]
         self.cfg=validate(merge_defaults(defaults,stored))
         self.generation=digest((digest(Path(__file__).read_bytes())+digest(BASE.read_bytes())+
                               json.dumps(self.cfg,sort_keys=True)+user).encode())
@@ -371,11 +371,10 @@ class Installer:
         # Existing preferences are not erased. The session launcher reports any fallback.
         atomic('/etc/remote-desktop.conf', '# Managed by remote_desktop.sh\n'+
           f'DEFAULT_DESKTOP={shlex.quote(self.cfg["default_desktop"])}\nKEYBOARD={shlex.quote(self.cfg["keyboard"])}\n'+
-          f'RD_USER={shlex.quote(self.user)}\nHEARTBEAT_SECONDS={self.cfg["heartbeat_seconds"]}\n'+
-          f'HEARTBEAT_ACTIVE_MS={self.cfg["heartbeat_active_ms"]}\n',0o644)
+          f'RD_USER={shlex.quote(self.user)}\n',0o644)
         base('configure_headless'); base('install_launchers')
         base('configure_desktop_defaults',str(caps['kde']).lower(),str(caps['gnome']).lower(),self.cfg['keyboard'])
-        base('configure_polkit'); base('configure_signals')
+        base('configure_polkit')
         base('configure_user',self.user,self.home,self.cfg['default_desktop'],'false','true')
         # Use a capability-aware launcher, rather than mistaking gnome-session's mere existence for X11 support.
         atomic('/usr/local/bin/remote-desktop-session', '#!/bin/sh\n'+MARKER+'\nexec /usr/bin/python3 '+
@@ -591,7 +590,6 @@ def session():
     args=['setxkbmap','-layout',match[1]]
     if match[2]: args+=['-variant',match[2]]
     command(args,check=False,env=env)
-    subprocess.Popen(['/usr/local/bin/remote-desktop-heartbeat'],env=env)
     if selected=='kde':
         env.update(XDG_CURRENT_DESKTOP='KDE',DESKTOP_SESSION='plasma',XDG_SESSION_DESKTOP='KDE')
         argv=['dbus-run-session','--','startplasma-x11']

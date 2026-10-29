@@ -24,9 +24,11 @@ class Data(unittest.TestCase):
     def setUp(self): self.cfg=json.loads((ROOT/'config/deployment/desktop-field.json').read_text())
     def test_shipped_policy_valid(self): self.assertEqual(field.validate(self.cfg)['default_desktop'],'kde')
     def test_preserves_changed_values_and_unknown_data(self):
+        # heartbeat_seconds: a key of the installed release, now unknown data that must survive.
         old={'schema_version':1,'geometry':'1600x900','future_note':'retain','heartbeat_seconds':90}
         result=field.merge_defaults(self.cfg,old)
         self.assertEqual(result['geometry'],'1600x900'); self.assertEqual(result['heartbeat_seconds'],90)
+        self.assertEqual(field.validate(result)['geometry'],'1600x900')
         self.assertEqual(result['future_note'],'retain'); self.assertIn('novnc_port',result)
     def test_unknown_version_is_not_downgraded(self):
         with self.assertRaises(field.Blocked): field.merge_defaults(self.cfg,{'schema_version':2})
@@ -98,11 +100,19 @@ class Files(unittest.TestCase):
                 info=tarfile.TarInfo(name);info.type=kind;info.linkname='/etc/passwd';out.addfile(info)
             with self.assertRaises(field.Blocked):field.safe_extract(archive,self.root/'out')
     def test_library_is_pinned_previous_blob(self):
-        # Git's blob ID proves the existing helper was not silently changed by this increment.
+        # The blob ID proves the helper was not silently changed. 3f4a5633ec3616834ca7f715475ecdc6451f4511
+        # was the blob at ecae0fd; the current one only drops the /run/keep-awake heartbeat (E3.23).
         content=(ROOT/'scripts/remote_desktop.sh').read_bytes()
         import hashlib
         blob=hashlib.sha1(b'blob '+str(len(content)).encode()+b'\0'+content).hexdigest()
-        self.assertEqual(blob,'3f4a5633ec3616834ca7f715475ecdc6451f4511')
+        self.assertEqual(blob,'406b5a17004cb5cf742d5b2b0866ed7e9f045da4')
+    def test_no_keep_awake_heartbeat(self):
+        # Nothing on the devbox reads /run/keep-awake, so the desktop no longer writes or starts it.
+        sources=''.join((ROOT/n).read_text() for n in ['scripts/remote_desktop.sh','scripts/desktop_field.py'])
+        for gone in ['configure_signals','/run/keep-awake','xprintidle',"Popen(['/usr/local/bin/remote-desktop-heartbeat'"]:
+            self.assertNotIn(gone,sources)
+        cfg=json.loads((ROOT/'config/deployment/desktop-field.json').read_text())
+        self.assertNotIn('heartbeat_seconds',cfg); self.assertNotIn('xprintidle',cfg['packages']['common'])
 
 class Phases(unittest.TestCase):
     def installer(self):
