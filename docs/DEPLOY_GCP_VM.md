@@ -134,6 +134,52 @@ rola → cofnięcie w istniejącej sesji → restart z danymi → weryfikacja ba
 odtworzenie → osobno kontrolowana aktywacja. Lokalny test skryptów nie zamyka tych punktów.
 Nie używaj szerokiego wyjątku produkcyjnego local-user do ominięcia awarii logowania.
 
+## Diagnostyka: gdzie szukać, gdy coś nie działa
+
+Diagnostyka trafia do `/var/lib/watchdog/diagnostics/RRRR-MM-DD/`. Nowa instalacja ma tryb
+`NORMAL`; w każdym trybie poza `OFF` każdego dnia powstają pliki:
+
+| Plik | Co zawiera |
+|---|---|
+| `requests.jsonl` | każde żądanie API: status, czas, kto, kod i komunikat błędu, `trace_id` |
+| `server-errors.jsonl` | każdy nieoczekiwany błąd serwera z pełnym stosem i łańcuchem przyczyn |
+| `process-errors.jsonl` | awaria procesu lub odmowa startu (np. zła konfiguracja) z przyczyną |
+| `client-errors.jsonl` | błędy z przeglądarek użytkowników: wyjątki JS, odrzucone obietnice, odpowiedzi 5xx, zerwane połączenia |
+| `<trace_id>/events.jsonl` | w TRACE: każdy krok żądania lub analizy po kolei, z danymi wejściowymi i decyzjami |
+
+Każda odpowiedź z błędem zawiera `trace_id` (też w nagłówku `x-trace-id`), a konsola
+(`watchdogctl logs`) wypisuje każde nieudane lub wolne żądanie razem z nim. Dane są
+redagowane przed zapisem (hasła, tokeny, klucze); przeglądarka wysyła tylko metadane, bez
+treści formularzy i bez parametrów adresu.
+
+`POST /api/client-errors` działa także przed zalogowaniem (strona logowania też może się
+zepsuć), więc jest jedynym zapisem bez konta. Przyjmuje tylko JSON z tej samej domeny
+(`request_security.ts`), najwyżej 30 zgłoszeń na adres w 10 minut (`rate_limit.ts`) i ciało do
+16 KB; wartości zmienisz w `app.env` (`WATCHDOG_CLIENT_ERRORS_*`, opis w `.env.example`).
+Otwarta jest wyłącznie ta metoda i ścieżka. Ścieżki i adresy URL w komunikacie i stosie tracą
+query i fragment, a całość przechodzi przez centralną redakcję.
+
+Przez SSH na VM, bez otwierania aplikacji:
+
+```bash
+sudo watchdogctl errors          # ostatnie awarie: serwer, proces, przeglądarki, nieudane żądania
+sudo watchdogctl trace TRACE_ID  # wszystko o jednym zdarzeniu, krok po kroku
+sudo watchdogctl diag-summary    # dzisiejsze liczby, tryb, zajęte miejsce
+sudo watchdogctl logs            # konsola usługi (journald)
+sudo watchdogctl proxy-logs      # HTTPS / certyfikat
+sudo watchdogctl diagnostics-mode TRACE    # pełny ślad na czas szukania błędu; potem NORMAL
+```
+
+Retencja: 14 dni i maks. 2048 MB (`WATCHDOG_DIAGNOSTICS_RETENTION_DAYS`,
+`WATCHDOG_DIAGNOSTICS_MAX_MB` w `/etc/watchdog/app.env`); dzisiejszy dzień nie jest usuwany.
+Starsze instalacje zachowują swój tryb; przełącz go komendą `diagnostics-mode`.
+
+Na wspólnym devboxie `watchdogctl` i czytnik `watchdog_diag.py` nie są zainstalowane w
+`/usr/local/lib/watchdog` (instalator nie był tam uruchamiany). Pliki są w
+`/var/lib/watchdog/diagnostics/` i można je czytać przez `sudo`, albo uruchomić czytnik z
+checkoutu: `sudo WATCHDOG_ROOT=/ python3 scripts/watchdog_diag.py errors`. Pliki dzienne
+powstają dopiero w obrazie z tą zmianą.
+
 ## Utrzymanie i dane
 
 Polecenia wykonywane **przez SSH na VM**:
@@ -298,3 +344,67 @@ Nie zastępuje to pierwszej instalacji w konkretnym projekcie GCP. Agent nie uru
 provisioningu ani nie zmieniał ustawień Twojego konta GCP.
 
 Uzupełnienie 2026-10-02: `recovery-required` blokuje również people/grant/invite/open-link/signin-link przed uruchomieniem kontenera CLI. Nawet people ładuje bazę i może wykonać migracje, więc diagnostykę awarii prowadź przez status/logs i zachowany marker. Nie usuwaj markera tylko po to, aby ominąć odmowę komendy.
+
+## Pulpit zdalny na wspólnym devboxie (warstwa `desktop-field/1`)
+
+Kod warstwy pulpitu, która działa na maszynie testowej, jest w repozytorium od 2026-10-29:
+`scripts/desktop_field.py`, `scripts/remote_desktop.sh`, `config/deployment/desktop-field.json`
+oraz sterownik Cloud Shell `scripts/desktop_cloud.py`. Pochodzą z `ecae0fd` (gałąź
+`astra/desktop-field-ready-20261007`, PR #11) z jedną zmianą: usunięto sygnał `/run/keep-awake`
+(niżej). Raport autora z ograniczeniami: [DESKTOP_FIELD_2026-10-07](reports/DESKTOP_FIELD_2026-10-07.md).
+Ocena PR #10–#12: [PR_10_12_REVIEW_2026-10-29](history/PR_10_12_REVIEW_2026-10-29.md).
+
+Stan odczytany na devboxie 2026-10-29, bez żadnej zmiany na maszynie:
+
+| Element | Stan |
+|---|---|
+| Wydanie | `/opt/watchdog-desktop/releases/cfcd5d25811e2132b05473bc5adbe20ef43025f8b9608cabbe239309d73da919`, z 2026-10-08. Ten identyfikator to SHA-256 trzech plików liczony przez `desktop_field.py launch`; pliki z `ecae0fd` dają dokładnie ten identyfikator. Obecne pliki repozytorium (bez heartbeatu) dają `5af643353b860bd8ba096ddc98f43e2b4b9180fe42b5d73e9a97cb76eb5e1382`; ta wersja nie jest zainstalowana. |
+| `watchdog-vnc.service` | aktywna: TigerVNC `:1` tylko na loopback, konto właściciela |
+| `watchdog-novnc.service` | aktywna: websockify `127.0.0.1:6080` → `127.0.0.1:5901` |
+| `xrdp`, `xrdp-sesman` | aktywne |
+| `watchdog-desktop-install.service` | oneshot, nieaktywna (instalacja zakończona) |
+| Wejście z przeglądarki | `https://desktop.34-158-117-249.sslip.io` → Caddy z basic auth → noVNC `127.0.0.1:6080`. To pulpit właściciela; wpis tworzy `~/chatadhd/tools/gcp/aliases.sh` (osobne repozytorium), nie ten instalator. Tunel SSH z raportu pozostaje drugą drogą. |
+
+### Sygnał `/run/keep-awake` usunięty
+
+Na devboxie nic nie czyta `/run/keep-awake` (nie ma usypiania maszyny ani `watchdog-idle.timer`),
+więc warstwa pulpitu już go nie tworzy. Usunięto: `configure_signals` (katalog
+`/run/keep-awake` i `/etc/tmpfiles.d/keep-awake.conf`), generowanie i start
+`/usr/local/bin/remote-desktop-heartbeat` (w `install_launchers` i w `desktop_field.py session`),
+`HEARTBEAT_SECONDS`/`HEARTBEAT_ACTIVE_MS` w `/etc/remote-desktop.conf`, klucze
+`heartbeat_seconds`/`heartbeat_active_ms` i pakiet `xprintidle` w `desktop-field.json` oraz wiersz
+„Sygnały używania” w `remote-desktop status`. Zainstalowane wydanie `cfcd5d25…` nadal je ma, dopóki
+ktoś nie zainstaluje nowej wersji. Ponowna instalacja nie kasuje starych plików, tylko przestaje
+uruchamiać heartbeat. Zapisany wcześniej klucz `heartbeat_seconds` w ustawieniach jest zachowany
+jako nieznana dana.
+
+Przywrócenie, gdy wróci usypianie maszyny: trzy pliki z `ecae0fd` zawierają całość
+(`git checkout ecae0fd -- scripts/remote_desktop.sh scripts/desktop_field.py config/deployment/desktop-field.json`):
+
+- `scripts/remote_desktop.sh`: funkcja `configure_signals` i jej wywołanie, skrypt heartbeatu
+  w `install_launchers`, jego start w `remote-desktop-session`, zmienne `HEARTBEAT_*`,
+  pakiet `xprintidle`;
+- `scripts/desktop_field.py`: walidacja i import `heartbeat_*`, zapis `HEARTBEAT_*`,
+  `base('configure_signals')`, `subprocess.Popen(['/usr/local/bin/remote-desktop-heartbeat'],env=env)`;
+- `config/deployment/desktop-field.json`: `heartbeat_seconds: 60`, `heartbeat_active_ms: 300000`,
+  `xprintidle`.
+
+Potem w `tests/test_desktop_field.py` przywróć blob `3f4a5633…` i usuń `test_no_keep_awake_heartbeat`;
+w `tests/test_remote_desktop.py` ponownie sprawdź `remote-desktop-heartbeat`. Odbiorcą sygnału był
+`scripts/watchdog_idle.py` z `7898068` (poza main).
+
+Devbox jest maszyną współdzieloną (Caddy, inne usługi). **Nie uruchamiaj na nim
+`deploy_gcp_vm.sh` ani `gcp_vm_bootstrap.sh`**: instalator zakłada maszynę przeznaczoną
+dla Watchdoga i ustawia UFW oraz reguły zapory na wyłączność. Aplikację aktualizuje się
+tam przez podmianę obrazu w `/etc/watchdog/release.env`
+(zob. [OWNER_TEST](replication/JH16_2026-10-25/OWNER_TEST.md)).
+`desktop_cloud.py install` instaluje pakiety i jednostki systemd na VM; to decyzja
+właściciela, nie krok aktualizacji aplikacji.
+
+Testy offline (nie instalują pakietów, nie dotykają systemd ani GCP):
+
+```bash
+node --import tsx --test tests/integration/desktop_field.test.ts tests/integration/remote_desktop.test.ts
+```
+
+Nie sprawdzają rzeczywistej sesji graficznej, CRD, DCV ani połączenia przez Caddy.

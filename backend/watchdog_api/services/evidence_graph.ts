@@ -1,5 +1,5 @@
 import { canonicalHash } from '../domain/canonical';
-import type { ReplicationTarget, RunSummary, Manuscript } from './replication_dossier';
+import { completeRun, type ReplicationTarget, type RunSummary, type Manuscript } from './replication_dossier';
 import { dataRole } from './study_protocols';
 
 /**
@@ -48,7 +48,7 @@ export function buildEvidenceGraph(t: ReplicationTarget, runs: readonly RunSumma
   const evaluated = new Set<string>();
   for (const r of runs) {
     const id = add({ id: `run:${r.run_id}`, kind: 'run', label: short(r.run_id), detail: `${r.provenance_label}${r.variant ? ` · ${r.variant}` : ''} · ${r.status}${r.evaluation && !r.evaluation.complete ? ' · niekompletny' : ''}`, ref: { run_id: r.run_id } });
-    if (r.manifest_sha256) edge({ from: add({ id: `file:manifest:${r.run_id}`, kind: 'file', label: `manifest ${short(r.run_id)}`, detail: `sha256 ${r.manifest_sha256}`, ref: { run_id: r.run_id } }), to: id, kind: 'supports', label: `${r.fetches} pobrań` });
+    if (r.manifest_sha256) edge({ from: add({ id: `file:manifest:${r.run_id}`, kind: 'file', label: `manifest ${short(r.run_id)}`, detail: `sha256 ${r.manifest_sha256}`, ref: { run_id: r.run_id } }), to: id, kind: 'supports', label: r.source_run_id ? `${r.own_fetches} pobrań; liczby z ${short(r.source_run_id)}` : `${r.fetches} pobrań` });
     for (const v of r.evaluation?.verdicts ?? []) {
       edge({ from: id, to: `claim:${v.claim_key}`, kind: 'evaluates', label: v.verdict });
       if (r.status === 'COMPLETED' && r.evaluation.complete && v.verdict !== 'not_computable') evaluated.add(v.claim_key);
@@ -63,10 +63,13 @@ export function buildEvidenceGraph(t: ReplicationTarget, runs: readonly RunSumma
     for (const r of runs) if (r.evaluation) edge({ from: f, to: `run:${r.run_id}`, kind: 'uses' });
   }
   for (const d of dossier.diagnosis ?? []) {
-    const id = add({ id: `cause:${canonicalHash(d.cause).slice(0, 12)}`, kind: 'cause', label: d.cause, detail: d.status });
+    const id = add({ id: `cause:${canonicalHash(d.cause).slice(0, 12)}`, kind: 'cause', label: d.cause,
+      // A probable cause stays a hypothesis even when it names evidence; the label says so.
+      detail: d.status === 'probable' ? 'probable — hipoteza zgodna z danymi, nie wykazana' : d.status });
     const files = (d.evidence ?? []).filter((e: any) => e.path), kinds = (d.evidence ?? []).filter((e: any) => e.runs_kind).map((e: any) => e.runs_kind);
     for (const e of files) edge({ from: file(e.path, e.label), to: id, kind: 'supports' });
-    const byKind = runs.filter(r => kinds.includes(r.provenance));
+    // Only finished, complete runs of the named kind count as evidence; a partial run shows nothing.
+    const byKind = runs.filter(r => kinds.includes(r.provenance) && completeRun(r));
     for (const r of byKind) edge({ from: `run:${r.run_id}`, to: id, kind: 'supports' });
     // An unresolved cause has, by definition, nothing that shows it; any other status must point at evidence.
     if (d.status !== 'unresolved' && !files.length && !byKind.length) gaps.push({ node: id, problem: `a diagnosis marked '${d.status}' names no evidence` });

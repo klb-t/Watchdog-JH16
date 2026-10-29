@@ -83,3 +83,5 @@ A work outside the register goes to paper intake with what could be fetched. Its
   - **Bug found by the live check:** Europe PMC answers 406 when JSON is requested, so full text is now requested as XML. A test covers this.
 - **Contact.** No address is sent anywhere. `contact.email` in the configuration is empty by default and is used as Crossref `mailto` only when someone fills it in. A test checks that no request carries `mailto`.
 - **SerpApi price.** `account.json` (read free) gives the plan (Free Plan, USD 0), the monthly pool (250, used) and 2578 extra credits, but no price for the credits. The assumption of €0.014 per request and the €1/day cap stay.
+
+*Note 2026-10-29:* the balance "2578 extra credits" above is **unverified (niezweryfikowane)**; no stored account reading backs it. Current verified balance (account.json, 2026-10-29T22:01:05Z): 2530 extra credits, 2521 searches left in total — `docs/history/evidence/2026-10-29-jh16-gaps/serpapi_balance_2026-10-29.json`.
