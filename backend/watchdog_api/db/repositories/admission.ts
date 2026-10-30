@@ -73,6 +73,9 @@ export interface ApplicationRow {
   /** Why the application exists when it was not typed by the person (migration 027). */
   origin: 'bearer_link' | 'address_mismatch' | 'open_link' | null;
   invitation_id: string | null;
+  /** For an application the system wrote: the guest's interface language and the values of the text (migration 028). */
+  reason_language: string | null;
+  reason_params_json: string | null;
 }
 
 export interface ChallengeRow {
@@ -291,12 +294,13 @@ export class AdmissionRepository {
 
   // ------------------------------------------------------------ applications
 
-  insertApplication(a: Omit<ApplicationRow, 'decided_at' | 'decided_by' | 'decision_note' | 'grant_id' | 'origin' | 'invitation_id'>
-    & { origin?: ApplicationRow['origin']; invitation_id?: string | null }): void {
+  insertApplication(a: Omit<ApplicationRow, 'decided_at' | 'decided_by' | 'decision_note' | 'grant_id' | 'origin' | 'invitation_id' | 'reason_language' | 'reason_params_json'>
+    & { origin?: ApplicationRow['origin']; invitation_id?: string | null; reason_language?: string | null; reason_params_json?: string | null }): void {
     this.db.prepare(`INSERT INTO access_applications
-      (id, principal_id, email, display_name, affiliation, reason, requested_roles_json, status, submitted_at, origin, invitation_id)
+      (id, principal_id, email, display_name, affiliation, reason, requested_roles_json, status, submitted_at, origin, invitation_id, reason_language, reason_params_json)
       VALUES (@id, @principal_id, @email, @display_name, @affiliation, @reason, @requested_roles_json, @status,
-              @submitted_at, @origin, @invitation_id)`).run({ ...a, origin: a.origin ?? null, invitation_id: a.invitation_id ?? null });
+              @submitted_at, @origin, @invitation_id, @reason_language, @reason_params_json)`).run({ ...a, origin: a.origin ?? null,
+      invitation_id: a.invitation_id ?? null, reason_language: a.reason_language ?? null, reason_params_json: a.reason_params_json ?? null });
   }
 
   application(id: string): ApplicationRow | undefined {

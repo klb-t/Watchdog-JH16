@@ -31,6 +31,11 @@
         "note": "\nWiadomość od zapraszającego:\n{{note}}\n",
         "uses": " i można go użyć {{max_uses}} raz(y)",
         "link": "\nMożesz też kliknąć: {{link}}\n"
+      },
+      "application_reason": {
+        "address_mismatch": "Zaproszenie dla {{invited}} użyte przez {{email}}: role powyżej viewer wymagają zatwierdzenia administratora.",
+        "open_link": "Wejście przez otwarty link {{link}}: role powyżej viewer wymagają zatwierdzenia administratora.",
+        "bearer_link": "Wejście przez link na okaziciela {{link}}: role powyżej viewer wymagają zatwierdzenia administratora."
       }
     },
     "en": {
@@ -60,6 +65,11 @@
         "note": "\nA note from the person inviting you:\n{{note}}\n",
         "uses": " and can be used {{max_uses}} time(s)",
         "link": "\nOr click: {{link}}\n"
+      },
+      "application_reason": {
+        "address_mismatch": "Invitation for {{invited}} used by {{email}}: roles above viewer need an administrator's approval.",
+        "open_link": "Entry through open link {{link}}: roles above viewer need an administrator's approval.",
+        "bearer_link": "Entry through bearer link {{link}}: roles above viewer need an administrator's approval."
       }
     }
   }

@@ -42,6 +42,7 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
   - **Run sharing.** Read-only, to an address, an account or a link holder: run gate, list, raw responses and Replications. Shares are WORM; revocation is the only change.
   - **Legal pages.** Public `/privacy` and `/terms`, with contact and storage location from settings.
   - **Verification.** Tested end to end on a copy of the owner's data in the production image (`../history/evidence/2026-10-29-access/`). Tests: `tests/integration/accounts_admission.test.ts`, `tests/integration/access_sharing.test.ts`.
+  - **Reason language.** An application the system writes for a guest is stored in the guest's interface language, with its language code and the values the text was made from (migration 028; texts in `config/access/messages.json`). An administrator reading another language sees it rendered in their language, with the stored original below (coordinator's decision, 2026-10-29).
   - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
   - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
 

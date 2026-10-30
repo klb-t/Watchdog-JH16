@@ -3,6 +3,7 @@ import { ROLES, can, openLinkAllowsRole, grantableRoles } from '../../../shared/
 import { AdmissionService, AdmissionError, InvitationView, normalizeEmail, INVITATION_LIMITS } from '../identity/admission';
 import { MailService, MailDeliveryError } from '../mail';
 import { actorOf, admissionRoute } from './accounts_auth_routes';
+import { reasonTranslations } from '../identity/application_reasons';
 
 /**
  * People and access (E4.5): members, applications and invitations.
@@ -71,7 +72,7 @@ export function buildAccessRouter(admission: AdmissionService, mail: MailService
         id: a.id, email: a.email, display_name: a.display_name, affiliation: a.affiliation, reason: a.reason,
         requested_roles: JSON.parse(a.requested_roles_json), status: a.status, submitted_at: a.submitted_at,
         decided_at: a.decided_at, decided_by: a.decided_by, decision_note: a.decision_note,
-        origin: a.origin, invitation_id: a.invitation_id,
+        origin: a.origin, invitation_id: a.invitation_id, reason_language: a.reason_language, reason_translations: reasonTranslations(a),
       })),
       invitations: admission.invitations(actor),
       roles: ROLES,

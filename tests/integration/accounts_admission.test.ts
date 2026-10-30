@@ -240,6 +240,8 @@ test('E4.5 + owner rule: an email invitation used by another address gives viewe
   assert.ok(app, 'the administrator sees the application');
   assert.deepStrictEqual([app.origin, app.invitation_id, app.requested_roles], ['address_mismatch', created.body.invitation.id, ['researcher', 'responder']]);
   assert.match(app.reason, /b•+@uni\.example użyte przez carol@elsewhere\.example/);
+  assert.strictEqual(app.reason_language, 'pl');
+  assert.match(app.reason_translations.en, /^Invitation for b•+@uni\.example used by carol@elsewhere\.example:/);
 
   // The single use is gone; Bob needs a new invitation.
   const bob = new Client();
@@ -304,7 +306,7 @@ test('owner rule: a bearer link signs its holder in as a guest viewer; roles abo
 
   const guest = new Client();
   assert.strictEqual((await guest.get('/api/runs')).status, 401, 'nobody before the link');
-  const entered = await guest.post('/api/auth/invitations/bearer', { token });
+  const entered = await guest.post('/api/auth/invitations/bearer', { token, language: 'en' });
   assert.strictEqual(entered.status, 200, JSON.stringify(entered.body));
   assert.deepStrictEqual([entered.body.principal.roles, entered.body.pending_roles], [['viewer'], ['researcher']]);
   assert.strictEqual(entered.body.principal.display_name, `okaziciel ${id.slice(0, 8)}`);
@@ -324,6 +326,12 @@ test('owner rule: a bearer link signs its holder in as a guest viewer; roles abo
   assert.strictEqual(guests.length, 2); assert.ok(guests.every((g: any) => g.displayName === `okaziciel ${id.slice(0, 8)}` && g.signInMethods.includes('bearer')));
   const apps = overview.body.applications.filter((a: any) => a.origin === 'bearer_link' && a.status === 'pending');
   assert.strictEqual(apps.length, 2); assert.ok(apps.every((a: any) => a.invitation_id === id));
+  // The text the system writes is in the guest's interface language; the administrator can read it in theirs.
+  const english = apps.find((a: any) => a.reason_language === 'en'), unstated = apps.find((a: any) => a.reason_language === 'pl');
+  assert.ok(english && unstated, 'one guest stated English, the other nothing (the configured default)');
+  assert.strictEqual(english.reason, `Entry through bearer link ${id.slice(0, 8)}: roles above viewer need an administrator's approval.`);
+  assert.strictEqual(english.reason_translations.en, english.reason);
+  assert.match(english.reason_translations.pl, new RegExp(`^Wejście przez link na okaziciela ${id.slice(0, 8)}:`));
 
   const revoked = await owner.post(`/api/access/invitations/${id}/revoke`, {});
   assert.strictEqual(revoked.status, 200, JSON.stringify(revoked.body));
