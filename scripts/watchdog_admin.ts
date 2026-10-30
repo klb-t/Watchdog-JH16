@@ -37,6 +37,10 @@ const USAGE = `watchdog-admin — access administration from the server shell
       Print an invitation link anyone may use (never admin or developer).
   people
       List who has access and who is waiting.
+  claim-local-user EMAIL
+      Before the owner's first sign-in in accounts mode: give the existing
+      owner principal (local-user, everything made before accounts) this
+      address, so signing in with it keeps all runs, protocols and keys.
 
 Roles: viewer researcher responder institutional law_enforcement admin access_admin developer`;
 
@@ -101,6 +105,15 @@ async function main(argv: string[]): Promise<number> {
           `valid until ${invitation.expiresAt}${invitation.kind === 'open_link' ? `, ${invitation.maxUses} use(s)` : ''}:\n\n` +
           `  ${b.url}/join#t=${token}\n`);
         if (b.note) console.log(b.note);
+        return 0;
+      }
+      case 'claim-local-user': {
+        const email = (args[0] ?? '').trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { console.error('Usage: claim-local-user EMAIL'); return 2; }
+        const result = repo.claimLocalUser(email, new Date().toISOString());
+        if (result === 'claimed') appendAudit(sqlite, 'operator', 'access.local_user.claimed', 'principal', 'local-user', 'cli', { email });
+        console.log(result === 'claimed' ? `local-user now belongs to ${email}. Sign in with that address to keep everything made so far.`
+          : `local-user already belongs to ${email}; nothing changed.`);
         return 0;
       }
       case 'people': {

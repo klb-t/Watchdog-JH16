@@ -42,6 +42,8 @@ export interface RunSummary {
   /** What the run's own hashed configuration declares about its data role (E5.7b). */
   role_config: { data_role: string | null; protocol_id: string | null; protocol_hash: string | null; source_id: string | null };
   evaluation: any | null; calibration: Record<string, { spearman: number | null; pearson_log10: number | null; n: number | null; excluded: string[] }> | null;
+  /** Shared with the reader by its owner, not the reader's own run. */
+  shared?: boolean;
 }
 
 function matches(config: any, rule: any): boolean {
@@ -56,9 +58,12 @@ function classify(config: any, source: any): Provenance {
   return 'new_fetch';
 }
 
-export async function collectRuns(db: Db, store: ObjectStore, owner: string, dossier: any): Promise<RunSummary[]> {
+export async function collectRuns(db: Db, store: ObjectStore, owner: string, dossier: any, sharedRunIds: readonly string[] = []): Promise<RunSummary[]> {
   const runs = new RunRepository(db), artifacts = new ArtifactRepository(db), results = new AnalysisResultRepository(db), acq = new AcquisitionRepository(db, store);
-  const all = runs.getRuns(1000, owner), byId = new Map(all.map(r => [r.id, r]));
+  // The reader's own runs, plus runs shared with them (read-only); `shared` tells them apart.
+  const own = runs.getRuns(1000, owner), ownIds = new Set(own.map(r => r.id));
+  const all = [...own, ...sharedRunIds.filter(id => !ownIds.has(id)).map(id => runs.getRun(id)).filter((r): r is NonNullable<typeof r> => !!r)];
+  const byId = new Map(all.map(r => [r.id, r]));
   const cfg = (r: any) => JSON.parse(r.effective_config ?? '{}');
   const out: RunSummary[] = [];
   for (const run of all) {
@@ -85,7 +90,7 @@ export async function collectRuns(db: Db, store: ObjectStore, owner: string, dos
       manifest_sha256: artifacts.getManifest(run.id)?.sha256 ?? null, effective_config_hash: run.effective_config_hash ?? null,
       preset: config.preset_id ?? sourceCfg?.preset_id ?? null,
       role_config: { data_role: config.data_role ?? null, protocol_id: config.protocol_id ?? null, protocol_hash: config.protocol_hash ?? null, source_id: config.source_id ?? null },
-      evaluation, calibration });
+      evaluation, calibration, shared: !ownIds.has(run.id) });
   }
   return out.sort((a, b) => b.created_at.localeCompare(a.created_at) || a.run_id.localeCompare(b.run_id));
 }

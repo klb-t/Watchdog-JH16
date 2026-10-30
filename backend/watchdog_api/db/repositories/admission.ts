@@ -52,6 +52,8 @@ export interface InvitationRow {
   delivery_status: 'draft' | 'link_shared' | 'sent' | 'send_failed';
   delivery_detail: string | null;
   last_delivery_at: string | null;
+  /** An open link that signs its holder in as a guest (migration 027). */
+  signs_in: number;
 }
 
 export interface ApplicationRow {
@@ -68,6 +70,9 @@ export interface ApplicationRow {
   decided_by: string | null;
   decision_note: string | null;
   grant_id: string | null;
+  /** Why the application exists when it was not typed by the person (migration 027). */
+  origin: 'bearer_link' | 'address_mismatch' | 'open_link' | null;
+  invitation_id: string | null;
 }
 
 export interface ChallengeRow {
@@ -83,7 +88,7 @@ export interface ChallengeRow {
 }
 
 export interface IdentityRow {
-  provider: 'google' | 'email' | 'operator';
+  provider: 'google' | 'email' | 'operator' | 'bearer';
   subject: string;
   principal_id: string;
   email: string;
@@ -133,6 +138,27 @@ export class AdmissionRepository {
 
   setDisplayName(id: string, displayName: string | null): void {
     this.db.prepare('UPDATE principals SET display_name = ? WHERE id = ?').run(displayName, id);
+  }
+
+  /**
+   * Gives the pre-accounts owner (`local-user`) its address, so the owner's first
+   * sign-in with that address lands on the existing principal and keeps every
+   * run, protocol and vault entry. No owned row moves. Idempotent for the same
+   * address; refused for a different one or one another principal already uses.
+   */
+  claimLocalUser(email: string, at: string): 'claimed' | 'already' {
+    return this.db.transaction(() => {
+      const local = this.principal('local-user');
+      if (!local) throw new Error('This database has no local-user principal.');
+      const other = this.principalByEmail(email);
+      if (other && other.id !== 'local-user') throw new Error(`${email} already belongs to principal ${other.id}; nothing changed.`);
+      if (local.email) {
+        if (local.email.toLowerCase() === email) return 'already';
+        throw new Error(`local-user is already claimed by ${local.email}; nothing changed.`);
+      }
+      this.db.prepare("UPDATE principals SET email = ?, last_seen_at = COALESCE(last_seen_at, ?) WHERE id = 'local-user' AND email IS NULL").run(email, at);
+      return 'claimed';
+    })();
   }
 
   setPrincipalActive(id: string, active: boolean): void {
@@ -204,11 +230,11 @@ export class AdmissionRepository {
   // ------------------------------------------------------------ invitations
 
   insertInvitation(i: Omit<InvitationRow, 'uses' | 'revoked_at' | 'revoked_by' | 'delivery_status' |
-    'delivery_detail' | 'last_delivery_at'>): void {
+    'delivery_detail' | 'last_delivery_at' | 'signs_in'> & { signs_in?: number }): void {
     this.db.prepare(`INSERT INTO invitations
-      (id, kind, token_hash, email, roles_json, note, max_uses, expires_at, access_expires_at, created_by, created_at)
+      (id, kind, token_hash, email, roles_json, note, max_uses, expires_at, access_expires_at, created_by, created_at, signs_in)
       VALUES (@id, @kind, @token_hash, @email, @roles_json, @note, @max_uses, @expires_at, @access_expires_at,
-              @created_by, @created_at)`).run(i);
+              @created_by, @created_at, @signs_in)`).run({ ...i, signs_in: i.signs_in ?? 0 });
   }
 
   invitation(id: string): InvitationRow | undefined {
@@ -253,9 +279,9 @@ export class AdmissionRepository {
       .get(invitationId, principalId) as { grant_id: string } | undefined;
   }
 
-  redemptionsOf(invitationId: string): { email: string; redeemed_at: string }[] {
-    return this.db.prepare(`SELECT email, redeemed_at FROM invitation_redemptions
-      WHERE invitation_id = ? ORDER BY redeemed_at, id`).all(invitationId) as { email: string; redeemed_at: string }[];
+  redemptionsOf(invitationId: string): { email: string; redeemed_at: string; principal_id: string }[] {
+    return this.db.prepare(`SELECT email, redeemed_at, principal_id FROM invitation_redemptions
+      WHERE invitation_id = ? ORDER BY redeemed_at, id`).all(invitationId) as { email: string; redeemed_at: string; principal_id: string }[];
   }
 
   insertRedemption(r: { id: string; invitationId: string; principalId: string; email: string; grantId: string; at: string }): void {
@@ -265,11 +291,12 @@ export class AdmissionRepository {
 
   // ------------------------------------------------------------ applications
 
-  insertApplication(a: Omit<ApplicationRow, 'decided_at' | 'decided_by' | 'decision_note' | 'grant_id'>): void {
+  insertApplication(a: Omit<ApplicationRow, 'decided_at' | 'decided_by' | 'decision_note' | 'grant_id' | 'origin' | 'invitation_id'>
+    & { origin?: ApplicationRow['origin']; invitation_id?: string | null }): void {
     this.db.prepare(`INSERT INTO access_applications
-      (id, principal_id, email, display_name, affiliation, reason, requested_roles_json, status, submitted_at)
+      (id, principal_id, email, display_name, affiliation, reason, requested_roles_json, status, submitted_at, origin, invitation_id)
       VALUES (@id, @principal_id, @email, @display_name, @affiliation, @reason, @requested_roles_json, @status,
-              @submitted_at)`).run(a);
+              @submitted_at, @origin, @invitation_id)`).run({ ...a, origin: a.origin ?? null, invitation_id: a.invitation_id ?? null });
   }
 
   application(id: string): ApplicationRow | undefined {

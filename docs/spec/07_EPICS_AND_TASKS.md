@@ -35,6 +35,16 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
 
 - [x] **E5.8b-2 — PDF tables.** `pdf-layout-1` (pdf.js positions, PDF sha256), proposed column boundaries from shared gaps (review only), and an explicit PDF table plan (page, range, boundaries, names, row tolerance, join gap, raised-text marker and window) with per-cell provenance (page, baseline, fragment indices, bbox). Verified on arXiv 1706.03762 Table 2 through the UI. Tests in `tests/integration/document_conversion.test.ts`; gate 644/644.
 
+- [x] **E4.8 — Owner's access requirements of 2026-10-29: bearer links, viewer-first rule, local-user claim, run sharing, public legal pages.**
+  - **Bearer links.** An open link may sign its holder in by itself (`signs_in`, migration 027): a guest principal `okaziciel <id>` with a reserved `.invalid` address and viewer at once; revoking the link ends its guests.
+  - **Viewer-first rule.** An open link, a bearer link, or an email invitation used by another verified address grants viewer at once. Roles above viewer become an admission application, with its origin and invitation id recorded.
+  - **Local-user claim.** `watchdog-admin claim-local-user EMAIL` gives the pre-accounts owner's principal its address, so the owner's first Google sign-in keeps every run, protocol and vault key; no row moves (`migrateLocalUserRows` would fail on WORM tables).
+  - **Run sharing.** Read-only, to an address, an account or a link holder: run gate, list, raw responses and Replications. Shares are WORM; revocation is the only change.
+  - **Legal pages.** Public `/privacy` and `/terms`, with contact and storage location from settings.
+  - **Verification.** Tested end to end on a copy of the owner's data in the production image (`../history/evidence/2026-10-29-access/`). Tests: `tests/integration/accounts_admission.test.ts`, `tests/integration/access_sharing.test.ts`.
+  - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
+  - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
+
 - [x] **E5.13 — Request from a pasted text (first case: Prof. Hoffmann's quote).**
   - **Path:** `/requests`, `services/text_requests.ts`, migration 026.
     - The work is resolved through open metadata: an honestly identified page request, then Crossref with an exact landing-page match.

@@ -192,6 +192,23 @@ Wszystko poniżej robisz w aplikacji; pliki w repozytorium są tylko kopią.
   Raport: `docs/replication/REQUEST_HOFFMANN_2026-10-28/REPORT.md`.
 - **Do potwierdzenia:** rzeczywista cena Twoich dodatkowych kredytów SerpApi. Automat przyjmuje 0,014 € za zapytanie i limit 1 € dziennie.
 
+**A6. Logowanie Google, zaproszenia i udostępnianie (po wdrożeniu i `owner_enable_accounts.sh`)**
+- **Włączenie:** `sudo bash scripts/owner_enable_accounts.sh --email TWÓJ_ADRES_GOOGLE` (najpierw z `--dry-run`). Kontakt na stronie /privacy podajesz osobno: `--contact ADRES`. Bez tej opcji pole zostaje puste, a skrypt nie użyje Twojego adresu logowania.
+  - Skrypt zrobi kopię, ustawi tryb kont z Google i przypisze Twój adres do dotychczasowego konta (Twoje przebiegi i klucz SerpApi zostają).
+  - Potem zdejmie hasło Caddy z watchdog.* i wypisze polecenie cofnięcia.
+- **Logowanie:** „Zaloguj przez Google”. Trafiasz na swoje dane.
+- **Zaproszenie dla prof. Hoffmanna:** Dostęp użytkowników → Zaproś.
+  - **Na e-mail:** loguje się Google tym adresem i dostaje wybrane role od razu. Jeśli użyje innego adresu, dostaje viewer, a resztę zatwierdzasz w „Wnioskach”.
+  - **Na okaziciela:** link sam wpuszcza, bez logowania, jako „okaziciel <id>” z rolą viewer; wyższe role zatwierdzasz w „Wnioskach”. Odwołanie linku kończy dostęp jego gości.
+  - **Wysyłka:** bez skonfigurowanej poczty skopiuj link lub gotową wiadomość i wyślij ze swojej poczty.
+- **Udostępnienie wyników:** Replikacje → JH16 (albo CR2014) → Przebiegi → „Udostępnij przebiegi”.
+  - Wybierz przebiegi; udostępnij na adres albo linkiem (`/share#t=…`).
+  - Tylko odczyt: wyniki, ocena, surowe odpowiedzi i Replikacje. Odwołanie działa od razu.
+- **Nieznani:** każdy może się zalogować przez Google, ale bez nadania widzi tylko formularz wniosku (o jakie role i dlaczego). Decyzja należy do Ciebie.
+- **Google OAuth:** w ekranie zgody wpisz stronę główną `https://watchdog.34-158-117-249.sslip.io/`, prywatność `…/privacy`, warunki `…/terms`.
+- **Przetestowane 29.10** na kopii Twoich danych, w tym samym obrazie co produkcja: `docs/history/evidence/2026-10-29-access/`.
+  - Nie sprawdzono: logowania Google na prawdziwym adresie (Google wymaga tego adresu) ani zdjęcia hasła Caddy (zrobi to dopiero skrypt).
+
 **B. Nowe pomiary (kredyty SerpApi)**
 6. Ustawienia → kreator. Krok 1: „serpapi: zapisany” i, w trybie „Standardowy”, dzienny limit
    SerpApi. Krok 2: „Punkt odniesienia” → „JH16: nowe pomiary przez własny SerpApi” (32 kredyty)

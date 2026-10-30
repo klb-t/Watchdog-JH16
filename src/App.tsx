@@ -1,3 +1,5 @@
+import { Legal } from './pages/Legal';
+import { ShareLink } from './pages/ShareLink';
 import { TextRequestsPage, TextRequestPage } from './pages/TextRequests';
 import { WorkspacePreferencesProvider, WorkspaceLanding } from './lib/workspace_preferences';
 import { workspacePreferences } from '../shared/workspace_preferences';
@@ -41,6 +43,9 @@ export default function App() {
     <AccessProvider><WorkspacePreferencesProvider><Routes>
       <Route path="login" element={<Login />} />
       <Route path="join" element={<Join />} />
+      <Route path="share" element={<ShareLink />} />
+      <Route path="privacy" element={<Legal page="privacy" />} />
+      <Route path="terms" element={<Legal page="terms" />} />
       <Route path="apply" element={<Apply />} />
       <Route path="/" element={<AdmissionGate><Layout /></AdmissionGate>}>
         <Route index element={<Dashboard />} />

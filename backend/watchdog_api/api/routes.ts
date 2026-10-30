@@ -33,8 +33,9 @@ import { ManuscriptEditionRepository } from '../db/repositories/manuscript_editi
 import { evaluateProtocol, dataRole, readProtocolOptions, ProtocolError } from '../services/study_protocols';
 import { StudyProtocolRepository } from '../db/repositories/study_protocols';
 import { buildEvidenceGraph } from '../services/evidence_graph';
+import type { RunShares } from '../services/run_shares';
 
-export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService) {
+export function buildApiRouter(db: ConstructorParameters<typeof RunRepository>[0], store: ObjectStore, audit: AuditRepository, assistant?: AssistantService, shares?: RunShares) {
 const apiRouter = Router();
 
 const orchestrator = new RunOrchestrator(db, store);
@@ -47,11 +48,17 @@ const specRepo = new MethodSpecRepository(db);
 const editions = new ManuscriptEditionRepository(db);
 const protocols = new StudyProtocolRepository(db);
 
+/** Runs someone shared with this principal (read-only; services/run_shares.ts). */
+const sharedWith = (req: any): Set<string> => req.principal && shares ? shares.readable(req.principal.id, req.principal.email ?? null) : new Set();
+
 // All descendants, including exports and provider narratives, share the owner gate.
+// A shared run passes for reading only; anything that changes a run stays the owner's.
 apiRouter.use('/runs/:id', (req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
-  if (!req.principal || !runRepo.getOwnedRun(req.params.id, req.principal.id)) return res.status(404).json({ error: 'NOT_FOUND' });
-  next();
+  if (!req.principal) return res.status(404).json({ error: 'NOT_FOUND' });
+  if (runRepo.getOwnedRun(req.params.id, req.principal.id)) return next();
+  if ((req.method === 'GET' || req.method === 'HEAD') && sharedWith(req).has(req.params.id)) return next();
+  return res.status(404).json({ error: 'NOT_FOUND' });
 });
 
 /** The run's stored JH16 evaluation, read as recorded (never recomputed on read). */
@@ -82,7 +89,9 @@ apiRouter.get('/analyzers', requireCapability('run.view'), (req, res) => {
 apiRouter.get('/runs', requireCapability('run.view'), (req, res) => {
   const limit = Math.min(200, Math.max(1, Number(req.query.limit) || 50));
   res.setHeader('Cache-Control', 'no-store');
-  res.json({ runs: runRepo.getRuns(limit, req.principal!.id) });
+  const own = runRepo.getRuns(limit, req.principal!.id), mine = new Set(own.map(r => r.id));
+  const shared = [...sharedWith(req)].filter(id => !mine.has(id)).map(id => runRepo.getRun(id)).filter(Boolean).map(r => ({ ...r!, shared_with_me: true }));
+  res.json({ runs: [...own, ...shared].sort((a, b) => b.created_at.localeCompare(a.created_at) || a.id.localeCompare(b.id)).slice(0, limit) });
 });
 
 apiRouter.post('/runs', requireCapability('run.create'), (req, res, next) => {
@@ -135,10 +144,10 @@ apiRouter.get('/replications', requireCapability('run.view'), async (req, res, n
   } catch (e) { next(e); }
 });
 
-async function replicationContext(id: string, owner: string) {
+async function replicationContext(id: string, owner: string, sharedIds?: Set<string>) {
   const t = listReplicationTargets().find(x => x.target.target_id === id);
   if (!t || !t.dossier) return null;
-  const runs = await collectRuns(db, store, owner, t.dossier);
+  const runs = await collectRuns(db, store, owner, t.dossier, [...(sharedIds ?? [])]);
   const published = t.interpretation?.published_values_ref ? readConfig(t.interpretation.published_values_ref) : null;
   const frozen = protocols.list(owner, id);
   const protocolResults = frozen.map(p => ({ ...p, evaluation: evaluateProtocol(p, runs) }));
@@ -147,7 +156,7 @@ async function replicationContext(id: string, owner: string) {
 
 apiRouter.get('/replications/:id', requireCapability('run.view'), async (req, res, next) => {
   try {
-    const c = await replicationContext(req.params.id, req.principal!.id);
+    const c = await replicationContext(req.params.id, req.principal!.id, sharedWith(req));
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
     res.setHeader('Cache-Control', 'no-store');
     res.json({ target: c.t.target, interpretation: c.t.interpretation, dossier: c.t.dossier, hashes: c.t.hashes, runs: c.runs,
@@ -157,7 +166,7 @@ apiRouter.get('/replications/:id', requireCapability('run.view'), async (req, re
 
 apiRouter.get('/replications/:id/manuscript', requireCapability('run.view'), async (req, res, next) => {
   try {
-    const c = await replicationContext(req.params.id, req.principal!.id);
+    const c = await replicationContext(req.params.id, req.principal!.id, sharedWith(req));
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
     const base = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit, undefined, c.protocols);
     // An edition applies only to the exact results it was made from.
@@ -192,7 +201,7 @@ apiRouter.post('/replications/:id/protocols', requireCapability('method.approve'
 
 apiRouter.get('/replications/:id/evidence-graph', requireCapability('run.view'), async (req, res, next) => {
   try {
-    const c = await replicationContext(req.params.id, req.principal!.id);
+    const c = await replicationContext(req.params.id, req.principal!.id, sharedWith(req));
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
     const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit, undefined, c.protocols);
     res.setHeader('Cache-Control', 'no-store');
@@ -203,7 +212,7 @@ apiRouter.get('/replications/:id/evidence-graph', requireCapability('run.view'),
 apiRouter.post('/replications/:id/manuscript/edit', requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
   try {
     z.object({ consent: z.literal(true) }).strict().parse(req.body);
-    const c = await replicationContext(req.params.id, req.principal!.id);
+    const c = await replicationContext(req.params.id, req.principal!.id, sharedWith(req));
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
     const m = buildManuscript(c.t, c.runs, c.published, buildInfo().gitCommit, undefined, c.protocols);
     const edition = await editManuscript(m, { spentTodayUsd: editions.spentToday(req.principal!.id) });
@@ -248,11 +257,12 @@ apiRouter.get('/runs/:id/fetch-events', requireCapability('run.view'), (req, res
 
 apiRouter.get('/artifacts/:id', requireCapability('run.view'), async (req, res, next) => {
   try {
-    const blob = acqRepo.getOwnedRawBlob(req.params.id, req.principal!.id);
+    const readable = () => acqRepo.getOwnedRawBlob(req.params.id, req.principal!.id) ?? acqRepo.getRawBlobOfRuns(req.params.id, [...sharedWith(req)]);
+    const blob = readable();
     if (!blob) return res.status(404).json({ error: 'NOT_FOUND' });
     
     const data = await store.get(blob.object_uri);
-    if (!acqRepo.getOwnedRawBlob(req.params.id, req.principal!.id)) return res.status(404).json({ error: 'NOT_FOUND' });
+    if (!readable()) return res.status(404).json({ error: 'NOT_FOUND' });
     res.setHeader('Cache-Control', 'no-store');
     res.setHeader('Content-Type', 'application/octet-stream');
     res.send(data);

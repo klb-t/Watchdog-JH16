@@ -14,6 +14,7 @@ interface Preview {
   inviter?: string | null;
   expiresAt?: string;
   emailHint?: string | null;
+  signsIn?: boolean;
 }
 
 function readPending(): string | null {
@@ -68,12 +69,26 @@ export function Join() {
 
   // Someone who opened an invitation and then signed in meant to accept it.
   useEffect(() => {
-    if (signedIn && preview?.status === 'valid' && !accepted && !autoAccepted.current) {
+    if (signedIn && preview?.status === 'valid' && !preview.signsIn && !accepted && !autoAccepted.current) {
       autoAccepted.current = true;
       void accept();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signedIn, preview?.status]);
+
+  /** A bearer link: no account, the link itself signs the holder in as a guest. */
+  async function enterAsGuest() {
+    if (!token) return;
+    setBusy(true); setError(null);
+    try {
+      await postJson('/api/auth/invitations/bearer', { token });
+      writePending(null);
+      setAccepted(true);
+      announceSessionChange();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally { setBusy(false); }
+  }
 
   async function signOut() {
     await postJson('/api/auth/signout');
@@ -97,10 +112,17 @@ export function Join() {
         <p>{t('join_valid', { inviter: preview.inviter ?? 'WatchDog', roles: (preview.roles ?? []).map(role).join(', ') })}</p>
         {preview.note && <blockquote className="border-l-4 border-indigo-200 pl-3 text-sm text-slate-700 whitespace-pre-wrap">
           <span className="block text-xs text-slate-500 mb-1">{t('join_note')}</span>{preview.note}</blockquote>}
+        {preview.signsIn ? <div className="space-y-3" data-testid="join-bearer">
+          <p className="text-sm">{t('join_bearer', { pending: (preview.roles ?? []).some(r => r !== 'viewer')
+            ? t('join_bearer_pending', { roles: (preview.roles ?? []).filter(r => r !== 'viewer').map(role).join(', ') }) : '' })}{' '}{t('join_expires', { date: date(preview.expiresAt) })}</p>
+          <button className="field-button primary w-full" onClick={() => void enterAsGuest()} disabled={busy} data-testid="join-bearer-enter">
+            {busy ? t('working') : t('join_bearer_enter')}</button>
+        </div> : <>
         <p className="text-sm text-slate-600">
           {preview.kind === 'email' ? t('join_email_bound', { hint: preview.emailHint ?? '' }) : t('join_open')}
           {' '}{t('join_expires', { date: date(preview.expiresAt) })}
         </p>
+        <p className="text-xs text-slate-600" data-testid="join-viewer-rule">{t('join_viewer_rule')}</p>
 
         {signedIn ? <div className="space-y-3">
           <p className="text-sm">{t('join_signed_in_as', { email: access.email ?? '' })}</p>
@@ -109,6 +131,7 @@ export function Join() {
           </button>
           {error && <button className="underline text-sm" onClick={() => void signOut()}>{t('other_address')}</button>}
         </div> : <SignInPanel onSignedIn={() => { /* the session change re-renders this page; acceptance follows */ }} />}
+        </>}
       </div>}
 
       {accepted && <div className="space-y-4" data-testid="join-accepted">

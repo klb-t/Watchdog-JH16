@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import { Activity } from 'lucide-react';
 import { useAccess } from '../lib/access';
 import { ACCESS_LANGUAGES, useAccessText } from '../lib/access_i18n';
@@ -28,6 +29,9 @@ export function AccessShell({ title, children }: { title: string; children: Reac
           <h1 className="text-xl font-semibold mb-4">{title}</h1>
           {children}
         </main>
+        <p className="mt-4 text-xs text-slate-500 text-center" data-testid="legal-links">
+          <Link className="underline" to="/privacy">{t('legal_privacy')}</Link>{' · '}
+          <Link className="underline" to="/terms">{t('legal_terms')}</Link></p>
       </div>
     </div>
   );

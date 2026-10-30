@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { createHash } from 'node:crypto';
 import { randomUUID } from 'node:crypto';
 import { fetchEvents, rawBlobs, runs } from '../schema';
@@ -111,6 +111,14 @@ export class AcquisitionRepository {
     const event = this.db.select({ id: fetchEvents.id }).from(fetchEvents)
       .innerJoin(runs, eq(runs.id, fetchEvents.run_id))
       .where(and(eq(fetchEvents.raw_blob_id, id), eq(runs.owner_principal_id, actor))).get();
+    return event ? this.getRawBlob(id) : undefined;
+  }
+
+  /** A raw blob reachable through one of the given runs (runs shared with the reader). */
+  getRawBlobOfRuns(id: string, runIds: readonly string[]) {
+    if (!runIds.length) return undefined;
+    const event = this.db.select({ id: fetchEvents.id }).from(fetchEvents)
+      .where(and(eq(fetchEvents.raw_blob_id, id), inArray(fetchEvents.run_id, [...runIds]))).get();
     return event ? this.getRawBlob(id) : undefined;
   }
 }
