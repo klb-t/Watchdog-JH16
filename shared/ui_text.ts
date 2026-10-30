@@ -11,7 +11,8 @@ export const UI_LANGUAGES = ['pl', 'en'] as const;
 export type UiLanguage = (typeof UI_LANGUAGES)[number];
 
 export const textPlaceholders = (s: string) => [...s.matchAll(/\{([a-z0-9_]+)\}/g)].map(m => m[1]).sort();
-const texts = z.record(z.string().regex(/^[a-z0-9_]+$/), z.string().min(1));
+// A key is lower case; a key built from a stored code (`status_COMPLETED`, see `tCode`) keeps the code's case after its prefix.
+const texts = z.record(z.string().regex(/^[a-z][a-z0-9_]*[A-Za-z0-9_]*$/), z.string().min(1));
 
 export const UiBundleSchema = z.object({
   version: z.string().regex(/^ui-[a-z0-9-]+-\d+$/),

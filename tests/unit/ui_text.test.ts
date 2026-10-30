@@ -36,7 +36,7 @@ const NOT_SCANNED: Record<string, string> = {
 };
 // Literals that are the same in both languages: names, symbols, units and formats.
 const SAME_IN_BOTH = new Set(['WatchDog', 'JH16', 'CR2014', 'JSON', 'CSV', 'PDF', 'HTML', 'SVG', 'PNG', 'URL', 'DOI', 'ID', 'SHA-256', 'SerpApi', 'Google Trends',
-  'OpenRouter', 'PubChem', 'Spearman', 'Pearson', 'Kendall', 'API', 'LLM', 'ρ', 'r', 'n', 'p', 'N', 'k', 'OK', 'Polski', 'English', 'GeoJSON', 'ZIP', 'Markdown', 'TSV', 'XLSX']);
+  'OpenRouter', 'PubChem', 'Spearman', 'Pearson', 'Kendall', 'API', 'LLM', 'ρ', 'r', 'n', 'p', 'N', 'k', 'OK', 'Polski', 'English', 'GeoJSON', 'ZIP', 'Markdown', 'TSV', 'XLSX', '· doi:', '· sha256']);
 const VISIBLE_ATTRIBUTES = new Set(['placeholder', 'title', 'aria-label', 'alt', 'label', 'aria-description', 'aria-placeholder']);
 const LETTERS = /\p{L}{2,}/u;
 const POLISH = /[ąćęłńóśźżĄĆĘŁŃÓŚŹŻ]/;
