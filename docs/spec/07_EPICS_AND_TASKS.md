@@ -59,6 +59,9 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
   - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
   - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
 
+- [x] **E4.8e — Goal cards in both languages (2026-10-30).**
+  - **What.** `config/goal-navigation.json` is now `goal-navigation-2`: each goal has `text.pl` and `text.en` (label, description, search words); id, route and capability are shared. Polish text unchanged; English is new. Search matches both languages, so a word typed in either finds the goal. Favourites are stored by id and are unaffected.
+  - **Tests.** `tests/unit/goal_navigation.test.ts` (both languages required); `npm run test:all` 711/711. Browser check on an empty local instance (en-GB and pl-PL): cards in the reader's language; "replication"/"replikacja" and "map"/"mapa" find the same goals.
 - [x] **E4.8d — Every page in the reader's language (2026-10-30).**
   - **What.** Every page and component takes its interface words from a `config/ui/*.json` bundle in Polish and English and follows the one interface language. Server refusals carry a code and are shown in the reader's language (`errorText`). Stored data (dossier prose, claim keys, verdict codes, configs, paper quotes, the manuscript body) is shown as stored.
   - **Guard.** `tests/unit/ui_text.test.ts`: every bundle has the same keys and placeholders in both languages, and a scan fails on any visible literal left in `src/pages`, `src/components` or `src/App.tsx`. Keys built from a stored code keep its case after the prefix (`status_COMPLETED`).

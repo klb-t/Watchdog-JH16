@@ -11,8 +11,10 @@ import text from '../../config/ui/goal-navigator.json';
 const goals = GoalNavigationSchema.parse(profile);
 type Goal = (typeof goals.goals)[number];
 const normalize = (s:string)=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ł/g,'l').toLocaleLowerCase('pl');
+// Search matches the wording in both languages, so a word typed in either finds the goal.
+const words = (g:Goal)=>Object.values(g.text).map(x=>`${x.label} ${x.description} ${x.contexts.join(' ')}`).join(' ');
 export function GoalNavigator() {
-  const access=useAccess(),[search,setSearch]=useState(''),[favorites,setFavorites]=useState<string[]|null>(null),[error,setError]=useState<unknown>(null),{t,errorText}=useUiText(text);
+  const access=useAccess(),[search,setSearch]=useState(''),[favorites,setFavorites]=useState<string[]|null>(null),[error,setError]=useState<unknown>(null),{lang,t,errorText}=useUiText(text);
   // Favourites live in the person's settings; until they load (or if they cannot), the stars stay disabled rather than pretending.
   useEffect(()=>{ let active=true; if (!access.principalId) return;
     automationApi('/api/settings').then(d=>{ if (active) setFavorites(d.settings.value.favoriteGoals ?? []); }).catch(e=>active&&setError(e));
@@ -21,13 +23,13 @@ export function GoalNavigator() {
     try { const d=await automationApi('/api/settings/favorite-goals',{goalId:id,favorite:!favorites.includes(id)}); setFavorites(d.settings.value.favoriteGoals ?? []);
       window.dispatchEvent(new Event('watchdog-settings-changed')); } catch(e) { setError(e); } };
   const available=goals.goals.filter(g=>g.capability.split('|').some(c=>access.capabilities.includes(c as Capability)));
-  const query=normalize(search).split(/\s+/).filter(Boolean), visible=available.filter(g=>query.every(q=>normalize(`${g.label} ${g.description} ${g.contexts.join(' ')}`).includes(q)));
+  const query=normalize(search).split(/\s+/).filter(Boolean), visible=available.filter(g=>query.every(q=>normalize(words(g)).includes(q)));
   const pinned=(favorites??[]).map(id=>visible.find(g=>g.id===id)).filter((g):g is Goal=>!!g), rest=visible.filter(g=>!pinned.includes(g));
-  const card=(g:Goal)=>{ const on=!!favorites?.includes(g.id);
+  const card=(g:Goal)=>{ const on=!!favorites?.includes(g.id), w=g.text[lang];
     return <div key={g.id} className="relative border bg-white rounded-xl hover:border-indigo-500" data-testid={`goal-${g.id}`}>
-      <Link to={g.href} className="block p-4 pr-12 focus:outline-indigo-600"><h2 className="font-semibold">{g.label}</h2><p className="text-sm text-slate-600 mt-2">{g.description}</p></Link>
+      <Link to={g.href} className="block p-4 pr-12 focus:outline-indigo-600"><h2 className="font-semibold">{w.label}</h2><p className="text-sm text-slate-600 mt-2">{w.description}</p></Link>
       <button type="button" className="absolute top-2 right-2 p-2 rounded text-slate-400 hover:text-amber-500 disabled:opacity-40" disabled={!favorites} aria-pressed={on}
-        aria-label={on?t('favorite_remove',{goal:g.label}):t('favorite_add',{goal:g.label})} onClick={()=>void toggle(g.id)} data-testid={`favorite-${g.id}`}>
+        aria-label={on?t('favorite_remove',{goal:w.label}):t('favorite_add',{goal:w.label})} onClick={()=>void toggle(g.id)} data-testid={`favorite-${g.id}`}>
         <Star className={`w-5 h-5 ${on?'fill-amber-400 text-amber-500':''}`} /></button></div>; };
   return <section className="space-y-4" data-testid="goal-navigator"><div><h1 className="text-2xl font-semibold">{t('title')}</h1><p className="text-sm text-slate-600 mt-1">{t('intro')}</p></div>
     <label className="block text-sm">{t('search_label')}<input className="mt-1 p-3 border rounded w-full" value={search} onChange={e=>setSearch(e.target.value)} placeholder={t('search_placeholder')}/></label>
