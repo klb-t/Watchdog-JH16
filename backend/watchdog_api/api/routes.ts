@@ -465,15 +465,27 @@ apiRouter.get('/providers/readiness', requireCapability('provider.view'), async 
  * prefetcher can bill them for.
  */
 apiRouter.post('/runs/:id/narrative/generate',
-  requireCapability('narrative.approve'), async (req, res, next) => {
+  requireCapability('narrative.approve'), sameOriginMutation, async (req, res, next) => {
   try {
     const results = anRepo.getByRunId(req.params.id);
     const observations = obsRepo.getByRunId(req.params.id);
     const run = runRepo.getRun(req.params.id);
     if (!run) return res.status(404).json({ error: 'NOT_FOUND' });
 
-    const providerKey = String((req.body ?? {}).provider ?? 'openrouter');
+    // The caller names the provider and consents explicitly: there is no default provider,
+    // so no request can reach a paid service by omission.
+    const body = z.object({ consent: z.literal(true), provider: z.string().min(1), model: z.string().min(1).optional() }).strict().safeParse(req.body ?? {});
+    if (!body.success) return res.status(400).json({ error: { code: 'consent_and_provider_required',
+      message: 'Send {"consent": true, "provider": "<provider key>"}: generating a narrative calls an external model.' } });
+    const providerKey = body.data.provider;
     const registry = buildTextGenerationRegistry();
+    if (!registry.providerKeys().includes(providerKey))
+      return res.status(409).json({ error: { code: 'provider_unavailable', message: `No text.generate provider '${providerKey}' is configured.`, provider: providerKey } });
+    // This route uses the installation's key and has no budget. A metered provider is refused
+    // here; /narrative/automatic spends from the person's own key within their daily budget.
+    if (registry.billing(providerKey) !== 'none')
+      return res.status(409).json({ error: { code: 'budget_required', provider: providerKey,
+        message: `'${providerKey}' bills per call and this route has no budget. Use POST /runs/:id/narrative/automatic, which reserves the cost within your daily budget.` } });
     const availability = await registry.availability(providerKey);
     if (availability.status !== 'implemented') {
       // 409, not 500: the instance is working correctly and is telling the
@@ -495,7 +507,7 @@ apiRouter.post('/runs/:id/narrative/generate',
       runId: req.params.id, payload, payloadHash: hashNarrativePayload(payload),
       templateId: 'jh2016-summary', templateVersion: '1.0',
       providerId: providerKey,
-      model: String((req.body ?? {}).model ?? availability.defaultModel),
+      model: body.data.model ?? availability.defaultModel,
       generationParams: await registry.defaultParams(providerKey),
       generator: await registry.get(providerKey),
     });

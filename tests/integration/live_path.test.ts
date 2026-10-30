@@ -110,7 +110,7 @@ before(async () => {
       endpoint: `${baseUrl}/llm/chat/completions`, secret_ref: 'env:OPENROUTER_API_KEY',
       default_model: 'anthropic/claude-sonnet-4.5',
       allowed_models: ['anthropic/claude-sonnet-4.5'],
-      generation_params: { temperature: 0, max_tokens: 800 },
+      generation_params: { temperature: 0, max_tokens: 800 }, billing: 'metered',
     }],
   }));
 });

@@ -32,6 +32,10 @@ const ProviderConfigSchema = z.object({
   allowed_models: z.array(z.string()),
   generation_params: z.record(z.string(), z.unknown()),
   attribution_headers: z.record(z.string(), z.string()).optional(),
+  // Whether a call costs money. Stated per provider, never inferred: 'metered' bills per call
+  // (a vendor, or an endpoint whose pricing the operator has not declared free), 'none' is the
+  // operator's own server. A metered call needs a budget, which only the personal assistant has.
+  billing: z.enum(['metered', 'none']),
 }).refine(p => !!(p.endpoint || p.endpoint_ref), {
   message: 'A provider needs either endpoint or endpoint_ref.',
 }).refine(p => !!(p.default_model || p.default_model_ref), {
@@ -92,6 +96,9 @@ export class TextGenerationRegistry {
   providerKeys(): string[] {
     return this.config.providers.map(p => p.provider_key).sort();
   }
+
+  /** 'metered' or 'none' as configured; an unknown provider is refused by `find`. */
+  billing(providerKey: string): 'metered' | 'none' { return this.find(providerKey).billing; }
 
   private find(providerKey: string) {
     const p = this.config.providers.find(x => x.provider_key === providerKey);
