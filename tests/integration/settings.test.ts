@@ -251,3 +251,32 @@ test('credential API requires owner authorization, rejects cross-origin writes a
     roles = ['responder']; assert.equal((await call(body)).status, 403);
   } finally { if (server) await new Promise<void>(r => server!.close(() => r())); h.close(); }
 });
+
+test('favourite goals: pinned per account in settings order, only goals from the navigation profile, kept through a full settings save', async () => {
+  const h = harness(); let server: ReturnType<express.Express['listen']> | undefined;
+  try {
+    const service = new AssistantService(h.repo, h.vault, h.profile, async () => { throw new Error('No network in this test'); });
+    const app = express(); let owner = h.owner; app.use(express.json()); app.use(traceMiddleware);
+    app.use((req, _res, next) => { req.principal = { id: owner, roles: ['viewer'], email: null, identityProvenance: 'test' }; next(); });
+    app.use('/api/settings', buildSettingsRouter(h.repo, service, h.vault, h.plans)); app.use(errorHandler);
+    server = app.listen(0, '127.0.0.1'); await new Promise<void>(r => server!.once('listening', r));
+    const base = `http://127.0.0.1:${(server.address() as any).port}/api/settings`;
+    const post = async (p: string, body: unknown) => { const r = await fetch(base + p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); return { status: r.status, body: await r.json() }; };
+    const before = h.repo.get(h.owner, h.profile.defaults);
+    assert.equal(before.value.favoriteGoals, undefined, 'existing settings are unchanged until someone pins a goal');
+    assert.equal((await post('/favorite-goals', { goalId: 'replication', favorite: true })).status, 200);
+    const two = await post('/favorite-goals', { goalId: 'text_request', favorite: true });
+    assert.deepEqual(two.body.settings.value.favoriteGoals, ['replication', 'text_request']);
+    assert.equal((await post('/favorite-goals', { goalId: 'no_such_goal', favorite: true })).status, 400);
+    // Saving the whole settings form keeps them; an unknown id is refused there too.
+    const record = two.body.settings;
+    assert.equal((await post('', { value: { ...record.value, density: 'compact' }, expectedHash: record.hash })).body.settings.value.favoriteGoals.length, 2);
+    const now = h.repo.get(h.owner, h.profile.defaults);
+    assert.equal((await post('', { value: { ...now.value, favoriteGoals: ['made_up'] }, expectedHash: now.hash })).status, 400);
+    const off = await post('/favorite-goals', { goalId: 'replication', favorite: false });
+    assert.deepEqual(off.body.settings.value.favoriteGoals, ['text_request']);
+    const none = await post('/favorite-goals', { goalId: 'text_request', favorite: false });
+    assert.equal(none.body.settings.value.favoriteGoals, undefined, 'unpinning everything leaves no empty field behind');
+    owner = 'another'; assert.equal((await (await fetch(base)).json()).settings.value.favoriteGoals, undefined, 'favourites belong to one account');
+  } finally { if (server) await new Promise<void>(r => server!.close(() => r())); h.close(); }
+});

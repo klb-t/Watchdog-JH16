@@ -11,6 +11,10 @@ import { readTrendsCalibration } from '../services/jh16_trends';
 import { AssistantTaskSchema, SettingsSchema, ModelCeilingSchema, BenchmarkSchema } from '../../../shared/settings';
 import { can } from '../../../shared/authorization';
 import { redact, registerSecretValue } from '../utils/redaction';
+import goalProfile from '../../../config/goal-navigation.json';
+import { GoalNavigationSchema } from '../../../shared/goal_navigation';
+
+const GOAL_IDS = new Set(GoalNavigationSchema.parse(goalProfile).goals.map(g => g.id));
 
 const route = (fn: (req: Request, res: Response) => unknown) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve().then(() => fn(req, res)).catch(e => e instanceof AutomationError ? res.status(e.status).json(redact({ error: e.code, message: e.message })) : next(e));
@@ -30,7 +34,18 @@ export function buildSettingsRouter(repo: SettingsRepository, service: Assistant
   router.post('/', route((req, res) => {
     const body = z.object({ value: SettingsSchema, expectedHash: z.string() }).strict().parse(req.body);
     if ([body.value.assistant.provider, ...Object.values(body.value.assistant.taskProviders ?? {})].some(id => !service.providers.providers.some(p => p.id === id))) throw new AutomationError('Unknown provider profile');
+    if ((body.value.favoriteGoals ?? []).some(id => !GOAL_IDS.has(id))) throw new AutomationError('Unknown goal in favourites', 400);
     res.json({ settings: repo.save(req.principal!.id, body.value, body.expectedHash, service.profile.defaults) });
+  }));
+  // Pins or unpins one goal against the stored settings, so a click never needs the whole settings form.
+  router.post('/favorite-goals', route((req, res) => {
+    const body = z.object({ goalId: z.string().max(64), favorite: z.boolean() }).strict().parse(req.body);
+    if (!GOAL_IDS.has(body.goalId)) throw new AutomationError('Unknown goal', 400);
+    const current = repo.get(req.principal!.id, service.profile.defaults), ids = (current.value.favoriteGoals ?? []).filter(id => id !== body.goalId);
+    if (body.favorite) ids.push(body.goalId);
+    if (ids.length > 30) throw new AutomationError('At most 30 favourite goals', 400);
+    const { favoriteGoals: _previous, ...rest } = current.value;
+    res.json({ settings: repo.save(req.principal!.id, ids.length ? { ...rest, favoriteGoals: ids } : rest, current.hash, service.profile.defaults) });
   }));
   router.post('/credentials', requireCapability('provider.view'), route((req, res) => {
     if (typeof req.body?.apiKey === 'string') registerSecretValue(req.body.apiKey);
