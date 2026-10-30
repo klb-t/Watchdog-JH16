@@ -1,20 +1,485 @@
 {
-  "version": "goal-navigation-1",
+  "version": "goal-navigation-2",
+  "_note": "Goals on the start page. text.pl and text.en carry the interface wording (label, description, search words); search matches both languages. id, href and capability are shared.",
   "goals": [
-    { "id": "text_request", "label": "Wklej wiadomość od badacza i zacznij pracę", "description": "WatchDog rozpoznaje wskazaną pracę, uruchamia część dosłowną, proponuje rozszerzenia do akceptacji i zadaje pytania bez wstrzymywania pracy.", "href": "/requests", "capability": "run.create", "contexts": ["naukowiec", "replikacja", "cytat", "wiadomość", "hoffmann", "zlecenie"] },
-    { "id": "replication", "label": "Zobacz replikację JH16 i projekt pracy", "description": "Hipotezy i werdykty, zgodność z publikacją, rozbieżności z przyczynami, kalibracja, protokół i projekt pracy z wyników.", "href": "/replications", "capability": "run.view", "contexts": ["naukowiec", "replikacja", "wyniki", "praca", "hoffmann", "jh16"] },
-    { "id": "project", "label": "Zbierz pracę w projekcie badawczym", "description": "Zapisz pytanie badawcze i połącz konkretne wersje tekstów, danych, metod, uruchomień i harmonogramów.", "href": "/projects", "capability": "method.propose", "contexts": ["naukowiec", "projekt", "badanie", "pakiet", "zadanie", "wznów"] },
-    { "id": "search", "label": "Przeszukaj zapisane dane", "description": "Nazwy, identyfikatory i opisy w dostępnych kartotekach, pracach, zbiorach danych oraz historii badań.", "href": "/search", "capability": "run.view|run.create|workbench.view|responder.lookup|evidence.review|method.propose", "contexts": ["szukaj", "baza", "substancja", "objawy", "interakcje", "artykuł", "dane", "historia"] },
-    { "id": "emergency", "label": "Sprawdź objawy lub rozpoznanie próbki", "description": "Interfejs ratownika: dopasowania z podaniem źródeł i ograniczeń identyfikacji.", "href": "/responder", "capability": "responder.lookup", "contexts": ["ratownik", "objawy", "tabletka", "skład", "interakcje", "zatrucie"] },
-    { "id": "memory", "label": "Otwórz kartotekę substancji", "description": "Tożsamość chemiczna, właściwości, badania aktywności i ich pochodzenie.", "href": "/memory", "capability": "responder.lookup|evidence.review", "contexts": ["ratownik", "naukowiec", "chemia", "receptor", "PubChem", "substancja"] },
-    { "id": "geography", "label": "Porównaj obszary na mapie", "description": "Wczytaj dane regionalne, przypisz identyfikatory obszarów i obejrzyj czas, kolor oraz niepewność źródeł.", "href": "/workbench", "capability": "workbench.view", "contexts": ["policjant", "analityk", "geografia", "region", "mapa", "czas", "popularność"] },
-    { "id": "figures", "label": "Przeanalizuj dane i przygotuj wykres", "description": "Import tabeli, metoda, wykresy, ulubione ustawienia i eksport publikacyjny.", "href": "/workbench", "capability": "workbench.view", "contexts": ["naukowiec", "analityk", "wykres", "statystyka", "3D", "4D", "publikacja", "CSV"] },
-    { "id": "paper", "label": "Zaplanuj odtworzenie pracy", "description": "Zapisz tekst, sprawdź metodologię i wymagane dane, rozważ jawne warianty oraz przetestuj ekstraktor.", "href": "/research", "capability": "method.propose", "contexts": ["naukowiec", "artykuł", "replikacja", "metoda", "hipoteza", "parser", "ekstrakcja"] },
-    { "id": "baseline", "label": "Uruchom JH16 i skonfiguruj badania", "description": "Kreator punktu odniesienia, niezależnych języków i geografii, źródeł oraz limitów kosztów.", "href": "/setup", "capability": "run.create", "contexts": ["naukowiec", "JH16", "start", "język", "slang", "dialekt", "sentyment"] },
-    { "id": "schedule", "label": "Zleć cykliczne zbieranie lub przegląd", "description": "Publiczne źródła, literatura, katalog modeli i ograniczona budżetem ocena nowych prac.", "href": "/automation", "capability": "run.create", "contexts": ["naukowiec", "codziennie", "harmonogram", "arxiv", "źródła", "automatyzacja"] },
-    { "id": "review", "label": "Sprawdź pochodzenie i zatwierdź dane", "description": "Przejrzyj dowody przed ich użyciem w projekcji ratownika.", "href": "/evidence", "capability": "evidence.review", "contexts": ["naukowiec", "obiektywność", "kolory", "dowód", "jakość", "zatwierdzenie"] },
-    { "id": "resume", "label": "Wróć do uruchomionego badania", "description": "Stan przetwarzania, wyniki, manifest i historia błędów.", "href": "/runs", "capability": "run.view", "contexts": ["naukowiec", "wznów", "wyniki", "historia", "przerwane"] },
-    { "id": "debug", "label": "Zdiagnozuj działanie systemu", "description": "Flight Recorder, ślady zdarzeń i pakiet diagnostyczny w ramach uprawnień konta.", "href": "/diagnostics", "capability": "diagnostics.view", "contexts": ["debug", "błąd", "diagnostyka", "logi", "programista"] },
-    {"id": "source_access", "label": "Sprawdź źródła danych i dostęp", "description": "Integracje, fora, warunki, własne oceny dostępu, statystyki pobrań i szkice próśb.", "href": "/source-access", "capability": "provider.view", "contexts": ["źródła", "fora", "dostęp", "pozwolenie", "API", "licencja", "Erowid", "Hyperreal"]}
+    {
+      "id": "text_request",
+      "href": "/requests",
+      "capability": "run.create",
+      "text": {
+        "pl": {
+          "label": "Wklej wiadomość od badacza i zacznij pracę",
+          "description": "WatchDog rozpoznaje wskazaną pracę, uruchamia część dosłowną, proponuje rozszerzenia do akceptacji i zadaje pytania bez wstrzymywania pracy.",
+          "contexts": [
+            "naukowiec",
+            "replikacja",
+            "cytat",
+            "wiadomość",
+            "hoffmann",
+            "zlecenie"
+          ]
+        },
+        "en": {
+          "label": "Paste a message from a researcher and start work",
+          "description": "WatchDog recognises the paper it names, runs the literal part, proposes extensions for approval and asks questions without stopping the work.",
+          "contexts": [
+            "researcher",
+            "replication",
+            "quote",
+            "message",
+            "hoffmann",
+            "request"
+          ]
+        }
+      }
+    },
+    {
+      "id": "replication",
+      "href": "/replications",
+      "capability": "run.view",
+      "text": {
+        "pl": {
+          "label": "Zobacz replikację JH16 i projekt pracy",
+          "description": "Hipotezy i werdykty, zgodność z publikacją, rozbieżności z przyczynami, kalibracja, protokół i projekt pracy z wyników.",
+          "contexts": [
+            "naukowiec",
+            "replikacja",
+            "wyniki",
+            "praca",
+            "hoffmann",
+            "jh16"
+          ]
+        },
+        "en": {
+          "label": "See the JH16 replication and the manuscript draft",
+          "description": "Hypotheses and verdicts, agreement with the paper, discrepancies with their causes, calibration, the protocol and a manuscript draft from the results.",
+          "contexts": [
+            "researcher",
+            "replication",
+            "results",
+            "paper",
+            "hoffmann",
+            "jh16"
+          ]
+        }
+      }
+    },
+    {
+      "id": "project",
+      "href": "/projects",
+      "capability": "method.propose",
+      "text": {
+        "pl": {
+          "label": "Zbierz pracę w projekcie badawczym",
+          "description": "Zapisz pytanie badawcze i połącz konkretne wersje tekstów, danych, metod, uruchomień i harmonogramów.",
+          "contexts": [
+            "naukowiec",
+            "projekt",
+            "badanie",
+            "pakiet",
+            "zadanie",
+            "wznów"
+          ]
+        },
+        "en": {
+          "label": "Gather the work in a research project",
+          "description": "Record a research question and link exact versions of texts, data, methods, runs and schedules.",
+          "contexts": [
+            "researcher",
+            "project",
+            "study",
+            "package",
+            "task",
+            "resume"
+          ]
+        }
+      }
+    },
+    {
+      "id": "search",
+      "href": "/search",
+      "capability": "run.view|run.create|workbench.view|responder.lookup|evidence.review|method.propose",
+      "text": {
+        "pl": {
+          "label": "Przeszukaj zapisane dane",
+          "description": "Nazwy, identyfikatory i opisy w dostępnych kartotekach, pracach, zbiorach danych oraz historii badań.",
+          "contexts": [
+            "szukaj",
+            "baza",
+            "substancja",
+            "objawy",
+            "interakcje",
+            "artykuł",
+            "dane",
+            "historia"
+          ]
+        },
+        "en": {
+          "label": "Search stored data",
+          "description": "Names, identifiers and descriptions in the available records, papers, datasets and research history.",
+          "contexts": [
+            "search",
+            "database",
+            "substance",
+            "symptoms",
+            "interactions",
+            "article",
+            "data",
+            "history"
+          ]
+        }
+      }
+    },
+    {
+      "id": "emergency",
+      "href": "/responder",
+      "capability": "responder.lookup",
+      "text": {
+        "pl": {
+          "label": "Sprawdź objawy lub rozpoznanie próbki",
+          "description": "Interfejs ratownika: dopasowania z podaniem źródeł i ograniczeń identyfikacji.",
+          "contexts": [
+            "ratownik",
+            "objawy",
+            "tabletka",
+            "skład",
+            "interakcje",
+            "zatrucie"
+          ]
+        },
+        "en": {
+          "label": "Check symptoms or identify a sample",
+          "description": "Responder interface: matches with their sources and the limits of identification.",
+          "contexts": [
+            "responder",
+            "symptoms",
+            "pill",
+            "composition",
+            "interactions",
+            "poisoning"
+          ]
+        }
+      }
+    },
+    {
+      "id": "memory",
+      "href": "/memory",
+      "capability": "responder.lookup|evidence.review",
+      "text": {
+        "pl": {
+          "label": "Otwórz kartotekę substancji",
+          "description": "Tożsamość chemiczna, właściwości, badania aktywności i ich pochodzenie.",
+          "contexts": [
+            "ratownik",
+            "naukowiec",
+            "chemia",
+            "receptor",
+            "PubChem",
+            "substancja"
+          ]
+        },
+        "en": {
+          "label": "Open a substance record",
+          "description": "Chemical identity, properties, activity assays and their provenance.",
+          "contexts": [
+            "responder",
+            "researcher",
+            "chemistry",
+            "receptor",
+            "PubChem",
+            "substance"
+          ]
+        }
+      }
+    },
+    {
+      "id": "geography",
+      "href": "/workbench",
+      "capability": "workbench.view",
+      "text": {
+        "pl": {
+          "label": "Porównaj obszary na mapie",
+          "description": "Wczytaj dane regionalne, przypisz identyfikatory obszarów i obejrzyj czas, kolor oraz niepewność źródeł.",
+          "contexts": [
+            "policjant",
+            "analityk",
+            "geografia",
+            "region",
+            "mapa",
+            "czas",
+            "popularność"
+          ]
+        },
+        "en": {
+          "label": "Compare areas on a map",
+          "description": "Load regional data, assign area identifiers and view time, colour and the uncertainty of sources.",
+          "contexts": [
+            "police",
+            "analyst",
+            "geography",
+            "region",
+            "map",
+            "time",
+            "popularity"
+          ]
+        }
+      }
+    },
+    {
+      "id": "figures",
+      "href": "/workbench",
+      "capability": "workbench.view",
+      "text": {
+        "pl": {
+          "label": "Przeanalizuj dane i przygotuj wykres",
+          "description": "Import tabeli, metoda, wykresy, ulubione ustawienia i eksport publikacyjny.",
+          "contexts": [
+            "naukowiec",
+            "analityk",
+            "wykres",
+            "statystyka",
+            "3D",
+            "4D",
+            "publikacja",
+            "CSV"
+          ]
+        },
+        "en": {
+          "label": "Analyse data and prepare a chart",
+          "description": "Table import, method, charts, favourite settings and publication export.",
+          "contexts": [
+            "researcher",
+            "analyst",
+            "chart",
+            "statistics",
+            "3D",
+            "4D",
+            "publication",
+            "CSV"
+          ]
+        }
+      }
+    },
+    {
+      "id": "paper",
+      "href": "/research",
+      "capability": "method.propose",
+      "text": {
+        "pl": {
+          "label": "Zaplanuj odtworzenie pracy",
+          "description": "Zapisz tekst, sprawdź metodologię i wymagane dane, rozważ jawne warianty oraz przetestuj ekstraktor.",
+          "contexts": [
+            "naukowiec",
+            "artykuł",
+            "replikacja",
+            "metoda",
+            "hipoteza",
+            "parser",
+            "ekstrakcja"
+          ]
+        },
+        "en": {
+          "label": "Plan the reproduction of a paper",
+          "description": "Store the text, check the methodology and the data it needs, consider explicit variants and test an extractor.",
+          "contexts": [
+            "researcher",
+            "article",
+            "replication",
+            "method",
+            "hypothesis",
+            "parser",
+            "extraction"
+          ]
+        }
+      }
+    },
+    {
+      "id": "baseline",
+      "href": "/setup",
+      "capability": "run.create",
+      "text": {
+        "pl": {
+          "label": "Uruchom JH16 i skonfiguruj badania",
+          "description": "Kreator punktu odniesienia, niezależnych języków i geografii, źródeł oraz limitów kosztów.",
+          "contexts": [
+            "naukowiec",
+            "JH16",
+            "start",
+            "język",
+            "slang",
+            "dialekt",
+            "sentyment"
+          ]
+        },
+        "en": {
+          "label": "Run JH16 and set up research",
+          "description": "Wizard for the reference point, independent languages and geographies, sources and cost limits.",
+          "contexts": [
+            "researcher",
+            "JH16",
+            "start",
+            "language",
+            "slang",
+            "dialect",
+            "sentiment"
+          ]
+        }
+      }
+    },
+    {
+      "id": "schedule",
+      "href": "/automation",
+      "capability": "run.create",
+      "text": {
+        "pl": {
+          "label": "Zleć cykliczne zbieranie lub przegląd",
+          "description": "Publiczne źródła, literatura, katalog modeli i ograniczona budżetem ocena nowych prac.",
+          "contexts": [
+            "naukowiec",
+            "codziennie",
+            "harmonogram",
+            "arxiv",
+            "źródła",
+            "automatyzacja"
+          ]
+        },
+        "en": {
+          "label": "Schedule recurring collection or review",
+          "description": "Public sources, literature, the model catalogue and a budget-limited assessment of new papers.",
+          "contexts": [
+            "researcher",
+            "daily",
+            "schedule",
+            "arxiv",
+            "sources",
+            "automation"
+          ]
+        }
+      }
+    },
+    {
+      "id": "review",
+      "href": "/evidence",
+      "capability": "evidence.review",
+      "text": {
+        "pl": {
+          "label": "Sprawdź pochodzenie i zatwierdź dane",
+          "description": "Przejrzyj dowody przed ich użyciem w projekcji ratownika.",
+          "contexts": [
+            "naukowiec",
+            "obiektywność",
+            "kolory",
+            "dowód",
+            "jakość",
+            "zatwierdzenie"
+          ]
+        },
+        "en": {
+          "label": "Check provenance and approve data",
+          "description": "Review the evidence before it is used in the responder view.",
+          "contexts": [
+            "researcher",
+            "objectivity",
+            "colours",
+            "evidence",
+            "quality",
+            "approval"
+          ]
+        }
+      }
+    },
+    {
+      "id": "resume",
+      "href": "/runs",
+      "capability": "run.view",
+      "text": {
+        "pl": {
+          "label": "Wróć do uruchomionego badania",
+          "description": "Stan przetwarzania, wyniki, manifest i historia błędów.",
+          "contexts": [
+            "naukowiec",
+            "wznów",
+            "wyniki",
+            "historia",
+            "przerwane"
+          ]
+        },
+        "en": {
+          "label": "Return to a running study",
+          "description": "Processing state, results, manifest and error history.",
+          "contexts": [
+            "researcher",
+            "resume",
+            "results",
+            "history",
+            "interrupted"
+          ]
+        }
+      }
+    },
+    {
+      "id": "debug",
+      "href": "/diagnostics",
+      "capability": "diagnostics.view",
+      "text": {
+        "pl": {
+          "label": "Zdiagnozuj działanie systemu",
+          "description": "Flight Recorder, ślady zdarzeń i pakiet diagnostyczny w ramach uprawnień konta.",
+          "contexts": [
+            "debug",
+            "błąd",
+            "diagnostyka",
+            "logi",
+            "programista"
+          ]
+        },
+        "en": {
+          "label": "Diagnose how the system works",
+          "description": "Flight Recorder, event traces and a diagnostic package within the account's permissions.",
+          "contexts": [
+            "debug",
+            "error",
+            "diagnostics",
+            "logs",
+            "developer"
+          ]
+        }
+      }
+    },
+    {
+      "id": "source_access",
+      "href": "/source-access",
+      "capability": "provider.view",
+      "text": {
+        "pl": {
+          "label": "Sprawdź źródła danych i dostęp",
+          "description": "Integracje, fora, warunki, własne oceny dostępu, statystyki pobrań i szkice próśb.",
+          "contexts": [
+            "źródła",
+            "fora",
+            "dostęp",
+            "pozwolenie",
+            "API",
+            "licencja",
+            "Erowid",
+            "Hyperreal"
+          ]
+        },
+        "en": {
+          "label": "Check data sources and access",
+          "description": "Integrations, forums, terms, your own access assessments, download statistics and request drafts.",
+          "contexts": [
+            "sources",
+            "forums",
+            "access",
+            "permission",
+            "API",
+            "licence",
+            "Erowid",
+            "Hyperreal"
+          ]
+        }
+      }
+    }
   ]
 }
