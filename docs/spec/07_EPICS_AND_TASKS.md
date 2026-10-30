@@ -59,6 +59,10 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
   - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
   - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
 
+- [x] **T-1 — Browser suites: test servers that cannot block or collide (2026-10-30).**
+  - **Why.** On #32 the container gate once failed `invitee_screens` with only "server did not start". Five suites spawned the server with `stdio: 'pipe'` and never read it; a full pipe (about 64 KB) blocks the server mid-write. They also used random ports from ranges that overlap between suites running in parallel.
+  - **Change.** `tests/helpers/server.ts`: `freePort()` from the OS; `waitForServer()` drains and keeps the output, stops when the server exits and puts the exit state and log tail in the failure. Used by `access_flow`, `invitee_screens`, `ui_flow`, `research_projects`, `workspace_navigation`.
+  - **Tests.** `tests/unit/test_server_helper.test.ts`: a dying server is reported with its exit code and stderr; a server writing 1 MB before listening still starts (without draining it never answers). Not proven to be the cause of the one CI failure; it removes this cause and makes the next failure readable.
 - [x] **E4.8e — Goal cards in both languages (2026-10-30).**
   - **What.** `config/goal-navigation.json` is now `goal-navigation-2`: each goal has `text.pl` and `text.en` (label, description, search words); id, route and capability are shared. Polish text unchanged; English is new. Search matches both languages, so a word typed in either finds the goal. Favourites are stored by id and are unaffected.
   - **Tests.** `tests/unit/goal_navigation.test.ts` (both languages required); `npm run test:all` 711/711. Browser check on an empty local instance (en-GB and pl-PL): cards in the reader's language; "replication"/"replikacja" and "map"/"mapa" find the same goals.

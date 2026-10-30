@@ -9,6 +9,7 @@ import { readZip } from '../../backend/watchdog_api/utils/zip';
 import { defaultFigure } from '../../shared/workbench';
 import { testDataset } from '../helpers/workbench';
 import { chooseInterfaceLanguage } from '../helpers/browser';
+import { freePort, waitForServer } from '../helpers/server';
 
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'watchdog-project-ui-'));
 let server: ChildProcess, browser: Browser, page: Page, baseUrl: string;
@@ -21,14 +22,13 @@ function chromiumPath(): string | undefined {
   return undefined;
 }
 before(async () => {
-  baseUrl = `http://127.0.0.1:${5400 + Math.floor(Math.random() * 400)}`;
+  baseUrl = `http://127.0.0.1:${await freePort()}`;
   server = spawn(process.execPath, ['--import', 'tsx', 'server.ts'], {
     cwd: process.cwd(), detached: true, stdio: 'pipe', env: { ...process.env,
       PORT: baseUrl.split(':').pop(), DB_PATH: path.join(scratch, 'watchdog.sqlite'), STORE_PATH: path.join(scratch, 'blobs'),
       NODE_ENV: 'production', WATCHDOG_DIAGNOSTICS_MODE: 'OFF', WATCHDOG_ALLOW_OPEN_INSTANCE: 'true', WATCHDOG_ALLOW_EPHEMERAL_STORAGE: 'true' },
   });
-  const deadline = Date.now() + 60_000;
-  while (Date.now() < deadline) { try { if ((await fetch(`${baseUrl}/api/auth/me`)).ok) break; } catch { /* startup */ } await new Promise(resolve => setTimeout(resolve, 200)); }
+  await waitForServer(server, baseUrl, '/api/auth/me');
   assert.equal((await fetch(`${baseUrl}/api/auth/me`)).status, 200);
   browser = await chromium.launch({ executablePath: chromiumPath() }); page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: 'pl-PL' });
 });

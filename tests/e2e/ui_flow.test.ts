@@ -13,6 +13,7 @@ import { sourceSnapshot } from '../fixtures/source_history';
 import { loadAutomationProfile } from '../../backend/watchdog_api/config/automation';
 import { withCollectionPurpose } from '../../shared/collection';
 import { chooseInterfaceLanguage } from '../helpers/browser';
+import { freePort, waitForServer } from '../helpers/server';
 
 /**
  * E1.21-E1.23 — browser-driven end-to-end tests against fixtures.
@@ -46,20 +47,9 @@ function resolveChromium(): string | undefined {
   return undefined;
 }
 
-async function waitForServer(url: string, timeoutMs = 60_000) {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    try {
-      const res = await fetch(`${url}/api/sources`);
-      if (res.ok) return;
-    } catch { /* not up yet */ }
-    await new Promise(r => setTimeout(r, 300));
-  }
-  throw new Error(`server did not become ready at ${url}`);
-}
 
 before(async () => {
-  const port = 3100 + Math.floor(Math.random() * 400);
+  const port = await freePort();
   baseUrl = `http://127.0.0.1:${port}`;
 
   // Use Node's loader directly: no CLI IPC socket is needed. Detach so any
@@ -73,7 +63,7 @@ before(async () => {
     stdio: 'pipe',
     detached: true,
   });
-  await waitForServer(baseUrl);
+  await waitForServer(server, baseUrl, '/api/sources');
 
   // PLAYWRIGHT_BROWSERS_PATH points at a pre-installed Chromium whose exact
   // build directory is versioned, so it is resolved rather than hard-coded.
