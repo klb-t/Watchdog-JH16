@@ -1,4 +1,5 @@
 import * as fs from 'node:fs';
+import { isLanguage, localeOf } from '../../../shared/languages';
 import * as path from 'node:path';
 import { z } from 'zod';
 import nodemailer from 'nodemailer';
@@ -178,7 +179,7 @@ export class MailService {
     const language = this.language(input.language);
     const m = this.messages.languages[language];
     const template = input.kind === 'email' ? m.invitation : m.open_link;
-    const expires = new Date(input.expiresAt).toLocaleString(language === 'pl' ? 'pl-PL' : 'en-GB',
+    const expires = new Date(input.expiresAt).toLocaleString(isLanguage(language) ? localeOf(language) : language,
       { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Warsaw' });
     const vars = {
       instance: this.messages.instance_name, inviter: input.inviter, roles: this.roleList(input.roles, language),

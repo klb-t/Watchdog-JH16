@@ -27,6 +27,19 @@
       "approve": "Approve this method",
       "error_validation_error": "Review requires the displayed expectedHash; the actor comes from the signed-in session.",
       "error_stale_review": "Reload the method before approving its changed content."
+    },
+    "nl": {
+      "title": "Methodecontrole",
+      "state_approved": "GOEDGEKEURD",
+      "state_proposed": "VOORGESTELD — wacht op controle",
+      "step": "stap {n}",
+      "missing_policy": "ontbrekend: {policy}",
+      "ambiguous": "dubbelzinnig — blokkeert goedkeuring",
+      "approved": "Goedgekeurd",
+      "approving": "Goedkeuren…",
+      "approve": "Deze methode goedkeuren",
+      "error_validation_error": "Controle vereist de getoonde expectedHash; de uitvoerder komt uit de aangemelde sessie.",
+      "error_stale_review": "Laad de methode opnieuw voordat je de gewijzigde inhoud goedkeurt."
     }
   }
 }

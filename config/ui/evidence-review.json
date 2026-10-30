@@ -45,6 +45,28 @@
       "error_not_found": "Not found.",
       "error_field_request_failed": "Request failed ({status}).",
       "error_field_invalid_response": "The server returned invalid reference data."
+    },
+    "nl": {
+      "title": "Bewijscontrole",
+      "intro": "Controleer één toewijzing met bron tegelijk. Goedkeuring is gebonden aan precies de getoonde inhoud en je aangemelde identiteit.",
+      "catalog_warning": "Catalogusvermeldingen zijn voorgestelde toewijzingen. Importeren keurt ze niet goed. Controleer bron, samenstelling, geografie, datums, bewijsniveau en ontbrekende waarden voordat je een referentie beschikbaar maakt voor hulpverleners.",
+      "catalog": "Geversioneerde broncatalogus",
+      "import_one": "Importeren voor afzonderlijke controle",
+      "import_json": "Een referentietoewijzing importeren (JSON)",
+      "import_proposed": "Importeren als voorstel",
+      "imported": "Geïmporteerde toewijzingen ({count})",
+      "none_imported": "Nog geen toewijzingen geïmporteerd.",
+      "review_exact": "Exacte toewijzing controleren",
+      "checked": "Ik heb precies deze toewijzing gecontroleerd aan de hand van de geciteerde bron, inclusief onzekerheden en bewijsniveau.",
+      "approve": "Deze toewijzing goedkeuren",
+      "revoke": "Deze toewijzing intrekken",
+      "select_prompt": "Kies een geïmporteerde toewijzing om de volledige inhoud en herkomst te bekijken.",
+      "error_invalid_json": "De geplakte tekst is geen geldige JSON: {detail}",
+      "error_validation_error": "De server heeft de gegevens geweigerd (details in het Engels): {detail}",
+      "error_reference_conflict": "Conflict met een opgeslagen toewijzing (details in het Engels): {detail}",
+      "error_not_found": "Niet gevonden.",
+      "error_field_request_failed": "Verzoek mislukt ({status}).",
+      "error_field_invalid_response": "De server gaf ongeldige referentiegegevens terug."
     }
   }
 }

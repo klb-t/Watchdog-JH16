@@ -1,74 +1,125 @@
 {
-  "version": "workspace-preferences-1",
+  "version": "workspace-preferences-2",
   "default_preset": "main",
   "default_language": "pl",
   "views": {
     "/": {
-      "en": "Overview",
+      "label": {
+        "en": "Overview",
+        "nl": "Overzicht"
+      },
       "advanced": false
     },
     "/source-access": {
-      "en": "Source access",
+      "label": {
+        "en": "Source access",
+        "nl": "Toegang tot bronnen"
+      },
       "advanced": false
     },
     "/sources": {
-      "en": "Sources",
+      "label": {
+        "en": "Sources",
+        "nl": "Bronnen"
+      },
       "advanced": false
     },
     "/workbench": {
-      "en": "Workbench",
+      "label": {
+        "en": "Workbench",
+        "nl": "Werkbank"
+      },
       "advanced": false
     },
     "/analyzers": {
-      "en": "Methods",
+      "label": {
+        "en": "Methods",
+        "nl": "Methoden"
+      },
       "advanced": false
     },
     "/automation": {
-      "en": "Scheduled operations",
+      "label": {
+        "en": "Scheduled operations",
+        "nl": "Geplande taken"
+      },
       "advanced": false
     },
     "/projects": {
-      "en": "Research projects",
+      "label": {
+        "en": "Research projects",
+        "nl": "Onderzoeksprojecten"
+      },
       "advanced": false
     },
     "/research": {
-      "en": "Papers & extraction",
+      "label": {
+        "en": "Papers & extraction",
+        "nl": "Artikelen en extractie"
+      },
       "advanced": false
     },
     "/study": {
-      "en": "JH16 — replication",
+      "label": {
+        "en": "JH16 — replication",
+        "nl": "JH16 — replicatie"
+      },
       "advanced": false
     },
     "/method": {
-      "en": "Method review",
+      "label": {
+        "en": "Method review",
+        "nl": "Methodebeoordeling"
+      },
       "advanced": false
     },
     "/runs": {
-      "en": "Run history",
+      "label": {
+        "en": "Run history",
+        "nl": "Uitvoeringsgeschiedenis"
+      },
       "advanced": true
     },
     "/search": {
-      "en": "Search",
+      "label": {
+        "en": "Search",
+        "nl": "Zoeken"
+      },
       "advanced": false
     },
     "/memory": {
-      "en": "Substances",
+      "label": {
+        "en": "Substances",
+        "nl": "Stoffen"
+      },
       "advanced": false
     },
     "/responder": {
-      "en": "Responder view",
+      "label": {
+        "en": "Responder view",
+        "nl": "Hulpverlenersweergave"
+      },
       "advanced": false
     },
     "/evidence": {
-      "en": "Evidence review",
+      "label": {
+        "en": "Evidence review",
+        "nl": "Bewijsbeoordeling"
+      },
       "advanced": false
     },
     "/replications": {
-      "en": "Replications",
+      "label": {
+        "en": "Replications",
+        "nl": "Replicaties"
+      },
       "advanced": false
     },
     "/requests": {
-      "en": "Request from text",
+      "label": {
+        "en": "Request from text",
+        "nl": "Verzoek uit tekst"
+      },
       "advanced": false
     }
   },
@@ -76,13 +127,15 @@
     "main": {
       "label": {
         "pl": "Prace i replikacje",
-        "en": "Papers and replications"
+        "en": "Papers and replications",
+        "nl": "Artikelen en replicaties"
       },
       "groups": {
         "dashboard": {
           "label": {
             "pl": "Pulpit",
-            "en": "Dashboard"
+            "en": "Dashboard",
+            "nl": "Dashboard"
           },
           "routes": [
             "/"
@@ -91,7 +144,8 @@
         "data": {
           "label": {
             "pl": "Dane i źródła",
-            "en": "Data and sources"
+            "en": "Data and sources",
+            "nl": "Gegevens en bronnen"
           },
           "routes": [
             "/source-access",
@@ -101,7 +155,8 @@
         "analysis": {
           "label": {
             "pl": "Analiza danych",
-            "en": "Data analysis"
+            "en": "Data analysis",
+            "nl": "Gegevensanalyse"
           },
           "routes": [
             "/workbench",
@@ -111,7 +166,8 @@
         "collection": {
           "label": {
             "pl": "Zbieranie cykliczne",
-            "en": "Recurring collection"
+            "en": "Recurring collection",
+            "nl": "Periodieke verzameling"
           },
           "routes": [
             "/automation"
@@ -120,7 +176,8 @@
         "projects": {
           "label": {
             "pl": "Projekty badawcze",
-            "en": "Research projects"
+            "en": "Research projects",
+            "nl": "Onderzoeksprojecten"
           },
           "routes": [
             "/projects"
@@ -129,7 +186,8 @@
         "papers": {
           "label": {
             "pl": "Prace i replikacje",
-            "en": "Papers and replications"
+            "en": "Papers and replications",
+            "nl": "Artikelen en replicaties"
           },
           "routes": [
             "/research",
@@ -143,7 +201,8 @@
         "database": {
           "label": {
             "pl": "Baza i wyszukiwanie",
-            "en": "Knowledge and search"
+            "en": "Knowledge and search",
+            "nl": "Kennis en zoeken"
           },
           "routes": [
             "/search",
@@ -157,13 +216,15 @@
     "claude": {
       "label": {
         "pl": "Analiza i projekty",
-        "en": "Analysis and projects"
+        "en": "Analysis and projects",
+        "nl": "Analyse en projecten"
       },
       "groups": {
         "dashboard": {
           "label": {
             "pl": "Pulpit",
-            "en": "Dashboard"
+            "en": "Dashboard",
+            "nl": "Dashboard"
           },
           "routes": [
             "/"
@@ -172,7 +233,8 @@
         "data": {
           "label": {
             "pl": "Dane i źródła",
-            "en": "Data and sources"
+            "en": "Data and sources",
+            "nl": "Gegevens en bronnen"
           },
           "routes": [
             "/source-access",
@@ -182,7 +244,8 @@
         "analysis": {
           "label": {
             "pl": "Analiza",
-            "en": "Analysis"
+            "en": "Analysis",
+            "nl": "Analyse"
           },
           "routes": [
             "/workbench",
@@ -196,7 +259,8 @@
         "collection": {
           "label": {
             "pl": "Automatyzacja",
-            "en": "Automation"
+            "en": "Automation",
+            "nl": "Automatisering"
           },
           "routes": [
             "/automation"
@@ -205,7 +269,8 @@
         "projects": {
           "label": {
             "pl": "Projekty badawcze",
-            "en": "Research projects"
+            "en": "Research projects",
+            "nl": "Onderzoeksprojecten"
           },
           "routes": [
             "/projects",
@@ -215,7 +280,8 @@
         "papers": {
           "label": {
             "pl": "Analiza publikacji (AI)",
-            "en": "Paper analysis (AI)"
+            "en": "Paper analysis (AI)",
+            "nl": "Artikelanalyse (AI)"
           },
           "routes": [
             "/research"
@@ -224,7 +290,8 @@
         "database": {
           "label": {
             "pl": "Baza wiedzy",
-            "en": "Knowledge base"
+            "en": "Knowledge base",
+            "nl": "Kennisbank"
           },
           "routes": [
             "/search",
@@ -243,10 +310,17 @@
     "/papers": "papers",
     "/knowledge": "database"
   },
-  "utility_en": {
-    "settings": "Settings",
-    "diagnostics": "Diagnostics",
-    "access": "Legacy access"
+  "utility": {
+    "en": {
+      "settings": "Settings",
+      "diagnostics": "Diagnostics",
+      "access": "Legacy access"
+    },
+    "nl": {
+      "settings": "Instellingen",
+      "diagnostics": "Diagnostiek",
+      "access": "Oude toegang"
+    }
   },
   "strings": {
     "pl": {
@@ -270,6 +344,17 @@
       "unavailable": "No available views",
       "accounts": "People and access",
       "legacy": "Legacy access"
+    },
+    "nl": {
+      "preset": "Indeling van de werkruimte",
+      "language": "Taal",
+      "search": "Ga naar een weergave",
+      "placeholder": "Typ de naam van een weergave…",
+      "empty": "Geen resultaten",
+      "advanced": "geavanceerd",
+      "unavailable": "Geen beschikbare weergaven",
+      "accounts": "Mensen en toegang",
+      "legacy": "Oude toegang"
     }
   }
 }

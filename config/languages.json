@@ -1,0 +1,10 @@
+{
+  "version": "languages-1",
+  "_note": "Interface languages. Every config/ui/*.json bundle, config/access/ui.json, config/access/messages.json, config/goal-navigation.json and config/workspace-preferences.json carries each listed language with the same keys. review: 'human' when a person wrote or read the wording, 'machine' when it is a machine translation nobody has read yet; a machine-translated language shows a notice saying so. locale formats dates and numbers.",
+  "default": "pl",
+  "languages": [
+    { "code": "pl", "locale": "pl-PL", "review": "human" },
+    { "code": "en", "locale": "en-GB", "review": "human" },
+    { "code": "nl", "locale": "nl-NL", "review": "machine" }
+  ]
+}

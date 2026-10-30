@@ -1,6 +1,7 @@
 import { createContext, createElement, useCallback, useContext, useMemo, type ReactNode } from 'react';
 import common from '../../config/ui/common.json';
 import { fillText, type UiBundle, type UiLanguage } from '../../shared/ui_text';
+import { localeOf } from '../../shared/languages';
 import { useWorkspace } from './workspace_preferences';
 
 /**
@@ -37,7 +38,7 @@ export function useUiText<B extends UiBundle>(bundle: B) {
     return code;
   }, [bundle, lang]);
   const c = useCallback((key: CommonKey, vars?: Vars) => fillText(common, lang, key, vars), [lang]);
-  const locale = lang === 'pl' ? 'pl-PL' : 'en-GB';
+  const locale = localeOf(lang);
   /** Date and time in the reader's language; a missing timestamp shows a dash, never a made-up date. */
   const date = useCallback((iso: string | number | null | undefined, style: 'datetime' | 'date' = 'datetime') => {
     if (iso === null || iso === undefined || iso === '') return '—';

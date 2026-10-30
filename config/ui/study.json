@@ -35,6 +35,23 @@
       "start_serp": "Start JH16 (32 new SerpApi queries)",
       "start": "Start JH16 run",
       "error_source_unavailable": "Source {source_id} is not available (status: {source_status}). {remediation}"
+    },
+    "nl": {
+      "title": "Studie",
+      "intro": "JH16 (vergrendelde preset: 16 stoffen, 32 zoekopdrachten). Kies waar het aantal resultaten vandaan komt.",
+      "source_note_fixture_jh2016": "Aantallen uit tabel 1 en 3 van de publicatie (2014) — een controle van de berekening, geen nieuwe meting.",
+      "source_note_serp_result_count": "Nieuwe aantallen Google-resultaten via de SerpApi-sleutel van deze installatie. Persoonlijke sleutel: Instellingen → wizard.",
+      "source_status_implemented": "geïmplementeerd",
+      "source_status_fixture": "vastgelegde gegevens (fixture)",
+      "source_status_planned": "gepland",
+      "source_status_blocked": "geblokkeerd",
+      "source_status_blocked_by_license_auth": "geblokkeerd (licentie/authenticatie)",
+      "not_available": "niet beschikbaar",
+      "not_jh16_source": "geen JH16-bron",
+      "starting": "Starten…",
+      "start_serp": "JH16 starten (32 nieuwe SerpApi-zoekopdrachten)",
+      "start": "JH16-uitvoering starten",
+      "error_source_unavailable": "Bron {source_id} is niet beschikbaar (status: {source_status}). {remediation}"
     }
   }
 }

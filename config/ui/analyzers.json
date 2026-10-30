@@ -19,6 +19,15 @@
       "run": "Run Analysis",
       "empty": "No analyzers available.",
       "run_failed": "Failed to start analysis run"
+    },
+    "nl": {
+      "title": "Analysemethoden",
+      "intro": "Beschikbare analytische modellen en presets",
+      "preset": "Preset: {preset}",
+      "preset_default": "Standaard",
+      "run": "Analyse starten",
+      "empty": "Geen analysemethoden beschikbaar.",
+      "run_failed": "Analyse-uitvoering starten mislukt"
     }
   }
 }

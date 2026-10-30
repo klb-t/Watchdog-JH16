@@ -25,6 +25,18 @@
       "favorites": "Favourites",
       "no_match": "No matching action in the current scope. {link}.",
       "no_match_link": "Open the configuration and the extension proposal assistant"
+    },
+    "nl": {
+      "title": "Wat wil je doen?",
+      "intro": "Kies een doel. De beschikbare acties volgen uit de rechten van je account. Met de ster sla je een doel op bij de favorieten van je account.",
+      "search_label": "Een actie zoeken",
+      "search_placeholder": "bijv. receptor, kaart, replicatie, debug",
+      "favorite_add": "Toevoegen aan favorieten: {goal}",
+      "favorite_remove": "Verwijderen uit favorieten: {goal}",
+      "favorites_unavailable": "Favorieten niet beschikbaar: {error}",
+      "favorites": "Favorieten",
+      "no_match": "Geen overeenkomende actie binnen het huidige bereik. {link}.",
+      "no_match_link": "Open de configuratie en de assistent voor uitbreidingsvoorstellen"
     }
   }
 }

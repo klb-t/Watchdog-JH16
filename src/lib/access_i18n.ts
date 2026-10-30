@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import ui from '../../config/access/ui.json';
+import { languageFromBrowser, localeOf } from '../../shared/languages';
 
 /**
  * Labels for the access screens, from `config/access/ui.json` (rule 3: labels
@@ -24,8 +25,11 @@ export function pickLanguage(): AccessLanguage {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (isLanguage(stored)) return stored;
   } catch { /* storage can be unavailable; fall through */ }
-  const browser = typeof navigator !== 'undefined' ? navigator.language.slice(0, 2).toLowerCase() : '';
-  return isLanguage(browser) ? browser : (ui.default_language as AccessLanguage);
+  // The phone's or browser's ordered list, not only its first entry: a phone set to a language the
+  // interface lacks, then Polish (uk-UA, pl-PL), gets Polish rather than the configured default.
+  const preferred = typeof navigator === 'undefined' ? [] : navigator.languages?.length ? navigator.languages : [navigator.language];
+  const code = languageFromBrowser(preferred);
+  return isLanguage(code) ? code : (ui.default_language as AccessLanguage);
 }
 
 export function translate(lang: AccessLanguage, key: AccessKey, vars: Record<string, string | number> = {}): string {
@@ -50,7 +54,7 @@ export function useAccessText() {
   const t = useCallback((key: AccessKey, vars?: Record<string, string | number>) => translate(lang, key, vars), [lang]);
   const role = useCallback((r: string) => translate(lang, `role_${r}` as AccessKey), [lang]);
   const date = useCallback((iso: string | null | undefined) => iso
-    ? new Date(iso).toLocaleString(lang === 'pl' ? 'pl-PL' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short' }) : '—', [lang]);
+    ? new Date(iso).toLocaleString(localeOf(lang), { dateStyle: 'medium', timeStyle: 'short' }) : '—', [lang]);
   /** A server refusal in the reader's language when its code has a label; the server's own text otherwise. */
   const errorText = useCallback((e: unknown) => {
     const code = (e as { code?: unknown })?.code, key = `error_${String(code)}`;

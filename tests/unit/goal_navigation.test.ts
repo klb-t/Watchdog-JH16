@@ -14,7 +14,7 @@ test('goal navigation: shipped profile accepts internal hyphenated routes but re
 test('goal navigation: every goal has its wording in both interface languages',()=>{
   const parsed=GoalNavigationSchema.parse(profile);
   assert.equal(new Set(parsed.goals.map(g=>g.id)).size,parsed.goals.length);
-  for(const g of parsed.goals) for(const lang of ['pl','en'] as const) {
+  for(const g of parsed.goals) for(const lang of ['pl','en','nl'] as const) {
     assert.ok(g.text[lang].label.trim()&&g.text[lang].description.trim(),`${g.id}: ${lang} wording`);
     assert.ok(g.text[lang].contexts.length>0,`${g.id}: ${lang} search words`);
   }

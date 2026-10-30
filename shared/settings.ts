@@ -1,9 +1,10 @@
 import { z } from 'zod';
+import { LANGUAGE_CODES } from './languages';
 export const AssistantTaskSchema = z.enum(['query_expansion', 'method_proposal', 'narrative', 'extraction_plan', 'trip_report', 'paper_method', 'extension_proposal']);
 export type AssistantTask = z.infer<typeof AssistantTaskSchema>;
 export const SettingsSchema = z.object({
   version: z.literal('personal-settings-1'), mode: z.enum(['simple', 'standard', 'expert', 'debug']),
-  density: z.enum(['comfortable', 'compact']), language: z.enum(['pl', 'en']), onboardingComplete: z.boolean(),
+  density: z.enum(['comfortable', 'compact']), language: z.enum(LANGUAGE_CODES), onboardingComplete: z.boolean(),
   searchDailyRequestLimit: z.number().int().min(0).max(10000),
   assistant: z.object({ enabled: z.boolean(), provider: z.string().regex(/^[a-z][a-z0-9_-]{1,39}$/), economy: z.number().int().min(0).max(100),
     dailyBudgetUsd: z.number().min(0).max(1000), requestBudgetUsd: z.number().min(0).max(50), allowFree: z.boolean(),

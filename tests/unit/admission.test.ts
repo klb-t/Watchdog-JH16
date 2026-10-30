@@ -16,6 +16,7 @@ import {
   ROLES, RBAC, grantableRoles, openLinkAllowsRole, can, OPEN_LINK_FORBIDDEN_CAPABILITIES,
 } from '../../shared/authorization';
 import ui from '../../config/access/ui.json';
+import { LANGUAGE_CODES } from '../../shared/languages';
 
 function harness(start = '2026-09-24T10:00:00.000Z') {
   const db = new Database(':memory:');
@@ -194,9 +195,9 @@ test('E4.5: emailed links come only from the configured public URL, and only htt
   assert.strictEqual(m(undefined).publicUrl(), null);
 });
 
-test('E4.5: message templates fill every placeholder in both languages', () => {
+test('E4.5: message templates fill every placeholder in every language', () => {
   const { service } = fakeMail({});
-  for (const language of ['pl', 'en']) {
+  for (const language of LANGUAGE_CODES) {
     for (const kind of ['email', 'open_link'] as const) {
       const draft = service.invitationDraft({ kind, email: kind === 'email' ? 'a@b.example' : null, roles: ['researcher'],
         note: 'Hi', inviter: 'Owner', link: 'https://w.example/join#t=abc', expiresAt: '2026-10-01T10:00:00Z', maxUses: 3, language });

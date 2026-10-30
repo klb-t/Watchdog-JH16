@@ -11,6 +11,7 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { resolveChromium } from '../helpers/browser';
 import { freePort, waitForServer } from '../helpers/server';
 import { startFakeSmtp, mailText } from '../helpers/smtp';
+import accessUi from '../../config/access/ui.json';
 
 /**
  * The screens an invited person meets, in a real browser at phone size with an
@@ -99,6 +100,24 @@ test('the language chosen on an access screen changes the page, not only the fra
   await page.locator('h1', { hasText: 'Polityka prywatności' }).waitFor();
   await page.goto(`${base}/login`);
   assert.match(await page.locator('h1').innerText(), /Zaloguj się/, 'the choice is remembered');
+  await page.context().close();
+});
+
+test('a Dutch phone gets the Dutch screens, marked as a machine translation; legal text stays English', async () => {
+  const page = await (await browser.newContext({ ...PHONE, locale: 'nl-NL' })).newPage();
+  await page.goto(`${base}/login`);
+  await page.getByText(accessUi.languages.nl.tagline, { exact: true }).waitFor();
+  assert.strictEqual(await page.evaluate(() => document.documentElement.lang), 'nl', 'the page declares the language it shows');
+  assert.strictEqual(await page.getByTestId('machine-translation-notice').innerText(), accessUi.languages.nl.machine_translation_notice);
+  await page.goto(`${base}/privacy`);
+  await page.getByTestId('legal-not-translated').waitFor();
+  assert.strictEqual(await page.locator('h1').innerText(), 'Privacy policy', 'no machine-translated legal text');
+  assert.strictEqual(await page.getByTestId('legal-privacy').getAttribute('lang'), 'en');
+  await page.locator('[data-testid="language-select"]').selectOption('pl');
+  await page.locator('h1', { hasText: 'Polityka prywatności' }).waitFor();
+  assert.strictEqual(await page.getByTestId('machine-translation-notice').count(), 0, 'a reviewed language carries no notice');
+  assert.strictEqual(await page.getByTestId('legal-not-translated').count(), 0);
+  assert.strictEqual(await page.evaluate(() => document.documentElement.lang), 'pl');
   await page.context().close();
 });
 

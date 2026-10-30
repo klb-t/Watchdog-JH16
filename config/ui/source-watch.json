@@ -61,6 +61,36 @@
       "label_details": "Watch context and state",
       "label_from": "Previous entry",
       "label_to": "New entry"
+    },
+    "nl": {
+      "label_title": "Gevolgde bronnen — wijzigingen om te bekijken",
+      "label_introduction": "Kies in de brongeschiedenis een context en zet volgen aan. Nieuwe wijzigingen in de opgeslagen records ervan verschijnen hier.",
+      "label_scope": "Volgen gebruikt gegevens die door lopende taken zijn opgehaald. Het betreft precies de gekozen context; een andere bron, adapter of plan heeft een aparte volgopdracht nodig. Het start geen ophaalacties, verstuurt geen berichten en beoordeelt geen klinisch risico of marktwijzigingen.",
+      "label_ordering": "We vergelijken opeenvolgende vermeldingen in het logboek. De ophaaldatum wordt apart getoond; een ouder antwoord dat laat is toegevoegd, kan ook een nieuwe vermelding opleveren.",
+      "label_subscribe": "Nieuwe wijzigingen volgen",
+      "label_subscribed": "De bron staat op je volglijst. De bestaande status van gelezen en gepauzeerd is behouden.",
+      "label_open_inbox": "Lijst met wijzigingen openen",
+      "label_empty": "Je volgt nog geen enkele bron.",
+      "label_choose": "Kies een gevolgde bron",
+      "label_watch": "Gevolgde bron",
+      "label_refresh": "Opgeslagen wijzigingen controleren",
+      "label_pause": "Volgen pauzeren",
+      "label_resume": "Volgen hervatten",
+      "label_paused": "Volgen gepauzeerd",
+      "label_active": "Volgen actief",
+      "label_pause_meaning": "Pauzeren bewaart ongelezen wijzigingen. Na het hervatten zie je ook vermeldingen die tijdens de pauze zijn toegevoegd.",
+      "label_changes": "Nieuwe inhoudswijzigingen",
+      "label_checks": "Nieuwe gekoppelde controles",
+      "label_unchanged": "Geen nieuwe inhoudswijzigingen in deze context.",
+      "label_more": "Er zijn meer wijzigingen. Lees deze reeks om verder te gaan.",
+      "label_compare": "Exacte verschillen tonen",
+      "label_mark_read": "Deze reeks als gelezen markeren",
+      "label_read_meaning": "De bevestiging geldt alleen voor het bereik van deze reeks, inclusief controles zonder wijziging. Latere vermeldingen blijven ongelezen. Dit is geen goedkeuring van wetenschappelijke gegevens.",
+      "label_loading": "Gevolgde bronnen laden…",
+      "label_error": "Volgen kon niet worden gelezen of opgeslagen",
+      "label_details": "Context en status van het volgen",
+      "label_from": "Vorige vermelding",
+      "label_to": "Nieuwe vermelding"
     }
   }
 }
