@@ -79,6 +79,17 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
     });
   }
 
+  // A Node system error (ENOENT, EACCES, …) quotes server paths and the storage layout. The
+  // caller learns that stored data could not be read, with the trace id for the operator; the
+  // full error goes to the server log under the same id.
+  if (typeof err?.syscall === 'string' || (typeof err?.errno === 'number' && typeof err?.code === 'string' && /^E[A-Z]+$/.test(err.code))) {
+    console.error(`[${String(res.getHeader('x-trace-id') ?? 'no-trace')}] ${req.method} ${req.path}: ${redactText(String(err.message))}`);
+    return res.status(500).json({
+      error: 'STORAGE_ERROR',
+      message: `Stored data could not be read on the server. Reference for the operator: ${String(res.getHeader('x-trace-id') ?? 'none')}.`,
+    });
+  }
+
   res.status(500).json({
     error: 'INTERNAL_ERROR',
     message: redactText(String(err.message))

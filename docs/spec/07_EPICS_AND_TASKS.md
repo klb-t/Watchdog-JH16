@@ -59,6 +59,18 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
   - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
   - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
 
+- [x] **E4.8b — Invitee screens audit (2026-10-29).**
+  - **Scope.** Every screen a guest or invited researcher meets, walked on a copy of the owner's data in the production image: email, open and bearer invitations, `/apply`, the pending banner, `/share`, Replications JH16 and CR2014 as a shared viewer, run detail and raw artifacts, `/privacy`, `/terms`, login. Checked in English and Polish, at 390 px and 1280 px.
+  - **Fixed.**
+    - One interface language: the access-screen selector now changes the page, and the workspace follows it.
+    - `/share` is translated.
+    - Invitations no longer show the `local-user` placeholder name or the owner's sign-in address.
+    - Role labels replace raw role ids in the banner and join texts.
+    - The Replications list counts shared runs.
+    - A read-only guest gets a note instead of the protocol-freeze, measurement-launch and manuscript-edit controls.
+    - Node system errors answer `STORAGE_ERROR` with a trace id instead of server paths.
+    - Server refusals and the access-boundary texts appear in the reader's language.
+  - **Evidence and tests.** Evidence in `../history/evidence/2026-10-29-invitee-screens/`, including what was found and not fixed (the research pages are each in one fixed language). Tests: `tests/integration/invitee_screens.test.ts`, `tests/e2e/invitee_screens.test.ts`.
 - [x] **E5.7b-5 — JH16 gaps before showing it to Prof. Hoffmann (2026-10-29).**
   - **List for the owner:** `../replication/JH16_2026-10-25/GAPS_FOR_HOFFMANN_2026-10-29.md` (each gap with evidence and status).
   - **Fixed:** dossier links pinned to a commit that holds every linked file (the old branch lacked the 28.10 evidence); a recomputation no longer shows the source run's fetches as its own; verdict words defined and criteria in Polish; later incomplete new measurements named in the summary; runs-kind evidence lists the complete runs stored here or says there are none (manuscript, „Rozbieżności”, graph); calibration cells carry n and the compared run; flags in words; decimal commas; run states in Polish; a missing Pearson is no longer drawn as 0 in the run comparison; the dossier's „one day” limitation corrected.

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import ui from '../../config/access/ui.json';
 
 /**
@@ -11,9 +11,11 @@ export type AccessLanguage = keyof typeof ui.languages;
 export type AccessKey = keyof typeof ui.languages.pl;
 
 const STORAGE_KEY = 'watchdog-access-language';
+/** Fired on window when the reader picks a language, so every screen part follows at once. */
+export const LANGUAGE_EVENT = 'watchdog-language-changed';
 export const ACCESS_LANGUAGES = Object.keys(ui.languages) as AccessLanguage[];
 
-function isLanguage(v: unknown): v is AccessLanguage {
+export function isLanguage(v: unknown): v is AccessLanguage {
   return typeof v === 'string' && (ACCESS_LANGUAGES as string[]).includes(v);
 }
 
@@ -31,15 +33,28 @@ export function translate(lang: AccessLanguage, key: AccessKey, vars: Record<str
   return template.replace(/\{([a-z_]+)\}/g, (whole, name: string) => (name in vars ? String(vars[name]) : whole));
 }
 
+/** Records the reader's choice and tells every mounted screen part (the selector and the page are separate components). */
+export function chooseLanguage(next: AccessLanguage) {
+  try { localStorage.setItem(STORAGE_KEY, next); } catch { /* not persisted; still switches */ }
+  window.dispatchEvent(new CustomEvent<AccessLanguage>(LANGUAGE_EVENT, { detail: next }));
+}
+
 export function useAccessText() {
   const [lang, setLangState] = useState<AccessLanguage>(pickLanguage);
-  const setLang = useCallback((next: AccessLanguage) => {
-    try { localStorage.setItem(STORAGE_KEY, next); } catch { /* not persisted; still switches */ }
-    setLangState(next);
+  useEffect(() => {
+    const follow = (e: Event) => { const next = (e as CustomEvent).detail; if (isLanguage(next)) setLangState(next); };
+    window.addEventListener(LANGUAGE_EVENT, follow);
+    return () => window.removeEventListener(LANGUAGE_EVENT, follow);
   }, []);
+  const setLang = useCallback((next: AccessLanguage) => { setLangState(next); chooseLanguage(next); }, []);
   const t = useCallback((key: AccessKey, vars?: Record<string, string | number>) => translate(lang, key, vars), [lang]);
   const role = useCallback((r: string) => translate(lang, `role_${r}` as AccessKey), [lang]);
   const date = useCallback((iso: string | null | undefined) => iso
     ? new Date(iso).toLocaleString(lang === 'pl' ? 'pl-PL' : 'en-GB', { dateStyle: 'medium', timeStyle: 'short' }) : '—', [lang]);
-  return { lang, setLang, t, role, date, languageName: (l: AccessLanguage) => ui.languages[l].language_name };
+  /** A server refusal in the reader's language when its code has a label; the server's own text otherwise. */
+  const errorText = useCallback((e: unknown) => {
+    const code = (e as { code?: unknown })?.code, key = `error_${String(code)}`;
+    return typeof code === 'string' && key in ui.languages[lang] ? translate(lang, key as AccessKey) : (e as Error)?.message ?? String(e);
+  }, [lang]);
+  return { lang, setLang, t, role, date, errorText, languageName: (l: AccessLanguage) => ui.languages[l].language_name };
 }

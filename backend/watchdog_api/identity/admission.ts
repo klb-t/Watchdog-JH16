@@ -58,6 +58,8 @@ export const INVITATION_LIMITS = accessPolicy.invitation;
 
 /** Actor id for actions taken from the server shell. */
 export const OPERATOR = 'operator';
+/** The name migration 004 gives local-user; not a person's name. */
+export const LOCAL_USER_PLACEHOLDER_NAME = 'Local user (pre-authentication)';
 
 /** The one server-shell actor. Frozen and compared by reference. */
 export const OPERATOR_ACTOR: AdmissionActor = Object.freeze({
@@ -425,8 +427,11 @@ export class AdmissionService {
     const inviter = this.repo.principal(i.created_by);
     const base: InvitationPreview = {
       status: status === 'active' ? 'valid' : status, kind: i.kind, roles: parseRoles(i.roles_json),
-      note: i.note, inviter: i.created_by === OPERATOR ? 'the installation operator'
-        : inviter?.display_name ?? inviter?.email ?? null, expiresAt: i.expires_at,
+      // null = the installation's operator: the screen names it in the reader's language. The
+      // pre-accounts owner (local-user) still carries its placeholder name after being claimed, and
+      // his sign-in address is not shown to whoever holds a link.
+      note: i.note, inviter: i.created_by === OPERATOR || (i.created_by === 'local-user' && (!inviter?.display_name || inviter.display_name === LOCAL_USER_PLACEHOLDER_NAME))
+        ? null : inviter?.display_name ?? inviter?.email ?? null, expiresAt: i.expires_at,
       emailHint: i.email ? maskEmail(i.email) : null, signsIn: i.signs_in === 1,
     };
     if (status === 'active' && !this.inviterStillAuthorized(i)) return { ...base, status: 'inviter_no_longer_authorized' };

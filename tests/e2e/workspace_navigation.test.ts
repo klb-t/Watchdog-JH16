@@ -35,7 +35,7 @@ before(async () => {
   }
   assert.equal((await fetch(`${baseUrl}/api/auth/me`)).status, 200);
   browser = await chromium.launch({ executablePath: chromiumPath() });
-  page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: 'pl-PL' }); // Polish labels: the menu follows the browser language until chosen
 });
 
 after(async () => {

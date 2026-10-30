@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { ROLES, can, openLinkAllowsRole, grantableRoles } from '../../../shared/authorization';
-import { AdmissionService, AdmissionError, InvitationView, normalizeEmail, INVITATION_LIMITS } from '../identity/admission';
+import { AdmissionService, AdmissionError, InvitationView, normalizeEmail, INVITATION_LIMITS, LOCAL_USER_PLACEHOLDER_NAME } from '../identity/admission';
 import { MailService, MailDeliveryError } from '../mail';
 import { actorOf, admissionRoute } from './accounts_auth_routes';
 import { reasonTranslations } from '../identity/application_reasons';
@@ -51,8 +51,12 @@ export function buildAccessRouter(admission: AdmissionService, mail: MailService
   router.use(requireViewer);
   router.use((_req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 
-  const inviterName = (req: Request) =>
-    (req.principal && admission.displayNameOf(req.principal.id)) ?? req.principal?.email ?? 'WatchDog';
+  // The draft goes out from the inviter's own mailbox, so the address may stand in for a name;
+  // local-user's placeholder name is not one.
+  const inviterName = (req: Request) => {
+    const name = req.principal ? admission.displayNameOf(req.principal.id) : null;
+    return (name && name !== LOCAL_USER_PLACEHOLDER_NAME ? name : null) ?? req.principal?.email ?? 'WatchDog';
+  };
 
   const draftFor = (req: Request, invitation: InvitationView, token: string, language: unknown, base: string | null) => {
     const link = base ? linkFor(base, token) : null;

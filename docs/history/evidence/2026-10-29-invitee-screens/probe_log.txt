@@ -1,0 +1,195 @@
+owner: local-user owner@lab.example developer
+owner runs: 7
+targets: cr2014,jh2016
+share link: 201 7
+en_phone_01_login: /login overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_02_privacy: /privacy overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_02b_privacy_switched: /privacy overflow=0
+en_phone_03_terms: /terms overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_04_share_anonymous: /share overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_05_join_bad_token: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_10_join_email_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_11_join_email_accepted: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_20_join_open_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_21_join_open_accepted: /join overflow=0
+en_phone_22_open_home_pending_banner: / overflow=0
+en_phone_30_join_bearer_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_phone_31_join_bearer_entered: /join overflow=0
+en_phone_32_guest_home: / overflow=0
+en_phone_33_share_redeemed: /share overflow=0
+en_phone_34_replications: /replications overflow=0
+en_phone_35_rep_cr2014_overview: /replications/cr2014 overflow=0
+en_phone_36_rep_cr2014_tab-measure: /replications/cr2014 overflow=0
+en_phone_36_rep_cr2014_tab-runs: /replications/cr2014 overflow=0
+en_phone_36_rep_cr2014_tab-protocol: /replications/cr2014 overflow=0
+en_phone_36_rep_cr2014_tab-discrepancies: /replications/cr2014 overflow=0
+en_phone_36_rep_cr2014_tab-registry: /replications/cr2014 overflow=0
+en_phone_36_rep_cr2014_tab-evidence: /replications/cr2014 overflow=0
+en_phone_36_rep_cr2014_tab-manuscript: /replications/cr2014 overflow=0
+en_phone_35_rep_jh2016_overview: /replications/jh2016 overflow=0
+en_phone_36_rep_jh2016_tab-runs: /replications/jh2016 overflow=0
+en_phone_36_rep_jh2016_tab-protocol: /replications/jh2016 overflow=0
+en_phone_36_rep_jh2016_tab-discrepancies: /replications/jh2016 overflow=0
+en_phone_36_rep_jh2016_tab-calibration: /replications/jh2016 overflow=0
+en_phone_36_rep_jh2016_tab-registry: /replications/jh2016 overflow=0
+en_phone_36_rep_jh2016_tab-evidence: /replications/jh2016 overflow=0
+en_phone_36_rep_jh2016_tab-manuscript: /replications/jh2016 overflow=0
+en_phone_40_runs: /runs overflow=0
+guest sees runs: 7
+en_phone_41_run_detail_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+en_phone_41_run_detail_32c2c4be_DataResults: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+en_phone_41_run_detail_32c2c4be_Provenance: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+en_phone_42_run_results_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f/results overflow=0
+run 32c2c4be raw links: 4
+raw artifact /api/artifacts/e9d6baf…: {"status":200,"bytes":155467,"type":"application/octet-stream"}
+en_phone_44_setup: /setup overflow=0
+en_phone_45_forbidden_view: /study overflow=0
+en_phone_50_apply: /apply overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_01_login: /login overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_02_privacy: /privacy overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_02b_privacy_switched: /privacy overflow=0
+en_desktop_03_terms: /terms overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_04_share_anonymous: /share overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_05_join_bad_token: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_10_join_email_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_11_join_email_accepted: /join overflow=0
+en_desktop_20_join_open_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_21_join_open_accepted: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_22_open_home_pending_banner: / overflow=0
+en_desktop_30_join_bearer_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+en_desktop_31_join_bearer_entered: /join overflow=0
+en_desktop_32_guest_home: / overflow=0
+en_desktop_33_share_redeemed: /share overflow=0
+en_desktop_34_replications: /replications overflow=0
+en_desktop_35_rep_cr2014_overview: /replications/cr2014 overflow=0
+en_desktop_36_rep_cr2014_tab-measure: /replications/cr2014 overflow=0
+en_desktop_36_rep_cr2014_tab-runs: /replications/cr2014 overflow=0
+en_desktop_36_rep_cr2014_tab-protocol: /replications/cr2014 overflow=0
+en_desktop_36_rep_cr2014_tab-discrepancies: /replications/cr2014 overflow=0
+en_desktop_36_rep_cr2014_tab-registry: /replications/cr2014 overflow=0
+en_desktop_36_rep_cr2014_tab-evidence: /replications/cr2014 overflow=0
+en_desktop_36_rep_cr2014_tab-manuscript: /replications/cr2014 overflow=0
+en_desktop_35_rep_jh2016_overview: /replications/jh2016 overflow=0
+en_desktop_36_rep_jh2016_tab-runs: /replications/jh2016 overflow=0
+en_desktop_36_rep_jh2016_tab-protocol: /replications/jh2016 overflow=0
+en_desktop_36_rep_jh2016_tab-discrepancies: /replications/jh2016 overflow=0
+en_desktop_36_rep_jh2016_tab-calibration: /replications/jh2016 overflow=0
+en_desktop_36_rep_jh2016_tab-registry: /replications/jh2016 overflow=0
+en_desktop_36_rep_jh2016_tab-evidence: /replications/jh2016 overflow=0
+en_desktop_36_rep_jh2016_tab-manuscript: /replications/jh2016 overflow=0
+en_desktop_40_runs: /runs overflow=0
+guest sees runs: 7
+en_desktop_41_run_detail_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+en_desktop_41_run_detail_32c2c4be_DataResults: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+en_desktop_41_run_detail_32c2c4be_Provenance: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+en_desktop_42_run_results_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f/results overflow=0
+run 32c2c4be raw links: 4
+raw artifact /api/artifacts/e9d6baf…: {"status":200,"bytes":155467,"type":"application/octet-stream"}
+en_desktop_44_setup: /setup overflow=0
+en_desktop_45_forbidden_view: /study overflow=0
+en_desktop_50_apply: /apply overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_01_login: /login overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_02_privacy: /privacy overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_02b_privacy_switched: /privacy overflow=0
+pl_phone_03_terms: /terms overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_04_share_anonymous: /share overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_05_join_bad_token: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_10_join_email_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_11_join_email_accepted: /join overflow=0
+pl_phone_20_join_open_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_21_join_open_accepted: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_22_open_home_pending_banner: / overflow=0
+pl_phone_30_join_bearer_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_phone_31_join_bearer_entered: /join overflow=0
+pl_phone_32_guest_home: / overflow=0
+pl_phone_33_share_redeemed: /share overflow=0
+pl_phone_34_replications: /replications overflow=0
+pl_phone_35_rep_cr2014_overview: /replications/cr2014 overflow=0
+pl_phone_36_rep_cr2014_tab-measure: /replications/cr2014 overflow=0
+pl_phone_36_rep_cr2014_tab-runs: /replications/cr2014 overflow=0
+pl_phone_36_rep_cr2014_tab-protocol: /replications/cr2014 overflow=0
+pl_phone_36_rep_cr2014_tab-discrepancies: /replications/cr2014 overflow=0
+pl_phone_36_rep_cr2014_tab-registry: /replications/cr2014 overflow=0
+pl_phone_36_rep_cr2014_tab-evidence: /replications/cr2014 overflow=0
+pl_phone_36_rep_cr2014_tab-manuscript: /replications/cr2014 overflow=0
+pl_phone_35_rep_jh2016_overview: /replications/jh2016 overflow=0
+pl_phone_36_rep_jh2016_tab-runs: /replications/jh2016 overflow=0
+pl_phone_36_rep_jh2016_tab-protocol: /replications/jh2016 overflow=0
+pl_phone_36_rep_jh2016_tab-discrepancies: /replications/jh2016 overflow=0
+pl_phone_36_rep_jh2016_tab-calibration: /replications/jh2016 overflow=0
+pl_phone_36_rep_jh2016_tab-registry: /replications/jh2016 overflow=0
+pl_phone_36_rep_jh2016_tab-evidence: /replications/jh2016 overflow=0
+pl_phone_36_rep_jh2016_tab-manuscript: /replications/jh2016 overflow=0
+pl_phone_40_runs: /runs overflow=0
+guest sees runs: 7
+pl_phone_41_run_detail_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+pl_phone_41_run_detail_32c2c4be_DataResults: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+pl_phone_41_run_detail_32c2c4be_Provenance: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+pl_phone_42_run_results_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f/results overflow=0
+run 32c2c4be raw links: 4
+raw artifact /api/artifacts/e9d6baf…: {"status":200,"bytes":155467,"type":"application/octet-stream"}
+pl_phone_44_setup: /setup overflow=0
+pl_phone_45_forbidden_view: /study overflow=0
+pl_phone_50_apply: /apply overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_01_login: /login overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_02_privacy: /privacy overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_02b_privacy_switched: /privacy overflow=0
+pl_desktop_03_terms: /terms overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_04_share_anonymous: /share overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_05_join_bad_token: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_10_join_email_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_11_join_email_accepted: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_20_join_open_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_21_join_open_accepted: /join overflow=0
+pl_desktop_22_open_home_pending_banner: / overflow=0
+pl_desktop_30_join_bearer_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_31_join_bearer_entered: /join overflow=0
+pl_desktop_32_guest_home: / overflow=0
+pl_desktop_33_share_redeemed: /share overflow=0
+owner: local-user owner@lab.example developer
+owner runs: 7
+targets: cr2014,jh2016
+share link: 201 7
+pl_desktop_01_login: /login overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_02_privacy: /privacy overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_02b_privacy_switched: /privacy overflow=0
+pl_desktop_03_terms: /terms overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_04_share_anonymous: /share overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_05_join_bad_token: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_10_join_email_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_11_join_email_accepted: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_20_join_open_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_21_join_open_accepted: /join overflow=0
+pl_desktop_22_open_home_pending_banner: / overflow=0
+pl_desktop_30_join_bearer_preview: /join overflow=0 ISSUES=http 401 /api/auth/me | console: Failed to load resource: the server responded with a status of 401 (Unauthorized)
+pl_desktop_31_join_bearer_entered: /join overflow=0
+pl_desktop_32_guest_home: / overflow=0
+pl_desktop_33_share_redeemed: /share overflow=0
+pl_desktop_34_replications: /replications overflow=0
+pl_desktop_35_rep_cr2014_overview: /replications/cr2014 overflow=0
+pl_desktop_36_rep_cr2014_tab-measure: /replications/cr2014 overflow=0
+pl_desktop_36_rep_cr2014_tab-runs: /replications/cr2014 overflow=0
+pl_desktop_36_rep_cr2014_tab-protocol: /replications/cr2014 overflow=0
+pl_desktop_36_rep_cr2014_tab-discrepancies: /replications/cr2014 overflow=0
+pl_desktop_36_rep_cr2014_tab-registry: /replications/cr2014 overflow=0
+pl_desktop_36_rep_cr2014_tab-evidence: /replications/cr2014 overflow=0
+pl_desktop_36_rep_cr2014_tab-manuscript: /replications/cr2014 overflow=0
+pl_desktop_35_rep_jh2016_overview: /replications/jh2016 overflow=0
+pl_desktop_36_rep_jh2016_tab-runs: /replications/jh2016 overflow=0
+pl_desktop_36_rep_jh2016_tab-protocol: /replications/jh2016 overflow=0
+pl_desktop_36_rep_jh2016_tab-discrepancies: /replications/jh2016 overflow=0
+pl_desktop_36_rep_jh2016_tab-calibration: /replications/jh2016 overflow=0
+pl_desktop_36_rep_jh2016_tab-registry: /replications/jh2016 overflow=0
+pl_desktop_36_rep_jh2016_tab-evidence: /replications/jh2016 overflow=0
+pl_desktop_36_rep_jh2016_tab-manuscript: /replications/jh2016 overflow=0
+pl_desktop_40_runs: /runs overflow=0
+guest sees runs: 7
+pl_desktop_41_run_detail_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+pl_desktop_41_run_detail_32c2c4be_DataResults: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+pl_desktop_41_run_detail_32c2c4be_Provenance: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f overflow=0
+pl_desktop_42_run_results_32c2c4be: /runs/32c2c4be-37a7-4f09-bbda-2ab38095300f/results overflow=0
+run 32c2c4be raw links: 4
+raw artifact /api/artifacts/e9d6baf…: {"status":200,"bytes":155467,"type":"application/octet-stream"}
+pl_desktop_44_setup: /setup overflow=0
+pl_desktop_45_forbidden_view: /study overflow=0
+pl_desktop_50_apply: /apply overflow=0
