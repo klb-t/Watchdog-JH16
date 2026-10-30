@@ -47,6 +47,29 @@
       "trace_counts": "{events} events · {errors} error envelopes",
       "select_prompt": "Select a request or recorded trace.",
       "error_diagnostics_request_failed": "Diagnostics request failed ({status})."
+    },
+    "nl": {
+      "title": "Diagnostiek voor ontwikkelaars",
+      "intro": "Volg verzoeken, bekijk validatie en fouten, en download een geanonimiseerd diagnostisch pakket.",
+      "recorder_mode": "Recordermodus",
+      "refresh_traces": "Traces vernieuwen",
+      "modes_help": "TRACE legt gedetailleerde stappen vast. ERRORS bewaart fouten. NORMAL schrijft beknopte serverlogs. Moduswijzigingen gelden voor deze draaiende instantie en worden in het auditlogboek vastgelegd.",
+      "recent_title": "Recente verzoeken vanuit deze browser",
+      "recent_help": "Alleen metadata; geen querystrings, verzoekinhoud, inloggegevens of antwoordgegevens.",
+      "col_request": "Verzoek",
+      "col_status": "Status",
+      "col_duration": "Duur",
+      "col_trace": "Trace",
+      "duration_ms": "{ms} ms",
+      "no_server_trace": "Geen servertrace",
+      "traces_title": "Vastgelegde traces",
+      "traces_empty": "Geen opgeslagen traces. Zet TRACE of ERRORS aan en voer de handeling opnieuw uit.",
+      "trace_title": "Trace {id}",
+      "download_zip": "Diagnostische ZIP downloaden",
+      "truncated": "De voorvertoning is beperkt tot de eerste 4 MB van elk tracebestand. De ZIP bevat de volledige trace.",
+      "trace_counts": "{events} gebeurtenissen · {errors} foutenveloppen",
+      "select_prompt": "Kies een verzoek of vastgelegde trace.",
+      "error_diagnostics_request_failed": "Diagnostisch verzoek mislukt ({status})."
     }
   }
 }

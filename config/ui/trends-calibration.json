@@ -35,6 +35,23 @@
       "col_substance": "Substance",
       "missing": "missing",
       "scale_factors": "Scale factors: {factors}"
+    },
+    "nl": {
+      "title": "Google Trends-kalibratie — regio {region}",
+      "recomputed": "Herberekening van de opgeslagen observaties van uitvoering {run} — geen nieuwe ophaalactie.",
+      "exploratory": "EXPLORATORY: Google Trends is relatieve zoekinteresse, geen aantal resultaten; alleen rangvergelijkingen, geen oordelen. Configuratie {calibration_id} {version}; bereik {range}.",
+      "compare_run": "Vergeleken met uitvoering: {compare}.",
+      "compare_none": "geen (A3/A4 niet te berekenen)",
+      "col_analysis": "Analyse",
+      "col_spearman": "Spearman",
+      "col_pearson_log10": "Pearson (log10)",
+      "col_n": "n",
+      "col_excluded": "Uitgesloten",
+      "not_computable": "niet te berekenen",
+      "scaled_interest": "Geschaalde interesse (gemeenschappelijke schaal via ankers)",
+      "col_substance": "Stof",
+      "missing": "ontbrekend",
+      "scale_factors": "Schaalfactoren: {factors}"
     }
   }
 }

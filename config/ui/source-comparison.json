@@ -37,6 +37,24 @@
       "limit_nodes": "nodes",
       "limit_depth": "depth",
       "hash": "SHA-256: {hash}"
+    },
+    "nl": {
+      "label_absent": "Veld afwezig",
+      "label_equal": "De bewaarde records hebben identieke inhoud.",
+      "label_different": "De bewaarde records verschillen in inhoud.",
+      "label_array_meaning": "Arrays worden per positie vergeleken. Een gewijzigde volgorde kan meerdere verschillen opleveren. Datums en revisies die de bron zelf vermeldt, blijven velden van de inhoud; het ophaaltijdstip staat apart.",
+      "label_truncated": "De vergelijkingslimiet is bereikt. De lijst met verschillen is onvolledig; de volledige momentopnamen staan in de JSON-export.",
+      "label_export": "Vergelijking als JSON downloaden",
+      "label_before": "Waarde A",
+      "label_after": "Waarde B",
+      "label_details": "Herkomst en identificatoren",
+      "change_added": "Toegevoegd",
+      "change_removed": "Verwijderd",
+      "change_changed": "Gewijzigd",
+      "limit_changes": "wijzigingen",
+      "limit_nodes": "knooppunten",
+      "limit_depth": "diepte",
+      "hash": "SHA-256: {hash}"
     }
   }
 }

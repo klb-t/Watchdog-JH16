@@ -23,6 +23,17 @@
       "col_action": "Action",
       "empty": "No runs found.",
       "view_details": "View Details"
+    },
+    "nl": {
+      "title": "Uitvoeringen",
+      "intro": "Geschiedenis van alle taken voor gegevensverzameling en analyse",
+      "col_id": "Uitvoerings-ID",
+      "col_type": "Type",
+      "col_status": "Status",
+      "col_created": "Aangemaakt",
+      "col_action": "Actie",
+      "empty": "Geen uitvoeringen gevonden.",
+      "view_details": "Details bekijken"
     }
   }
 }

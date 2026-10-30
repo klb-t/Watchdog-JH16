@@ -6,11 +6,11 @@ const GoalText=z.object({label:z.string().min(1),description:z.string().min(1),c
 
 // Internal route slugs may contain hyphens; external/protocol-relative links may not.
 export const GoalNavigationSchema=z.object({
-  version:z.literal('goal-navigation-2'),
+  version:z.literal('goal-navigation-3'),
   _note:z.string().optional(),
   goals:z.array(z.object({id:z.string(),
     href:z.string().regex(/^\/[a-z]+(?:-[a-z]+)*$/),
     capability:z.string().refine(s=>s.split('|').every(c=>CAPABILITIES.includes(c as Capability))),
-    text:z.object({pl:GoalText,en:GoalText}).strict(),
+    text:z.object({pl:GoalText,en:GoalText,nl:GoalText}).strict(),
   }).strict()),
 }).strict();

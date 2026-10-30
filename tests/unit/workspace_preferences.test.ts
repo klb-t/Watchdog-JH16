@@ -4,12 +4,13 @@ import data from '../../config/workspace-preferences.json';
 import {workspaceBase,workspacePreferences,resolveWorkspace,WorkspacePreferencesSchema} from '../../shared/workspace_preferences';
 import {availableWorkspaceGroups,activeWorkspaceGroup} from '../../shared/workspace_navigation';
 import {ROLES,capabilitiesFor} from '../../shared/authorization';
+import {LANGUAGE_CODES} from '../../shared/languages';
 
 test('E7.7: every language and preset preserves all authorized routes and the main grouping default',()=>{
   for(const role of ROLES) {
     const capabilities=capabilitiesFor([role]);
     const expected=availableWorkspaceGroups(workspaceBase,capabilities).flatMap(g=>g.views.map(v=>v.href)).sort();
-    for(const preset of Object.keys(workspacePreferences.presets)) for(const lang of ['pl','en'] as const) {
+    for(const preset of Object.keys(workspacePreferences.presets)) for(const lang of LANGUAGE_CODES) {
       const nav=resolveWorkspace(preset,lang);
       assert.deepEqual(availableWorkspaceGroups(nav,capabilities).flatMap(g=>g.views.map(v=>v.href)).sort(),expected);
     }

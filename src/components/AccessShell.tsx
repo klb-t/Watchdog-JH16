@@ -1,13 +1,16 @@
-import type { ReactNode } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Activity } from 'lucide-react';
 import { useAccess } from '../lib/access';
 import { ACCESS_LANGUAGES, useAccessText } from '../lib/access_i18n';
+import { MachineTranslationNotice } from './MachineTranslationNotice';
 
 /** The frame for screens seen before admission: sign-in, invitation, application. */
 export function AccessShell({ title, children }: { title: string; children: ReactNode }) {
   const access = useAccess();
   const { lang, setLang, t, languageName } = useAccessText();
+  // These screens can render before the workspace does; the page declares the language it shows.
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
   return (
     <div className="min-h-dvh bg-slate-50 text-slate-900 flex flex-col items-center px-4 py-8 sm:py-16">
       <div className="w-full max-w-md">
@@ -25,6 +28,7 @@ export function AccessShell({ title, children }: { title: string; children: Reac
           </label>
         </div>
         <p className="text-sm text-slate-600 mb-6">{t('tagline')}</p>
+        <MachineTranslationNotice className="mb-4" />
         <main className="field-panel shadow-sm">
           <h1 className="text-xl font-semibold mb-4">{title}</h1>
           {children}

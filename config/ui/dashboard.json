@@ -27,6 +27,19 @@
       "view_all": "View all",
       "no_runs": "No runs recorded yet.",
       "error_fetch_state": "The status could not be fetched."
+    },
+    "nl": {
+      "title": "Overzicht",
+      "subtitle": "Systeemstatus en recente activiteit",
+      "stat_sources": "Bronnen in het register",
+      "stat_sources_detail": "Gebruiksklare integraties: {live} · testbronnen: {fixture}",
+      "stat_active_runs": "Actieve uitvoeringen",
+      "stat_completed": "Voltooid",
+      "stat_failed": "Mislukt",
+      "recent_runs": "Recente uitvoeringen",
+      "view_all": "Alles bekijken",
+      "no_runs": "Nog geen uitvoeringen vastgelegd.",
+      "error_fetch_state": "De status kon niet worden opgehaald."
     }
   }
 }

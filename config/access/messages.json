@@ -71,6 +71,40 @@
         "open_link": "Entry through open link {{link}}: roles above viewer need an administrator's approval.",
         "bearer_link": "Entry through bearer link {{link}}: roles above viewer need an administrator's approval."
       }
+    },
+    "nl": {
+      "role_labels": {
+        "viewer": "resultatenkijker",
+        "researcher": "onderzoeker",
+        "responder": "hulpverlener in het veld",
+        "institutional": "institutionele toegang",
+        "law_enforcement": "rechtshandhaving",
+        "admin": "beheerder",
+        "developer": "ontwikkelaar",
+        "dev": "ontwikkelaar"
+      },
+      "invitation": {
+        "subject": "{{inviter}} nodigt je uit voor {{instance}}",
+        "body": "Hallo,\n\n{{inviter}} nodigt je uit voor {{instance}} als: {{roles}}.\n{{note_block}}\nOm de uitnodiging te aanvaarden, open je de link en meld je je aan met {{email}}:\n\n{{link}}\n\nDe link is geldig tot {{expires}}. Hij werkt alleen voor dit adres — doorsturen geeft niemand anders toegang.\n\nAls je dit niet verwachtte, kun je dit bericht negeren."
+      },
+      "open_link": {
+        "subject": "Uitnodiging voor {{instance}}",
+        "body": "{{inviter}} nodigt je uit voor {{instance}} ({{roles}}).\n{{note_block}}\nOpen de link en meld je aan met een van je eigen e-mailadressen:\n\n{{link}}\n\nDe link is geldig tot {{expires}}{{uses_block}}."
+      },
+      "sign_in_code": {
+        "subject": "Je aanmeldcode voor {{instance}}: {{code}}",
+        "body": "Je aanmeldcode voor {{instance}}:\n\n    {{code}}\n\nDe code is {{minutes}} minuten geldig en werkt één keer.\n{{link_block}}\nAls je niet probeerde in te loggen, negeer dan dit bericht — zonder de code kan niemand in je account."
+      },
+      "fragments": {
+        "note": "\nEen notitie van degene die je uitnodigt:\n{{note}}\n",
+        "uses": " en kan {{max_uses}} keer worden gebruikt",
+        "link": "\nOf klik: {{link}}\n"
+      },
+      "application_reason": {
+        "address_mismatch": "Uitnodiging voor {{invited}} gebruikt door {{email}}: rollen boven kijker vereisen goedkeuring van een beheerder.",
+        "open_link": "Toegang via open link {{link}}: rollen boven kijker vereisen goedkeuring van een beheerder.",
+        "bearer_link": "Toegang via toonderlink {{link}}: rollen boven kijker vereisen goedkeuring van een beheerder."
+      }
     }
   }
 }

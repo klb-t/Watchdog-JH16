@@ -1,6 +1,6 @@
 {
-  "version": "goal-navigation-2",
-  "_note": "Goals on the start page. text.pl and text.en carry the interface wording (label, description, search words); search matches both languages. id, href and capability are shared.",
+  "version": "goal-navigation-3",
+  "_note": "Goals on the start page. text.pl, text.en and text.nl carry the interface wording (label, description, search words); search matches every language. id, href and capability are shared.",
   "goals": [
     {
       "id": "text_request",
@@ -30,6 +30,18 @@
             "hoffmann",
             "request"
           ]
+        },
+        "nl": {
+          "label": "Plak een bericht van een onderzoeker en begin",
+          "description": "WatchDog herkent het genoemde artikel, voert het letterlijke deel uit, stelt uitbreidingen ter goedkeuring voor en stelt vragen zonder het werk te onderbreken.",
+          "contexts": [
+            "onderzoeker",
+            "replicatie",
+            "citaat",
+            "bericht",
+            "hoffmann",
+            "verzoek"
+          ]
         }
       }
     },
@@ -58,6 +70,18 @@
             "replication",
             "results",
             "paper",
+            "hoffmann",
+            "jh16"
+          ]
+        },
+        "nl": {
+          "label": "Bekijk de JH16-replicatie en het manuscriptontwerp",
+          "description": "Hypothesen en oordelen, overeenstemming met het artikel, afwijkingen met hun oorzaken, kalibratie, het protocol en een manuscriptontwerp op basis van de resultaten.",
+          "contexts": [
+            "onderzoeker",
+            "replicatie",
+            "resultaten",
+            "artikel",
             "hoffmann",
             "jh16"
           ]
@@ -91,6 +115,18 @@
             "package",
             "task",
             "resume"
+          ]
+        },
+        "nl": {
+          "label": "Breng het werk samen in een onderzoeksproject",
+          "description": "Leg een onderzoeksvraag vast en koppel exacte versies van teksten, gegevens, methoden, uitvoeringen en planningen.",
+          "contexts": [
+            "onderzoeker",
+            "project",
+            "studie",
+            "pakket",
+            "taak",
+            "hervatten"
           ]
         }
       }
@@ -127,6 +163,20 @@
             "data",
             "history"
           ]
+        },
+        "nl": {
+          "label": "Doorzoek opgeslagen gegevens",
+          "description": "Namen, identificatoren en beschrijvingen in de beschikbare registers, artikelen, datasets en onderzoeksgeschiedenis.",
+          "contexts": [
+            "zoeken",
+            "database",
+            "stof",
+            "symptomen",
+            "interacties",
+            "artikel",
+            "gegevens",
+            "geschiedenis"
+          ]
         }
       }
     },
@@ -158,6 +208,18 @@
             "interactions",
             "poisoning"
           ]
+        },
+        "nl": {
+          "label": "Controleer symptomen of identificeer een monster",
+          "description": "Hulpverlenersinterface: overeenkomsten met hun bronnen en de grenzen van de identificatie.",
+          "contexts": [
+            "hulpverlener",
+            "symptomen",
+            "pil",
+            "samenstelling",
+            "interacties",
+            "vergiftiging"
+          ]
         }
       }
     },
@@ -188,6 +250,18 @@
             "receptor",
             "PubChem",
             "substance"
+          ]
+        },
+        "nl": {
+          "label": "Open een stofdossier",
+          "description": "Chemische identiteit, eigenschappen, activiteitsmetingen en hun herkomst.",
+          "contexts": [
+            "hulpverlener",
+            "onderzoeker",
+            "chemie",
+            "receptor",
+            "PubChem",
+            "stof"
           ]
         }
       }
@@ -221,6 +295,19 @@
             "map",
             "time",
             "popularity"
+          ]
+        },
+        "nl": {
+          "label": "Vergelijk gebieden op een kaart",
+          "description": "Laad regionale gegevens, wijs gebiedsidentificatoren toe en bekijk tijd, kleur en de onzekerheid van bronnen.",
+          "contexts": [
+            "politie",
+            "analist",
+            "geografie",
+            "regio",
+            "kaart",
+            "tijd",
+            "populariteit"
           ]
         }
       }
@@ -257,6 +344,20 @@
             "publication",
             "CSV"
           ]
+        },
+        "nl": {
+          "label": "Analyseer gegevens en maak een grafiek",
+          "description": "Tabelimport, methode, grafieken, favoriete instellingen en export voor publicatie.",
+          "contexts": [
+            "onderzoeker",
+            "analist",
+            "grafiek",
+            "statistiek",
+            "3D",
+            "4D",
+            "publicatie",
+            "CSV"
+          ]
         }
       }
     },
@@ -290,6 +391,19 @@
             "parser",
             "extraction"
           ]
+        },
+        "nl": {
+          "label": "Plan de reproductie van een artikel",
+          "description": "Sla de tekst op, controleer de methodologie en de benodigde gegevens, overweeg expliciete varianten en test een extractor.",
+          "contexts": [
+            "onderzoeker",
+            "artikel",
+            "replicatie",
+            "methode",
+            "hypothese",
+            "parser",
+            "extractie"
+          ]
         }
       }
     },
@@ -319,6 +433,19 @@
             "JH16",
             "start",
             "language",
+            "slang",
+            "dialect",
+            "sentiment"
+          ]
+        },
+        "nl": {
+          "label": "Voer JH16 uit en stel onderzoek in",
+          "description": "Wizard voor het referentiepunt, onafhankelijke talen en geografieën, bronnen en kostenlimieten.",
+          "contexts": [
+            "onderzoeker",
+            "JH16",
+            "start",
+            "taal",
             "slang",
             "dialect",
             "sentiment"
@@ -354,6 +481,18 @@
             "sources",
             "automation"
           ]
+        },
+        "nl": {
+          "label": "Plan periodieke verzameling of beoordeling",
+          "description": "Openbare bronnen, literatuur, de modelcatalogus en een beoordeling van nieuwe artikelen binnen een budget.",
+          "contexts": [
+            "onderzoeker",
+            "dagelijks",
+            "planning",
+            "arxiv",
+            "bronnen",
+            "automatisering"
+          ]
         }
       }
     },
@@ -385,6 +524,18 @@
             "quality",
             "approval"
           ]
+        },
+        "nl": {
+          "label": "Controleer herkomst en keur gegevens goed",
+          "description": "Beoordeel het bewijs voordat het in de hulpverlenersweergave wordt gebruikt.",
+          "contexts": [
+            "onderzoeker",
+            "objectiviteit",
+            "kleuren",
+            "bewijs",
+            "kwaliteit",
+            "goedkeuring"
+          ]
         }
       }
     },
@@ -414,6 +565,17 @@
             "history",
             "interrupted"
           ]
+        },
+        "nl": {
+          "label": "Keer terug naar een lopend onderzoek",
+          "description": "Verwerkingsstatus, resultaten, manifest en foutgeschiedenis.",
+          "contexts": [
+            "onderzoeker",
+            "hervatten",
+            "resultaten",
+            "geschiedenis",
+            "onderbroken"
+          ]
         }
       }
     },
@@ -442,6 +604,17 @@
             "diagnostics",
             "logs",
             "developer"
+          ]
+        },
+        "nl": {
+          "label": "Diagnosticeer de werking van het systeem",
+          "description": "Flight Recorder, gebeurtenissporen en een diagnostisch pakket binnen de rechten van het account.",
+          "contexts": [
+            "debug",
+            "fout",
+            "diagnostiek",
+            "logs",
+            "ontwikkelaar"
           ]
         }
       }
@@ -475,6 +648,20 @@
             "permission",
             "API",
             "licence",
+            "Erowid",
+            "Hyperreal"
+          ]
+        },
+        "nl": {
+          "label": "Controleer gegevensbronnen en toegang",
+          "description": "Integraties, fora, voorwaarden, je eigen toegangsbeoordelingen, downloadstatistieken en conceptverzoeken.",
+          "contexts": [
+            "bronnen",
+            "fora",
+            "toegang",
+            "toestemming",
+            "API",
+            "licentie",
             "Erowid",
             "Hyperreal"
           ]

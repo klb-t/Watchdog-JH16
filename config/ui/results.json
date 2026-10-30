@@ -47,6 +47,29 @@
       "llm_reason_disabled": "The language model is turned off (Settings → step 1).",
       "llm_reason_key_missing": "No stored key for provider {provider} (Settings → step 1).",
       "llm_reason_settings_unreadable": "The model settings could not be read."
+    },
+    "nl": {
+      "title": "Resultaten",
+      "export_csv": "CSV",
+      "export_json": "JSON",
+      "manifest": "Manifest",
+      "manifest_none": "Manifest (geen)",
+      "log_scale": "logaritmische schaal",
+      "no_data": "geen gegevens",
+      "col_entity": "Entiteit",
+      "col_metric": "Maat",
+      "col_value": "Waarde",
+      "missing_not_zero": "ontbrekend — niet nul",
+      "machine_generated": "machinaal gegenereerd",
+      "approval_PROPOSED": "Voorgesteld",
+      "approval_APPROVED": "Goedgekeurd",
+      "llm_unavailable": "Opstellen door model niet beschikbaar: {reason}",
+      "generating": "Genereren…",
+      "generate": "Opstellen met mijn LLM binnen het opgeslagen budget",
+      "llm_reason_checking": "Modelinstellingen controleren…",
+      "llm_reason_disabled": "Het taalmodel staat uit (Instellingen → stap 1).",
+      "llm_reason_key_missing": "Geen opgeslagen sleutel voor provider {provider} (Instellingen → stap 1).",
+      "llm_reason_settings_unreadable": "De modelinstellingen konden niet worden gelezen."
     }
   }
 }

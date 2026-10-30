@@ -31,6 +31,21 @@
       "unavailable_planned": "not implemented yet",
       "error_fetch_sources": "Sources could not be fetched.",
       "error_recompute": "The recomputation could not be started."
+    },
+    "nl": {
+      "title": "Meetbronnen",
+      "intro": "Bronnen van de getallen die studies gebruiken, en hun status. Nieuwe metingen start je in de wizard (Instellingen); de gegevens uit de JH16-publicatie kunnen kosteloos opnieuw worden berekend.",
+      "access_catalog_link": "Volledige catalogus van integraties en toegangsvoorwaarden",
+      "loading": "Bronnen laden…",
+      "empty": "Geen bronnen geconfigureerd.",
+      "adapter": "Adapter: {adapter}",
+      "action_recompute_jh16": "JH16 opnieuw berekenen uit de gegevens van de publicatie",
+      "action_wizard": "Nieuwe meting in de wizard (Instellingen)",
+      "action_replications": "Meten vanuit Replicaties (“Nieuwe meting”)",
+      "unavailable": "Niet beschikbaar: {reason}",
+      "unavailable_planned": "nog niet geïmplementeerd",
+      "error_fetch_sources": "Bronnen konden niet worden opgehaald.",
+      "error_recompute": "De herberekening kon niet worden gestart."
     }
   }
 }

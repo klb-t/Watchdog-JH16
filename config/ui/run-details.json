@@ -57,6 +57,34 @@
       "fetch_events": "Fetch Events",
       "raw_blob": "Raw Blob",
       "no_provenance": "No provenance artifacts generated."
+    },
+    "nl": {
+      "breadcrumb_runs": "Uitvoeringen",
+      "refresh": "Vernieuwen",
+      "tab_overview": "Overzicht",
+      "tab_data": "Gegevens en resultaten",
+      "tab_provenance": "Herkomst",
+      "execution_failed": "Uitvoering mislukt: {code}",
+      "effective_config": "Gebruikte configuratie",
+      "analysis_results": "Analyseresultaten",
+      "col_analyzer": "Analysemethode",
+      "col_entity": "Entiteit",
+      "col_metric": "Maat",
+      "col_value": "Waarde",
+      "observations_first": "Waarnemingen (eerste {count})",
+      "col_source": "Bron",
+      "col_dimension": "Dimensie",
+      "col_query": "Zoekopdracht / context",
+      "no_data": "Nog geen gegevens gegenereerd.",
+      "worm_manifest": "WORM-manifest",
+      "manifest_status": "Status",
+      "manifest_validated": "Gevalideerd (onveranderlijk)",
+      "manifest_sha256": "SHA256",
+      "manifest_uri": "URI",
+      "manifest_finalized": "Afgerond",
+      "fetch_events": "Ophaalgebeurtenissen",
+      "raw_blob": "Ruwe gegevens",
+      "no_provenance": "Geen herkomstartefacten gegenereerd."
     }
   }
 }

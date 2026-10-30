@@ -53,6 +53,32 @@
       "benchmarks_input": "Benchmark results JSON",
       "save_benchmarks": "Confirm the source and save the test results",
       "error_benchmark_json_invalid": "The benchmark results are not valid JSON."
+    },
+    "nl": {
+      "summary": "Providers, modellen per taak en testresultaten",
+      "saved": "Profiel opgeslagen met herkomst.",
+      "intro": "Je kunt taken verdelen over de sleutels die je hebt. Wijzigingen in toewijzingen worden opgeslagen met de knop “Instellingen opslaan” hierboven.",
+      "default_provider": "Standaardprovider",
+      "pinned_model": "Identificatie van vastgezet model (optioneel)",
+      "direct_prices": "Prijzen bij de provider zelf · {provider}",
+      "direct_prices_help": "De API-catalogus kan prijzen of contextlimieten missen. Voeg in dat geval een profiel toe op basis van de documentatie of het contract van deze provider. Prijzen van OpenRouter worden niet overgenomen voor andere diensten.",
+      "documentation": "Documentatie van {provider}",
+      "unpriced_models": "Modellen uit de catalogus zonder prijsprofiel: {models}",
+      "unpriced_refresh": "vernieuw de catalogus om de lijst van het account te lezen",
+      "model_id": "Exacte modelidentificatie",
+      "price_source": "Bron van prijzen en limieten (URL)",
+      "context_limit": "Contextlimiet (tokens)",
+      "max_output": "Max. antwoord (tokens)",
+      "max_input_price": "Max. USD / miljoen invoertokens",
+      "max_output_price": "Max. USD / miljoen uitvoertokens",
+      "request_fee": "Extra kosten per aanroep (USD)",
+      "profile_help": "Neem de hoogst mogelijke prijsklasse en eventuele extra kosten op. Het profiel blijft één dag geldig. Opslaan is jouw bevestiging van deze cijfers; de prijslijst wordt niet automatisch gecontroleerd.",
+      "save_profile": "Gecontroleerd modelprofiel opslaan voor 24 uur",
+      "benchmarks_summary": "Gecontroleerde testresultaten importeren voor een specifieke taak",
+      "benchmarks_help": "JSON: provider, model, task, suiteHash (SHA-256 van de suite), passed, total, source (URL), observedAt (ISO UTC). Alleen resultaten uit dezelfde testfamilie worden vergeleken. De invoer is jouw beoordeling van de bron, geen beoordeling die door een LLM is gegenereerd.",
+      "benchmarks_input": "Benchmarkresultaten als JSON",
+      "save_benchmarks": "Bron bevestigen en testresultaten opslaan",
+      "error_benchmark_json_invalid": "De benchmarkresultaten zijn geen geldige JSON."
     }
   }
 }

@@ -61,6 +61,36 @@
       "saved_data": "Saved data",
       "choose_substance": "Choose a substance. Opening saved records needs no new fetch and no API key.",
       "activity_tier": "CURATED_SECONDARY"
+    },
+    "nl": {
+      "title": "Stoffengeheugen",
+      "intro": "Records op basis van chemische identificatoren, met metingen en bronnen apart gehouden.",
+      "receptor_caution": "Receptorgegevens beschrijven experimenten en vragen om interpretatie. Ze stellen niet de samenstelling van een ingenomen pil, de dosering of de behandeling vast.",
+      "search_label": "Naam, synoniem of CID",
+      "no_records": "Geen overeenkomende records.",
+      "fetch_link": "Gegevens uit bronnen ophalen",
+      "names_languages": "Namen en talen · {count}",
+      "name_language_note": "De taal van een naam bepaalt niet waar de stof voorkomt.",
+      "language_missing": "taal niet opgegeven",
+      "measurements_heading": "Metingen tegen receptoren en andere moleculaire doelwitten",
+      "target_filter": "Doelwit of beschrijving van de assay",
+      "measure": "Maat",
+      "measure_all": "Alle, apart",
+      "human_only": "Alleen Homo sapiens",
+      "measurements_note": "{count} opgeslagen metingen / versies. De relaties <, > en = en de eenheden van de bron blijven behouden. Een ontbrekende meting betekent niet dat er geen activiteit is. Resultaten worden niet gemiddeld of gelijkgesteld tussen maten.",
+      "no_measurements": "Geen metingen die aan de filters voldoen in het opgehaalde deel van de database.",
+      "value_missing": "geen waarde",
+      "unit_missing": "geen eenheid",
+      "organism_missing": "organisme niet opgegeven",
+      "conditions": "Omstandigheden, kwaliteit en herkomst",
+      "chembl_source": "ChEMBL-brongegevens",
+      "saved_response": "Opgeslagen API-antwoord",
+      "show_more": "Volgende 100 metingen tonen",
+      "records_heading": "Chemie, bibliografie, Wikipedia en ophaalgeschiedenis",
+      "source": "Bron",
+      "saved_data": "Opgeslagen gegevens",
+      "choose_substance": "Kies een stof. Opgeslagen records openen vraagt geen nieuwe ophaalactie en geen API-sleutel.",
+      "activity_tier": "CURATED_SECONDARY"
     }
   }
 }

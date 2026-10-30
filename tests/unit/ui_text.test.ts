@@ -24,7 +24,7 @@ test('every interface text bundle has both languages with the same keys and plac
 });
 
 test('placeholders are filled and an unknown key stays visible rather than blank', () => {
-  const b = { version: 'ui-x-1', languages: { pl: { a: 'Ma {n} wierszy' }, en: { a: 'Has {n} rows' } } };
+  const b = { version: 'ui-x-1', languages: { pl: { a: 'Ma {n} wierszy' }, en: { a: 'Has {n} rows' }, nl: { a: 'Heeft {n} rijen' } } };
   assert.equal(fillText(b, 'pl', 'a', { n: 3 }), 'Ma 3 wierszy');
   assert.equal(fillText(b, 'en', 'a'), 'Has {n} rows');
   assert.equal(fillText(b, 'en', 'missing'), 'missing');
