@@ -26,7 +26,7 @@ import * as path from 'node:path';
 import type { AssistantService } from '../services/assistant';
 import { sameOriginMutation } from './automation_routes';
 import { jh16PlanItems, readJh16Preset } from '../services/jh16_plan';
-import { listReplicationTargets, collectRuns, buildManuscript, manuscriptMarkdown, manuscriptHtml, primaryRuns } from '../services/replication_dossier';
+import { listReplicationTargets, collectRuns, buildManuscript, manuscriptMarkdown, manuscriptHtml, primaryRuns, diagnosisEvidenceRuns } from '../services/replication_dossier';
 import { buildInfo } from '../utils/build_info';
 import { editManuscript, applyEdition, readEditingSettings } from '../services/manuscript_editing';
 import { ManuscriptEditionRepository } from '../db/repositories/manuscript_editions';
@@ -160,7 +160,8 @@ apiRouter.get('/replications/:id', requireCapability('run.view'), async (req, re
     if (!c) return res.status(404).json({ error: 'NOT_FOUND' });
     res.setHeader('Cache-Control', 'no-store');
     res.json({ target: c.t.target, interpretation: c.t.interpretation, dossier: c.t.dossier, hashes: c.t.hashes, runs: c.runs,
-      primary_run_ids: primaryRuns(c.runs).map(r => r.run_id), published: c.published, protocols: c.protocols, protocol_options: readProtocolOptions() });
+      primary_run_ids: primaryRuns(c.runs).map(r => r.run_id), diagnosis_evidence_runs: diagnosisEvidenceRuns(c.t.dossier, c.runs),
+      published: c.published, protocols: c.protocols, protocol_options: readProtocolOptions() });
   } catch (e) { next(e); }
 });
 

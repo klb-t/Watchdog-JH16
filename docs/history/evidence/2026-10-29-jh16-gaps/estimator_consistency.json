@@ -1,0 +1,442 @@
+{
+ "exploratory_probability": {
+  "assumption": "pairs independent, rate constant across substances; the 2014 values are the paper's published transcription (one snapshot; whether the authors repeated or screened queries is unknown)",
+  "lowest_run_rate_2026": 0.125,
+  "p_zero_at_lowest_rate": 0.1180670870212488,
+  "p_zero_at_pooled_rate": 0.011204783987142333,
+  "pairs_2014": 16,
+  "pooled_rate_2026": 0.24475524475524477,
+  "question": "If the 2014 estimator had produced Ni_harm > Ni as often as the 2026 runs did, how likely is it that none of the paper's pairs shows it?",
+  "violations_2014": 0,
+  "without_small_counts": {
+   "lowest_run_rate_2026": 0.07692307692307693,
+   "p_zero_at_lowest_rate": 0.27784737613025307,
+   "p_zero_at_pooled_rate": 0.05257636561739838,
+   "pooled_rate_2026": 0.168141592920354
+  }
+ },
+ "or_decomposition_2026": {
+  "file": "docs/history/evidence/2026-10-25-jh16/T3_or_decomposition_results.json",
+  "file_sha256": "97e97da60f103eba6fa67e533f33a3d6b44d5f37f1624aa6980c912924628dda",
+  "incoherent": [
+   "alcohol",
+   "amphetamine",
+   "buprenorphine",
+   "mephedrone",
+   "methadone"
+  ],
+  "rows": [
+   {
+    "checkable": true,
+    "entity": "alcohol",
+    "grouped_or": 209000000,
+    "harm": 101000000,
+    "harmful": 72400000,
+    "or_above_sum_of_components": true,
+    "or_below_a_component": false
+   },
+   {
+    "checkable": true,
+    "entity": "amphetamine",
+    "grouped_or": 5890000,
+    "harm": 5020000,
+    "harmful": 280000,
+    "or_above_sum_of_components": true,
+    "or_below_a_component": false
+   },
+   {
+    "checkable": true,
+    "entity": "buprenorphine",
+    "grouped_or": 9740000,
+    "harm": 6220000,
+    "harmful": 10,
+    "or_above_sum_of_components": true,
+    "or_below_a_component": false
+   },
+   {
+    "checkable": true,
+    "entity": "cocaine",
+    "grouped_or": 15300000,
+    "harm": 13800000,
+    "harmful": 3770000,
+    "or_above_sum_of_components": false,
+    "or_below_a_component": false
+   },
+   {
+    "checkable": true,
+    "entity": "heroin",
+    "grouped_or": 15900000,
+    "harm": 13900000,
+    "harmful": 2670000,
+    "or_above_sum_of_components": false,
+    "or_below_a_component": false
+   },
+   {
+    "checkable": true,
+    "entity": "mephedrone",
+    "grouped_or": 4690000,
+    "harm": 53500,
+    "harmful": 54200,
+    "or_above_sum_of_components": true,
+    "or_below_a_component": false
+   },
+   {
+    "checkable": true,
+    "entity": "methadone",
+    "grouped_or": 3020000,
+    "harm": 5630000,
+    "harmful": 306000,
+    "or_above_sum_of_components": false,
+    "or_below_a_component": true
+   },
+   {
+    "checkable": true,
+    "entity": "methamphetamine",
+    "grouped_or": 10500000,
+    "harm": 10300000,
+    "harmful": 467000,
+    "or_above_sum_of_components": false,
+    "or_below_a_component": false
+   }
+  ],
+  "run_id": "d1bd7e5d-8bef-47ed-9daf-8d4cc6c84cb6"
+ },
+ "paper_2014": {
+  "counts_below_threshold": [],
+  "entities": 16,
+  "file": "fixtures/jh2016/paper_reported.json",
+  "file_sha256": "8b5dadac461d48b6f68e45b50b0c4f15ee056db3f53cc89c8e02ac711c460c09",
+  "harm_count_above_popularity_count": [],
+  "harm_count_above_popularity_count_without_small_counts": [],
+  "kind": "paper",
+  "label": "2014 (Tabele 1 i 3 publikacji)",
+  "max_hi": {
+   "Ni": 389000000,
+   "Ni_harm": 107000000,
+   "entity": "alcohol"
+  },
+  "missing_counts": [],
+  "pairs_without_small_counts": 16,
+  "run_id": null,
+  "valid_pairs": 16,
+  "violations": 0,
+  "violations_without_small_counts": 0
+ },
+ "pooled_2026": {
+  "pairs_without_small_counts": 113,
+  "runs": 9,
+  "valid_pairs": 143,
+  "violations": 35,
+  "violations_without_small_counts": 19
+ },
+ "rule": "A true page count satisfies Ni_harm <= Ni, because the harm query is a subset of the popularity query; Ni_harm > Ni (Hi > 100%) is incoherent regardless of web content.",
+ "runs_2026": [
+  {
+   "counts_below_threshold": [
+    "benzodiazepines/harm",
+    "butane/popularity",
+    "heroin/popularity"
+   ],
+   "entities": 16,
+   "file": "docs/replication/JH16_2026-10-25/results.json",
+   "file_sha256": "a267ba990a48aa755f34e313a2190365e6b0a291ab8f5f9d153498bdacdc8f74",
+   "harm_count_above_popularity_count": [
+    "butane",
+    "heroin",
+    "mephedrone"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "mephedrone"
+   ],
+   "kind": "stored_evaluation",
+   "label": "R1 2026-10-25",
+   "max_hi": {
+    "Ni": 74,
+    "Ni_harm": 15900000,
+    "entity": "heroin"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 13,
+   "run_id": "9d80efca-d819-49fb-9b0c-fec57c0e8d74",
+   "valid_pairs": 16,
+   "violations": 3,
+   "violations_without_small_counts": 1
+  },
+  {
+   "counts_below_threshold": [
+    "benzodiazepines/popularity",
+    "khat/harm",
+    "lysergic acid diethylamide/harm"
+   ],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-25-jh16/R3_ext4_export.json",
+   "file_sha256": "df09670b6bac05b5ccb4487ef6c167848097059ea7d04ff5fc4da923ed17881c",
+   "harm_count_above_popularity_count": [
+    "benzodiazepines",
+    "ecstasy"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "ecstasy"
+   ],
+   "kind": "export",
+   "label": "R3 gl-pl 2026-10-25",
+   "max_hi": {
+    "Ni": 84,
+    "Ni_harm": 3330000,
+    "entity": "benzodiazepines"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 13,
+   "run_id": "051f9b60-31a4-483b-ab01-9c9c717417aa",
+   "valid_pairs": 16,
+   "violations": 2,
+   "violations_without_small_counts": 1
+  },
+  {
+   "counts_below_threshold": [
+    "alcohol/harm",
+    "ecstasy/popularity",
+    "mephedrone/popularity"
+   ],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-25-jh16/R3_ext3_export.json",
+   "file_sha256": "3c2ef8bf150c1d9c7d8fae19dde23add383c88e66e81a88585cbf46d39e470a4",
+   "harm_count_above_popularity_count": [
+    "amphetamine",
+    "butane",
+    "ecstasy",
+    "khat",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "amphetamine",
+    "butane",
+    "khat",
+    "methamphetamine"
+   ],
+   "kind": "export",
+   "label": "R3 gl-us 2026-10-25",
+   "max_hi": {
+    "Ni": 65,
+    "Ni_harm": 9010000,
+    "entity": "ecstasy"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 13,
+   "run_id": "f4c9d3d5-3217-4b80-a3ca-eca6de63c3cb",
+   "valid_pairs": 16,
+   "violations": 6,
+   "violations_without_small_counts": 4
+  },
+  {
+   "counts_below_threshold": [
+    "benzodiazepines/popularity",
+    "cocaine/harm",
+    "ketamine/harm"
+   ],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-25-jh16/R3_ext1_export.json",
+   "file_sha256": "d614a7bd50e6e342a931128925a4be29e07c976ae9b12884487809f5569d10ab",
+   "harm_count_above_popularity_count": [
+    "benzodiazepines",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "kind": "export",
+   "label": "R3 repeat-1 2026-10-25",
+   "max_hi": {
+    "Ni": 63,
+    "Ni_harm": 3430000,
+    "entity": "benzodiazepines"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 13,
+   "run_id": "d935c03b-0b1c-4971-b6f2-d9b0ba15333d",
+   "valid_pairs": 16,
+   "violations": 3,
+   "violations_without_small_counts": 2
+  },
+  {
+   "counts_below_threshold": [
+    "butane/popularity",
+    "ketamine/popularity"
+   ],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-25-jh16/R3_ext2_export.json",
+   "file_sha256": "0f53f3a5830de7e68d1326c8a8233de5d2594b026587950f9a7e63ee89e0819c",
+   "harm_count_above_popularity_count": [
+    "butane",
+    "ketamine",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "kind": "export",
+   "label": "R3 repeat-2 2026-10-25",
+   "max_hi": {
+    "Ni": 73,
+    "Ni_harm": 582000000,
+    "entity": "ketamine"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 14,
+   "run_id": "4e8ff376-52e1-4097-870c-5aac4dbb2cf5",
+   "valid_pairs": 16,
+   "violations": 4,
+   "violations_without_small_counts": 2
+  },
+  {
+   "counts_below_threshold": [
+    "benzodiazepines/harm",
+    "butane/harm",
+    "butane/popularity",
+    "lysergic acid diethylamide/harm"
+   ],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-25-jh16/R3_faithful_export.json",
+   "file_sha256": "d07e0eaf57cad7123f8871be8fc9f814f8230532cf34820b86f90121f6b8a144",
+   "harm_count_above_popularity_count": [
+    "butane",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "kind": "export",
+   "label": "R3-faithful 2026-10-25",
+   "max_hi": {
+    "Ni": 664000,
+    "Ni_harm": 4620000,
+    "entity": "mephedrone"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 13,
+   "run_id": "2e701755-e83a-42dd-a39d-b3d247d9eed2",
+   "valid_pairs": 16,
+   "violations": 3,
+   "violations_without_small_counts": 2
+  },
+  {
+   "counts_below_threshold": [
+    "ecstasy/popularity",
+    "khat/harm",
+    "mephedrone/popularity"
+   ],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-25-jh16/VM_smoke_faithful_export.json",
+   "file_sha256": "fe2ff49ec75e1aad841dabb40e2c539594a304a5affe8a7072e46d5e6d0d000a",
+   "harm_count_above_popularity_count": [
+    "ecstasy",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "methamphetamine"
+   ],
+   "kind": "export",
+   "label": "VM 2026-10-25",
+   "max_hi": {
+    "Ni": 65,
+    "Ni_harm": 4680000,
+    "entity": "ecstasy"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 13,
+   "run_id": "b14ccbaa-6ebb-49e7-a1bc-297ffbbf1269",
+   "valid_pairs": 16,
+   "violations": 3,
+   "violations_without_small_counts": 1
+  },
+  {
+   "counts_below_threshold": [],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-28-request-hoffmann/replication.json",
+   "file_sha256": "a7f34a44006059d3d29e477fb03f551eee1aee7561c3990e608cc86a2dcfec97",
+   "harm_count_above_popularity_count": [
+    "buprenorphine",
+    "cocaine",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "buprenorphine",
+    "cocaine",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "kind": "stored_evaluation",
+   "label": "kopia 2026-10-26",
+   "max_hi": {
+    "Ni": 670000,
+    "Ni_harm": 4560000,
+    "entity": "mephedrone"
+   },
+   "missing_counts": [],
+   "pairs_without_small_counts": 16,
+   "run_id": "c17d1147-c4c9-44f5-8c78-e966593ea97a",
+   "valid_pairs": 16,
+   "violations": 4,
+   "violations_without_small_counts": 4
+  },
+  {
+   "counts_below_threshold": [
+    "amphetamine/popularity",
+    "benzodiazepines/harm",
+    "butane/harm",
+    "cannabis/harm",
+    "cannabis/popularity",
+    "ecstasy/popularity",
+    "gamma-hydroxybutyric acid/popularity",
+    "heroin/popularity",
+    "ketamine/harm",
+    "ketamine/popularity",
+    "lysergic acid diethylamide/harm",
+    "lysergic acid diethylamide/popularity",
+    "methadone/harm"
+   ],
+   "entities": 16,
+   "file": "docs/history/evidence/2026-10-28-request-hoffmann/export_ea2b7078.json",
+   "file_sha256": "f07ae351b356921c00bc989002cf9eba6c73c8169ffea0980f682ce577071632",
+   "harm_count_above_popularity_count": [
+    "amphetamine",
+    "ecstasy",
+    "gamma-hydroxybutyric acid",
+    "heroin",
+    "lysergic acid diethylamide",
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "harm_count_above_popularity_count_without_small_counts": [
+    "mephedrone",
+    "methamphetamine"
+   ],
+   "kind": "export",
+   "label": "kopia 2026-10-28",
+   "max_hi": {
+    "Ni": 73,
+    "Ni_harm": 16000000,
+    "entity": "heroin"
+   },
+   "missing_counts": [
+    "khat/harm"
+   ],
+   "pairs_without_small_counts": 5,
+   "run_id": "ea2b7078-a708-4205-ab29-b784486a26c1",
+   "valid_pairs": 15,
+   "violations": 7,
+   "violations_without_small_counts": 2
+  }
+ ],
+ "small_count_threshold": 1000,
+ "what": "Set-logic consistency of stored JH16 counts (exploratory, outside the pre-registered protocol; decides nothing)."
+}
