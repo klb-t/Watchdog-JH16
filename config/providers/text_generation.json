@@ -25,7 +25,8 @@
       "attribution_headers": {
         "HTTP-Referer": "https://github.com/klb-t/watchdog-jh16",
         "X-Title": "WatchDog"
-      }
+      },
+      "billing": "metered"
     },
     {
       "provider_key": "openai_compatible_manual",
@@ -39,7 +40,8 @@
         "max_tokens": 1200,
         "top_p": 1
       },
-      "_note": "For a local llama.cpp/vLLM/Ollama server or any vendor that speaks the OpenAI chat schema. allowed_models empty means the configured model is accepted as given, because the operator is naming their own endpoint."
+      "_note": "For a local llama.cpp/vLLM/Ollama server or any vendor that speaks the OpenAI chat schema. allowed_models empty means the configured model is accepted as given, because the operator is naming their own endpoint. billing is 'metered' because the endpoint may be a paid vendor; an operator running their own server sets it to 'none'.",
+      "billing": "metered"
     }
   ]
 }

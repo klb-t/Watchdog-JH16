@@ -183,6 +183,26 @@ test('Generating a narrative with an unconfigured provider is a 409, not a 500',
     'a provider failure must not quietly return template prose');
 });
 
+test('Generating a narrative needs explicit consent and a provider, and never bills without a budget', async () => {
+  const post = (body: unknown) => fetch(`${baseUrl}/api/runs/any-run-id/narrative/generate`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Origin: baseUrl }, body: JSON.stringify(body) });
+  const { run_id: runId } = await (await fetch(`${baseUrl}/api/runs`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: 'PIPELINE', config: { source_id: 'offline_fixture', source_params: { fixture_name: 'test_api' }, method_id: 'jh16_faithful',
+      language: 'en', query_expansion_mode: 'STRICT_CANONICAL', method_params: { reference_scores: { alcohol: 72 } } } }) })).json();
+  const real = (body: unknown) => fetch(`${baseUrl}/api/runs/${runId}/narrative/generate`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json', Origin: baseUrl }, body: JSON.stringify(body) });
+  assert.equal((await post({ consent: true, provider: 'openrouter' })).status, 404, 'an unknown run is 404 first');
+  assert.ok(runId, 'a fixture run exists, so the checks below reach the route rather than the 404');
+  for (const body of [{}, { provider: 'openrouter' }, { consent: true }]) {
+    const res = await real(body);
+    assert.equal(res.status, 400, JSON.stringify(body));
+    assert.equal((await res.json()).error.code, 'consent_and_provider_required', 'no default provider: omission never reaches a paid service');
+  }
+  const metered = await real({ consent: true, provider: 'openrouter' });
+  assert.equal(metered.status, 409);
+  assert.equal((await metered.json()).error.code, 'budget_required', 'a metered provider is refused on the route without a budget');
+});
+
 test('A run against the live source fails closed when no credential is configured', async () => {
   const submit = await fetch(`${baseUrl}/api/runs`, {
     method: 'POST',

@@ -23,6 +23,10 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
 
 ## Review of old PRs #10–#12 — 2026-10-29
 
+- [x] **E2.1b — A paid narrative call only with consent and a budget (2026-10-30).**
+  - **Why.** Audit finding B1 (`docs/AUDIT_PHILOSOPHY_2026-10-30.md`): `POST /runs/:id/narrative/generate` defaulted to OpenRouter on the installation's key, with no consent, budget or same-origin guard.
+  - **Change.** The route needs `{consent: true, provider}` (no default) and `sameOriginMutation`; providers in `config/providers/text_generation.json` must state `billing` (`metered`/`none`); a metered provider is refused here with `budget_required`, pointing to `/narrative/automatic`, which reserves cost within the person's daily budget.
+  - **Tests.** `tests/integration/api.test.ts` (missing consent/provider → 400, metered → 409); next steps in `docs/HANDOFF_2026-10-30_TO_GPT.md`.
 - [x] **E4.8f — Dutch as a third interface language, marked as a machine translation (2026-10-30).**
   - **Registry.** `config/languages.json` lists the languages with their locale and `review` (`human` or `machine`). Every UI bundle, `config/access/ui.json`, `config/access/messages.json`, `config/goal-navigation.json` (v3) and `config/workspace-preferences.json` (v2) carry pl, en and nl with the same keys and placeholders; a missing language fails `tsc` and the bundle test.
   - **Machine translation.** All Dutch wording (2 386 interface keys, the emails, goal cards and menu) is a machine translation nobody has read. While Dutch is shown, every screen says so (`machine_translation_notice`). Privacy and terms are not machine-translated: a Dutch reader sees the English text with a note.
@@ -793,6 +797,8 @@ just because the schema for all three already exists.
   `docs/ASTRA_PROGRESS.md`. This does not mark the general paper compiler complete.
 
 ## Blocked — current evidence only
+
+- **Production check for `numeric_value ?? 0` (2026-10-30).** Copies of the owner's data have no affected rows; the live DB in `/var/lib/watchdog` was not read (agent permission refused `sudo -u ubuntu`). Owner action, read-only: the query in `docs/HANDOFF_2026-10-30_TO_GPT.md`, step 1.
 
 - **Owner's live test on the VM (2026-10-25):** the tested image is deployed in local-owner mode behind the coordinator's Caddy; accounts/SMTP/OAuth and a full restore drill on that VM remain unverified. Instructions: `../replication/JH16_2026-10-25/OWNER_TEST.md`.
 - **Actual owner VM deployment and restore activation:** no validated VM session, SMTP/OAuth installation configuration or real HTTPS acceptance is recorded. Code integration and local tests can proceed. No live resources were changed by this audit.
