@@ -85,7 +85,7 @@ test('unified browser search opens exact owned paper/dataset versions and exclud
 });
 
 test('unified browser search keeps filters, source-memory target links and mobile results usable', async () => {
-  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, locale: 'pl-PL' });
   try {
     await page.goto(`${base}/search?kind=all`); await page.getByRole('link', { name: paperTitle, exact: true }).waitFor();
     await page.getByLabel('Rodzaj', { exact: true }).selectOption('target');

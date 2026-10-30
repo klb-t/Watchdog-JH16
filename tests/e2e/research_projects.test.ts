@@ -8,6 +8,7 @@ import * as os from 'node:os';
 import { readZip } from '../../backend/watchdog_api/utils/zip';
 import { defaultFigure } from '../../shared/workbench';
 import { testDataset } from '../helpers/workbench';
+import { chooseInterfaceLanguage } from '../helpers/browser';
 
 const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'watchdog-project-ui-'));
 let server: ChildProcess, browser: Browser, page: Page, baseUrl: string;
@@ -29,7 +30,7 @@ before(async () => {
   const deadline = Date.now() + 60_000;
   while (Date.now() < deadline) { try { if ((await fetch(`${baseUrl}/api/auth/me`)).ok) break; } catch { /* startup */ } await new Promise(resolve => setTimeout(resolve, 200)); }
   assert.equal((await fetch(`${baseUrl}/api/auth/me`)).status, 200);
-  browser = await chromium.launch({ executablePath: chromiumPath() }); page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  browser = await chromium.launch({ executablePath: chromiumPath() }); page = await browser.newPage({ viewport: { width: 1280, height: 900 }, locale: 'pl-PL' });
 });
 after(async () => {
   await browser?.close(); if (server?.pid) { try { process.kill(-server.pid, 'SIGKILL'); } catch { /* closed */ } }
@@ -82,8 +83,10 @@ test('research project UI creates, reloads, revises and exports exact frozen pap
   assert.ok(width.scroll <= width.client + 1, JSON.stringify(width)); assert.deepEqual(errors, []);
 });
 
-test('project source deep links restore exact saved figures and method selections', async () => {
+test('project source deep links restore exact saved figures and method selections', async t => {
   await page.setViewportSize({ width: 1280, height: 900 });
+  // The workbench assertions below are the English interface; this suite's browser is Polish (pl-PL).
+  await chooseInterfaceLanguage(page, 'en'); t.after(() => chooseInterfaceLanguage(page, 'pl'));
   const { record: imported } = await call('/api/workbench/datasets', testDataset());
   const { record } = await call(`/api/workbench/datasets/${imported.id}/approve`, { expectedHash: imported.contentHash, shareAggregate: false });
   const profile = await call('/api/workbench/profile'), figure = defaultFigure(record, profile); figure.name = 'Exact project figure'; figure.channels.x = 'interest'; figure.channels.y = 'mentions';

@@ -12,6 +12,7 @@ import { LocalFileSystemStore } from '../../backend/watchdog_api/storage/object_
 import { sourceSnapshot } from '../fixtures/source_history';
 import { loadAutomationProfile } from '../../backend/watchdog_api/config/automation';
 import { withCollectionPurpose } from '../../shared/collection';
+import { chooseInterfaceLanguage } from '../helpers/browser';
 
 /**
  * E1.21-E1.23 — browser-driven end-to-end tests against fixtures.
@@ -77,7 +78,7 @@ before(async () => {
   // PLAYWRIGHT_BROWSERS_PATH points at a pre-installed Chromium whose exact
   // build directory is versioned, so it is resolved rather than hard-coded.
   browser = await chromium.launch({ executablePath: resolveChromium() });
-  page = await browser.newPage();
+  page = await browser.newPage({ locale: 'pl-PL' }); // Polish labels: pages follow the browser language until one is chosen
 });
 
 after(async () => {
@@ -354,7 +355,7 @@ test('second replication target (cr2014): general pages, measurement gated by ke
   await page.click('[data-testid="tab-measure"]');
   await page.locator('[data-testid="measurement"]').waitFor();
   assert.match(await page.locator('[data-testid="measurement-cost"]').innerText(), /1 zapytanie SerpApi/);
-  assert.match(await page.locator('[data-testid="measurement-blocked"]').innerText(), /personal serpapi key/);
+  assert.match(await page.locator('[data-testid="measurement-blocked"]').innerText(), /osobisty klucz serpapi/);
   await page.check('[data-testid="approve-preset"]');
   assert.strictEqual(await page.locator('[data-testid="launch-measurement"]').isDisabled(), true, 'no key: nothing can be sent');
   await page.click('[data-testid="tab-registry"]');
@@ -394,7 +395,9 @@ test('E5.7b-2: two prioritised families with serial gating are frozen from the f
 // E1.22 — Method review page.
 // -------------------------------------------------------------------------
 
-test('E1.22: a proposal renders red step by step and cannot execute until approved', async () => {
+test('E1.22: a proposal renders red step by step and cannot execute until approved', async t => {
+  // This flow asserts the English interface; the suite's browser is Polish (pl-PL).
+  await chooseInterfaceLanguage(page, 'en'); t.after(() => chooseInterfaceLanguage(page, 'pl'));
   await page.goto(`${baseUrl}/method`);
   await page.waitForSelector('[data-testid="method-review-page"]');
 
@@ -445,7 +448,9 @@ test('E1.22: approval refuses a client-supplied actor and a missing review hash'
 // E1.23 — Results page.
 // -------------------------------------------------------------------------
 
-test('E1.23: results, charts, approval state and export are reachable and correct', async () => {
+test('E1.23: results, charts, approval state and export are reachable and correct', async t => {
+  // This flow asserts the English interface; the suite's browser is Polish (pl-PL).
+  await chooseInterfaceLanguage(page, 'en'); t.after(() => chooseInterfaceLanguage(page, 'pl'));
   // Start a run whose fixture set contains a deliberate missing value, so the
   // page's handling of missingness is exercised rather than assumed.
   const submit = await fetch(`${baseUrl}/api/runs`, {
@@ -626,7 +631,7 @@ test('research workshop: goal navigation, source intake, keyless parser form, ex
   } finally {page.off('pageerror',onError);await page.setViewportSize({width:1280,height:900});}
 });
 
-test('source-copy browser: explicit column form to reviewed statistics and portable replay package', async () => {
+test('source-copy browser: explicit column form to reviewed statistics and portable replay package', async t => {
   const errors: string[] = [], onError = (e: Error) => errors.push(e.message); page.on('pageerror', onError);
   const publication = fs.mkdtempSync('/tmp/watchdog-copy-browser-');
   try {
@@ -666,6 +671,8 @@ test('source-copy browser: explicit column form to reviewed statistics and porta
     const templateId=await page.getByLabel('Szablon dla tego parsera',{exact:true}).inputValue();assert.ok(templateId);
     await page.getByRole('link', { name: 'Otwórz ten zbiór w warsztacie statystycznym', exact: true }).click();
     const datasetId = new URL(page.url()).searchParams.get('dataset'); assert.ok(datasetId);
+    // The workbench steps below assert the English interface.
+    await chooseInterfaceLanguage(page, 'en'); t.after(() => chooseInterfaceLanguage(page, 'pl'));
     await page.getByLabel(/I checked the source, column mapping/).waitFor();
     assert.equal(await page.getByLabel('Dataset', { exact: true }).inputValue(), datasetId);
     assert.ok((await page.locator('[data-testid="dataset-extraction-origin"]').textContent())?.includes(trial.hash));
@@ -698,6 +705,7 @@ test('source-copy browser: explicit column form to reviewed statistics and porta
     assert.equal(await page.getByLabel('Dataset', { exact: true }).inputValue(), datasetId);
     const freshRaw='{"rows":[{"x":10,"y":20}]}';
     const {trial:fresh}=await call(`/extractors/${extractor.id}/run`,{raw:freshRaw});
+    await chooseInterfaceLanguage(page, 'pl'); // back to the Polish research page
     await page.goto(baseUrl+'/research');await page.getByRole('button',{name:'Ekstraktory danych',exact:true}).click();
     await page.getByLabel('Wybierz parser',{exact:true}).selectOption(extractor.id);
     await page.getByText('Historia testów i wykonań (3)',{exact:true}).click();

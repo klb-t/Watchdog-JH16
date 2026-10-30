@@ -30,3 +30,17 @@ export function resolveChromium(): string | undefined {
   }
   return undefined;
 }
+
+/**
+ * Sets the interface language the reader would choose in the menu, then reloads,
+ * so a test asserts the words of one language. The page must already be on the app's origin.
+ * Without a choice, pages follow the browser locale (src/lib/access_i18n.ts, workspace_preferences.tsx).
+ */
+export async function chooseInterfaceLanguage(page: import('playwright').Page, language: 'pl' | 'en') {
+  await page.evaluate(l => {
+    localStorage.setItem('watchdog-access-language', l);
+    const prefs = JSON.parse(localStorage.getItem('watchdog-workspace-preferences') ?? 'null');
+    if (prefs) localStorage.setItem('watchdog-workspace-preferences', JSON.stringify({ ...prefs, language: l }));
+  }, language);
+  await page.reload();
+}
