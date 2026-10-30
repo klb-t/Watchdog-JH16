@@ -5,6 +5,8 @@ import { Run, Manifest, FetchEvent } from '../types';
 import { StatusBadge } from './Dashboard';
 import { FileJson, Database, RefreshCw, AlertTriangle, FileText, Download } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { useUiText } from '../lib/ui_text';
+import text from '../../config/ui/run-details.json';
 
 export function RunDetails() {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +14,7 @@ export function RunDetails() {
   const [results, setResults] = useState<any>(null);
   const [manifest, setManifest] = useState<Manifest | null>(null);
   const [events, setEvents] = useState<FetchEvent[]>([]);
+  const { t, c, date } = useUiText(text);
   const [activeTab, setActiveTab] = useState<'overview'|'data'|'artifacts'>('overview');
 
   const load = () => {
@@ -32,12 +35,12 @@ export function RunDetails() {
     return () => clearInterval(interval);
   }, [id, run?.status]);
 
-  if (!run) return <div className="p-8">Loading...</div>;
+  if (!run) return <div className="p-8">{c('loading')}</div>;
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       <div className="flex items-center space-x-2 text-sm text-slate-500 mb-6">
-        <Link to="/runs" className="hover:text-slate-900">Runs</Link>
+        <Link to="/runs" className="hover:text-slate-900">{t('breadcrumb_runs')}</Link>
         <span>/</span>
         <span className="font-mono text-slate-900">{run.id}</span>
       </div>
@@ -49,21 +52,21 @@ export function RunDetails() {
             <div className="flex items-center space-x-4 mt-2">
               <span className="text-sm font-medium text-slate-600">{run.run_type}</span>
               <span className="text-slate-300">•</span>
-              <span className="text-sm text-slate-500">{new Date(run.created_at).toLocaleString()}</span>
+              <span className="text-sm text-slate-500">{date(run.created_at)}</span>
             </div>
           </div>
           <div className="flex items-center space-x-4">
             <StatusBadge status={run.status} />
-            <button onClick={load} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+            <button onClick={load} aria-label={t('refresh')} title={t('refresh')} className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
               <RefreshCw className={cn("w-5 h-5", !['SUCCESS','FAILED'].includes(run.status) && "animate-spin")} />
             </button>
           </div>
         </div>
 
         <div className="flex border-b border-slate-200 bg-slate-50/50">
-          <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={FileText} label="Overview" />
-          <TabButton active={activeTab === 'data'} onClick={() => setActiveTab('data')} icon={Database} label="Data & Results" />
-          <TabButton active={activeTab === 'artifacts'} onClick={() => setActiveTab('artifacts')} icon={FileJson} label="Provenance" />
+          <TabButton active={activeTab === 'overview'} onClick={() => setActiveTab('overview')} icon={FileText} label={t('tab_overview')} />
+          <TabButton active={activeTab === 'data'} onClick={() => setActiveTab('data')} icon={Database} label={t('tab_data')} />
+          <TabButton active={activeTab === 'artifacts'} onClick={() => setActiveTab('artifacts')} icon={FileJson} label={t('tab_provenance')} />
         </div>
 
         <div className="p-6">
@@ -73,14 +76,14 @@ export function RunDetails() {
                 <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3 text-red-800">
                   <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-sm">Execution Failed: {run.error_code}</h4>
+                    <h4 className="font-medium text-sm">{t('execution_failed', { code: run.error_code })}</h4>
                     {run.error_details && <p className="text-sm mt-1 opacity-90 font-mono">{run.error_details}</p>}
                   </div>
                 </div>
               )}
 
               <div>
-                <h3 className="text-sm font-semibold text-slate-900 mb-3">Effective Configuration</h3>
+                <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('effective_config')}</h3>
                 <div className="bg-slate-900 text-slate-50 p-4 rounded-lg overflow-auto font-mono text-sm">
                   <pre>{JSON.stringify(run.effective_config, null, 2)}</pre>
                 </div>
@@ -92,15 +95,15 @@ export function RunDetails() {
             <div className="space-y-8">
               {results?.analysis_results && results.analysis_results.length > 0 && (
                  <div>
-                   <h3 className="text-sm font-semibold text-slate-900 mb-4">Analysis Results</h3>
+                   <h3 className="text-sm font-semibold text-slate-900 mb-4">{t('analysis_results')}</h3>
                    <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
                      <table className="min-w-full divide-y divide-slate-200 text-sm">
                        <thead className="bg-slate-50">
                          <tr>
-                           <th className="px-4 py-3 text-left font-medium text-slate-500">Analyzer</th>
-                           <th className="px-4 py-3 text-left font-medium text-slate-500">Entity</th>
-                           <th className="px-4 py-3 text-left font-medium text-slate-500">Metric</th>
-                           <th className="px-4 py-3 text-left font-medium text-slate-500">Value</th>
+                           <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_analyzer')}</th>
+                           <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_entity')}</th>
+                           <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_metric')}</th>
+                           <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_value')}</th>
                          </tr>
                        </thead>
                        <tbody className="divide-y divide-slate-200">
@@ -120,15 +123,15 @@ export function RunDetails() {
 
               {results?.observations && results.observations.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900 mb-4">Observations (First 10)</h3>
+                  <h3 className="text-sm font-semibold text-slate-900 mb-4">{t('observations_first', { count: 10 })}</h3>
                   <div className="bg-white border border-slate-200 rounded-lg overflow-hidden">
                     <table className="min-w-full divide-y divide-slate-200 text-sm">
                       <thead className="bg-slate-50">
                         <tr>
-                          <th className="px-4 py-3 text-left font-medium text-slate-500">Source</th>
-                          <th className="px-4 py-3 text-left font-medium text-slate-500">Entity</th>
-                          <th className="px-4 py-3 text-left font-medium text-slate-500">Dimension</th>
-                          <th className="px-4 py-3 text-left font-medium text-slate-500">Query / Context</th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_source')}</th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_entity')}</th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_dimension')}</th>
+                          <th className="px-4 py-3 text-left font-medium text-slate-500">{t('col_query')}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-200">
@@ -147,7 +150,7 @@ export function RunDetails() {
               )}
 
               {!results?.analysis_results?.length && !results?.observations?.length && (
-                <div className="text-center py-12 text-slate-500">No data generated yet.</div>
+                <div className="text-center py-12 text-slate-500">{t('no_data')}</div>
               )}
             </div>
           )}
@@ -156,19 +159,19 @@ export function RunDetails() {
             <div className="space-y-8">
               {manifest && (
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900 mb-3">WORM Manifest</h3>
+                  <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('worm_manifest')}</h3>
                   <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 font-mono text-sm space-y-2">
-                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">Status</span> Validated (Immutable)</div>
-                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">SHA256</span> {manifest.sha256}</div>
-                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">URI</span> {manifest.object_uri}</div>
-                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">Finalized</span> {new Date(manifest.finalized_at).toLocaleString()}</div>
+                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">{t('manifest_status')}</span> {t('manifest_validated')}</div>
+                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">{t('manifest_sha256')}</span> {manifest.sha256}</div>
+                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">{t('manifest_uri')}</span> {manifest.object_uri}</div>
+                    <div className="flex text-emerald-800"><span className="w-24 text-emerald-600/70">{t('manifest_finalized')}</span> {date(manifest.finalized_at)}</div>
                   </div>
                 </div>
               )}
 
               {events.length > 0 && (
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-900 mb-3">Fetch Events</h3>
+                  <h3 className="text-sm font-semibold text-slate-900 mb-3">{t('fetch_events')}</h3>
                   <div className="space-y-3">
                     {events.map(ev => (
                       <div key={ev.id} className="bg-white border border-slate-200 rounded-lg p-4 flex justify-between items-center">
@@ -181,7 +184,7 @@ export function RunDetails() {
                           {ev.raw_blob_id && (
                             <a href={`/api/artifacts/${ev.raw_blob_id}`} target="_blank" rel="noreferrer" className="flex items-center space-x-1 text-sm text-indigo-600 hover:text-indigo-800">
                               <Download className="w-4 h-4" />
-                              <span>Raw Blob</span>
+                              <span>{t('raw_blob')}</span>
                             </a>
                           )}
                         </div>
@@ -192,7 +195,7 @@ export function RunDetails() {
               )}
 
               {!manifest && events.length === 0 && (
-                 <div className="text-center py-12 text-slate-500">No provenance artifacts generated.</div>
+                 <div className="text-center py-12 text-slate-500">{t('no_provenance')}</div>
               )}
             </div>
           )}

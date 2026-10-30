@@ -1,0 +1,52 @@
+{
+  "version": "ui-results-1",
+  "_note": "Run results page (/runs/:id/results): header, export links, charts, results table and the narrative controls. Run id, chart titles, units, legend flags, the chart's missing label (server-provided), entity ids, metric keys, values, the narrative text and the model-readiness reason are stored or server-provided data and are shown as stored. approval_<state> labels the narrative approval codes PROPOSED/APPROVED; data-approval-state keeps the code. Placeholders in {braces}. llm_reason_<code> labels the readiness codes of src/lib/llm_readiness.ts (Polish equals its message); the hook's own text is shown for any other code.",
+  "languages": {
+    "pl": {
+      "title": "Wyniki",
+      "export_csv": "CSV",
+      "export_json": "JSON",
+      "manifest": "Manifest",
+      "manifest_none": "Manifest (brak)",
+      "log_scale": "skala logarytmiczna",
+      "no_data": "brak danych",
+      "col_entity": "Jednostka",
+      "col_metric": "Miara",
+      "col_value": "Wartość",
+      "missing_not_zero": "brak — nie zero",
+      "machine_generated": "wygenerowane maszynowo",
+      "approval_PROPOSED": "Propozycja",
+      "approval_APPROVED": "Zatwierdzone",
+      "llm_unavailable": "Redakcja przez model niedostępna: {reason}",
+      "generating": "Generowanie…",
+      "generate": "Zredaguj przez mój LLM w zapisanym budżecie",
+      "llm_reason_checking": "Sprawdzanie ustawień modelu…",
+      "llm_reason_disabled": "Model językowy jest wyłączony (Ustawienia → krok 1).",
+      "llm_reason_key_missing": "Brak zapisanego klucza dostawcy {provider} (Ustawienia → krok 1).",
+      "llm_reason_settings_unreadable": "Nie udało się odczytać ustawień modelu."
+    },
+    "en": {
+      "title": "Results",
+      "export_csv": "CSV",
+      "export_json": "JSON",
+      "manifest": "Manifest",
+      "manifest_none": "Manifest (none)",
+      "log_scale": "logarithmic scale",
+      "no_data": "no data",
+      "col_entity": "Entity",
+      "col_metric": "Metric",
+      "col_value": "Value",
+      "missing_not_zero": "missing — not zero",
+      "machine_generated": "machine-generated",
+      "approval_PROPOSED": "Proposed",
+      "approval_APPROVED": "Approved",
+      "llm_unavailable": "Model drafting unavailable: {reason}",
+      "generating": "Generating…",
+      "generate": "Draft with my LLM within the saved budget",
+      "llm_reason_checking": "Checking the model settings…",
+      "llm_reason_disabled": "The language model is turned off (Settings → step 1).",
+      "llm_reason_key_missing": "No stored key for provider {provider} (Settings → step 1).",
+      "llm_reason_settings_unreadable": "The model settings could not be read."
+    }
+  }
+}
