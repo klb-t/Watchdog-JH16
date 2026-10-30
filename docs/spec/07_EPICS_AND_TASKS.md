@@ -59,6 +59,11 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
   - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
   - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
 
+- [x] **E4.8c — Storing an API key is above viewer (coordinator's decision, 2026-10-30).**
+  - **Rule.** A new capability `credential.store` guards `POST /api/settings/credentials`. Researcher, admin and developer have it; viewer does not, unless `config/access/policy.json` sets `credentials.viewerMayStore`. Authorization profile `mvp-capabilities-6`.
+  - **Unchanged.** Seeing which keys exist and removing one's own key stay at `provider.view`.
+  - **UI.** The setup wizard shows a viewer a note instead of the key field.
+  - **Tests.** Server: `tests/integration/settings.test.ts` (viewer 403, researcher 200, removal allowed). Policy default: `tests/unit/authorization_credentials.test.ts`.
 - [x] **E4.8b — Invitee screens audit (2026-10-29).**
   - **Scope.** Every screen a guest or invited researcher meets, walked on a copy of the owner's data in the production image: email, open and bearer invitations, `/apply`, the pending banner, `/share`, Replications JH16 and CR2014 as a shared viewer, run detail and raw artifacts, `/privacy`, `/terms`, login. Checked in English and Polish, at 390 px and 1280 px.
   - **Fixed.**
