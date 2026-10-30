@@ -59,6 +59,12 @@ E4.7/E7.7/E3.17 code integration is complete; actual VM acceptance remains a sep
   - **Owner script.** `scripts/owner_enable_accounts.sh` (backup, app.env, claim, Caddy, checks, rollback).
   - **Not verified.** Google sign-in on the production origin; the Caddy regeneration, whose preview was refused by the agent's permission policy.
 
+- [x] **E4.8d — Every page in the reader's language (2026-10-30).**
+  - **What.** Every page and component takes its interface words from a `config/ui/*.json` bundle in Polish and English and follows the one interface language. Server refusals carry a code and are shown in the reader's language (`errorText`). Stored data (dossier prose, claim keys, verdict codes, configs, paper quotes, the manuscript body) is shown as stored.
+  - **Guard.** `tests/unit/ui_text.test.ts`: every bundle has the same keys and placeholders in both languages, and a scan fails on any visible literal left in `src/pages`, `src/components` or `src/App.tsx`. Keys built from a stored code keep its case after the prefix (`status_COMPLETED`).
+  - **New Polish.** Dashboard, run details, results and setup were English-only; their Polish wording is new and has not been read by the owner.
+  - **Not translated.** Goal cards in `config/goal-navigation.json` are Polish-only, so an English reader still sees Polish goal labels.
+  - **Tests.** `npm run test:all`, 710/710. Browser suites pin the language they assert (`chooseInterfaceLanguage` in `tests/helpers/browser.ts`). Checks used test fixtures only; no page was walked on the owner's data.
 - [x] **E4.8c — Storing an API key is above viewer (coordinator's decision, 2026-10-30).**
   - **Rule.** A new capability `credential.store` guards `POST /api/settings/credentials`. Researcher, admin and developer have it; viewer does not, unless `config/access/policy.json` sets `credentials.viewerMayStore`. Authorization profile `mvp-capabilities-6`.
   - **Unchanged.** Seeing which keys exist and removing one's own key stay at `provider.view`.
