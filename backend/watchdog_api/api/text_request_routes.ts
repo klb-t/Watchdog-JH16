@@ -6,13 +6,13 @@ import { AutomationError } from '../db/repositories/automation';
 import type { AuditRepository } from '../db/repositories/audit';
 import type { RunRepository } from '../db/repositories/runs';
 import type { TextRequestRepository } from '../db/repositories/text_requests';
-import type { TextRequests } from '../services/text_requests';
+import { TextRequestRefusal, type TextRequests } from '../services/text_requests';
 
 /** Requests from a pasted text (services/text_requests.ts). */
 export function buildTextRequestRouter(service: TextRequests, repo: TextRequestRepository, runs: RunRepository, audit: AuditRepository) {
   const router = Router();
   const handle = (fn: (req: any, res: any) => Promise<any> | any) => async (req: any, res: any, next: any) => {
-    try { await fn(req, res); } catch (e) { if (e instanceof AutomationError) return res.status((e as any).status ?? 409).json({ error: 'request_refused', message: e.message }); next(e); } };
+    try { await fn(req, res); } catch (e) { if (e instanceof AutomationError) return res.status((e as any).status ?? 409).json({ error: 'request_refused', message: e.message, ...(e instanceof TextRequestRefusal ? { params: { reason: e.reason } } : {}) }); next(e); } };
   const withRuns = (r: any) => ({ ...r, runs: r.events.flatMap((e: any) => (e.body.runIds ?? []).map((id: string) => { const run = runs.getRun(id); return { action: e.body.action, run_id: id, status: run?.status ?? 'unknown' }; })) });
   const Text = z.object({ text: z.string().min(1).max(20000) }).strict();
   router.get('/', requireCapability('run.view'), handle((req, res) => res.json({ requests: repo.list(req.principal!.id) })));

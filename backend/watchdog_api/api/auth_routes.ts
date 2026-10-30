@@ -112,6 +112,8 @@ export function buildAuthRouter(deps: AuthDeps): Router {
     res.json({
       mode: deps.identity.mode,
       reason: deps.identity.config.reason,
+      reason_code: deps.identity.config.reasonCode ?? null,
+      reason_params: deps.identity.config.reasonParams ?? {},
       google_client_id: deps.identity.config.audience,
       // Counts only. The grant list is a list of real people and is never served.
       grant_count: Object.keys(deps.identity.config.grants).length,

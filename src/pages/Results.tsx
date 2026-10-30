@@ -6,6 +6,8 @@ import { automationApi } from '../lib/automation_client';
 import { Jh16EvaluationPanel } from '../components/Jh16EvaluationPanel';
 import { TrendsCalibrationPanel } from '../components/TrendsCalibrationPanel';
 import { useLlmReadiness } from '../lib/llm_readiness';
+import { useUiText } from '../lib/ui_text';
+import text from '../../config/ui/results.json';
 
 /**
  * E1.23 — Results page: charts, the results table, the manifest link, the
@@ -31,7 +33,8 @@ export function Results() {
   const [charts, setCharts] = useState<ChartSpec[]>([]);
   const [narrative, setNarrative] = useState<any>(null);
   const [manifest, setManifest] = useState<any>(null);
-  const access = useAccess(), [generationBusy, setGenerationBusy] = useState(false), [generationError, setGenerationError] = useState(''), llm = useLlmReadiness();
+  const access = useAccess(), [generationBusy, setGenerationBusy] = useState(false), [generationError, setGenerationError] = useState<unknown>(null), llm = useLlmReadiness();
+  const { t, tCode, errorText } = useUiText(text);
 
   useEffect(() => {
     if (!id) return;
@@ -65,7 +68,7 @@ export function Results() {
     <div className="p-4 sm:p-8 max-w-5xl mx-auto space-y-8 min-w-0" data-testid="results-page">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Results</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
           <p className="text-slate-500 mt-1 text-sm font-mono break-all">{id}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -74,21 +77,21 @@ export function Results() {
             href={`/api/runs/${id}/export?format=csv`}
             className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 text-sm hover:bg-slate-50"
           >
-            <Download className="w-4 h-4" /> CSV
+            <Download className="w-4 h-4" /> {t('export_csv')}
           </a>
           <a
             data-testid="export-json"
             href={`/api/runs/${id}/export?format=json`}
             className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 text-sm hover:bg-slate-50"
           >
-            <Download className="w-4 h-4" /> JSON
+            <Download className="w-4 h-4" /> {t('export_json')}
           </a>
           <a
             data-testid="manifest-link"
             href={`/api/runs/${id}/manifest`}
             className="flex items-center gap-2 px-3 py-2 rounded-lg border border-slate-300 text-sm hover:bg-slate-50"
           >
-            <FileText className="w-4 h-4" /> Manifest{manifest ? '' : ' (none)'}
+            <FileText className="w-4 h-4" /> {manifest ? t('manifest') : t('manifest_none')}
           </a>
         </div>
       </div>
@@ -101,7 +104,7 @@ export function Results() {
       {charts.filter(chart => chart.kind === 'bar' && chart.points.length > 0).map(chart => (
         <section key={chart.id} data-testid={`chart-${chart.id}`} className="bg-white rounded-xl border border-slate-200 p-4 sm:p-5 min-w-0">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-semibold text-slate-900">{chart.title}{logScale(chart) && <span className="ml-2 text-xs font-normal text-slate-600" data-testid={`log-scale-${chart.id}`}>skala logarytmiczna</span>}</h2>
+            <h2 className="font-semibold text-slate-900">{chart.title}{logScale(chart) && <span className="ml-2 text-xs font-normal text-slate-600" data-testid={`log-scale-${chart.id}`}>{t('log_scale')}</span>}</h2>
             <div className="flex flex-wrap gap-1 min-w-0">
               {chart.legendFlags.map(f => (
                 <span key={f} data-testid={`legend-flag-${f}`}
@@ -123,7 +126,7 @@ export function Results() {
                   // blank that a reader could take for zero.
                   <span
                     data-testid={`missing-${chart.id}-${p.entityId}`}
-                    title={p.missingReason ?? 'no data'}
+                    title={p.missingReason ?? t('no_data')}
                     className="flex-1 h-5 rounded border border-dashed border-slate-400 bg-[repeating-linear-gradient(45deg,#e2e8f0_0,#e2e8f0_4px,transparent_4px,transparent_8px)] flex items-center px-2"
                   >
                     <span className="text-xs text-slate-600 font-medium">{chart.missingRendering.label}</span>
@@ -148,9 +151,9 @@ export function Results() {
         <table className="w-full text-sm" data-testid="results-table">
           <thead className="bg-slate-50 text-slate-500">
             <tr>
-              <th className="px-4 py-3 text-left font-medium">Entity</th>
-              <th className="px-4 py-3 text-left font-medium">Metric</th>
-              <th className="px-4 py-3 text-left font-medium">Value</th>
+              <th className="px-4 py-3 text-left font-medium">{t('col_entity')}</th>
+              <th className="px-4 py-3 text-left font-medium">{t('col_metric')}</th>
+              <th className="px-4 py-3 text-left font-medium">{t('col_value')}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -161,7 +164,7 @@ export function Results() {
                 <td className="px-4 py-2.5 font-mono text-xs">{r.metricKey}</td>
                 <td className="px-4 py-2.5 font-mono">
                   {r.isMissing
-                    ? <span className="text-slate-500 italic">missing — not zero</span>
+                    ? <span className="text-slate-500 italic">{t('missing_not_zero')}</span>
                     : <>{r.valueNumeric}{r.unit ?? ''}</>}
                 </td>
               </tr>
@@ -187,21 +190,21 @@ export function Results() {
               ? <CheckCircle2 className="w-4 h-4 text-emerald-700" />
               : <AlertCircle className="w-4 h-4 text-red-700" />}
             <span className="text-sm font-semibold" data-testid="narrative-state">
-              {narrative.approvalState}
+              {tCode('approval_', narrative.approvalState)}
             </span>
             {/* Machine-written content is labelled wherever it appears. */}
             <span className="text-xs px-2 py-0.5 rounded bg-slate-200 text-slate-700">
-              machine-generated
+              {t('machine_generated')}
             </span>
           </div>
           <p className="text-sm text-slate-800">{narrative.content}</p>
-          {access.capabilities.includes('narrative.approve') && !llm.ready && <p className="mt-3 text-xs text-slate-600" data-testid="narrative-llm-unavailable">Redakcja przez model niedostępna: {llm.reason}</p>}
+          {access.capabilities.includes('narrative.approve') && !llm.ready && <p className="mt-3 text-xs text-slate-600" data-testid="narrative-llm-unavailable">{t('llm_unavailable', { reason: llm.code ? tCode('llm_reason_', llm.code, llm.params) : llm.reason })}</p>}
           {access.capabilities.includes('narrative.approve') && <button className="mt-3 text-sm underline disabled:opacity-50" disabled={generationBusy || !llm.ready}
-            onClick={async () => { setGenerationBusy(true); setGenerationError(''); try {
+            onClick={async () => { setGenerationBusy(true); setGenerationError(null); try {
               const result = await automationApi(`/api/runs/${id}/narrative/automatic`, { consent: true }); setNarrative(result.narrative);
-            } catch (e) { setGenerationError((e as Error).message); } finally { setGenerationBusy(false); } }}>
-            {generationBusy ? 'Generowanie…' : 'Zredaguj przez mój LLM w zapisanym budżecie'}</button>}
-          {generationError && <p role="alert" className="text-sm text-red-900 mt-2">{generationError}</p>}
+            } catch (e) { setGenerationError(e); } finally { setGenerationBusy(false); } }}>
+            {generationBusy ? t('generating') : t('generate')}</button>}
+          {generationError != null && <p role="alert" className="text-sm text-red-900 mt-2">{errorText(generationError)}</p>}
         </section>
       )}
     </div>

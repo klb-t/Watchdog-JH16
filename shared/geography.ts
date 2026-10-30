@@ -55,9 +55,15 @@ export function validateGeometryLayer(input: unknown): GeometryLayerDocument {
   }
   return layer;
 }
-export function geometryWarnings(layer: GeometryLayerDocument) {
+/** The collapsed rings as data, so an interface can word the warning in its reader's language. */
+export function collapsedRings(layer: GeometryLayerDocument) {
   return layer.features.flatMap(feature => regionPolygons(feature.geometry).flatMap((polygon, polygonIndex) => polygon.flatMap((ring, ringIndex) =>
-    collapsedRing(ring) ? [`${feature.id}: polygon ${polygonIndex}, ring ${ringIndex} collapsed; original coordinates retained, no drawable area.`] : [])));
+    collapsedRing(ring) ? [{ featureId: feature.id, polygonIndex, ringIndex }] : [])));
+}
+/** The exported (English) wording; figures and packages embed exactly this text. */
+export function geometryWarnings(layer: GeometryLayerDocument) {
+  return collapsedRings(layer).map(({ featureId, polygonIndex, ringIndex }) =>
+    `${featureId}: polygon ${polygonIndex}, ring ${ringIndex} collapsed; original coordinates retained, no drawable area.`);
 }
 /** Maps only explicitly selected GeoJSON identifier/name fields; retains the source text. */
 export function mapGeoJson(sourceText: string, idProperty: string | null, nameProperty: string | null): Pick<GeometryLayerDocument, 'features' | 'rawInput'> {

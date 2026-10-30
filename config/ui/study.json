@@ -1,0 +1,40 @@
+{
+  "version": "ui-study-1",
+  "_note": "JH16 study page (/study). Source ids, source descriptions and remediation texts come from the source registry and are shown as stored. Placeholders in {braces}.",
+  "languages": {
+    "pl": {
+      "title": "Badanie",
+      "intro": "JH16 (zablokowany preset: 16 substancji, 32 zapytania). Wybierz, skąd pochodzą liczby wyników.",
+      "source_note_fixture_jh2016": "Liczby z Tabel 1 i 3 publikacji (2014) — kontrola obliczeń, nie nowy pomiar.",
+      "source_note_serp_result_count": "Nowe liczby wyników Google przez klucz SerpApi tej instalacji. Osobisty klucz: Ustawienia → kreator.",
+      "source_status_implemented": "zaimplementowane",
+      "source_status_fixture": "utrwalone dane (fixture)",
+      "source_status_planned": "planowane",
+      "source_status_blocked": "zablokowane",
+      "source_status_blocked_by_license_auth": "zablokowane (licencja/uwierzytelnianie)",
+      "not_available": "niedostępne",
+      "not_jh16_source": "nie jest źródłem JH16",
+      "starting": "Uruchamianie…",
+      "start_serp": "Start JH16 (32 nowe zapytania SerpApi)",
+      "start": "Uruchom JH16",
+      "error_source_unavailable": "Źródło {source_id} jest niedostępne (status: {source_status}). {remediation}"
+    },
+    "en": {
+      "title": "Study",
+      "intro": "JH16 (locked preset: 16 substances, 32 queries). Choose where the result counts come from.",
+      "source_note_fixture_jh2016": "Counts from Tables 1 and 3 of the publication (2014) — a computation check, not a new measurement.",
+      "source_note_serp_result_count": "New Google result counts through this installation's SerpApi key. Personal key: Settings → wizard.",
+      "source_status_implemented": "implemented",
+      "source_status_fixture": "fixture",
+      "source_status_planned": "planned",
+      "source_status_blocked": "blocked",
+      "source_status_blocked_by_license_auth": "blocked-by-license/auth",
+      "not_available": "not available",
+      "not_jh16_source": "not a JH16 source",
+      "starting": "Starting…",
+      "start_serp": "Start JH16 (32 new SerpApi queries)",
+      "start": "Start JH16 run",
+      "error_source_unavailable": "Source {source_id} is not available (status: {source_status}). {remediation}"
+    }
+  }
+}

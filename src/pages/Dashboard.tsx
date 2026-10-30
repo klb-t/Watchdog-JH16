@@ -6,6 +6,8 @@ import { Activity, Database, CheckCircle2, XCircle, Clock, type LucideIcon } fro
 import { cn } from '../lib/utils';
 import { GoalNavigator } from '../components/GoalNavigator';
 import { useAccess } from '../lib/access';
+import { useCommonText, useUiText } from '../lib/ui_text';
+import text from '../../config/ui/dashboard.json';
 
 export function Dashboard() {
   const access = useAccess();
@@ -17,7 +19,9 @@ function DashboardContent() {
   const [runs, setRuns] = useState<Run[]>([]);
   const [sources, setSources] = useState<Source[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { t, date, errorText } = useUiText(text);
+  // A coded error is shown in the reader's language, an uncoded one as sent, anything else as the page's own sentence.
+  const [error, setError] = useState<{ e: unknown } | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -31,7 +35,7 @@ function DashboardContent() {
         setSources(s);
         setLoading(false);
       })
-      .catch(e => { if (active) { setError(e instanceof Error ? e.message : 'Nie udało się pobrać stanu.'); setLoading(false); } });
+      .catch(e => { if (active) { setError({ e }); setLoading(false); } });
     return () => { active = false; };
   }, [access.principalId, access.capabilities.join('|')]);
 
@@ -45,11 +49,11 @@ function DashboardContent() {
     <div className="p-4 sm:p-8 max-w-7xl mx-auto space-y-8">
       <GoalNavigator />
       {access.capabilities.includes('run.view') && <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Overview</h1>
-        <p className="text-slate-500 mt-1 text-sm">System status and recent activity</p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+        <p className="text-slate-500 mt-1 text-sm">{t('subtitle')}</p>
       </div>}
 
-      {access.capabilities.includes('run.view') && (error ? <p role="alert" className="p-4 border border-red-200 rounded-lg text-red-800">{error}</p> : loading ? (
+      {access.capabilities.includes('run.view') && (error ? <p role="alert" className="p-4 border border-red-200 rounded-lg text-red-800">{error.e instanceof Error ? errorText(error.e) : t('error_fetch_state')}</p> : loading ? (
         <div className="animate-pulse space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {[1,2,3,4].map(i => <div key={i} className="h-32 bg-white rounded-xl border border-slate-200"></div>)}
@@ -58,16 +62,16 @@ function DashboardContent() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <StatCard title="Źródła w rejestrze" value={sources.length} description={`Gotowe integracje: ${liveSources} · źródła testowe: ${fixtureSources}`} icon={Database} />
-            <StatCard title="Active Runs" value={activeRuns} icon={Activity} />
-            <StatCard title="Completed" value={completedRuns} icon={CheckCircle2} className="text-emerald-600" />
-            <StatCard title="Failed" value={failedRuns} icon={XCircle} className="text-red-600" />
+            <StatCard title={t('stat_sources')} value={sources.length} description={t('stat_sources_detail', { live: liveSources, fixture: fixtureSources })} icon={Database} />
+            <StatCard title={t('stat_active_runs')} value={activeRuns} icon={Activity} />
+            <StatCard title={t('stat_completed')} value={completedRuns} icon={CheckCircle2} className="text-emerald-600" />
+            <StatCard title={t('stat_failed')} value={failedRuns} icon={XCircle} className="text-red-600" />
           </div>
 
           <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-              <h2 className="text-sm font-semibold">Recent Runs</h2>
-              <Link to="/runs" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">View all</Link>
+              <h2 className="text-sm font-semibold">{t('recent_runs')}</h2>
+              <Link to="/runs" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">{t('view_all')}</Link>
             </div>
             <div className="divide-y divide-slate-100">
               {runs.slice(0, 5).map(run => (
@@ -81,7 +85,7 @@ function DashboardContent() {
                       <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
                         <span className="font-medium">{run.run_type}</span>
                         <span>•</span>
-                        <span>{new Date(run.created_at).toLocaleString()}</span>
+                        <span>{date(run.created_at)}</span>
                       </div>
                     </div>
                   </div>
@@ -91,7 +95,7 @@ function DashboardContent() {
                 </div>
               ))}
               {runs.length === 0 && (
-                <div className="p-8 text-center text-slate-500 text-sm">No runs recorded yet.</div>
+                <div className="p-8 text-center text-slate-500 text-sm">{t('no_runs')}</div>
               )}
             </div>
           </div>
@@ -125,10 +129,11 @@ export function StatusBadge({ status }: { status: string }) {
     NORMALIZING: "bg-indigo-100 text-indigo-800 border-indigo-200",
     ANALYZING: "bg-purple-100 text-purple-800 border-purple-200",
   };
+  const { tCode } = useCommonText();
 
   return (
     <span className={cn("px-2.5 py-1 text-xs font-medium rounded-full border", styles[status] || styles.QUEUED)}>
-      {status}
+      {tCode('status_', status)}
     </span>
   );
 }

@@ -25,7 +25,11 @@ export function buildReplicationMeasurementRouter(measurements: ReplicationMeasu
       const launched = measurements.launch(req.principal!.id, t, body);
       audit.append(req.principal!.id, 'replication.measure', 'replication', req.params.id, 'replication-measure', { run: launched.runId, preset_hash: body.expectedPresetHash, data_role: body.dataRole });
       res.status(201).json(launched);
-    } catch (e) { if (e instanceof AutomationError) return res.status(409).json({ error: 'measurement_refused', message: e.message }); next(e); }
+    } catch (e) {
+      // `reason` ({code, params}) is additive: the interface shows it in the reader's language; `message` stays for logs and the API.
+      if (e instanceof AutomationError) { const reason = (e as { reason?: unknown }).reason; return res.status(409).json({ error: 'measurement_refused', message: e.message, ...(reason ? { reason } : {}) }); }
+      next(e);
+    }
   });
   return router;
 }

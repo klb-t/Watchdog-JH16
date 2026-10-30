@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle2, AlertCircle } from 'lucide-react';
+import text from '../../config/ui/method-review.json';
+import { useUiText } from '../lib/ui_text';
+import { responseError } from '../lib/api_error';
 
 /**
  * E1.22 — Method review page.
@@ -34,13 +37,14 @@ interface SpecView {
 export function MethodReview() {
   const [view, setView] = useState<SpecView | null>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
+  const { t, c, errorText } = useUiText(text);
 
   const load = () =>
     fetch('/api/method-specs/jh2016-faithful')
-      .then(r => r.json())
+      .then(async r => { const data = await r.json(); if (!r.ok) throw responseError(r, data); return data; })
       .then(setView)
-      .catch(e => setError(String(e)));
+      .catch(e => setError(e));
 
   useEffect(() => { load(); }, []);
 
@@ -54,25 +58,25 @@ export function MethodReview() {
         // Review pins the displayed content. The server identifies the signed-in actor.
         body: JSON.stringify({ expectedHash: view!.spec_hash }),
       });
-      if (!res.ok) throw new Error((await res.json()).message ?? 'approval failed');
+      if (!res.ok) throw responseError(res, await res.json());
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e);
     } finally {
       setBusy(false);
     }
   };
 
-  if (!view) return <div className="p-8" data-testid="method-loading">Loading…</div>;
+  if (!view) return <div className="p-8" data-testid="method-loading">{error !== null ? <span role="alert" className="text-red-800">{errorText(error)}</span> : c('loading')}</div>;
 
   const approved = view.approval_state === 'APPROVED';
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6" data-testid="method-review-page">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Method review</h1>
-          <p className="text-slate-500 mt-1 text-sm font-mono">{view.spec_hash.slice(0, 16)}…</p>
+    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6" data-testid="method-review-page">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+          <p className="text-slate-500 mt-1 text-sm font-mono break-all">{view.spec_hash.slice(0, 16)}…</p>
         </div>
 
         <span
@@ -86,18 +90,18 @@ export function MethodReview() {
           ].join(' ')}
         >
           {approved ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
-          {approved ? 'APPROVED' : 'PROPOSED — awaiting review'}
+          {approved ? t('state_approved') : t('state_proposed')}
         </span>
       </div>
 
-      {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm" data-testid="method-error">
-          {error}
+      {error !== null && (
+        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm break-words" data-testid="method-error">
+          {errorText(error)}
         </div>
       )}
 
       {view.issues.length > 0 && (
-        <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-sm" data-testid="spec-issues">
+        <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-sm break-words" data-testid="spec-issues">
           {view.issues.map((i, n) => <div key={n}><code>{i.path}</code>: {i.message} [{i.rule}]</div>)}
         </div>
       )}
@@ -109,20 +113,20 @@ export function MethodReview() {
             data-testid={`step-${step.id}`}
             data-state={view.approval_state}
             className={[
-              'p-4 rounded-xl border-2',
+              'p-4 rounded-xl border-2 min-w-0',
               approved ? 'bg-emerald-50/40 border-emerald-300' : 'bg-red-50/40 border-red-300',
             ].join(' ')}
           >
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-500">step {index + 1}</span>
-              <code className="font-semibold text-slate-900">{step.id}</code>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs text-slate-500">{t('step', { n: index + 1 })}</span>
+              <code className="font-semibold text-slate-900 break-all">{step.id}</code>
               <span className="text-xs px-2 py-0.5 rounded bg-slate-100 border border-slate-200">
                 {step.primitive}
               </span>
-              <span className="text-xs text-slate-500">missing: {step.missing_policy}</span>
+              <span className="text-xs text-slate-500">{t('missing_policy', { policy: step.missing_policy })}</span>
               {step.ambiguous && (
                 <span className="text-xs px-2 py-0.5 rounded bg-amber-100 border border-amber-300 text-amber-900">
-                  ambiguous — blocks approval
+                  {t('ambiguous')}
                 </span>
               )}
             </div>
@@ -139,7 +143,7 @@ export function MethodReview() {
         disabled={busy || approved}
         className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 disabled:opacity-50"
       >
-        {approved ? 'Approved' : busy ? 'Approving…' : 'Approve this method'}
+        {approved ? t('approved') : busy ? t('approving') : t('approve')}
       </button>
     </div>
   );

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { postJson, useAccess } from '../lib/access';
+import { clientError, responseError } from '../lib/api_error';
 import { useAccessText, ACCESS_LANGUAGES, type AccessKey, type AccessLanguage } from '../lib/access_i18n';
 
 interface GrantSource { kind: 'environment' | 'grant'; source: string; roles: string[]; expiresAt: string | null }
@@ -51,21 +52,21 @@ function RolePicker({ options, value, onChange, testId }: {
  */
 export function PeopleAccess() {
   const access = useAccess();
-  const { t, lang } = useAccessText();
+  const { t, lang, errorText } = useAccessText();
   const [tab, setTab] = useState<'invite' | 'applications' | 'members' | 'invitations'>('invite');
   const [data, setData] = useState<Overview | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
   const load = useCallback(() => fetch('/api/access/overview', { cache: 'no-store' })
-    .then(async r => { if (!r.ok) throw new Error((await r.json().catch(() => ({})))?.error?.message ?? `HTTP ${r.status}`); return r.json(); })
-    .then(setData).catch(e => setError((e as Error).message)), []);
+    .then(async r => { if (!r.ok) throw responseError(r, await r.json().catch(() => ({}))); return r.json(); })
+    .then(setData).catch(e => setError(e)), []);
   useEffect(() => { void load(); }, [load]);
 
   const run: Run = async (fn, success) => {
     setError(null); setNotice(null);
     try { await fn(); if (success) setNotice(success); await load(); }
-    catch (e) { setError((e as Error).message); }
+    catch (e) { setError(e); }
   };
 
   const canAdmit = access.capabilities.includes('access.admit');
@@ -88,9 +89,9 @@ export function PeopleAccess() {
           className="field-button" onClick={() => setTab(id)} data-testid={`tab-${id}`}>{label}</button>)}
       </div>
 
-      {error && <p className="field-error" role="alert" data-testid="access-error">{error}</p>}
+      {error !== null && <p className="field-error break-words" role="alert" data-testid="access-error">{errorText(error)}</p>}
       {notice && <p className="field-warning" role="status">{notice}</p>}
-      {!data && !error && <p className="mt-4" role="status">{t('working')}</p>}
+      {!data && error === null && <p className="mt-4" role="status">{t('working')}</p>}
 
       {data && tab === 'invite' && canAdmit && <InviteForm data={data} lang={lang} onDone={load} />}
       {data && tab === 'applications' && <Applications data={data} canAdmit={canAdmit} run={run} />}
@@ -195,7 +196,7 @@ function MemberCard({ m, data, run }: { m: Member; data: Overview; run: Run }) {
 }
 
 function Invitations({ data, canAdmit, run, lang, load, onError }: { data: Overview; canAdmit: boolean; run: Run; lang: string;
-  load: () => void; onError: (message: string) => void }) {
+  load: () => void; onError: (error: unknown) => void }) {
   const { t, role, date } = useAccessText();
   const [fresh, setFresh] = useState<Fresh | null>(null);
   return <section className="mt-4 space-y-3">
@@ -210,7 +211,7 @@ function Invitations({ data, canAdmit, run, lang, load, onError }: { data: Overv
       {i.deliveryDetail && <p className="text-xs text-slate-500">{i.deliveryDetail}</p>}
       {canAdmit && i.status === 'active' && <div className="flex flex-wrap gap-2 mt-2">
         <button className="field-button" onClick={() => void postJson<Fresh>(`/api/access/invitations/${i.id}/rotate`,
-          { link_base: window.location.origin, language: lang }).then(setFresh).then(load).catch(e => onError((e as Error).message))}>
+          { link_base: window.location.origin, language: lang }).then(setFresh).then(load).catch(e => onError(e))}>
           {t('invite_new_link')}</button>
         <button className="field-button" data-testid="invitation-revoke"
           onClick={() => void run(() => postJson(`/api/access/invitations/${i.id}/revoke`))}>{t('invite_revoke')}</button>
@@ -220,7 +221,7 @@ function Invitations({ data, canAdmit, run, lang, load, onError }: { data: Overv
 }
 
 function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDone: () => void }) {
-  const { t, languageName } = useAccessText();
+  const { t, languageName, errorText } = useAccessText();
   const [kind, setKind] = useState<'email' | 'open_link' | 'bearer'>('email');
   const [email, setEmail] = useState('');
   const [roles, setRoles] = useState<string[]>([]);
@@ -229,7 +230,7 @@ function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDo
   const [uses, setUses] = useState(1);
   const [language, setLanguage] = useState(data.languages.includes(lang) ? lang : data.default_language);
   const [fresh, setFresh] = useState<Fresh | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [busy, setBusy] = useState(false);
   const options = kind === 'email' ? data.grantable_roles : data.open_link_roles;
 
@@ -243,7 +244,7 @@ function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDo
         link_base: window.location.origin, language,
       }));
       onDone();
-    } catch (e) { setError((e as Error).message); }
+    } catch (e) { setError(e); }
     finally { setBusy(false); }
   }
 
@@ -290,15 +291,15 @@ function InviteForm({ data, lang, onDone }: { data: Overview; lang: string; onDo
     </div>
     <button className="field-button primary w-full sm:w-auto" disabled={busy || roles.filter(r => options.includes(r)).length === 0 || (kind === 'email' && !email)}
       data-testid="invite-create">{busy ? t('working') : t('invite_create')}</button>
-    {error && <p className="field-error" role="alert" data-testid="invite-error">{error}</p>}
+    {error !== null && <p className="field-error break-words" role="alert" data-testid="invite-error">{errorText(error)}</p>}
   </form>;
 }
 
 /** The one moment the link exists in plain text: copy it, share it, mail it, or have the server send it. */
 function FreshInvitation({ fresh, data, lang, onChange }: { fresh: Fresh; data: Overview; lang: string; onChange: () => void }) {
-  const { t } = useAccessText();
+  const { t, errorText } = useAccessText();
   const [message, setMessage] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [sendTo, setSendTo] = useState('');
   const { invitation, token, link, draft } = fresh;
   const whole = draft ? `${draft.subject}\n\n${draft.body}` : link ?? '';
@@ -306,7 +307,7 @@ function FreshInvitation({ fresh, data, lang, onChange }: { fresh: Fresh; data: 
   const recordShared = (via: string) => void postJson(`/api/access/invitations/${invitation.id}/shared`, { via }).then(onChange).catch(() => {});
   const copy = async (text: string, via: string) => {
     try { await navigator.clipboard.writeText(text); setMessage(t('invite_copied')); recordShared(via); }
-    catch { setError('Copy is not available in this browser; select the text below.'); }
+    catch { setError(clientError('copy_unavailable', 'Copy is not available in this browser; select the text below.')); }
   };
   const share = async () => {
     try { await navigator.share({ title: draft?.subject, text: draft?.body ?? link ?? '' }); recordShared('share'); }
@@ -318,7 +319,7 @@ function FreshInvitation({ fresh, data, lang, onChange }: { fresh: Fresh; data: 
       const r = await postJson<{ sent_to: string }>(`/api/access/invitations/${invitation.id}/send`,
         { token, language: lang, to: invitation.kind === 'open_link' ? sendTo : undefined });
       setMessage(t('invite_sent', { email: r.sent_to })); onChange();
-    } catch (e) { setError((e as Error).message); }
+    } catch (e) { setError(e); }
   };
   const mailto = invitation.kind === 'email' && draft
     ? `mailto:${encodeURIComponent(invitation.email!)}?subject=${encodeURIComponent(draft.subject)}&body=${encodeURIComponent(draft.body)}`
@@ -344,7 +345,7 @@ function FreshInvitation({ fresh, data, lang, onChange }: { fresh: Fresh; data: 
     {draft && <details className="text-sm"><summary>{t('invite_draft')}</summary>
       <pre className="whitespace-pre-wrap text-xs bg-slate-50 p-3 rounded mt-2" data-testid="invite-draft">{whole}</pre></details>}
     {message && <p className="text-sm text-emerald-700" role="status">{message}</p>}
-    {error && <p className="field-error" role="alert">{error}</p>}
+    {error !== null && <p className="field-error break-words" role="alert">{errorText(error)}</p>}
   </article>;
 }
 
@@ -371,16 +372,16 @@ function ProfileName() {
 }
 
 function ClaimLocalUser() {
-  const { t } = useAccessText();
+  const { t, errorText } = useAccessText();
   const [result, setResult] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   return <section className="field-panel mt-8 text-sm">
     <h2>{t('claim_title')}</h2>
     <p className="mt-1 text-slate-600">{t('claim_body')}</p>
     <button className="field-button mt-3" onClick={() => void postJson<{ moved: Record<string, number> }>('/api/auth/principals/migrate-local-user')
       .then(r => setResult(t('claim_done', { count: Object.values(r.moved).reduce((a, b) => a + b, 0) })))
-      .catch(e => setError((e as Error).message))}>{t('claim_button')}</button>
+      .catch(e => setError(e))}>{t('claim_button')}</button>
     {result && <p className="mt-2 text-emerald-700">{result}</p>}
-    {error && <p className="field-error">{error}</p>}
+    {error !== null && <p className="field-error break-words">{errorText(error)}</p>}
   </section>;
 }

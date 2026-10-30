@@ -1,9 +1,10 @@
+import { responseError } from './api_error';
 export async function automationApi<T = any>(path: string, body?: unknown): Promise<T> {
   const response = await fetch(path, { cache: 'no-store', ...(body === undefined ? {} : {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   }) });
   const data = await response.json();
-  if (!response.ok) throw new Error(data.message ?? data.error?.message ?? data.error ?? `HTTP ${response.status}`);
+  if (!response.ok) throw responseError(response, data);
   return data;
 }
 export const formClass = 'rounded border border-slate-300 bg-white p-2 text-sm w-full min-w-0';

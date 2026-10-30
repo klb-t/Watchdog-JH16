@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { announceSessionChange, postJson, useAccess } from '../lib/access';
 import { useAccessText } from '../lib/access_i18n';
+import { clientError } from '../lib/api_error';
 
 declare global {
   interface Window {
@@ -19,7 +20,7 @@ function loadGoogleIdentity(): Promise<void> {
     script.src = 'https://accounts.google.com/gsi/client';
     script.async = true;
     script.onload = () => resolve();
-    script.onerror = () => { gisLoading = null; reject(new Error('Google sign-in could not be loaded.')); };
+    script.onerror = () => { gisLoading = null; reject(clientError('google_unavailable', 'Google sign-in could not be loaded.')); };
     document.head.appendChild(script);
   });
   return gisLoading;
@@ -119,7 +120,7 @@ export function SignInPanel({ onSignedIn, initialEmail = '', initialCode = '' }:
         {notice && <p className="text-sm text-slate-700" role="status">{notice}</p>}
         <label className="field-control">{t('code_label')}
           <input value={code} onChange={e => setCode(e.target.value)} required autoComplete="one-time-code"
-            autoCapitalize="characters" spellCheck={false} placeholder="XXXX-XXXX"
+            autoCapitalize="characters" spellCheck={false} placeholder={t('code_placeholder')}
             className="tracking-widest font-mono text-lg" data-testid="code-input" />
         </label>
         <button className="field-button primary w-full" disabled={busy || code.replace(/[\s-]/g, '').length < 8} data-testid="code-submit">

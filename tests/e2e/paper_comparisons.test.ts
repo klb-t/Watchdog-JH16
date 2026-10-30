@@ -24,7 +24,7 @@ before(async () => {
   for (let i = 0; i < 150; i++) { try { if ((await fetch(`${baseUrl}/api/auth/me`)).ok) { ready = true; break; } } catch { /* starting */ } await new Promise(resolve => setTimeout(resolve, 200)); }
   assert.ok(ready, log);
   browser = await chromium.launch({ ...(process.env.WATCHDOG_TEST_CHROMIUM ? { executablePath: process.env.WATCHDOG_TEST_CHROMIUM } : {}) });
-  page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true }); page.setDefaultTimeout(20_000);
+  page = await browser.newPage({ viewport: { width: 390, height: 844 }, acceptDownloads: true, locale: 'pl-PL' }); page.setDefaultTimeout(20_000);
 });
 after(async () => { await browser?.close(); if (server?.pid) try { process.kill(-server.pid, 'SIGKILL'); } catch { /* closed */ }
   fs.rmSync(scratch, { recursive: true, force: true }); });

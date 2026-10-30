@@ -1,0 +1,40 @@
+{
+  "version": "ui-trends-calibration-1",
+  "_note": "Google Trends calibration panel on the run results page. Interface wording only: analysis ids and labels, calibration id and version, region, date range, substance names, window names, group ids, scale factors and every number come from the stored run config and analysis results and are shown as stored. Placeholders in {braces}; {run} and {compare} are links to runs.",
+  "languages": {
+    "pl": {
+      "title": "Kalibracja Google Trends — region {region}",
+      "recomputed": "Ponowne przeliczenie zapisanych obserwacji przebiegu {run} — bez nowego pobierania.",
+      "exploratory": "EXPLORATORY: Google Trends to względne zainteresowanie wyszukiwaniem, nie liczba wyników; tylko porównania rang, bez werdyktów. Konfiguracja {calibration_id} {version}; zakres {range}.",
+      "compare_run": "Porównanie z przebiegiem: {compare}.",
+      "compare_none": "brak (A3/A4 nieobliczalne)",
+      "col_analysis": "Analiza",
+      "col_spearman": "Spearman",
+      "col_pearson_log10": "Pearson (log10)",
+      "col_n": "n",
+      "col_excluded": "Wyłączone",
+      "not_computable": "nieobliczalne",
+      "scaled_interest": "Skalowane zainteresowanie (wspólna skala przez kotwice)",
+      "col_substance": "Substancja",
+      "missing": "brak",
+      "scale_factors": "Współczynniki skali: {factors}"
+    },
+    "en": {
+      "title": "Google Trends calibration — region {region}",
+      "recomputed": "Recomputation of the stored observations of run {run} — no new fetching.",
+      "exploratory": "EXPLORATORY: Google Trends is relative search interest, not a result count; rank comparisons only, no verdicts. Configuration {calibration_id} {version}; range {range}.",
+      "compare_run": "Compared with run: {compare}.",
+      "compare_none": "none (A3/A4 not computable)",
+      "col_analysis": "Analysis",
+      "col_spearman": "Spearman",
+      "col_pearson_log10": "Pearson (log10)",
+      "col_n": "n",
+      "col_excluded": "Excluded",
+      "not_computable": "not computable",
+      "scaled_interest": "Scaled interest (common scale via anchors)",
+      "col_substance": "Substance",
+      "missing": "missing",
+      "scale_factors": "Scale factors: {factors}"
+    }
+  }
+}

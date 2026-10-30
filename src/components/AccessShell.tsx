@@ -17,7 +17,7 @@ export function AccessShell({ title, children }: { title: string; children: Reac
             <span className="font-semibold text-xl tracking-tight">{access.instanceName}</span>
           </div>
           <label className="text-xs text-slate-500 flex items-center gap-1">
-            <span className="sr-only">Language</span>
+            <span className="sr-only">{t('language_label')}</span>
             <select value={lang} onChange={e => setLang(e.target.value as typeof lang)} className="field-input py-1"
               data-testid="language-select">
               {ACCESS_LANGUAGES.map(l => <option key={l} value={l}>{languageName(l)}</option>)}

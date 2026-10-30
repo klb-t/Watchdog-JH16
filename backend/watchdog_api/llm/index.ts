@@ -61,6 +61,9 @@ export interface ProviderAvailability {
   credentialStatus: CredentialStatus;
   /** What the maintainer must do to make this usable. Empty when usable. */
   remediation: string;
+  /** Stable identifier of `remediation` and its values, so an interface can show it in the reader's language. */
+  remediationCode?: 'set_secret' | 'secret_invalid' | 'set_endpoint' | 'set_default_model';
+  remediationParams?: Record<string, string>;
   defaultModel: string | null;
   allowedModels: readonly string[];
 }
@@ -115,18 +118,24 @@ export class TextGenerationRegistry {
 
     let status: RegistryStatus = 'implemented';
     let remediation = '';
+    let remediationCode: ProviderAvailability['remediationCode'];
+    let remediationParams: Record<string, string> | undefined;
 
     if (!cred.isPresent) {
       status = 'blocked';
       remediation = cred.status === 'invalid'
         ? `The credential at ${p.secret_ref} is set but unusable. ${cred.detail}`
         : `Set ${p.secret_ref} to enable ${p.display_name}.`;
+      remediationCode = cred.status === 'invalid' ? 'secret_invalid' : 'set_secret';
+      remediationParams = cred.status === 'invalid' ? { ref: p.secret_ref, detail: cred.detail } : { ref: p.secret_ref, provider: p.display_name };
     } else if (!endpoint) {
       status = 'blocked';
       remediation = `Set ${p.endpoint_ref} to the endpoint URL.`;
+      remediationCode = 'set_endpoint'; remediationParams = { ref: String(p.endpoint_ref) };
     } else if (!model) {
       status = 'blocked';
       remediation = `Set ${p.default_model_ref} to a model identifier.`;
+      remediationCode = 'set_default_model'; remediationParams = { ref: String(p.default_model_ref) };
     }
 
     return {
@@ -135,6 +144,7 @@ export class TextGenerationRegistry {
       status,
       credentialStatus: cred.status,
       remediation,
+      ...(remediationCode ? { remediationCode, remediationParams } : {}),
       defaultModel: model,
       allowedModels: p.allowed_models,
     };

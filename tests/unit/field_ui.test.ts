@@ -1,7 +1,8 @@
 import { test } from 'node:test';
 import * as assert from 'node:assert/strict';
 import { createElement } from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToStaticMarkup as renderMarkup } from 'react-dom/server';
+import { UiLanguageProvider } from '../../src/lib/ui_text';
 import { FieldSafety, RecordEvidence, EvidenceBadge, defaultFieldProfile } from '../../src/components/FieldEvidence';
 import { testSample } from '../helpers/field';
 import { canonicalHash } from '../../backend/watchdog_api/domain/canonical';
@@ -9,6 +10,9 @@ import { lookupField } from '../../shared/field_lookup';
 import { readFieldCache, offlineFieldLookup, pendingFieldAudit, flushFieldAudit, fieldApi, HttpFailure } from '../../src/lib/field_client';
 import { testQuery } from '../helpers/field';
 import type { FieldSnapshot, ReferenceRecord } from '../../shared/field';
+
+// These assertions are the English interface; without a provider a page renders in the workspace default (Polish).
+const renderToStaticMarkup = (element: Parameters<typeof renderMarkup>[0]) => renderMarkup(createElement(UiLanguageProvider, { lang: 'en' }, element));
 
 test('E6: trust labels and approval survive removal of every color; safety is never collapsible', () => {
   for (const tier of Object.keys(defaultFieldProfile.tiers)) {

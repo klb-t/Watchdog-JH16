@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Play, Database, AlertTriangle } from 'lucide-react';
 import { fetchSources } from '../lib/api';
 import { Source } from '../types';
+import text from '../../config/ui/study.json';
+import { useUiText } from '../lib/ui_text';
+import { responseError } from '../lib/api_error';
 
 /**
  * E1.21 — Study page: source selection, run trigger, run status with a live
@@ -16,16 +19,17 @@ import { Source } from '../types';
  * preset and reference files; this page only chooses where the counts come
  * from. Only sources that can measure the preset's result counts are offered.
  */
-const JH16_SOURCES: Record<string, string> = {
-  fixture_jh2016: 'Liczby z Tabel 1 i 3 publikacji (2014) — kontrola obliczeń, nie nowy pomiar.',
-  serp_result_count: 'Nowe liczby wyników Google przez klucz SerpApi tej instalacji. Osobisty klucz: Ustawienia → kreator.',
+const JH16_SOURCES: Record<string, 'source_note_fixture_jh2016' | 'source_note_serp_result_count'> = {
+  fixture_jh2016: 'source_note_fixture_jh2016',
+  serp_result_count: 'source_note_serp_result_count',
 };
 export function Study() {
   const [sources, setSources] = useState<Source[]>([]);
   const [selected, setSelected] = useState<string>('');
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const navigate = useNavigate();
+  const { t, tCode, errorText } = useUiText(text);
 
   useEffect(() => {
     fetchSources()
@@ -34,7 +38,7 @@ export function Study() {
         const firstRunnable = s.find(x => (x.status === 'implemented' || x.status === 'fixture') && x.source_id in JH16_SOURCES);
         if (firstRunnable) setSelected(firstRunnable.source_id);
       })
-      .catch(e => setError(String(e)));
+      .catch(e => setError(e));
   }, []);
 
   const runnable = (s: Source) => (s.status === 'implemented' || s.status === 'fixture') && s.source_id in JH16_SOURCES;
@@ -45,25 +49,25 @@ export function Study() {
     try {
       const response = await fetch('/api/studies/jh2016', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ source_id: selected }) });
       const res = await response.json();
-      if (!response.ok) throw new Error(res.message ?? res.error ?? `HTTP ${response.status}`);
+      if (!response.ok) throw responseError(response, res);
       navigate(`/runs/${res.run_id}`);
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(e);
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto space-y-6" data-testid="study-page">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto space-y-6" data-testid="study-page">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Study</h1>
-        <p className="text-slate-500 mt-1 text-sm">JH16 (zablokowany preset: 16 substancji, 32 zapytania). Wybierz, skąd pochodzą liczby wyników.</p>
+        <h1 className="text-2xl font-semibold tracking-tight">{t('title')}</h1>
+        <p className="text-slate-500 mt-1 text-sm">{t('intro')}</p>
       </div>
 
-      {error && (
-        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm" data-testid="study-error">
-          {error}
+      {error !== null && (
+        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm break-words" data-testid="study-error">
+          {errorText(error)}
         </div>
       )}
 
@@ -92,9 +96,9 @@ export function Study() {
                 onChange={() => setSelected(s.source_id)}
               />
               <div className="min-w-0">
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Database className="w-4 h-4 text-slate-400" />
-                  <span className="font-medium text-slate-900">{s.source_id}</span>
+                  <span className="font-medium text-slate-900 break-all">{s.source_id}</span>
                   <span
                     data-testid={`status-${s.source_id}`}
                     className={[
@@ -104,16 +108,16 @@ export function Study() {
                         : 'bg-slate-100 text-slate-600 border-slate-300',
                     ].join(' ')}
                   >
-                    {s.status}
+                    {tCode('source_status_', s.status.replace(/[^a-z0-9]+/g, '_'))}
                   </span>
                   {!available && (
                     <span className="flex items-center gap-1 text-xs text-slate-500">
-                      <AlertTriangle className="w-3 h-3" /> {s.source_id in JH16_SOURCES ? 'not available' : 'not a JH16 source'}
+                      <AlertTriangle className="w-3 h-3" /> {s.source_id in JH16_SOURCES ? t('not_available') : t('not_jh16_source')}
                     </span>
                   )}
                 </div>
                 <p className="text-sm text-slate-500 mt-1">{s.description}</p>
-                {s.source_id in JH16_SOURCES && <p className="text-xs text-slate-700 mt-1">{JH16_SOURCES[s.source_id]}</p>}
+                {s.source_id in JH16_SOURCES && <p className="text-xs text-slate-700 mt-1">{t(JH16_SOURCES[s.source_id])}</p>}
                 {!available && (s as any).remediation && <p className="text-xs text-amber-800 mt-1">{(s as any).remediation}</p>}
               </div>
             </label>
@@ -128,7 +132,7 @@ export function Study() {
         className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
       >
         <Play className="w-4 h-4" />
-        {submitting ? 'Starting…' : selected === 'serp_result_count' ? 'Start JH16 (32 nowe zapytania SerpApi)' : 'Start JH16 run'}
+        {submitting ? t('starting') : selected === 'serp_result_count' ? t('start_serp') : t('start')}
       </button>
     </div>
   );

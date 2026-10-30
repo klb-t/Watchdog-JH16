@@ -1,0 +1,30 @@
+{
+  "version": "ui-goal-navigator-1",
+  "_note": "Interface texts of the goal navigator (src/components/GoalNavigator.tsx). Goal labels, descriptions and search contexts are configuration data from config/goal-navigation.json and are shown as stored. Placeholders in {braces} must match in both languages.",
+  "languages": {
+    "pl": {
+      "title": "Co chcesz zrobić?",
+      "intro": "Wybierz cel. Dostępne działania wynikają z możliwości Twojego konta. Gwiazdka zapisuje cel w ulubionych na Twoim koncie.",
+      "search_label": "Znajdź działanie",
+      "search_placeholder": "np. receptor, mapa, replikacja, debug",
+      "favorite_add": "Dodaj do ulubionych: {goal}",
+      "favorite_remove": "Usuń z ulubionych: {goal}",
+      "favorites_unavailable": "Ulubione niedostępne: {error}",
+      "favorites": "Ulubione",
+      "no_match": "Brak pasującego działania w obecnym zakresie. {link}.",
+      "no_match_link": "Otwórz konfigurację i asystenta propozycji rozszerzeń"
+    },
+    "en": {
+      "title": "What do you want to do?",
+      "intro": "Choose a goal. The available actions follow from your account's permissions. The star saves a goal to the favourites on your account.",
+      "search_label": "Find an action",
+      "search_placeholder": "e.g. receptor, jh16, debug",
+      "favorite_add": "Add to favourites: {goal}",
+      "favorite_remove": "Remove from favourites: {goal}",
+      "favorites_unavailable": "Favourites unavailable: {error}",
+      "favorites": "Favourites",
+      "no_match": "No matching action in the current scope. {link}.",
+      "no_match_link": "Open the configuration and the extension proposal assistant"
+    }
+  }
+}

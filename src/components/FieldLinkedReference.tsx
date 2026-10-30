@@ -1,5 +1,5 @@
 import type { EvidenceDisplayMode, FieldProfile, FieldSnapshot, ReferenceRecord } from '../../shared/field';
-import { RecordEvidence } from './FieldEvidence';
+import { RecordEvidence, useFieldText } from './FieldEvidence';
 
 const clinical = new Set(['pharmacokinetics', 'pharmacodynamics', 'acute_toxicity', 'chronic_effects', 'interactions']);
 
@@ -8,24 +8,26 @@ const clinical = new Set(['pharmacokinetics', 'pharmacodynamics', 'acute_toxicit
 export function FieldLinkedReference({ record, snapshot, profile, display }: {
   record: ReferenceRecord; snapshot: Pick<FieldSnapshot, 'generatedAt' | 'expiresAt'>; profile: FieldProfile; display: EvidenceDisplayMode;
 }) {
+  const { t, tCode, categoryLabel } = useFieldText();
   const d = record.document;
   const clinicalEligible = d.kind !== 'assertion' || !clinical.has(d.category) || ['PRIMARY_EMPIRICAL', 'CURATED_SECONDARY'].includes(d.evidenceTier);
-  return <section className="field-panel ring-2 ring-indigo-600" aria-label="Linked source reference" data-reference-id={record.id}>
-    <h2 className="font-semibold">Linked source reference</h2>
-    <p className="text-sm text-slate-600">Synchronized snapshot: {snapshot.generatedAt} · expires {snapshot.expiresAt}. Synchronize again to check current source mappings and revocations.</p>
-    <p className="field-warning">This displays an archived mapping. It does not identify an exposure, run a clinical lookup or establish a diagnosis.</p>
-    {d.kind === 'sample' ? <><h3 className="font-semibold">{d.name}</h3>
-      <p className="text-sm">Reference specimen/report: {d.region.name} · {d.timeBasis}: {d.observedOn ?? 'Date unknown'}</p>
-      <p className="text-sm">Appearance: {[d.appearance.colors.join('/'), d.appearance.shape, d.appearance.logo, d.appearance.scoreLine].filter(Boolean).join(' · ') || 'Not reported'}</p>
-      <p className="text-sm">Reported components of this reference: {d.components.map(c => c.substance.name).join(', ') || 'Not reported'}. Appearance does not identify another specimen.</p>
-      {d.unknownComponents.map((unknown, i) => <p className="field-warning" key={i}>Unknown component: {unknown}</p>)}
-    </> : <><h3 className="font-semibold">{d.subject.name}{d.object ? ` → ${d.object.name}` : ''}</h3>
-      <p className="text-sm">{profile.categories.find(c => c.id === d.category)?.label ?? d.category} · {d.predicate} · {d.region?.name ?? 'No regional restriction reported by source'}</p>
+  const category = d.kind === 'assertion' ? profile.categories.find(c => c.id === d.category) : undefined;
+  return <section className="field-panel ring-2 ring-indigo-600 min-w-0" aria-label={t('linked_reference')} data-reference-id={record.id}>
+    <h2 className="font-semibold">{t('linked_reference')}</h2>
+    <p className="text-sm text-slate-600 break-words">{t('linked_snapshot', { generated: snapshot.generatedAt, expires: snapshot.expiresAt })}</p>
+    <p className="field-warning">{t('linked_archived_note')}</p>
+    {d.kind === 'sample' ? <><h3 className="font-semibold break-words">{d.name}</h3>
+      <p className="text-sm break-words">{t('linked_specimen', { region: d.region.name, basis: tCode('time_basis_', d.timeBasis), date: d.observedOn ?? t('date_unknown') })}</p>
+      <p className="text-sm break-words">{t('appearance', { value: [d.appearance.colors.join('/'), d.appearance.shape, d.appearance.logo, d.appearance.scoreLine].filter(Boolean).join(' · ') || t('not_reported') })}</p>
+      <p className="text-sm break-words">{t('linked_components', { value: d.components.map(c => c.substance.name).join(', ') || t('not_reported') })}</p>
+      {d.unknownComponents.map((unknown, i) => <p className="field-warning" key={i}>{t('unknown_component', { value: unknown })}</p>)}
+    </> : <><h3 className="font-semibold break-words">{d.subject.name}{d.object ? ` → ${d.object.name}` : ''}</h3>
+      <p className="text-sm break-words">{category ? categoryLabel(category.id, category.label) : d.category} · {d.predicate} · {d.region?.name ?? t('no_regional_restriction')}</p>
       {clinicalEligible ? <><p lang={d.statement.language}>{d.statement.text}</p>
-        <p className="text-sm">{d.statement.kind === 'source_excerpt' ? 'Source excerpt' : 'Curator summary'} · language: {d.statement.language} · validity: {d.validFrom ?? 'unknown start'} to {d.validTo ?? 'no reported end'}</p>
-      </> : <p className="field-warning">This mapping is retained for provenance. The responder clinical view does not display modeled, raw or speculative clinical statements.</p>}
-      {d.contradicts.length > 0 && <p className="field-warning">This source mapping records conflicting references: {d.contradicts.join(', ')}. Sources remain separate.</p>}
-      {d.supersedes && <p className="text-sm">Supersedes reference: {d.supersedes}</p>}
+        <p className="text-sm">{t('linked_validity', { kind: d.statement.kind === 'source_excerpt' ? t('statement_source_excerpt') : t('statement_curator_summary'), language: d.statement.language, from: d.validFrom ?? t('unknown_start'), to: d.validTo ?? t('no_reported_end') })}</p>
+      </> : <p className="field-warning">{t('linked_withheld')}</p>}
+      {d.contradicts.length > 0 && <p className="field-warning break-words">{t('linked_conflicts', { value: d.contradicts.join(', ') })}</p>}
+      {d.supersedes && <p className="text-sm break-words">{t('linked_supersedes', { value: d.supersedes })}</p>}
     </>}
     <RecordEvidence record={record} profile={profile} display={display} />
   </section>;

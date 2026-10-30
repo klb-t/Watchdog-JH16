@@ -1,0 +1,42 @@
+{
+  "version": "ui-source-comparison-1",
+  "_note": "Source comparison view (src/components/SourceComparisonView.tsx). Its labels come from the comparison's own pinned profile (config/source-history-ui.json, hashed into every comparison). label_* and change_* translate that profile for display only: a translation is shown while its pl text equals the pinned Polish label exactly; otherwise the pinned label is shown as stored. Placeholders in {braces}.",
+  "languages": {
+    "pl": {
+      "label_absent": "Pole nieobecne",
+      "label_equal": "Zachowane rekordy mają identyczną treść.",
+      "label_different": "Zachowane rekordy różnią się treścią.",
+      "label_array_meaning": "Tablice są porównywane według pozycji. Zmiana kolejności może dać kilka różnic. Daty i rewizje wpisane przez źródło pozostają polami jego treści; czas pobrania jest osobny.",
+      "label_truncated": "Osiągnięto limit porównania. Lista różnic jest częściowa; pełne migawki są w eksporcie JSON.",
+      "label_export": "Pobierz porównanie JSON",
+      "label_before": "Wartość A",
+      "label_after": "Wartość B",
+      "label_details": "Pochodzenie i identyfikatory",
+      "change_added": "Dodano",
+      "change_removed": "Usunięto",
+      "change_changed": "Zmieniono",
+      "limit_changes": "limit liczby różnic",
+      "limit_nodes": "limit liczby węzłów",
+      "limit_depth": "limit głębokości",
+      "hash": "SHA-256: {hash}"
+    },
+    "en": {
+      "label_absent": "Field absent",
+      "label_equal": "The retained records have identical content.",
+      "label_different": "The retained records differ in content.",
+      "label_array_meaning": "Arrays are compared by position. A change of order can produce several differences. Dates and revisions written by the source remain fields of its content; the retrieval time is separate.",
+      "label_truncated": "The comparison limit was reached. The list of differences is partial; the full snapshots are in the JSON export.",
+      "label_export": "Download comparison JSON",
+      "label_before": "Value A",
+      "label_after": "Value B",
+      "label_details": "Provenance and identifiers",
+      "change_added": "Added",
+      "change_removed": "Removed",
+      "change_changed": "Changed",
+      "limit_changes": "changes",
+      "limit_nodes": "nodes",
+      "limit_depth": "depth",
+      "hash": "SHA-256: {hash}"
+    }
+  }
+}

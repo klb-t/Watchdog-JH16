@@ -115,8 +115,8 @@ test('E4.5 browser: the owner signs in by emailed code and lands where they were
   await owner.waitForURL(`${base}/runs`);
   await owner.locator('a[href="/access"]').waitFor();
   await owner.goto(`${base}/setup`);
-  await owner.locator('[data-testid="auth-mode"]').getByText('Accounts (email code or Google)', {exact:true}).waitFor();
-  await owner.getByRole('button',{name:'Sign out',exact:true}).waitFor();
+  await owner.locator('[data-testid="auth-mode"]').getByText('Konta (kod e-mail lub Google)', {exact:true}).waitFor();
+  await owner.getByRole('button',{name:'Wyloguj się',exact:true}).waitFor();
   await owner.goto(`${base}/runs`);
 });
 

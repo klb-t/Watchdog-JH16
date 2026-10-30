@@ -1,0 +1,52 @@
+{
+  "version": "ui-diagnostics-1",
+  "_note": "Developer diagnostics (/diagnostics). Recorder mode names (TRACE, ERRORS, NORMAL), HTTP methods, paths and trace ids are shown as stored. Placeholders in {braces}.",
+  "languages": {
+    "pl": {
+      "title": "Diagnostyka dla deweloperów",
+      "intro": "Śledź żądania, sprawdzaj walidację i błędy oraz pobierz zanonimizowany pakiet diagnostyczny.",
+      "recorder_mode": "Tryb rejestratora",
+      "refresh_traces": "Odśwież ślady",
+      "modes_help": "TRACE zapisuje szczegółowe kroki. ERRORS zachowuje błędy. NORMAL zapisuje zwięzłe logi serwera. Zmiana trybu dotyczy tej działającej instancji i jest odnotowywana w dzienniku audytu.",
+      "recent_title": "Ostatnie żądania z tej przeglądarki",
+      "recent_help": "Tylko metadane; bez parametrów zapytań, treści żądań, danych uwierzytelniających i danych odpowiedzi.",
+      "col_request": "Żądanie",
+      "col_status": "Status",
+      "col_duration": "Czas trwania",
+      "col_trace": "Ślad",
+      "duration_ms": "{ms} ms",
+      "no_server_trace": "Brak śladu na serwerze",
+      "traces_title": "Zapisane ślady",
+      "traces_empty": "Brak zapisanych śladów. Włącz TRACE lub ERRORS, a potem powtórz operację.",
+      "trace_title": "Ślad {id}",
+      "download_zip": "Pobierz ZIP diagnostyczny",
+      "truncated": "Podgląd obejmuje tylko pierwsze 4 MB każdego pliku śladu. ZIP zawiera pełny ślad.",
+      "trace_counts": "zdarzenia: {events} · koperty błędów: {errors}",
+      "select_prompt": "Wybierz żądanie lub zapisany ślad.",
+      "error_diagnostics_request_failed": "Żądanie diagnostyczne nie powiodło się ({status})."
+    },
+    "en": {
+      "title": "Developer diagnostics",
+      "intro": "Trace requests, inspect validation and failures, and download a redacted diagnostic bundle.",
+      "recorder_mode": "Recorder mode",
+      "refresh_traces": "Refresh traces",
+      "modes_help": "TRACE records detailed steps. ERRORS keeps failures. NORMAL writes concise server logs. Mode changes apply to this running instance and are audited.",
+      "recent_title": "Recent requests from this browser",
+      "recent_help": "Metadata only; no query strings, bodies, credentials or response data.",
+      "col_request": "Request",
+      "col_status": "Status",
+      "col_duration": "Duration",
+      "col_trace": "Trace",
+      "duration_ms": "{ms} ms",
+      "no_server_trace": "No server trace",
+      "traces_title": "Recorded traces",
+      "traces_empty": "No persisted traces. Enable TRACE or ERRORS, then reproduce the operation.",
+      "trace_title": "Trace {id}",
+      "download_zip": "Download diagnostic ZIP",
+      "truncated": "Preview is limited to the first 4 MB of each trace file. The ZIP contains the complete trace.",
+      "trace_counts": "{events} events · {errors} error envelopes",
+      "select_prompt": "Select a request or recorded trace.",
+      "error_diagnostics_request_failed": "Diagnostics request failed ({status})."
+    }
+  }
+}

@@ -7,7 +7,8 @@ import type { ProjectDraft, ProjectResourceKind, ProjectResourceSummary, Project
 
 export class ResearchProjectError extends Error {
   readonly code = 'research_project_error';
-  constructor(message: string, readonly status = 409) { super(message); }
+  /** `reason` is a stable label key for the page; the English message stays for logs and the API. */
+  constructor(message: string, readonly status = 409, readonly reason?: string) { super(message); }
 }
 export interface ProjectStoredFile extends ProjectFile { uri: string; }
 export interface ProjectResource { summary: ProjectResourceSummary; snapshot: Record<string, unknown>;
@@ -36,7 +37,7 @@ export class ResearchProjectsRepository {
     return row ? this.decode(row) : null;
   }
   history(owner: string, projectId: string): ProjectRevision[] {
-    if (!this.current(owner, projectId)) throw new ResearchProjectError('Project not found', 404);
+    if (!this.current(owner, projectId)) throw new ResearchProjectError('Project not found', 404, 'project_not_found');
     return (this.db.prepare(`SELECT r.* FROM research_project_revisions r JOIN research_projects p ON p.id=r.project_id
       WHERE p.id=? AND p.owner_principal_id=? AND r.owner_principal_id=? ORDER BY r.revision DESC`).all(projectId, owner, owner) as any[]).map(r => this.decode(r));
   }
@@ -51,14 +52,14 @@ export class ResearchProjectsRepository {
     return this.db.transaction(() => {
       const current = this.current(owner, body.projectId);
       if (expectedHash === null ? !!current : !current || current.hash !== expectedHash)
-        throw new ResearchProjectError('Project changed; reload before saving');
+        throw new ResearchProjectError('Project changed; reload before saving', 409, 'project_changed');
       if (body.revision !== (current?.body.revision ?? 0) + 1 || body.previousRevisionHash !== (current?.hash ?? null))
         throw new ResearchProjectError('Project revision lineage mismatch');
       // Recheck every item inside the same write transaction: a revocation during blob I/O wins.
       for (const link of body.links) {
         const live = this.resource(owner, link.kind, link.id);
         if (!live || live.summary.hash !== link.expectedHash || canonicalHash(live.snapshot) !== link.snapshotHash)
-          throw new ResearchProjectError('A linked resource changed; reload before saving');
+          throw new ResearchProjectError('A linked resource changed; reload before saving', 409, 'resource_changed');
       }
       const now = new Date().toISOString(), hash = canonicalHash(body), id = randomUUID();
       if (!current) this.db.prepare('INSERT INTO research_projects VALUES (?,?,?,?,?,?)').run(body.projectId, owner, now, id, hash, now);
@@ -74,7 +75,7 @@ export class ResearchProjectsRepository {
     }).immediate();
   }
   files(owner: string, revision: ProjectRevision): ProjectStoredFile[] {
-    if (!this.revision(owner, revision.body.projectId, revision.hash)) throw new ResearchProjectError('Project revision not found', 404);
+    if (!this.revision(owner, revision.body.projectId, revision.hash)) throw new ResearchProjectError('Project revision not found', 404, 'revision_not_found');
     return (this.db.prepare('SELECT * FROM research_project_files WHERE revision_id=? AND owner_principal_id=? ORDER BY path').all(revision.id, owner) as any[])
       .map(r => ({ path: r.path, sha256: r.sha256, byteSize: r.byte_size, mediaType: r.media_type, uri: r.object_uri }));
   }

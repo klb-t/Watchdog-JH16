@@ -1,0 +1,36 @@
+{
+  "version": "ui-sources-1",
+  "_note": "Interface texts of the Sources page (src/pages/Sources.tsx) and its source cards. Source identifiers, adapter names, registry status codes, descriptions and remediation hints come from the source registry and are shown as stored. Placeholders in {braces} must match in both languages.",
+  "languages": {
+    "pl": {
+      "title": "Źródła pomiarów",
+      "intro": "Źródła liczb używanych przez badania i ich stan. Nowe pomiary uruchamiasz w kreatorze (Ustawienia); dane z publikacji JH16 można przeliczyć bez kosztu.",
+      "access_catalog_link": "Pełny katalog integracji i warunków dostępu",
+      "loading": "Ładowanie źródeł…",
+      "empty": "Brak skonfigurowanych źródeł.",
+      "adapter": "Adapter: {adapter}",
+      "action_recompute_jh16": "Przelicz JH16 z danych publikacji",
+      "action_wizard": "Nowy pomiar w kreatorze (Ustawienia)",
+      "action_replications": "Pomiar z poziomu Replikacji („Nowy pomiar”)",
+      "unavailable": "Niedostępne: {reason}",
+      "unavailable_planned": "jeszcze niezaimplementowane",
+      "error_fetch_sources": "Nie udało się pobrać źródeł.",
+      "error_recompute": "Nie udało się uruchomić przeliczenia."
+    },
+    "en": {
+      "title": "Measurement sources",
+      "intro": "Sources of the numbers used by studies, and their state. New measurements are started in the wizard (Settings); the JH16 paper's data can be recomputed at no cost.",
+      "access_catalog_link": "Full catalogue of integrations and access terms",
+      "loading": "Loading sources…",
+      "empty": "No sources configured.",
+      "adapter": "Adapter: {adapter}",
+      "action_recompute_jh16": "Recompute JH16 from the paper's data",
+      "action_wizard": "New measurement in the wizard (Settings)",
+      "action_replications": "Measure from Replications (“New measurement”)",
+      "unavailable": "Unavailable: {reason}",
+      "unavailable_planned": "not implemented yet",
+      "error_fetch_sources": "Sources could not be fetched.",
+      "error_recompute": "The recomputation could not be started."
+    }
+  }
+}

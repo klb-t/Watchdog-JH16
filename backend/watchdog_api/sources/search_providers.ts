@@ -56,6 +56,9 @@ export interface SearchProviderAvailability {
   status: RegistryStatus;
   credentialStatus: CredentialStatus;
   remediation: string;
+  /** Stable identifier of `remediation` and its values, so an interface can show it in the reader's language. */
+  remediationCode?: 'set_secret' | 'secret_invalid';
+  remediationParams?: Record<string, string>;
 }
 
 const defaultGet: HttpGet = (url) => fetch(url) as any;
@@ -98,6 +101,9 @@ export class SearchProviderRegistry {
         : cred.status === 'invalid'
           ? `The credential at ${p.secret_ref} is set but unusable. ${cred.detail}`
           : `Set ${p.secret_ref} to enable ${p.display_name}.`,
+      ...(usable ? {} : cred.status === 'invalid'
+        ? { remediationCode: 'secret_invalid' as const, remediationParams: { ref: p.secret_ref, detail: cred.detail } }
+        : { remediationCode: 'set_secret' as const, remediationParams: { ref: p.secret_ref, provider: p.display_name } }),
     };
   }
 

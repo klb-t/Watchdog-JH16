@@ -1,0 +1,32 @@
+{
+  "version": "ui-dashboard-1",
+  "_note": "Interface texts of the Overview page (src/pages/Dashboard.tsx). Counts are computed from stored runs and the source registry; run identifiers and run types are shown as stored; run status labels come from common.json (status_<CODE>), with the stored code shown when no label exists. Placeholders in {braces} must match in both languages.",
+  "languages": {
+    "pl": {
+      "title": "Przegląd",
+      "subtitle": "Stan systemu i ostatnia aktywność",
+      "stat_sources": "Źródła w rejestrze",
+      "stat_sources_detail": "Gotowe integracje: {live} · źródła testowe: {fixture}",
+      "stat_active_runs": "Aktywne uruchomienia",
+      "stat_completed": "Zakończone",
+      "stat_failed": "Nieudane",
+      "recent_runs": "Ostatnie uruchomienia",
+      "view_all": "Zobacz wszystkie",
+      "no_runs": "Nie zapisano jeszcze żadnego uruchomienia.",
+      "error_fetch_state": "Nie udało się pobrać stanu."
+    },
+    "en": {
+      "title": "Overview",
+      "subtitle": "System status and recent activity",
+      "stat_sources": "Sources in the registry",
+      "stat_sources_detail": "Ready integrations: {live} · test sources: {fixture}",
+      "stat_active_runs": "Active Runs",
+      "stat_completed": "Completed",
+      "stat_failed": "Failed",
+      "recent_runs": "Recent Runs",
+      "view_all": "View all",
+      "no_runs": "No runs recorded yet.",
+      "error_fetch_state": "The status could not be fetched."
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "version": "ui-analyzers-1",
+  "_note": "Analyzers list (/analyzers). Analyzer and preset identifiers are shown as stored. Placeholders in {braces}.",
+  "languages": {
+    "pl": {
+      "title": "Metody obliczeń",
+      "intro": "Dostępne modele analityczne i presety",
+      "preset": "Preset: {preset}",
+      "preset_default": "domyślny",
+      "run": "Uruchom analizę",
+      "empty": "Brak dostępnych metod obliczeń.",
+      "run_failed": "Nie udało się uruchomić analizy."
+    },
+    "en": {
+      "title": "Analyzers",
+      "intro": "Available analytical models and presets",
+      "preset": "Preset: {preset}",
+      "preset_default": "Default",
+      "run": "Run Analysis",
+      "empty": "No analyzers available.",
+      "run_failed": "Failed to start analysis run"
+    }
+  }
+}
