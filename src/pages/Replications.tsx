@@ -1,7 +1,10 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, type ReactNode } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useAccess } from '../lib/access';
 import { useAccessText } from '../lib/access_i18n';
+import { responseError } from '../lib/api_error';
+import { useUiText } from '../lib/ui_text';
+import text from '../../config/ui/replications.json';
 
 /**
  * Replications: one entry per registered target. The target page shows the
@@ -10,29 +13,44 @@ import { useAccessText } from '../lib/access_i18n';
  * provenance of its numbers, a comparison of selected runs down to the
  * provider responses, and the manuscript assembled from those results.
  * Values are read from the server; the page computes no statistic.
+ * Interface words come from config/ui/replications.json; dossier prose, claim
+ * keys, verdict codes and the manuscript body are stored data, shown as stored.
  */
 
 const fmt = (v: number | null | undefined, d = 3) => v === null || v === undefined || Number.isNaN(v) ? '—' : Number(v).toFixed(d);
 const fmtP = (v: number | null | undefined) => v === null || v === undefined ? '—' : v < 0.001 ? Number(v).toExponential(2) : Number(v).toFixed(4);
-const READING: Record<string, string> = { supports: 'wspierają', contradicts: 'przeczą', undecided: 'nie rozstrzygają', not_computable: 'nie da się ocenić' };
-const STATUS: Record<string, [string, string]> = { shown: ['wykazana', 'bg-red-50 text-red-900 border-red-200'], probable: ['prawdopodobna (hipoteza zgodna z danymi, nie wykazana)', 'bg-amber-50 text-amber-900 border-amber-200'],
-  unresolved: ['nierozstrzygnięta', 'bg-slate-100 text-slate-800 border-slate-300'], excluded: ['wykluczona', 'bg-emerald-50 text-emerald-900 border-emerald-200'] };
-const RUN_STATE: Record<string, string> = { COMPLETED: 'ukończony', FAILED: 'nieudany', RUNNING: 'w toku', QUEUED: 'w kolejce', CANCELLED: 'anulowany' };
+// Diagnosis statuses in display order; labels are `diag_status_<code>` in the bundle.
+const STATUS: Record<string, string> = { shown: 'bg-red-50 text-red-900 border-red-200', probable: 'bg-amber-50 text-amber-900 border-amber-200',
+  unresolved: 'bg-slate-100 text-slate-800 border-slate-300', excluded: 'bg-emerald-50 text-emerald-900 border-emerald-200' };
+type K = keyof typeof text.languages.en;
+/** Page texts plus `labelOr`: the bundle label for a code, or the stored text when the bundle has none. */
+function usePageText() {
+  const ui = useUiText(text);
+  const labelOr = (prefix: string, code: string, fallback: string, vars?: Record<string, string | number>) => { const l = ui.tCode(prefix, code, vars); return l === code ? fallback : l; };
+  return { ...ui, labelOr };
+}
+/** A bundle sentence with React nodes (a link, a code span) in its {placeholders}. */
+function rich(sentence: string, nodes: Record<string, ReactNode>): ReactNode {
+  return sentence.split(/\{([a-z0-9_]+)\}/g).map((part, i) => i % 2 ? <Fragment key={i}>{part in nodes ? nodes[part] : `{${part}}`}</Fragment> : part);
+}
+/** JSON of a response; a refusal becomes a coded error (`errorText` shows it in the reader's language). */
+const getJson = (url: string) => fetch(url).then(async r => { const d = await r.json().catch(() => null); if (!r.ok) throw responseError(r, d); return d; });
 const card = 'bg-white rounded-xl border border-slate-200 p-4 sm:p-5 space-y-3 min-w-0 overflow-hidden';
 const scroll = 'overflow-x-auto max-w-full';
 const short = (id: string) => id.slice(0, 8);
 
 export function Replications() {
-  const [targets, setTargets] = useState<any[] | null>(null), [error, setError] = useState('');
-  useEffect(() => { fetch('/api/replications').then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(d => setTargets(d.targets)).catch(e => setError(e.message)); }, []);
+  const [targets, setTargets] = useState<any[] | null>(null), [error, setError] = useState<unknown>(null);
+  const { t, errorText } = usePageText();
+  useEffect(() => { getJson('/api/replications').then(d => setTargets(d.targets)).catch(setError); }, []);
   return <div className="p-4 sm:p-8 max-w-5xl mx-auto space-y-6" data-testid="replications-page">
-    <div><h1 className="text-2xl font-semibold">Replikacje</h1><p className="text-sm text-slate-600">Każda praca zarejestrowana w konfiguracji z kryteriami ustalonymi przed danymi. Wyniki, rozbieżności i projekt pracy powstają z zapisanych przebiegów.</p></div>
-    {error && <p role="alert" className="text-red-900">{error}</p>}
-    {targets?.length === 0 && <p>Brak zarejestrowanych prac.</p>}
-    {targets?.map(t => <Link key={t.target_id} to={`/replications/${t.target_id}`} className={`${card} block hover:border-indigo-300`} data-testid={`replication-${t.target_id}`}>
-      <div className="font-semibold">{t.title}</div>
-      <div className="text-sm text-slate-600">{t.citation.authors.join(', ')} · {t.citation.journal} {t.citation.year} · doi:{t.identifier}</div>
-      <div className="text-sm">{t.has_dossier ? `${t.runs} przebiegów w tej instalacji` : 'bez opisu replikacji (dossier) — pokazywane są tylko kryteria'}</div>
+    <div><h1 className="text-2xl font-semibold">{t('title')}</h1><p className="text-sm text-slate-600">{t('intro')}</p></div>
+    {error !== null && <p role="alert" className="text-red-900 break-words">{errorText(error)}</p>}
+    {targets?.length === 0 && <p>{t('empty')}</p>}
+    {targets?.map(x => <Link key={x.target_id} to={`/replications/${x.target_id}`} className={`${card} block hover:border-indigo-300 break-words`} data-testid={`replication-${x.target_id}`}>
+      <div className="font-semibold">{x.title}</div>
+      <div className="text-sm text-slate-600">{x.citation.authors.join(', ')} · {x.citation.journal} {x.citation.year} · doi:{x.identifier}</div>
+      <div className="text-sm">{x.has_dossier ? t('runs_here', { n: x.runs }) : t('no_dossier')}</div>
     </Link>)}
   </div>;
 }
@@ -43,17 +61,18 @@ const isGeneric = (data: any) => data.dossier?.evaluation_kind === 'reference_co
 
 export function ReplicationTarget() {
   const { id } = useParams<{ id: string }>();
-  const [data, setData] = useState<any>(null), [error, setError] = useState(''), [tab, setTab] = useState<Tab>('overview');
-  useEffect(() => { fetch(`/api/replications/${id}`).then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(setData).catch(e => setError(e.message)); }, [id]);
-  if (error) return <div className="p-8" role="alert">Nie można wczytać replikacji: {error}</div>;
-  if (!data) return <div className="p-8">Wczytywanie…</div>;
+  const [data, setData] = useState<any>(null), [error, setError] = useState<unknown>(null), [tab, setTab] = useState<Tab>('overview');
+  const { t, c, errorText } = usePageText();
+  useEffect(() => { getJson(`/api/replications/${id}`).then(setData).catch(setError); }, [id]);
+  if (error !== null) return <div className="p-8 break-words" role="alert">{t('load_failed', { error: errorText(error) })}</div>;
+  if (!data) return <div className="p-8">{c('loading')}</div>;
   const generic = isGeneric(data), reload = () => fetch(`/api/replications/${id}`).then(r => r.json()).then(setData);
-  const tabs: [Tab, string][] = [['overview', 'Przegląd'], ...(generic && data.dossier.measurement ? [['measure', 'Nowy pomiar'] as [Tab, string]] : []), ['runs', `Przebiegi (${data.runs.length})`], ['protocol', `Protokół (${data.protocols.length})`], ['discrepancies', 'Rozbieżności'],
-    ...(generic ? [] : [['calibration', 'Kalibracja'] as [Tab, string]]), ['registry', 'Rejestr kryteriów'], ['evidence', 'Dowody'], ['manuscript', 'Projekt pracy']];
+  const tabs: [Tab, string][] = [['overview', t('tab_overview')], ...(generic && data.dossier.measurement ? [['measure', t('tab_measure')] as [Tab, string]] : []), ['runs', t('tab_runs', { n: data.runs.length })], ['protocol', t('tab_protocol', { n: data.protocols.length })], ['discrepancies', t('tab_discrepancies')],
+    ...(generic ? [] : [['calibration', t('tab_calibration')] as [Tab, string]]), ['registry', t('tab_registry')], ['evidence', t('tab_evidence')], ['manuscript', t('tab_manuscript')]];
   return <div className="p-4 sm:p-8 max-w-6xl mx-auto space-y-5 min-w-0" data-testid="replication-target">
-    <div className="text-sm text-slate-500"><Link to="/replications" className="underline">Replikacje</Link> / {data.target.target_id}</div>
+    <div className="text-sm text-slate-500"><Link to="/replications" className="underline">{t('title')}</Link> / {data.target.target_id}</div>
     <div><h1 className="text-xl sm:text-2xl font-semibold">{data.target.title}</h1>
-      <p className="text-sm text-slate-600">{data.target.citation.authors.join(', ')} · {data.target.citation.journal} {data.target.citation.year} · doi:{data.target.identifier}</p></div>
+      <p className="text-sm text-slate-600 break-words">{data.target.citation.authors.join(', ')} · {data.target.citation.journal} {data.target.citation.year} · doi:{data.target.identifier}</p></div>
     <div className="flex flex-wrap gap-2" role="tablist">{tabs.map(([k, l]) => <button key={k} role="tab" aria-selected={tab === k} data-testid={`tab-${k}`}
       className={`rounded px-3 py-2 text-sm ${tab === k ? 'bg-indigo-100 text-indigo-900' : 'bg-slate-100'}`} onClick={() => setTab(k)}>{l}</button>)}</div>
     {tab === 'overview' && (generic ? <GenericOverview data={data} /> : <Overview data={data} />)}
@@ -72,32 +91,44 @@ const hi = (r: any, s: string) => r.evaluation?.hi_vs_reference?.find((x: any) =
 const verdict = (r: any, k: string) => r.evaluation?.verdicts?.find((v: any) => v.claim_key === k)?.verdict ?? '—';
 
 function ProvenanceBadge({ r }: { r: any }) {
+  const { t, labelOr } = usePageText();
   const color: Record<string, string> = { recomputation_of_published_data: 'bg-sky-50 text-sky-900 border-sky-200', new_fetch: 'bg-indigo-50 text-indigo-900 border-indigo-200',
     enhanced_variant: 'bg-violet-50 text-violet-900 border-violet-200', recomputation_of_stored_data: 'bg-slate-100 text-slate-800 border-slate-300', exploratory_calibration: 'bg-amber-50 text-amber-900 border-amber-200' };
-  return <><span className={`text-xs px-2 py-0.5 rounded border ${color[r.provenance] ?? ''}`} data-testid={`provenance-${r.run_id}`}>{r.provenance_label}{r.variant ? ` · ${r.variant}` : ''}</span>
-    {r.shared && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-slate-50 text-slate-700 border-slate-300" data-testid={`shared-${r.run_id}`}>udostępniony (tylko odczyt)</span>}</>;
+  return <><span className={`text-xs px-2 py-0.5 rounded border ${color[r.provenance] ?? ''}`} data-testid={`provenance-${r.run_id}`}>{labelOr('provenance_', r.provenance, r.provenance_label)}{r.variant ? ` · ${r.variant}` : ''}</span>
+    {r.shared && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-slate-50 text-slate-700 border-slate-300" data-testid={`shared-${r.run_id}`}>{t('shared_badge')}</span>}</>;
+}
+
+/** The dossier's hypotheses (stored prose) with their kind. */
+function Hypotheses({ data, children }: { data: any; children?: ReactNode }) {
+  const { t } = usePageText();
+  return <section className={card}><h2 className="font-semibold">{t('hypotheses')}</h2>
+    <ul className="text-sm space-y-1">{data.dossier.hypotheses.map((h: any) => <li key={h.id} className="break-words"><b>{h.id}</b> ({h.kind === 'primary' ? t('hyp_primary') : t('hyp_descriptive')}): {h.statement}</li>)}</ul>{children}</section>;
+}
+
+function Deviations({ data }: { data: any }) {
+  const { t } = usePageText();
+  return <section className={card}><h2 className="font-semibold">{t('deviations')}</h2>
+    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>{t('col_item')}</th><th>{t('col_original')}</th><th>{t('col_replication')}</th><th>{t('col_reason')}</th></tr></thead>
+      <tbody>{data.dossier.deviations.map((d: any) => <tr key={d.item} className="border-t border-slate-100"><td className="pr-2">{d.item}</td><td className="pr-2">{d.original}</td><td className="pr-2">{d.replication}</td><td>{d.reason}</td></tr>)}</tbody></table></div></section>;
 }
 
 function Overview({ data }: { data: any }) {
   const primary = data.runs.filter((r: any) => data.primary_run_ids.includes(r.run_id) && r.evaluation);
   const rep = data.published?.reported_statistics;
+  const { t, tCode } = usePageText();
   return <div className="space-y-4">
-    <section className={card}><h2 className="font-semibold">Hipotezy</h2>
-      <ul className="text-sm space-y-1">{data.dossier.hypotheses.map((h: any) => <li key={h.id}><b>{h.id}</b> ({h.kind === 'primary' ? 'główna' : 'opisowa'}): {h.statement}</li>)}</ul>
-      {rep && <p className="text-sm">Publikacja: współczynnik {rep.correlation_coefficient_percent}%, p = {rep.p_value}, n = {rep.n}.</p>}</section>
-    <section className={card} data-testid="overview-verdicts"><h2 className="font-semibold">Werdykty i zgodność z publikacją (najnowsze kompletne przebiegi każdego rodzaju)</h2>
-      {primary.length === 0 ? <p className="text-sm">Brak kompletnych przebiegów. Uruchom przeliczenie danych z publikacji (Nowe badanie) albo nowy pomiar (Ustawienia → kreator).</p> :
-      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Pochodzenie liczb</th><th>Pearson Hi (p)</th><th>Spearman Hi</th><th>Pi vs Tab. 1</th><th>H-harm</th><th>Ranking</th><th>Odczyt hipotezy</th><th></th></tr></thead>
+    <Hypotheses data={data}>{rep && <p className="text-sm">{t('published_stats', { coef: rep.correlation_coefficient_percent, p: rep.p_value, n: rep.n })}</p>}</Hypotheses>
+    <section className={card} data-testid="overview-verdicts"><h2 className="font-semibold">{t('verdicts_title_jh')}</h2>
+      {primary.length === 0 ? <p className="text-sm">{t('no_complete_jh')}</p> :
+      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>{t('col_provenance')}</th><th>{t('col_pearson_hi_p')}</th><th>{t('col_spearman_hi')}</th><th>{t('col_pi_tab1')}</th><th>{t('col_h_harm')}</th><th>{t('col_ranking')}</th><th>{t('col_hypothesis_reading')}</th><th></th></tr></thead>
         <tbody>{primary.map((r: any) => <tr key={r.run_id} className="border-t border-slate-100" data-testid={`overview-row-${r.run_id}`}><td className="py-1.5 pr-2"><ProvenanceBadge r={r} /></td>
           <td className="font-mono">{fmt(hi(r, 'pearson')?.value)} ({fmtP(hi(r, 'pearson')?.p_two_sided)})</td><td className="font-mono">{fmt(hi(r, 'spearman')?.value)}</td>
           <td className="font-mono">{fmt(r.evaluation.pi_vs_published.value)}</td><td>{verdict(r, 'harm_index_vs_reference_pearson')}</td><td>{verdict(r, 'popularity_ranking_stability')}</td>
-          <td>{READING[r.evaluation.hypothesis_harm.reading]}</td><td><Link className="underline" to={`/runs/${r.run_id}/results`}>wyniki</Link></td></tr>)}</tbody></table></div>}
-      <p className="text-xs text-slate-600">„reproduced” = w progu ustalonym przed danymi. Przeliczenie danych z publikacji sprawdza obliczenia, nie jest niezależną replikacją.</p></section>
-    {(data.dossier.assessment ?? []).length > 0 && <section className={card} data-testid="assessment"><h2 className="font-semibold">Ocena</h2>
+          <td>{tCode('reading_', r.evaluation.hypothesis_harm.reading)}</td><td><Link className="underline" to={`/runs/${r.run_id}/results`}>{t('link_results')}</Link></td></tr>)}</tbody></table></div>}
+      <p className="text-xs text-slate-600">{t('note_reproduced_jh')}</p></section>
+    {(data.dossier.assessment ?? []).length > 0 && <section className={card} data-testid="assessment"><h2 className="font-semibold">{t('assessment')}</h2>
       <ul className="text-sm space-y-1">{data.dossier.assessment.map((a: any) => <li key={a.statement}>{a.statement} <span className="text-xs text-slate-500">— {a.author}{(a.evidence ?? []).map((e: any) => <a key={e.path} className="underline ml-1" href={`${data.dossier.evidence_base_url}${e.path}`} target="_blank" rel="noreferrer">{e.label}</a>)}</span></li>)}</ul></section>}
-    <section className={card}><h2 className="font-semibold">Odstępstwa od metody oryginalnej</h2>
-      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Element</th><th>Oryginał</th><th>Replikacja</th><th>Powód</th></tr></thead>
-        <tbody>{data.dossier.deviations.map((d: any) => <tr key={d.item} className="border-t border-slate-100"><td className="pr-2">{d.item}</td><td className="pr-2">{d.original}</td><td className="pr-2">{d.replication}</td><td>{d.reason}</td></tr>)}</tbody></table></div></section>
+    <Deviations data={data} />
   </div>;
 }
 
@@ -106,25 +137,36 @@ function Runs({ data }: { data: any }) {
   const [shown, setShown] = useState<string[]>(kinds), [onlyComplete, setOnlyComplete] = useState(false), [selected, setSelected] = useState<string[]>([]), [entity, setEntity] = useState<string | null>(null);
   const rows = data.runs.filter((r: any) => shown.includes(r.provenance) && (!onlyComplete || (r.status === 'COMPLETED' && (r.evaluation ? r.evaluation.complete : !!r.calibration))));
   const chosen = data.runs.filter((r: any) => selected.includes(r.run_id) && r.evaluation);
+  const { t, tCode, c, labelOr } = usePageText();
   return <div className="space-y-4">
     <section className={card}>
       <div className="flex flex-wrap gap-3 text-sm" data-testid="run-filters">{kinds.map(k => <label key={k} className="flex gap-1 items-center"><input type="checkbox" checked={shown.includes(k)}
-        onChange={e => setShown(e.target.checked ? [...shown, k] : shown.filter(x => x !== k))} />{data.dossier.provenance_labels[k] ?? k}</label>)}
-        <label className="flex gap-1 items-center"><input type="checkbox" checked={onlyComplete} onChange={e => setOnlyComplete(e.target.checked)} data-testid="only-complete" />tylko kompletne</label></div>
-      <div className={scroll}><table className="w-full text-sm" data-testid="runs-table"><thead className="text-left text-slate-500"><tr><th></th><th>Przebieg</th><th>Pochodzenie</th><th>Pobranie (UTC)</th><th>Kod</th><th>Pearson Hi</th><th>Pi vs Tab. 1</th><th>A1 (Trends)</th><th>Stan</th></tr></thead>
+        onChange={e => setShown(e.target.checked ? [...shown, k] : shown.filter(x => x !== k))} />{labelOr('provenance_', k, data.dossier.provenance_labels[k] ?? k)}</label>)}
+        <label className="flex gap-1 items-center"><input type="checkbox" checked={onlyComplete} onChange={e => setOnlyComplete(e.target.checked)} data-testid="only-complete" />{t('only_complete')}</label></div>
+      <div className={scroll}><table className="w-full text-sm" data-testid="runs-table"><thead className="text-left text-slate-500"><tr><th></th><th>{t('col_run')}</th><th>{t('col_origin')}</th><th>{t('col_acquired')}</th><th>{t('col_code')}</th><th>{t('col_pearson_hi')}</th><th>{t('col_pi_tab1')}</th><th>{t('col_a1')}</th><th>{t('col_state')}</th></tr></thead>
         <tbody>{rows.map((r: any) => <tr key={r.run_id} className="border-t border-slate-100" data-testid={`run-row-${r.run_id}`}>
-          <td>{r.evaluation && <input type="checkbox" aria-label={`porównaj ${short(r.run_id)}`} checked={selected.includes(r.run_id)} onChange={e => setSelected(e.target.checked ? [...selected, r.run_id] : selected.filter(x => x !== r.run_id))} />}</td>
+          <td>{r.evaluation && <input type="checkbox" aria-label={t('compare_aria', { id: short(r.run_id) })} checked={selected.includes(r.run_id)} onChange={e => setSelected(e.target.checked ? [...selected, r.run_id] : selected.filter(x => x !== r.run_id))} />}</td>
           <td className="font-mono py-1.5"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link>{r.source_run_id && <span className="text-xs"> ← {short(r.source_run_id)}</span>}</td>
-          <td><ProvenanceBadge r={r} />{r.data_role?.role === 'confirmation' && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-emerald-50 text-emerald-900 border-emerald-200" data-testid={`role-${r.run_id}`}>potwierdzające</span>}
-            {r.role_config?.data_role === 'confirmation' && r.data_role?.role !== 'confirmation' && <span className="ml-1 text-xs text-red-800" title={r.data_role?.reason}>nieuznane jako potwierdzające: {r.data_role?.reason}</span>}</td><td className="text-xs">{r.acquired_utc ? `${r.acquired_utc[0].slice(0, 16).replace('T', ' ')}` : '—'}</td>
-          <td className="font-mono text-xs">{r.git_commit?.slice(0, 7) ?? 'brak'}</td><td className="font-mono">{fmt(hi(r, 'pearson')?.value)}</td>
+          <td><ProvenanceBadge r={r} />{r.data_role?.role === 'confirmation' && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-emerald-50 text-emerald-900 border-emerald-200" data-testid={`role-${r.run_id}`}>{t('role_confirmation')}</span>}
+            <RoleRejected r={r} /></td><td className="text-xs">{r.acquired_utc ? `${r.acquired_utc[0].slice(0, 16).replace('T', ' ')}` : '—'}</td>
+          <td className="font-mono text-xs">{r.git_commit?.slice(0, 7) ?? c('none')}</td><td className="font-mono">{fmt(hi(r, 'pearson')?.value)}</td>
           <td className="font-mono">{fmt(r.evaluation?.pi_vs_published?.value)}</td><td className="font-mono">{fmt(r.calibration?.A1?.spearman)}</td>
-          <td className="text-xs" title={r.status}>{RUN_STATE[r.status] ?? r.status}{r.evaluation && !r.evaluation.complete ? ` · braki: ${r.evaluation.missing_entities.length}` : ''}</td></tr>)}</tbody></table></div>
-      <p className="text-xs text-slate-600">Zaznacz przebiegi JH16, aby je porównać. Kliknięcie substancji w porównaniu pokazuje zapytania i surowe odpowiedzi dostawcy.</p></section>
+          <td className="text-xs" title={r.status}>{tCode('run_state_', r.status)}{r.evaluation && !r.evaluation.complete ? t('missing_count', { n: r.evaluation.missing_entities.length }) : ''}</td></tr>)}</tbody></table></div>
+      <p className="text-xs text-slate-600">{t('runs_hint')}</p></section>
     {chosen.length > 0 && <Compare runs={chosen} onEntity={setEntity} />}
     {entity && chosen.length > 0 && <Drill runs={chosen} entity={entity} />}
     <SharePanel data={data} />
   </div>;
+}
+
+// Server reasons (services/study_protocols.ts) why a run cited as confirmatory is not accepted.
+const ROLE_REASON: Record<string, K> = { 'cites an unknown protocol': 'role_reason_unknown_protocol', 'protocol hash does not match': 'role_reason_hash_mismatch',
+  'created before the protocol was frozen': 'role_reason_before_freeze', 'not a new measurement from an allowed source': 'role_reason_not_new_measurement' };
+function RoleRejected({ r }: { r: any }) {
+  const { t } = usePageText();
+  if (r.role_config?.data_role !== 'confirmation' || r.data_role?.role === 'confirmation') return null;
+  const reason = r.data_role?.reason, key = reason ? ROLE_REASON[reason] : undefined;
+  return <span className="ml-1 text-xs text-red-800" title={reason}>{t('role_rejected', { reason: key ? t(key) : reason ?? '—' })}</span>;
 }
 
 function Compare({ runs, onEntity }: { runs: any[]; onEntity: (e: string) => void }) {
@@ -132,140 +174,150 @@ function Compare({ runs, onEntity }: { runs: any[]; onEntity: (e: string) => voi
   const val = (r: any, e: string, k: string) => r.evaluation.entities.find((x: any) => x.entity_id === e)?.[k] ?? null;
   // A missing coefficient is drawn as no bar and labelled, never as zero.
   const pearsons: (number | null)[] = runs.map(r => hi(r, 'pearson')?.value ?? null), W = 520, H = 160, max = Math.max(1, ...pearsons.filter((v): v is number => v !== null).map(Math.abs));
+  const { t } = usePageText();
   return <section className={card} data-testid="compare">
-    <h2 className="font-semibold">Porównanie {runs.length} przebiegów</h2>
-    <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-xl" role="img" aria-label="Pearson Hi wobec oceny Nutta w porównywanych przebiegach">
+    <h2 className="font-semibold">{t('compare_title', { n: runs.length })}</h2>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full max-w-xl" role="img" aria-label={t('compare_chart_aria')}>
       <line x1={40} x2={W - 10} y1={H / 2} y2={H / 2} stroke="currentColor" opacity={0.4} />
       {runs.map((r, i) => { const x = 50 + i * ((W - 70) / runs.length), w = Math.max(8, (W - 90) / runs.length - 8), v = pearsons[i];
-        if (v === null) return <g key={r.run_id}><text x={x + w / 2} y={H / 2 - 4} fontSize={10} textAnchor="middle" className="fill-slate-500">brak</text>
+        if (v === null) return <g key={r.run_id}><text x={x + w / 2} y={H / 2 - 4} fontSize={10} textAnchor="middle" className="fill-slate-500">{t('missing_short')}</text>
           <text x={x + w / 2} y={H - 2} fontSize={9} textAnchor="middle" className="fill-slate-500">{short(r.run_id)}</text></g>;
         const h = Math.abs(v) / max * (H / 2 - 20);
         return <g key={r.run_id}><rect x={x} y={v >= 0 ? H / 2 - h : H / 2} width={w} height={h} className={v >= 0 ? 'fill-indigo-500' : 'fill-rose-500'} />
           <text x={x + w / 2} y={v >= 0 ? H / 2 - h - 4 : H / 2 + h + 12} fontSize={10} textAnchor="middle" className="fill-slate-700">{fmt(v, 2)}</text>
           <text x={x + w / 2} y={H - 2} fontSize={9} textAnchor="middle" className="fill-slate-500">{short(r.run_id)}</text></g>; })}
-      <text x={4} y={14} fontSize={10} className="fill-slate-600">Pearson Hi–Nutt</text>
+      <text x={4} y={14} fontSize={10} className="fill-slate-600">{t('compare_axis')}</text>
     </svg>
-    <div className={scroll}><table className="text-xs min-w-full"><thead className="text-left text-slate-500"><tr><th className="pr-2">Substancja</th>{runs.map(r => <th key={r.run_id} className="pr-2">Hi % {short(r.run_id)}</th>)}{runs.map(r => <th key={r.run_id + 'pi'} className="pr-2">Pi % {short(r.run_id)}</th>)}<th>Nutt</th></tr></thead>
+    <div className={scroll}><table className="text-xs min-w-full"><thead className="text-left text-slate-500"><tr><th className="pr-2">{t('col_substance')}</th>{runs.map(r => <th key={r.run_id} className="pr-2">{t('col_hi_run', { id: short(r.run_id) })}</th>)}{runs.map(r => <th key={r.run_id + 'pi'} className="pr-2">{t('col_pi_run', { id: short(r.run_id) })}</th>)}<th>{t('col_nutt')}</th></tr></thead>
       <tbody>{entities.map(e => <tr key={e} className="border-t border-slate-100 hover:bg-indigo-50 cursor-pointer" onClick={() => onEntity(e)} data-testid={`compare-${e}`}><td className="pr-2 underline">{e}</td>
-        {runs.map(r => { const v = val(r, e, 'Hi'), f = (r.evaluation.entities.find((x: any) => x.entity_id === e)?.flags ?? []).length; return <td key={r.run_id} className={`pr-2 font-mono ${f ? 'text-amber-700' : ''}`}>{v === null ? 'brak' : Math.abs(v) >= 1000 ? Number(v).toExponential(2) : fmt(v, 1)}{f ? '*' : ''}</td>; })}
+        {runs.map(r => { const v = val(r, e, 'Hi'), f = (r.evaluation.entities.find((x: any) => x.entity_id === e)?.flags ?? []).length; return <td key={r.run_id} className={`pr-2 font-mono ${f ? 'text-amber-700' : ''}`}>{v === null ? t('missing_short') : Math.abs(v) >= 1000 ? Number(v).toExponential(2) : fmt(v, 1)}{f ? '*' : ''}</td>; })}
         {runs.map(r => <td key={r.run_id + 'pi'} className="pr-2 font-mono">{fmt(val(r, e, 'Pi'), 2)}</td>)}<td className="font-mono">{val(runs[0], e, 'reference_score')}</td></tr>)}</tbody></table></div>
-    <p className="text-xs text-slate-600">* wartość z flagą jakości (np. liczba równa osiągalnym wynikom, Hi powyżej 100%).</p></section>;
+    <p className="text-xs text-slate-600">{t('flag_note')}</p></section>;
 }
 
 function Drill({ runs, entity }: { runs: any[]; entity: string }) {
   const [obs, setObs] = useState<Record<string, any[]>>({});
   useEffect(() => { Promise.all(runs.map(r => fetch(`/api/runs/${r.source_run_id ?? r.run_id}/results`).then(x => x.json()).then(d => [r.run_id, d.observations.filter((o: any) => o.entityId === entity)] as const)))
     .then(list => setObs(Object.fromEntries(list))); }, [runs.map(r => r.run_id).join(','), entity]);
-  return <section className={card} data-testid="drill"><h2 className="font-semibold">{entity}: zapytania i odpowiedzi dostawcy</h2>
-    <div className={scroll}><table className="text-xs min-w-full"><thead className="text-left text-slate-500"><tr><th className="pr-2">Przebieg</th><th className="pr-2">Wymiar</th><th className="pr-2">Wysłane zapytanie</th><th className="pr-2">Liczba</th><th className="pr-2">Flagi / brak</th><th>Surowa odpowiedź</th></tr></thead>
+  const { t } = usePageText();
+  return <section className={card} data-testid="drill"><h2 className="font-semibold break-words">{t('drill_title', { entity })}</h2>
+    <div className={scroll}><table className="text-xs min-w-full"><thead className="text-left text-slate-500"><tr><th className="pr-2">{t('col_run')}</th><th className="pr-2">{t('col_dimension')}</th><th className="pr-2">{t('col_query')}</th><th className="pr-2">{t('col_count')}</th><th className="pr-2">{t('col_flags_missing')}</th><th>{t('col_raw')}</th></tr></thead>
       <tbody>{runs.flatMap(r => (obs[r.run_id] ?? []).map((o: any, i: number) => <tr key={r.run_id + i} className="border-t border-slate-100"><td className="pr-2 font-mono">{short(r.run_id)}</td><td className="pr-2">{o.queryRole}</td>
-        <td className="pr-2 font-mono">{o.queryText}</td><td className="pr-2 font-mono">{o.isMissing ? 'brak' : Number(o.numericValue).toLocaleString('pl-PL')}</td>
+        <td className="pr-2 font-mono">{o.queryText}</td><td className="pr-2 font-mono">{o.isMissing ? t('missing_short') : Number(o.numericValue).toLocaleString('pl-PL')}</td>
         <td className="pr-2">{o.isMissing ? o.missingReason : o.qualityFlags.join(', ')}</td>
-        <td>{o.rawArtifactId ? <a className="underline" href={`/api/artifacts/${o.rawArtifactId}`} target="_blank" rel="noreferrer">pobierz</a> : '—'}</td></tr>))}</tbody></table></div>
-    <p className="text-xs text-slate-600">Surowa odpowiedź to bajty zapisane przed obliczeniami (sha256 w manifeście przebiegu); klucz dostawcy nie jest w niej zapisany.</p></section>;
+        <td>{o.rawArtifactId ? <a className="underline" href={`/api/artifacts/${o.rawArtifactId}`} target="_blank" rel="noreferrer">{t('download')}</a> : '—'}</td></tr>))}</tbody></table></div>
+    <p className="text-xs text-slate-600">{t('drill_note')}</p></section>;
 }
 
-const NOT_TESTED: Record<string, string> = { 'p-value not available': 'brak wartości p', 'sequence stopped at an earlier hypothesis': 'sekwencja zatrzymana wcześniej' };
-const notTested = (reason: string) => reason.startsWith('gate closed') ? 'bramka zamknięta' : NOT_TESTED[reason] ?? reason;
-
-function protocolDesign(p: any) {
-  if (!p.body.families) return `rodzina: ${p.body.family.map((f: any) => f.label).join('; ')} · korekta ${p.body.multiplicity}`;
-  return `${p.body.families.map((f: any) => `${f.id} „${f.label}”: ${f.endpoints.map((e: any) => e.label).join(' → ')} (${f.multiplicity})`).join(' · ')} · bramkowanie ${p.body.gating === 'serial' ? 'szeregowe' : 'niezależne'}`;
-}
+// Server reasons (services/study_protocols.ts) why an endpoint was not tested.
+const NOT_TESTED: Record<string, K> = { 'p-value not available': 'not_tested_p_missing', 'sequence stopped at an earlier hypothesis': 'not_tested_sequence' };
 
 function Protocols({ data, reload }: { data: any; reload: () => void }) {
   const endpoints = data.dossier.endpoints ?? [], opts = data.protocol_options;
   // Family 0 = outside the protocol. Within a family, lower priority numbers are tested first.
+  const { t, c, labelOr, errorText } = usePageText();
+  const notTested = (reason: string) => reason.startsWith('gate closed') ? t('not_tested_gate') : NOT_TESTED[reason] ? t(NOT_TESTED[reason]) : reason;
+  const protocolDesign = (p: any) => !p.body.families
+    ? t('design_family', { endpoints: p.body.family.map((f: any) => f.label).join('; '), multiplicity: p.body.multiplicity })
+    : `${p.body.families.map((f: any) => t('design_family_item', { id: f.id, label: f.label, endpoints: f.endpoints.map((e: any) => e.label).join(' → '), multiplicity: f.multiplicity })).join(' · ')} · ${t('design_gating', { gating: p.body.gating === 'serial' ? t('gating_word_serial') : t('gating_word_independent') })}`;
   const [assign, setAssign] = useState<Record<string, { family: number; priority: number }>>(Object.fromEntries(endpoints.map((e: any, i: number) => [e.claim_key, { family: 1, priority: i + 1 }])));
-  const [meta, setMeta] = useState<{ label: string; multiplicity: string }[]>(endpoints.map((_: any, i: number) => ({ label: i === 0 ? 'Główna' : `Rodzina ${i + 1}`, multiplicity: opts.default_multiplicity })));
+  const [meta, setMeta] = useState<{ label: string; multiplicity: string }[]>(endpoints.map((_: any, i: number) => ({ label: i === 0 ? t('default_family_primary') : t('family_n', { n: i + 1 }), multiplicity: opts.default_multiplicity })));
   const [primary, setPrimary] = useState<string[]>(endpoints.slice(0, 1).map((e: any) => e.claim_key));
-  const [name, setName] = useState(`${data.target.target_id.toUpperCase()} — potwierdzenie`), [gating, setGating] = useState(opts.default_gating), [alpha, setAlpha] = useState(opts.default_alpha), [rationale, setRationale] = useState(''), [msg, setMsg] = useState('');
+  const [name, setName] = useState(t('default_protocol_name', { id: data.target.target_id.toUpperCase() })), [gating, setGating] = useState(opts.default_gating), [alpha, setAlpha] = useState(opts.default_alpha), [rationale, setRationale] = useState('');
+  const [msg, setMsg] = useState<{ hash: string } | { error: unknown } | null>(null);
   const used = [...new Set(Object.values(assign).map(a => a.family).filter(f => f > 0))].sort((a, b) => a - b);
   const families = used.map(n => ({ label: meta[n - 1].label, multiplicity: meta[n - 1].multiplicity,
     endpoints: endpoints.map((e: any) => e.claim_key).filter((k: string) => assign[k].family === n).sort((a: string, b: string) => assign[a].priority - assign[b].priority || a.localeCompare(b)) }));
   const inProtocol = (k: string) => assign[k].family > 0;
-  const freeze = async () => { setMsg(''); const r = await fetch(`/api/replications/${data.target.target_id}/protocols`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+  const freeze = async () => { setMsg(null); const r = await fetch(`/api/replications/${data.target.target_id}/protocols`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ consent: true, name, primary: primary.filter(inProtocol), families, gating, alpha: Number(alpha), rationale, expectedDossierHash: data.hashes.dossier }) });
-    const d = await r.json(); if (!r.ok) setMsg(d.message ?? `HTTP ${r.status}`); else { setMsg(`Zamrożono: ${d.protocol.content_hash.slice(0, 16)}`); reload(); } };
+    const d = await r.json().catch(() => null); if (!r.ok) setMsg({ error: responseError(r, d) }); else { setMsg({ hash: d.protocol.content_hash.slice(0, 16) }); reload(); } };
   const set = (k: string, patch: Partial<{ family: number; priority: number }>) => setAssign({ ...assign, [k]: { ...assign[k], ...patch } });
-  const access = useAccess(), { t } = useAccessText(), canFreeze = access.capabilities.includes('method.approve');
+  const access = useAccess(), { t: accessText } = useAccessText(), canFreeze = access.capabilities.includes('method.approve');
+  const optionLabel = (prefix: string, o: { id: string; label: string }) => labelOr(prefix, o.id, o.label);
   const togglePrimary = (k: string, on: boolean) => setPrimary(on ? [...new Set([...primary, k])] : primary.filter(x => x !== k));
   return <div className="space-y-4">
-    <section className={card}><h2 className="font-semibold">Protokoły zamrożone przed danymi potwierdzającymi</h2>
-      <p className="text-sm">Przebieg jest potwierdzający tylko wtedy, gdy: jest nowym pomiarem metodą wierną, powstał po zamrożeniu protokołu i cytuje go w swojej konfiguracji (id i hash). Wszystkie inne przebiegi są eksploracyjne. Wybierzesz to w kreatorze, w kroku 2 („Rola nowych danych JH16”).</p>
-      {data.protocols.length === 0 && <p className="text-sm">Brak protokołów.</p>}
+    <section className={card}><h2 className="font-semibold">{t('protocols_title')}</h2>
+      <p className="text-sm">{t('protocols_intro')}</p>
+      {data.protocols.length === 0 && <p className="text-sm">{t('no_protocols')}</p>}
       {data.protocols.map((p: any) => <div key={p.id} className="border-t pt-2 space-y-1" data-testid={`protocol-${p.id}`}>
-        <div className="text-sm"><b>{p.name}</b> · zamrożony {p.frozen_at.slice(0, 16).replace('T', ' ')} UTC · sha256 <code>{p.content_hash.slice(0, 16)}</code></div>
-        <div className="text-xs">Główne: {p.body.primary.join(', ')} · {protocolDesign(p)} · alfa {p.body.alpha} · {p.body.rationale}</div>
-        {p.evaluation.confirmation_runs.length === 0 ? <p className="text-sm" data-testid="no-confirmation">Brak przebiegów potwierdzających (eksploracyjnych: {p.evaluation.exploratory_runs}).</p> :
-        <div className={scroll}><table className="w-full text-sm" data-testid="protocol-results"><thead className="text-left text-slate-500"><tr><th>Przebieg</th><th>Rodzina.priorytet</th><th>Porównanie</th><th>Główne</th><th>Werdykt</th><th>p</th><th>p skorygowane</th><th>&lt; alfa</th></tr></thead>
+        <div className="text-sm break-words"><b>{p.name}</b> · {t('frozen_at', { at: p.frozen_at.slice(0, 16).replace('T', ' ') })} · sha256 <code>{p.content_hash.slice(0, 16)}</code></div>
+        <div className="text-xs break-words">{t('primary_list', { list: p.body.primary.join(', ') })} · {protocolDesign(p)} · {t('alpha_value', { alpha: p.body.alpha })} · {p.body.rationale}</div>
+        {p.evaluation.confirmation_runs.length === 0 ? <p className="text-sm" data-testid="no-confirmation">{t('no_confirmation', { n: p.evaluation.exploratory_runs })}</p> :
+        <div className={scroll}><table className="w-full text-sm" data-testid="protocol-results"><thead className="text-left text-slate-500"><tr><th>{t('col_run')}</th><th>{t('col_family_priority')}</th><th>{t('col_comparison')}</th><th>{t('col_primary')}</th><th>{t('col_verdict')}</th><th>{t('col_p')}</th><th>{t('col_p_adjusted')}</th><th>{t('col_below_alpha')}</th></tr></thead>
           <tbody>{p.evaluation.confirmation_runs.flatMap((r: any) => r.endpoints.map((e: any) => <tr key={r.run_id + e.claim_key} className="border-t border-slate-100"><td className="font-mono"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td>
-            <td className="font-mono">{e.priority === null ? e.family_id : `${e.family_id}.${e.priority}`}</td><td>{e.label}</td><td>{e.primary ? 'tak' : 'nie'}</td><td>{e.verdict}</td><td className="font-mono">{fmtP(e.p_raw)}</td><td className="font-mono">{fmtP(e.p_adjusted)}</td>
-            <td>{e.tested === false ? <span title={e.not_tested_reason}>nietestowane: {notTested(e.not_tested_reason)}</span> : e.significant ? 'tak' : 'nie'}</td></tr>))}</tbody></table></div>}
+            <td className="font-mono">{e.priority === null ? e.family_id : `${e.family_id}.${e.priority}`}</td><td>{e.label}</td><td>{e.primary ? c('yes') : c('no')}</td><td>{e.verdict}</td><td className="font-mono">{fmtP(e.p_raw)}</td><td className="font-mono">{fmtP(e.p_adjusted)}</td>
+            <td>{e.tested === false ? <span title={e.not_tested_reason}>{t('not_tested', { reason: notTested(e.not_tested_reason) })}</span> : e.significant ? c('yes') : c('no')}</td></tr>))}</tbody></table></div>}
       </div>)}</section>
-    {!canFreeze ? <p className="text-sm text-slate-600" data-testid="protocol-readonly">{t('readonly_protocol_freeze')}</p> :
-    <section className={card} data-testid="protocol-form"><h2 className="font-semibold">Zamroź nowy protokół</h2>
-      <label className="block text-sm">Nazwa<input className="border rounded px-2 py-1 w-full" value={name} onChange={e => setName(e.target.value)} /></label>
-      <fieldset className="text-sm space-y-1"><legend className="font-medium">Porównania: rodzina, priorytet, punkt główny</legend>
-        <p className="text-xs text-slate-600">Rodziny są testowane w kolejności numerów; w rodzinie mniejszy priorytet idzie pierwszy (znaczenie ma przy korekcie „Sekwencja ustalona” i przy bramkowaniu szeregowym).</p>
+    {!canFreeze ? <p className="text-sm text-slate-600" data-testid="protocol-readonly">{accessText('readonly_protocol_freeze')}</p> :
+    <section className={card} data-testid="protocol-form"><h2 className="font-semibold">{t('freeze_title')}</h2>
+      <label className="block text-sm">{t('name_label')}<input className="border rounded px-2 py-1 w-full" value={name} onChange={e => setName(e.target.value)} /></label>
+      <fieldset className="text-sm space-y-1 min-w-0"><legend className="font-medium">{t('comparisons_legend')}</legend>
+        <p className="text-xs text-slate-600">{t('order_hint')}</p>
         {endpoints.map((e: any) => <div key={e.claim_key} className="flex flex-wrap items-center gap-3" data-testid={`endpoint-${e.claim_key}`}>
-          <span className="min-w-[12rem]">{e.label} ({e.hypothesis})</span>
-          <label>Rodzina <select className="border rounded" value={assign[e.claim_key].family} onChange={x => set(e.claim_key, { family: Number(x.target.value) })} data-testid={`family-${e.claim_key}`}>
-            <option value={0}>poza protokołem</option>{endpoints.map((_: any, i: number) => <option key={i} value={i + 1}>{i + 1}</option>)}</select></label>
-          <label>Priorytet <input className="border rounded w-14 px-1" type="number" min="1" value={assign[e.claim_key].priority} onChange={x => set(e.claim_key, { priority: Number(x.target.value) })} data-testid={`priority-${e.claim_key}`} /></label>
-          <label className="flex gap-1"><input type="checkbox" disabled={!inProtocol(e.claim_key)} checked={inProtocol(e.claim_key) && primary.includes(e.claim_key)} onChange={x => togglePrimary(e.claim_key, x.target.checked)} />główny</label></div>)}</fieldset>
-      {used.map(n => <div key={n} className="flex flex-wrap gap-3 text-sm" data-testid={`family-settings-${n}`}><b>Rodzina {n}</b>
-        <label>Nazwa <input className="border rounded px-1" value={meta[n - 1].label} onChange={x => setMeta(meta.map((m, i) => i === n - 1 ? { ...m, label: x.target.value } : m))} /></label>
-        <label>Korekta <select className="border rounded" value={meta[n - 1].multiplicity} onChange={x => setMeta(meta.map((m, i) => i === n - 1 ? { ...m, multiplicity: x.target.value } : m))} data-testid={`multiplicity-${n}`}>
-          {opts.multiplicity_procedures.map((m: any) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label></div>)}
+          <span className="min-w-0 sm:min-w-[12rem] break-words">{e.label} ({e.hypothesis})</span>
+          <label>{t('family_label')} <select className="border rounded" value={assign[e.claim_key].family} onChange={x => set(e.claim_key, { family: Number(x.target.value) })} data-testid={`family-${e.claim_key}`}>
+            <option value={0}>{t('outside_protocol')}</option>{endpoints.map((_: any, i: number) => <option key={i} value={i + 1}>{i + 1}</option>)}</select></label>
+          <label>{t('priority_label')} <input className="border rounded w-14 px-1" type="number" min="1" value={assign[e.claim_key].priority} onChange={x => set(e.claim_key, { priority: Number(x.target.value) })} data-testid={`priority-${e.claim_key}`} /></label>
+          <label className="flex gap-1"><input type="checkbox" disabled={!inProtocol(e.claim_key)} checked={inProtocol(e.claim_key) && primary.includes(e.claim_key)} onChange={x => togglePrimary(e.claim_key, x.target.checked)} />{t('primary_checkbox')}</label></div>)}</fieldset>
+      {used.map(n => <div key={n} className="flex flex-wrap gap-3 text-sm min-w-0" data-testid={`family-settings-${n}`}><b>{t('family_n', { n })}</b>
+        <label>{t('name_label')} <input className="border rounded px-1" value={meta[n - 1].label} onChange={x => setMeta(meta.map((m, i) => i === n - 1 ? { ...m, label: x.target.value } : m))} /></label>
+        <label className="min-w-0 max-w-full">{t('correction_label')} <select className="border rounded max-w-full" value={meta[n - 1].multiplicity} onChange={x => setMeta(meta.map((m, i) => i === n - 1 ? { ...m, multiplicity: x.target.value } : m))} data-testid={`multiplicity-${n}`}>
+          {opts.multiplicity_procedures.map((m: any) => <option key={m.id} value={m.id}>{optionLabel('multiplicity_', m)}</option>)}</select></label></div>)}
       <div className="flex flex-wrap gap-3 text-sm">
-        {used.length > 1 && <label>Bramkowanie między rodzinami <select className="border rounded" value={gating} onChange={e => setGating(e.target.value)} data-testid="gating">{opts.gating_procedures.map((g: any) => <option key={g.id} value={g.id}>{g.label}</option>)}</select></label>}
-        <label>Alfa <input className="border rounded w-20 px-1" type="number" step="0.001" min="0" max="1" value={alpha} onChange={e => setAlpha(e.target.value)} /></label></div>
-      <p className="text-xs text-slate-600" data-testid="protocol-preview">Zostanie zamrożone: {families.length ? families.map((f, i) => `${i + 1}. ${f.label}: ${f.endpoints.join(' → ')} (${f.multiplicity})`).join('; ') : 'brak porównań'}{families.length > 1 ? `; bramkowanie ${gating}` : ''}.</p>
-      <label className="block text-sm">Uzasadnienie (wymagane)<textarea className="border rounded w-full px-2 py-1" rows={3} value={rationale} onChange={e => setRationale(e.target.value)} data-testid="protocol-rationale" /></label>
-      <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!rationale.trim() || !families.length || !primary.some(inProtocol)} onClick={freeze} data-testid="freeze-protocol">Zamroź protokół (nieodwracalne)</button>
-      {msg && <p role="status" className="text-sm">{msg}</p>}</section>}
+        {used.length > 1 && <label className="min-w-0 max-w-full">{t('gating_label')} <select className="border rounded max-w-full" value={gating} onChange={e => setGating(e.target.value)} data-testid="gating">{opts.gating_procedures.map((g: any) => <option key={g.id} value={g.id}>{optionLabel('gating_', g)}</option>)}</select></label>}
+        <label>{t('alpha_label')} <input className="border rounded w-20 px-1" type="number" step="0.001" min="0" max="1" value={alpha} onChange={e => setAlpha(e.target.value)} /></label></div>
+      <p className="text-xs text-slate-600 break-words" data-testid="protocol-preview">{t('preview', { list: families.length ? families.map((f, i) => `${i + 1}. ${f.label}: ${f.endpoints.join(' → ')} (${f.multiplicity})`).join('; ') : t('preview_none'), gating: families.length > 1 ? t('preview_gating', { gating }) : '' })}</p>
+      <label className="block text-sm">{t('rationale_label')}<textarea className="border rounded w-full px-2 py-1" rows={3} value={rationale} onChange={e => setRationale(e.target.value)} data-testid="protocol-rationale" /></label>
+      <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!rationale.trim() || !families.length || !primary.some(inProtocol)} onClick={freeze} data-testid="freeze-protocol">{t('freeze_button')}</button>
+      {msg && <p role="status" className="text-sm break-words">{'hash' in msg ? t('frozen_msg', { hash: msg.hash }) : errorText(msg.error)}</p>}</section>}
   </div>;
 }
 
 function Discrepancies({ data }: { data: any }) {
   const base = data.dossier.evidence_base_url;
-  return <section className={card} data-testid="discrepancies"><h2 className="font-semibold">Rozbieżności i ich przyczyny</h2>
-    <div className="flex flex-wrap gap-2 text-xs">{Object.entries(STATUS).map(([k, [l, c]]) => <span key={k} className={`px-2 py-0.5 rounded border ${c}`}>{l}</span>)}</div>
-    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Możliwa przyczyna</th><th>Test rozróżniający</th><th>Status</th><th>Dowód</th></tr></thead>
+  const { t, tCode } = usePageText();
+  return <section className={card} data-testid="discrepancies"><h2 className="font-semibold">{t('discrepancies_title')}</h2>
+    <div className="flex flex-wrap gap-2 text-xs">{Object.entries(STATUS).map(([k, cls]) => <span key={k} className={`px-2 py-0.5 rounded border ${cls}`}>{tCode('diag_status_', k)}</span>)}</div>
+    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>{t('col_cause')}</th><th>{t('col_test')}</th><th>{t('col_status')}</th><th>{t('col_evidence')}</th></tr></thead>
       <tbody>{data.dossier.diagnosis.map((d: any, i: number) => <tr key={d.cause} className="border-t border-slate-100 align-top" data-testid={`diagnosis-${d.status}`}><td className="py-1.5 pr-2">{d.cause}</td><td className="pr-2">{d.test}</td>
-        <td className="pr-2"><span className={`text-xs px-2 py-0.5 rounded border ${STATUS[d.status]?.[1] ?? ''}`}>{STATUS[d.status]?.[0] ?? d.status}</span></td>
+        <td className="pr-2"><span className={`text-xs px-2 py-0.5 rounded border ${STATUS[d.status] ?? ''}`}>{tCode('diag_status_', d.status)}</span></td>
         <td className="text-xs">{(d.evidence ?? []).map((e: any) => e.path ? <a key={e.path} className="underline block" href={`${base}${e.path}`} target="_blank" rel="noreferrer">{e.label}</a>
           : e.runs_kind ? <RunsEvidence key={e.label} label={e.label} ids={data.diagnosis_evidence_runs?.[i] ?? []} /> : <span key={e.label} className="block">{e.label}</span>)}{!(d.evidence ?? []).length && '—'}</td></tr>)}</tbody></table></div>
-    <h3 className="font-medium text-sm">Ograniczenia</h3><ul className="text-sm list-disc ml-5">{data.dossier.limitations.map((l: string) => <li key={l}>{l}</li>)}</ul></section>;
+    <h3 className="font-medium text-sm">{t('limitations')}</h3><ul className="text-sm list-disc ml-5">{data.dossier.limitations.map((l: string) => <li key={l}>{l}</li>)}</ul></section>;
 }
 
 // Evidence that names a kind of run lists the complete runs of that kind stored here, or says there are none.
 function RunsEvidence({ label, ids }: { label: string; ids: string[] }) {
+  const { t } = usePageText();
   return <span className="block" data-testid="runs-evidence">{label}: {ids.length ? ids.map(id => <Link key={id} className="underline mr-1 font-mono" to={`/runs/${id}/results`}>{short(id)}</Link>)
-    : <span className="text-amber-900">brak kompletnych przebiegów tego rodzaju w tej instalacji (luka w zakładce „Dowody”)</span>}</span>;
+    : <span className="text-amber-900">{t('runs_evidence_none')}</span>}</span>;
 }
 
 function Calibration({ data }: { data: any }) {
   const cal = data.runs.filter((r: any) => r.calibration && r.status === 'COMPLETED');
-  if (!cal.length) return <section className={card}><p className="text-sm">Brak przebiegów kalibracji. Uruchom ją w Ustawieniach → kreator → krok 2 „Kalibracja przez Google Trends”.</p></section>;
+  const { t } = usePageText();
+  if (!cal.length) return <section className={card}><p className="text-sm">{t('calibration_none')}</p></section>;
   const ids = Object.keys(cal[0].calibration);
-  return <section className={card} data-testid="calibration"><h2 className="font-semibold">Kalibracja eksploracyjna (Google Trends)</h2>
-    <p className="text-sm">Względne zainteresowanie wyszukiwaniem, nie liczba wyników; porównania rang (Spearman), bez werdyktów. Próbka Trends zmienia się między pobraniami.</p>
-    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Przebieg</th><th>Region</th>{ids.map(i => <th key={i}>{i}</th>)}</tr></thead>
+  return <section className={card} data-testid="calibration"><h2 className="font-semibold">{t('calibration_title')}</h2>
+    <p className="text-sm">{t('calibration_intro')}</p>
+    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>{t('col_run')}</th><th>{t('col_region')}</th>{ids.map(i => <th key={i}>{i}</th>)}</tr></thead>
       <tbody>{cal.map((r: any) => <tr key={r.run_id} className="border-t border-slate-100"><td className="font-mono py-1.5"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td><td>{r.variant}</td>
-        {ids.map(i => <td key={i} className="font-mono">{r.calibration[i].spearman === null ? 'nieobliczalne' : fmt(r.calibration[i].spearman)}<span className="text-xs text-slate-500"> n{r.calibration[i].n}</span></td>)}</tr>)}</tbody></table></div>
-    <p className="text-xs text-slate-600">A1: czerwiec 2014 vs Pi z Tabeli 1 · A2: zmiana 2012→2014 vs Tabela 2 · A3: ostatnie 12 mies. vs Pi porównywanego przebiegu · A3b: bez liczb „osiągalne wyniki” · A4: zmiana 2014→dziś.</p></section>;
+        {ids.map(i => <td key={i} className="font-mono">{r.calibration[i].spearman === null ? t('not_computable') : fmt(r.calibration[i].spearman)}<span className="text-xs text-slate-500"> n{r.calibration[i].n}</span></td>)}</tr>)}</tbody></table></div>
+    <p className="text-xs text-slate-600">{t('calibration_legend')}</p></section>;
 }
 
 function Registry({ data }: { data: any }) {
-  return <section className={card} data-testid="registry"><h2 className="font-semibold">Rejestr kryteriów (ustalone przed danymi)</h2>
-    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Twierdzenie</th><th>Statystyka</th><th>Wartość w publikacji</th><th>Kryterium</th></tr></thead>
+  const { t } = usePageText(), protocolLink = <a className="underline break-all" href={`${data.dossier.evidence_base_url}${data.dossier.protocol.document}`} target="_blank" rel="noreferrer">{data.dossier.protocol.document}</a>;
+  return <section className={card} data-testid="registry"><h2 className="font-semibold">{t('registry_title')}</h2>
+    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>{t('col_claim')}</th><th>{t('col_statistic')}</th><th>{t('col_published_value')}</th><th>{t('col_criterion')}</th></tr></thead>
       <tbody>{data.target.claims.map((c: any) => <tr key={c.claim_key} className="border-t border-slate-100"><td className="py-1.5 pr-2 font-mono">{c.claim_key}</td><td>{c.statistic}</td><td className="font-mono">{c.claimed_value_numeric}</td>
         <td>{c.tolerance_kind === 'interval' ? `[${c.tolerance_value}; ${c.interval_upper}]` : `≥ ${c.tolerance_value}`}</td></tr>)}</tbody></table></div>
-    <p className="text-sm">Pasma zarejestrowano w commicie <code>{data.target._pre_registration?.bands_proposed_in_commit?.slice(0, 7)}</code>; reguła odczytu hipotezy: {data.interpretation?.version} (commit <code>{data.interpretation?._pre_registration?.registered_in_commit}</code>); protokół: <a className="underline" href={`${data.dossier.evidence_base_url}${data.dossier.protocol.document}`} target="_blank" rel="noreferrer">{data.dossier.protocol.document}</a>.</p>
-    {data.interpretation && <p className="text-sm">Odczyt H-harm: wspierają, gdy Pearson ≥ {data.interpretation.hypothesis_harm.supports.pearson_min} i p &lt; {data.interpretation.hypothesis_harm.supports.p_two_sided_below}; przeczą, gdy Pearson &lt; {data.interpretation.hypothesis_harm.contradicts.pearson_below} i Spearman &lt; {data.interpretation.hypothesis_harm.contradicts.spearman_below}; wymagane n = {data.interpretation.required_complete_n}.</p>}
-    <p className="text-xs font-mono break-all">sha256 kryteriów {data.hashes.claims} · interpretacji {data.hashes.interpretation} · dossier {data.hashes.dossier}</p></section>;
+    <p className="text-sm break-words">{rich(t('registry_bands', { version: data.interpretation?.version ?? '' }), { bands: <code>{data.target._pre_registration?.bands_proposed_in_commit?.slice(0, 7)}</code>,
+      commit: <code>{data.interpretation?._pre_registration?.registered_in_commit}</code>, link: protocolLink })}</p>
+    {data.interpretation && <p className="text-sm">{t('reading_rule_jh', { pearson_min: data.interpretation.hypothesis_harm.supports.pearson_min, p_below: data.interpretation.hypothesis_harm.supports.p_two_sided_below,
+      pearson_below: data.interpretation.hypothesis_harm.contradicts.pearson_below, spearman_below: data.interpretation.hypothesis_harm.contradicts.spearman_below, n: data.interpretation.required_complete_n })}</p>}
+    <p className="text-xs font-mono break-all">{t('hashes_line', { claims: data.hashes.claims, interpretation: data.hashes.interpretation, dossier: data.hashes.dossier })}</p></section>;
 }
 
 // ---------------------------------------------------------------- general targets
@@ -276,55 +328,59 @@ const pubText = (x: any) => x ? `r = ${fmt(x.value, 2)} (n = ${x.n}${x.p !== und
 
 function GenericOverview({ data }: { data: any }) {
   const primary = data.runs.filter((r: any) => data.primary_run_ids.includes(r.run_id) && r.evaluation?.comparisons);
+  const { t, tCode } = usePageText();
   return <div className="space-y-4">
-    <section className={card}><h2 className="font-semibold">Hipotezy</h2>
-      <ul className="text-sm space-y-1">{data.dossier.hypotheses.map((h: any) => <li key={h.id}><b>{h.id}</b> ({h.kind === 'primary' ? 'główna' : 'opisowa'}): {h.statement}</li>)}</ul></section>
-    <section className={card} data-testid="overview-verdicts"><h2 className="font-semibold">Werdykty i zgodność z publikacją</h2>
-      {primary.length === 0 ? <p className="text-sm">Brak kompletnych przebiegów. Nowy pomiar uruchomisz w zakładce „Nowy pomiar”.</p> :
-      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Przebieg</th><th>Porównanie</th><th>Publikacja</th><th>Nowy pomiar</th><th>n</th><th>Werdykt</th><th>Odczyt hipotezy</th></tr></thead>
+    <Hypotheses data={data} />
+    <section className={card} data-testid="overview-verdicts"><h2 className="font-semibold">{t('verdicts_title')}</h2>
+      {primary.length === 0 ? <p className="text-sm">{t('no_complete_generic')}</p> :
+      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>{t('col_run')}</th><th>{t('col_comparison')}</th><th>{t('col_publication')}</th><th>{t('col_new_measurement')}</th><th>{t('col_n')}</th><th>{t('col_verdict')}</th><th>{t('col_hypothesis_reading')}</th></tr></thead>
         <tbody>{primary.flatMap((r: any) => r.evaluation.comparisons.map((c: any) => { const k = claimFor(data, c.id); return <tr key={r.run_id + c.id} className="border-t border-slate-100" data-testid={`overview-row-${r.run_id}`}>
           <td className="py-1.5 pr-2"><ProvenanceBadge r={r} /> <Link className="underline font-mono text-xs" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td><td className="pr-2">{c.label}</td><td className="pr-2">{pubText(pubFor(data, c.id))}</td>
           <td className="font-mono pr-2">{c.statistic} {fmt(c.value)} (p {fmtP(c.p_two_sided)})</td><td className="font-mono">{c.n}{c.required_n ? `/${c.required_n}` : ''}</td>
-          <td>{k ? verdict(r, k) : '—'}</td><td>{READING[reading(r, c.id)] ?? '—'}</td></tr>; }))}</tbody></table></div>}
-      <p className="text-xs text-slate-600">„reproduced” = wartość w paśmie ustalonym przed danymi (zakładka „Rejestr kryteriów”).</p></section>
-    {(data.dossier.not_replicated ?? []).length > 0 && <section className={card} data-testid="not-replicated"><h2 className="font-semibold">Czego nie powtórzono</h2>
+          <td>{k ? verdict(r, k) : '—'}</td><td>{reading(r, c.id) ? tCode('reading_', reading(r, c.id)) : '—'}</td></tr>; }))}</tbody></table></div>}
+      <p className="text-xs text-slate-600">{t('note_reproduced_generic')}</p></section>
+    {(data.dossier.not_replicated ?? []).length > 0 && <section className={card} data-testid="not-replicated"><h2 className="font-semibold">{t('not_replicated_title')}</h2>
       <ul className="text-sm space-y-1">{data.dossier.not_replicated.map((x: any) => <li key={x.endpoint}><b>{x.endpoint}</b>: {x.reason}</li>)}</ul></section>}
-    {(data.dossier.assessment ?? []).length > 0 && <section className={card} data-testid="assessment"><h2 className="font-semibold">Ocena</h2>
+    {(data.dossier.assessment ?? []).length > 0 && <section className={card} data-testid="assessment"><h2 className="font-semibold">{t('assessment')}</h2>
       <ul className="text-sm space-y-1">{data.dossier.assessment.map((a: any) => <li key={a.statement}>{a.statement} <span className="text-xs text-slate-500">— {a.author}</span></li>)}</ul></section>}
-    <section className={card}><h2 className="font-semibold">Odstępstwa od metody oryginalnej</h2>
-      <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Element</th><th>Oryginał</th><th>Replikacja</th><th>Powód</th></tr></thead>
-        <tbody>{data.dossier.deviations.map((d: any) => <tr key={d.item} className="border-t border-slate-100"><td className="pr-2">{d.item}</td><td className="pr-2">{d.original}</td><td className="pr-2">{d.replication}</td><td>{d.reason}</td></tr>)}</tbody></table></div></section>
+    <Deviations data={data} />
   </div>;
 }
 
 function Measurement({ data, reload }: { data: any; reload: () => void }) {
-  const [m, setM] = useState<any>(null), [error, setError] = useState(''), [approved, setApproved] = useState(false), [role, setRole] = useState('exploratory'), [msg, setMsg] = useState(''), [runId, setRunId] = useState(''), [status, setStatus] = useState('');
+  const [m, setM] = useState<any>(null), [error, setError] = useState<unknown>(null), [approved, setApproved] = useState(false), [role, setRole] = useState('exploratory'), [runId, setRunId] = useState(''), [status, setStatus] = useState('');
+  // A refusal of the launch: its reason code (when the server names one) and the server's own sentence.
+  const [refusal, setRefusal] = useState<{ code?: string; params?: Record<string, string | number>; message: string } | null>(null);
   const id = data.target.target_id;
-  const access = useAccess(), { t } = useAccessText(), canRun = access.capabilities.includes('run.create');
-  useEffect(() => { fetch(`/api/replications/${id}/measurement`).then(async r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))).then(d => setM(d.measurement)).catch(e => setError(e.message)); }, [id]);
+  const access = useAccess(), { t: accessText } = useAccessText(), canRun = access.capabilities.includes('run.create');
+  const { t, tCode, c, errorText, labelOr } = usePageText();
+  /** A blocking or refusal reason in the reader's language when its code has a label; the server's sentence otherwise. */
+  const reasonText = (code: string | undefined, params: Record<string, string | number> | undefined, message: string) => code ? labelOr('blocked_', code, message, params) : message;
+  useEffect(() => { getJson(`/api/replications/${id}/measurement`).then(d => setM(d.measurement)).catch(setError); }, [id]);
   useEffect(() => { if (!runId) return; const t = setInterval(async () => { const r = (await (await fetch(`/api/runs/${runId}`)).json()).run; setStatus(r.status);
     if (['COMPLETED', 'FAILED'].includes(r.status)) { clearInterval(t); reload(); } }, 1500); return () => clearInterval(t); }, [runId]);
-  if (error) return <p role="alert">{error}</p>;
-  if (!m) return <p>Wczytywanie…</p>;
-  const launch = async () => { setMsg(''); const protocolId = role.startsWith('protocol:') ? role.slice('protocol:'.length) : undefined;
+  if (error !== null) return <p role="alert" className="break-words">{errorText(error)}</p>;
+  if (!m) return <p>{c('loading')}</p>;
+  const launch = async () => { setRefusal(null); const protocolId = role.startsWith('protocol:') ? role.slice('protocol:'.length) : undefined;
     const r = await fetch(`/api/replications/${id}/measurement`, { method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ consent: true, expectedPresetHash: m.preset_hash, dataRole: protocolId ? 'confirmation' : 'exploratory', ...(protocolId ? { protocolId } : {}) }) });
-    const d = await r.json(); if (!r.ok) setMsg(d.message ?? `HTTP ${r.status}`); else { setRunId(d.runId); setStatus('QUEUED'); } };
-  return <section className={card} data-testid="measurement"><h2 className="font-semibold">Nowy pomiar: {m.label}</h2>
-    <dl className="text-sm grid grid-cols-1 sm:grid-cols-[12rem_1fr] gap-x-3 gap-y-1">
-      <dt className="text-slate-500">Źródło</dt><dd>{m.source_id} · {Object.entries(m.provider_params).map(([k, v]) => `${k}=${v}`).join(', ')}</dd>
-      {m.queries.map((q: any) => <Fragment key={q.dimension}><dt className="text-slate-500">Zapytanie „{q.dimension}”</dt><dd className="break-words">{q.terms.join(' + ')}</dd></Fragment>)}
-      <dt className="text-slate-500">Metoda</dt><dd>{m.method_id}: {m.comparisons.map((c: any) => `${c.label} (${c.statistic}; referencja ${c.reference_ref}, sha256 ${c.reference_hash.slice(0, 12)})`).join('; ')}</dd>
-      <dt className="text-slate-500">Koszt</dt><dd data-testid="measurement-cost">{m.requests} zapytanie SerpApi; limit dzienny {m.daily_limit}, dziś zostało {m.left_today}</dd>
-      <dt className="text-slate-500">Preset</dt><dd className="font-mono text-xs break-all">{m.preset_id} {m.preset_version} · sha256 {m.preset_hash}</dd></dl>
-    {!canRun ? <p className="text-sm text-slate-600" data-testid="measurement-readonly">{t('readonly_measurement')}</p> : <>
-    <label className="block text-sm">Rola nowych danych <select className="border rounded" value={role} onChange={e => setRole(e.target.value)} data-testid="measurement-role">
-      <option value="exploratory">eksploracyjne (domyślnie)</option>{data.protocols.map((p: any) => <option key={p.id} value={`protocol:${p.id}`}>potwierdzające wg protokołu „{p.name}” ({p.frozen_at.slice(0, 16).replace('T', ' ')})</option>)}</select></label>
-    <label className="flex gap-2 text-sm"><input type="checkbox" checked={approved} onChange={e => setApproved(e.target.checked)} data-testid="approve-preset" />Zatwierdzam ten preset (hash powyżej) i jego metodę dla tego pomiaru</label>
-    {m.blocked && <p className="text-sm text-amber-900" data-testid="measurement-blocked">{m.blocked}</p>}
-    <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!approved || !!m.blocked || !!runId} onClick={launch} data-testid="launch-measurement">Uruchom pomiar</button>
-    {msg && <p role="alert" className="text-sm">{msg}</p>}</>}
-    {runId && <p role="status" className="text-sm" data-testid="measurement-status">Przebieg <Link className="underline font-mono" to={`/runs/${runId}/results`}>{short(runId)}</Link>: {status}</p>}</section>;
+    const d = await r.json().catch(() => null);
+    if (!r.ok) setRefusal({ code: d?.reason?.code, params: d?.reason?.params, message: d?.message ?? responseError(r, d).message }); else { setRunId(d.runId); setStatus('QUEUED'); } };
+  return <section className={card} data-testid="measurement"><h2 className="font-semibold break-words">{t('measurement_title', { label: m.label })}</h2>
+    <dl className="text-sm grid grid-cols-1 sm:grid-cols-[12rem_1fr] gap-x-3 gap-y-1 min-w-0">
+      <dt className="text-slate-500">{t('m_source')}</dt><dd className="break-words">{m.source_id} · {Object.entries(m.provider_params).map(([k, v]) => `${k}=${v}`).join(', ')}</dd>
+      {m.queries.map((q: any) => <Fragment key={q.dimension}><dt className="text-slate-500">{t('m_query', { dimension: q.dimension })}</dt><dd className="break-words">{q.terms.join(' + ')}</dd></Fragment>)}
+      <dt className="text-slate-500">{t('m_method')}</dt><dd className="break-words">{m.method_id}: {m.comparisons.map((x: any) => t('m_comparison_item', { label: x.label, statistic: x.statistic, ref: x.reference_ref, hash: x.reference_hash.slice(0, 12) })).join('; ')}</dd>
+      <dt className="text-slate-500">{t('m_cost')}</dt><dd data-testid="measurement-cost">{t('m_cost_value', { requests: m.requests, limit: m.daily_limit, left: m.left_today })}</dd>
+      <dt className="text-slate-500">{t('m_preset')}</dt><dd className="font-mono text-xs break-all">{m.preset_id} {m.preset_version} · sha256 {m.preset_hash}</dd></dl>
+    {!canRun ? <p className="text-sm text-slate-600" data-testid="measurement-readonly">{accessText('readonly_measurement')}</p> : <>
+    <label className="block text-sm min-w-0">{t('role_label')} <select className="border rounded max-w-full" value={role} onChange={e => setRole(e.target.value)} data-testid="measurement-role">
+      <option value="exploratory">{t('role_exploratory')}</option>{data.protocols.map((p: any) => <option key={p.id} value={`protocol:${p.id}`}>{t('role_protocol', { name: p.name, at: p.frozen_at.slice(0, 16).replace('T', ' ') })}</option>)}</select></label>
+    <label className="flex gap-2 text-sm"><input type="checkbox" checked={approved} onChange={e => setApproved(e.target.checked)} data-testid="approve-preset" />{t('approve_preset')}</label>
+    {m.blocked && <p className="text-sm text-amber-900 break-words" data-testid="measurement-blocked">{reasonText(m.blocked_reason?.code, m.blocked_reason?.params, m.blocked)}</p>}
+    <button className="px-3 py-1.5 rounded bg-indigo-600 text-white disabled:opacity-50" disabled={!approved || !!m.blocked || !!runId} onClick={launch} data-testid="launch-measurement">{t('launch_button')}</button>
+    {refusal && <p role="alert" className="text-sm break-words">{reasonText(refusal.code, refusal.params, refusal.message)}</p>}</>}
+    {runId && <p role="status" className="text-sm" data-testid="measurement-status">{rich(t('measurement_status', { status: tCode('run_state_', status) }), { run: <Link className="underline font-mono" to={`/runs/${runId}/results`}>{short(runId)}</Link> })}</p>}</section>;
 }
 
 function GenericRuns({ data }: { data: any }) {
@@ -336,8 +392,8 @@ function GenericRuns({ data }: { data: any }) {
       <tbody>{data.runs.map((r: any) => <tr key={r.run_id} className="border-t border-slate-100" data-testid={`run-row-${r.run_id}`}>
         <td>{r.evaluation?.comparisons && <input type="radio" name="run" aria-label={`pokaż ${short(r.run_id)}`} checked={selected === r.run_id} onChange={() => { setSelected(r.run_id); setEntity(null); }} />}</td>
         <td className="font-mono py-1.5"><Link className="underline" to={`/runs/${r.run_id}/results`}>{short(r.run_id)}</Link></td>
-        <td><ProvenanceBadge r={r} />{r.data_role?.role === 'confirmation' && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-emerald-50 text-emerald-900 border-emerald-200" data-testid={`role-${r.run_id}`}>potwierdzające</span>}
-          {r.role_config?.data_role === 'confirmation' && r.data_role?.role !== 'confirmation' && <span className="ml-1 text-xs text-red-800">nieuznane jako potwierdzające: {r.data_role?.reason}</span>}</td>
+        <td><ProvenanceBadge r={r} />{r.data_role?.role === 'confirmation' && <span className="ml-1 text-xs px-2 py-0.5 rounded border bg-emerald-50 text-emerald-900 border-emerald-200" data-testid={`role-${r.run_id}`}>{t('role_confirmation')}</span>}
+          <RoleRejected r={r} /></td>
         <td className="text-xs">{r.acquired_utc ? r.acquired_utc[0].slice(0, 16).replace('T', ' ') : '—'}</td><td className="font-mono text-xs">{r.git_commit?.slice(0, 7) ?? 'brak'}</td>
         {ids.map(i => { const c = r.evaluation?.comparisons?.find((x: any) => x.id === i); return <td key={i} className="font-mono">{c ? `${fmt(c.value)} · n${c.n}` : '—'}</td>; })}
         <td className="text-xs" title={r.status}>{RUN_STATE[r.status] ?? r.status}{r.evaluation && !r.evaluation.complete ? ' · niekompletny' : ''}</td></tr>)}</tbody></table></div>
@@ -405,8 +461,8 @@ function SharePanel({ data }: { data: any }) {
 
 function GenericRegistry({ data }: { data: any }) {
   const i = data.interpretation;
-  return <section className={card} data-testid="registry"><h2 className="font-semibold">Rejestr kryteriów (ustalone przed danymi)</h2>
-    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>Twierdzenie</th><th>Statystyka</th><th>Wartość w publikacji</th><th>Kryterium</th></tr></thead>
+  return <section className={card} data-testid="registry"><h2 className="font-semibold">{t('registry_title')}</h2>
+    <div className={scroll}><table className="w-full text-sm"><thead className="text-left text-slate-500"><tr><th>{t('col_claim')}</th><th>{t('col_statistic')}</th><th>{t('col_published_value')}</th><th>{t('col_criterion')}</th></tr></thead>
       <tbody>{data.target.claims.map((c: any) => <tr key={c.claim_key} className="border-t border-slate-100"><td className="py-1.5 pr-2 font-mono">{c.claim_key}</td><td>{c.statistic}</td><td className="font-mono">{c.claimed_value_numeric}</td>
         <td>{c.tolerance_kind === 'interval' ? `[${c.tolerance_value}; ${c.interval_upper}]` : `≥ ${c.tolerance_value}`}</td></tr>)}</tbody></table></div>
     <ul className="text-sm list-disc ml-5">{data.target.claims.map((c: any) => <li key={c.claim_key}>{c.notes}</li>)}</ul>

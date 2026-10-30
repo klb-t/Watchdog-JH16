@@ -1,0 +1,50 @@
+{
+  "version": "ui-evidence-review-1",
+  "_note": "Evidence review page (/evidence). Mapping documents, catalog keys, publishers and approval states are data and are shown as stored. Error labels repeat the field ones of config/ui/responder.json because this page reads the same field API.",
+  "languages": {
+    "pl": {
+      "title": "Przegląd dowodów",
+      "intro": "Sprawdzaj po jednym mapowaniu ze źródłem naraz. Zatwierdzenie wiąże się z dokładnie wyświetloną treścią i Twoją zalogowaną tożsamością.",
+      "catalog_warning": "Wpisy katalogu to proponowane mapowania. Import ich nie zatwierdza. Zanim udostępnisz informację referencyjną ratownikom, sprawdź źródło, skład, geografię, daty, poziom dowodu i brakujące wartości.",
+      "catalog": "Wersjonowany katalog źródeł",
+      "import_one": "Importuj do indywidualnego przeglądu",
+      "import_json": "Importuj mapowanie informacji referencyjnej (JSON)",
+      "import_proposed": "Importuj jako propozycję",
+      "imported": "Zaimportowane mapowania ({count})",
+      "none_imported": "Nie zaimportowano jeszcze żadnych mapowań.",
+      "review_exact": "Sprawdź dokładne mapowanie",
+      "checked": "Sprawdziłem(-am) to dokładne mapowanie z cytowanym źródłem, łącznie z niepewnościami i poziomem dowodu.",
+      "approve": "Zatwierdź to mapowanie",
+      "revoke": "Wycofaj to mapowanie",
+      "select_prompt": "Wybierz zaimportowane mapowanie, aby obejrzeć jego pełną treść i pochodzenie.",
+      "error_invalid_json": "Wklejony tekst nie jest poprawnym JSON: {detail}",
+      "error_validation_error": "Serwer odrzucił dane (szczegóły po angielsku): {detail}",
+      "error_reference_conflict": "Konflikt z zapisanym mapowaniem (szczegóły po angielsku): {detail}",
+      "error_not_found": "Nie znaleziono.",
+      "error_field_request_failed": "Żądanie nie powiodło się ({status}).",
+      "error_field_invalid_response": "Serwer zwrócił nieprawidłowe dane referencyjne."
+    },
+    "en": {
+      "title": "Evidence review",
+      "intro": "Review one sourced mapping at a time. Approval binds to the exact displayed content and your signed-in identity.",
+      "catalog_warning": "Catalog entries are proposed mappings. Importing does not approve them. Verify the source, composition, geography, dates, evidence tier and missing values before making a reference available to responders.",
+      "catalog": "Versioned source catalog",
+      "import_one": "Import for individual review",
+      "import_json": "Import a reference mapping (JSON)",
+      "import_proposed": "Import as proposed",
+      "imported": "Imported mappings ({count})",
+      "none_imported": "No mappings imported yet.",
+      "review_exact": "Review exact mapping",
+      "checked": "I checked this exact mapping against its cited source, including uncertainties and tier.",
+      "approve": "Approve this mapping",
+      "revoke": "Revoke this mapping",
+      "select_prompt": "Select an imported mapping to inspect its complete content and provenance.",
+      "error_invalid_json": "{detail}",
+      "error_validation_error": "{detail}",
+      "error_reference_conflict": "{detail}",
+      "error_not_found": "Not found.",
+      "error_field_request_failed": "Request failed ({status}).",
+      "error_field_invalid_response": "The server returned invalid reference data."
+    }
+  }
+}

@@ -193,21 +193,25 @@ export interface Launchers {
   searchesToday: (owner: string) => number;
 }
 
+/** A refusal with a stable reason the page can label in the reader's language; the English message stays for logs and the API. */
+export class TextRequestRefusal extends AutomationError { constructor(message: string, readonly reason: string, status?: number) { super(message, status); } }
+
 export class TextRequests {
   constructor(private readonly repo: TextRequestRepository, private readonly deps: AnalyzeDeps, private readonly launch: Launchers) {}
   preview(text: string) { return analyzeText(text, this.deps); }
 
   async submit(owner: string, text: string, expectedPlanHash: string) {
-    if (!text.trim()) throw new AutomationError('Paste a text first');
+    if (!text.trim()) throw new TextRequestRefusal('Paste a text first', 'paste_text');
     const analysis = await analyzeText(text, this.deps);
-    if (analysis.plan_hash !== expectedPlanHash) throw new AutomationError('The plan changed since the preview (e.g. the work could not be resolved again); review it again');
+    if (analysis.plan_hash !== expectedPlanHash) throw new TextRequestRefusal('The plan changed since the preview (e.g. the work could not be resolved again); review it again', 'plan_changed');
     const stored = this.repo.create(owner, analysis.text_sha256, { text, analysis });
     const t = analysis.target ? listReplicationTargets(this.deps.root).find(x => x.target.target_id === analysis.target!.target_id)! : null;
     let spent = this.launch.searchesToday(owner) * analysis.cost.eur_per_request;
     for (const a of analysis.literal) {
       const eur = (a.requests ?? 0) * analysis.cost.eur_per_request;
       if (spent + eur > analysis.cost.daily_auto_spend_eur) {
-        this.repo.event(owner, stored.id, 'deferred', { action: a.id, reason: `would exceed the daily cap for automatic spending (${analysis.cost.daily_auto_spend_eur} EUR; spent ~${spent.toFixed(2)}, this ~${eur.toFixed(2)}); start it below when you choose` });
+        this.repo.event(owner, stored.id, 'deferred', { action: a.id, reason: `would exceed the daily cap for automatic spending (${analysis.cost.daily_auto_spend_eur} EUR; spent ~${spent.toFixed(2)}, this ~${eur.toFixed(2)}); start it below when you choose`,
+          code: 'daily_cap', cap_eur: String(analysis.cost.daily_auto_spend_eur), spent_eur: spent.toFixed(2), cost_eur: eur.toFixed(2) });
         continue;
       }
       this.run(owner, stored.id, a, t, text);
@@ -236,11 +240,11 @@ export class TextRequests {
 
   /** A deferred literal action or a proposal, started on the user's explicit acceptance. */
   accept(owner: string, requestId: string, actionId: string) {
-    const r = this.repo.get(owner, requestId); if (!r) throw new AutomationError('Request not found', 404);
+    const r = this.repo.get(owner, requestId); if (!r) throw new TextRequestRefusal('Request not found', 'not_found', 404);
     const a = [...r.body.analysis.literal, ...r.body.analysis.proposals].find((x: Action) => x.id === actionId);
-    if (!a) throw new AutomationError('No such action in this request');
-    if (!a.launch) throw new AutomationError(a.unavailable ?? 'This proposal cannot be started yet');
-    if (r.events.some(e => e.kind === 'launched' && e.body.action === actionId)) throw new AutomationError('Already started');
+    if (!a) throw new TextRequestRefusal('No such action in this request', 'no_action');
+    if (!a.launch) throw a.unavailable ? new AutomationError(a.unavailable) : new TextRequestRefusal('This proposal cannot be started yet', 'not_startable');
+    if (r.events.some(e => e.kind === 'launched' && e.body.action === actionId)) throw new TextRequestRefusal('Already started', 'already_started');
     this.repo.event(owner, requestId, 'accepted', { action: actionId });
     const t = listReplicationTargets(this.deps.root).find(x => x.target.target_id === r.body.analysis.target?.target_id) ?? null;
     this.run(owner, requestId, a, t, r.body.text);
@@ -248,8 +252,8 @@ export class TextRequests {
   }
 
   answer(owner: string, requestId: string, questionId: string, answer: string) {
-    const r = this.repo.get(owner, requestId); if (!r) throw new AutomationError('Request not found', 404);
-    if (!r.body.analysis.questions.some((q: any) => q.id === questionId)) throw new AutomationError('No such question in this request');
+    const r = this.repo.get(owner, requestId); if (!r) throw new TextRequestRefusal('Request not found', 'not_found', 404);
+    if (!r.body.analysis.questions.some((q: any) => q.id === questionId)) throw new TextRequestRefusal('No such question in this request', 'no_question');
     this.repo.event(owner, requestId, 'answered', { question: questionId, answer: answer.trim().slice(0, 4000) });
     return this.repo.get(owner, requestId)!;
   }

@@ -36,6 +36,9 @@ export interface AuthConfig {
   readonly grants: Readonly<Record<string, Role>>;
   /** Why the mode is what it is — surfaced in the API so it is inspectable. */
   readonly reason: string;
+  /** Stable identifier of `reason` (with its values) so an interface can show it in the reader's language. */
+  readonly reasonCode?: 'accounts' | 'local_no_client' | 'oidc_grants';
+  readonly reasonParams?: Readonly<Record<string, number>>;
 }
 
 export class AuthConfigError extends Error {
@@ -95,13 +98,13 @@ export function readAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig
 
   const requested = env.WATCHDOG_AUTH?.trim().toLowerCase();
   if (requested && !['accounts','local','oidc'].includes(requested)) throw new AuthConfigError('WATCHDOG_AUTH must be local, oidc or accounts.');
-  if (requested === 'accounts') return { mode: 'accounts', audience, grants, reason: 'Closed accounts: email codes and optional Google; identity alone grants no access.' };
+  if (requested === 'accounts') return { mode: 'accounts', audience, grants, reason: 'Closed accounts: email codes and optional Google; identity alone grants no access.', reasonCode: 'accounts' };
   if (requested === 'oidc' && !audience) {
     throw new AuthConfigError('WATCHDOG_AUTH=oidc requires GOOGLE_OAUTH_CLIENT_ID; refusing to fall back to the local user.');
   }
   if (requested === 'local' || !audience) {
     return { mode: 'local', grants: {}, audience: null,
-      reason: 'GOOGLE_OAUTH_CLIENT_ID is not set, so no sign-in is possible and every request is the local user.' };
+      reason: 'GOOGLE_OAUTH_CLIENT_ID is not set, so no sign-in is possible and every request is the local user.', reasonCode: 'local_no_client' };
   }
   if (Object.keys(grants).length === 0) {
     // Refused rather than defaulted: an OAuth client with an empty grant list
@@ -112,7 +115,7 @@ export function readAuthConfig(env: NodeJS.ProcessEnv = process.env): AuthConfig
       'Set WATCHDOG_GRANTS, e.g. {"you@example.com":"admin"}.');
   }
   return { mode: 'oidc', audience, grants,
-    reason: `Google sign-in is enabled for ${Object.keys(grants).length} grant(s).` };
+    reason: `Google sign-in is enabled for ${Object.keys(grants).length} grant(s).`, reasonCode: 'oidc_grants', reasonParams: { count: Object.keys(grants).length } };
 }
 
 /**

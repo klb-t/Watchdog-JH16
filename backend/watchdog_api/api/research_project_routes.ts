@@ -9,7 +9,7 @@ const Hash = z.string().regex(/^[a-f0-9]{64}$/);
 const Pagination = z.object({ limit: z.coerce.number().int().min(1).max(200).default(50), offset: z.coerce.number().int().min(0).default(0) });
 const route = (fn: (req: Request, res: Response) => unknown) => (req: Request, res: Response, next: NextFunction) => {
   Promise.resolve().then(() => fn(req, res)).catch(error => error instanceof ResearchProjectError
-    ? res.status(error.status).json({ error: error.code, message: error.message }) : next(error));
+    ? res.status(error.status).json({ error: error.code, message: error.message, ...(error.reason ? { params: { reason: error.reason } } : {}) }) : next(error));
 };
 export function buildResearchProjectsRouter(service: ResearchProjectsService) {
   const router = Router(); router.use(requireCapability('method.propose')); router.use(sameOriginMutation);
@@ -19,9 +19,9 @@ export function buildResearchProjectsRouter(service: ResearchProjectsService) {
     res.json(service.repo.resources(req.principal!.id, kind, limit, offset)); }));
   router.get('/resources/:kind/:id', route((req, res) => {
     const kind = ProjectResourceKindSchema.parse(req.params.kind), resource = service.repo.resource(req.principal!.id, kind, req.params.id);
-    if (!resource) throw new ResearchProjectError('Owned resource not found', 404);
+    if (!resource) throw new ResearchProjectError('Owned resource not found', 404, 'resource_not_found');
     if (req.query.expectedHash !== undefined && Hash.parse(req.query.expectedHash) !== resource.summary.hash)
-      throw new ResearchProjectError('The resource no longer matches the pinned hash; inspect the saved project snapshot instead');
+      throw new ResearchProjectError('The resource no longer matches the pinned hash; inspect the saved project snapshot instead', 409, 'pinned_hash_mismatch');
     res.json({ resource: { ...resource.summary, snapshot: resource.snapshot,
       files: resource.files.map(({ uri: _uri, ...file }) => file) } });
   }));

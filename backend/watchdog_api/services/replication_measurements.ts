@@ -44,6 +44,10 @@ export function measurementPlan(t: ReplicationTarget, root = process.cwd()): Mea
   };
 }
 
+/** A refusal with its reason as a stable code and values (additive to the English message), for the interface. */
+const refuse = (message: string, code: string, params: Record<string, string | number> = {}) =>
+  Object.assign(new AutomationError(message), { reason: { code, params } });
+
 export class ReplicationMeasurements {
   constructor(private readonly settings: SettingsRepository, private readonly vault: UserVault, private readonly profile: AssistantProfile,
     private readonly orchestrator: RunOrchestrator, private readonly protocol: (owner: string, id: string) => Protocol | null) {}
@@ -70,13 +74,13 @@ export class ReplicationMeasurements {
 
   launch(owner: string, t: ReplicationTarget, body: { expectedPresetHash: string; dataRole: 'exploratory' | 'confirmation'; protocolId?: string }) {
     const p = measurementPlan(t), d = this.describe(owner, t);
-    if (!p || !d) throw new AutomationError('This target has no measurement in its dossier');
-    if (body.expectedPresetHash !== p.preset_hash) throw new AutomationError('The preset changed; reload and review it again');
-    if (d.blocked) throw new AutomationError(d.blocked);
+    if (!p || !d) throw refuse('This target has no measurement in its dossier', 'no_measurement');
+    if (body.expectedPresetHash !== p.preset_hash) throw refuse('The preset changed; reload and review it again', 'preset_changed');
+    if (d.blocked) throw refuse(d.blocked, d.blocked_reason!.code, d.blocked_reason!.params);
     let role: Record<string, string> = { data_role: 'exploratory' };
     if (body.dataRole === 'confirmation') {
       const protocol = body.protocolId ? this.protocol(owner, body.protocolId) : null;
-      if (!protocol || protocol.target_id !== t.target.target_id) throw new AutomationError('Choose a protocol frozen for this target');
+      if (!protocol || protocol.target_id !== t.target.target_id) throw refuse('Choose a protocol frozen for this target', 'protocol_required');
       role = { data_role: 'confirmation', protocol_id: protocol.id, protocol_hash: protocol.content_hash };
     }
     const now = new Date().toISOString();

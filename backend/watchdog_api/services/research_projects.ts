@@ -28,24 +28,24 @@ export class ResearchProjectsService {
   constructor(readonly repo: ResearchProjectsRepository, private readonly store: ObjectStore) {}
   async save(owner: string, raw: unknown, projectId?: string, expectedHash: string | null = null): Promise<ProjectRevision> {
     const draft = ProjectDraftSchema.parse(raw), current = projectId ? this.repo.current(owner, projectId) : null;
-    if (projectId && !current) throw new ResearchProjectError('Project not found', 404);
-    if (current?.hash !== (expectedHash ?? undefined) && current) throw new ResearchProjectError('Project changed; reload before saving');
+    if (projectId && !current) throw new ResearchProjectError('Project not found', 404, 'project_not_found');
+    if (current?.hash !== (expectedHash ?? undefined) && current) throw new ResearchProjectError('Project changed; reload before saving', 409, 'project_changed');
     const id = projectId ?? randomUUID(), files = new Map<string, ProjectStoredFile>(), links: ProjectLinkSnapshot[] = [];
     let totalBytes = 0;
     for (const link of [...draft.links].sort((a, b) => `${a.kind}:${a.id}`.localeCompare(`${b.kind}:${b.id}`))) {
       const resource = this.repo.resource(owner, link.kind, link.id);
-      if (!resource) throw new ResearchProjectError('Owned resource not found or not finalized', 404);
-      if (resource.summary.hash !== link.expectedHash) throw new ResearchProjectError('Linked resource hash changed; reload before selecting it');
+      if (!resource) throw new ResearchProjectError('Owned resource not found or not finalized', 404, 'resource_not_found');
+      if (resource.summary.hash !== link.expectedHash) throw new ResearchProjectError('Linked resource hash changed; reload before selecting it', 409, 'resource_changed');
       const descriptors: ProjectFile[] = [];
       for (const original of resource.files) {
         let archived = files.get(original.path);
         if (!archived) {
-          if (original.byteSize > this.profile.maxArchiveBytes - totalBytes) throw new ResearchProjectError('Project exceeds the configured archive size limit', 413);
+          if (original.byteSize > this.profile.maxArchiveBytes - totalBytes) throw new ResearchProjectError('Project exceeds the configured archive size limit', 413, 'archive_too_large');
           const bytes = await this.store.get(original.uri);
           if (sha(bytes) !== original.sha256 || original.byteSize >= 0 && bytes.length !== original.byteSize)
             throw new ResearchProjectError('Linked source bytes do not match their recorded hash');
           totalBytes += bytes.length;
-          if (totalBytes > this.profile.maxArchiveBytes) throw new ResearchProjectError('Project exceeds the configured archive size limit', 413);
+          if (totalBytes > this.profile.maxArchiveBytes) throw new ResearchProjectError('Project exceeds the configured archive size limit', 413, 'archive_too_large');
           const uri = await this.store.put(`project-files/${original.sha256}`, bytes);
           archived = { ...original, byteSize: bytes.length, uri }; files.set(original.path, archived);
         }
@@ -59,12 +59,12 @@ export class ResearchProjectsService {
       revision: (current?.body.revision ?? 0) + 1, previousRevisionHash: current?.hash ?? null, links };
     const frozenFiles = [...files.values()].sort((a, b) => a.path.localeCompare(b.path));
     if (archiveMetadata(body, canonicalHash(body), frozenFiles).archiveByteSize > this.profile.maxArchiveBytes)
-      throw new ResearchProjectError('Project metadata and source files exceed the configured archive size limit', 413);
+      throw new ResearchProjectError('Project metadata and source files exceed the configured archive size limit', 413, 'archive_too_large');
     return this.repo.save(owner, body, expectedHash, frozenFiles);
   }
   get(owner: string, id: string, revisionHash?: string) {
     const revision = revisionHash ? this.repo.revision(owner, id, revisionHash) : this.repo.current(owner, id);
-    if (!revision) throw new ResearchProjectError('Project revision not found', 404);
+    if (!revision) throw new ResearchProjectError('Project revision not found', 404, 'revision_not_found');
     const statuses: ProjectLinkStatus[] = revision.body.links.map(link => {
       try {
         const live = this.repo.resource(owner, link.kind, link.id);
@@ -78,10 +78,10 @@ export class ResearchProjectsService {
   }
   async export(owner: string, projectId: string, revisionHash: string) {
     const revision = this.repo.revision(owner, projectId, revisionHash);
-    if (!revision) throw new ResearchProjectError('Project revision not found', 404);
+    if (!revision) throw new ResearchProjectError('Project revision not found', 404, 'revision_not_found');
     const stored = this.repo.files(owner, revision), entries = new Map<string, Buffer>();
     const metadata = archiveMetadata(revision.body, revision.hash, stored);
-    if (metadata.archiveByteSize > this.profile.maxArchiveBytes) throw new ResearchProjectError('Project archive exceeds the configured size limit', 413);
+    if (metadata.archiveByteSize > this.profile.maxArchiveBytes) throw new ResearchProjectError('Project archive exceeds the configured size limit', 413, 'archive_too_large');
     for (const f of stored) {
       const bytes = await this.store.get(f.uri);
       if (sha(bytes) !== f.sha256 || bytes.length !== f.byteSize) throw new ResearchProjectError('Archived project bytes failed integrity verification');

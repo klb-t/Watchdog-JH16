@@ -121,7 +121,8 @@ apiRouter.post('/studies/jh2016', requireCapability('run.create'), async (req, r
     const { source_id } = z.object({ source_id: z.enum(Object.keys(JH16_SOURCES) as [string, ...string[]]) }).strict().parse(req.body);
     const live = await sourceRegistry.describe(source_id);
     if (live.status !== 'implemented' && live.status !== 'fixture')
-      return res.status(409).json({ error: 'source_unavailable', message: `${source_id} is ${live.status}. ${live.remediation}`.trim() });
+      return res.status(409).json({ error: 'source_unavailable', message: `${source_id} is ${live.status}. ${live.remediation}`.trim(),
+        params: { source_id, source_status: live.status, remediation: live.remediation ?? '' } });
     const preset = readJh16Preset(), reference = readConfig('config', 'reference', 'nutt-2010.json');
     const config = { source_id, source_params: JH16_SOURCES[source_id].source_params, method_id: 'jh16_faithful',
       preset_id: preset.preset_id, preset_version: preset.preset_version, language: preset.language,
@@ -437,11 +438,13 @@ apiRouter.get('/providers/readiness', requireCapability('provider.view'), async 
         'text.generate': text.map(a => ({
           provider_key: a.providerKey, display_name: a.displayName, status: a.status,
           credential_status: a.credentialStatus, remediation: a.remediation,
+          remediation_code: a.remediationCode ?? null, remediation_params: a.remediationParams ?? {},
           default_model: a.defaultModel, allowed_models: a.allowedModels,
         })),
         'search.result_count': search.map(a => ({
           provider_key: a.providerKey, display_name: a.displayName, status: a.status,
           credential_status: a.credentialStatus, remediation: a.remediation,
+          remediation_code: a.remediationCode ?? null, remediation_params: a.remediationParams ?? {},
         })),
       },
       sources,

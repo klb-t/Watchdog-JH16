@@ -162,6 +162,8 @@ export function buildAuthRouter(deps: AuthDeps): Router {
     res.json({
       mode: deps.identity.mode,
       reason: deps.identity.config.reason,
+      reason_code: deps.identity.config.reasonCode ?? null,
+      reason_params: deps.identity.config.reasonParams ?? {},
       instance_name: deps.mail?.messages.instance_name ?? 'WatchDog',
       methods: {
         google: accounts && deps.identity.verifier ? { client_id: deps.identity.config.audience } : null,

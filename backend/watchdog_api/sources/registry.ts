@@ -23,7 +23,15 @@ export interface SourceRegistryEntry {
    * registration — that is the stored-flag mistake D5 warns about, applied to
    * sources instead of providers.
    */
-  liveStatus?: () => Promise<{ status: SourceRegistryEntry['status']; remediation: string }>;
+  liveStatus?: () => Promise<LiveStatus>;
+}
+
+/** `remediation_code`/`remediation_params` identify the English `remediation` so an interface can show it in the reader's language. */
+export interface LiveStatus {
+  status: SourceRegistryEntry['status'];
+  remediation: string;
+  remediation_code?: string;
+  remediation_params?: Record<string, string>;
 }
 
 export class SourceRegistry {
@@ -75,7 +83,8 @@ export class SourceRegistry {
         const { secretStore } = await import('../secrets');
         const provider = loadTrendsProviderConfig().provider, cred = await secretStore.resolve(provider.secret_ref);
         return cred.isPresent ? { status: 'implemented' as const, remediation: '' }
-          : { status: 'blocked' as const, remediation: `Set ${provider.secret_ref} for the installation, or use a personal SerpApi key in the settings wizard.` };
+          : { status: 'blocked' as const, remediation: `Set ${provider.secret_ref} for the installation, or use a personal SerpApi key in the settings wizard.`,
+            remediation_code: 'set_secret_or_personal_key', remediation_params: { ref: provider.secret_ref } };
       },
     });
 
@@ -94,7 +103,8 @@ export class SourceRegistry {
         const { secretStore } = await import('../secrets');
         const provider = loadTrendsProviderConfig(TRENDS_BY_REGION_CONFIG_PATH).provider, cred = await secretStore.resolve(provider.secret_ref);
         return cred.isPresent ? { status: 'implemented' as const, remediation: '' }
-          : { status: 'blocked' as const, remediation: `Set ${provider.secret_ref} for the installation, or use a personal SerpApi key (replication measurements use it).` };
+          : { status: 'blocked' as const, remediation: `Set ${provider.secret_ref} for the installation, or use a personal SerpApi key (replication measurements use it).`,
+            remediation_code: 'set_secret_or_personal_key_replication', remediation_params: { ref: provider.secret_ref } };
       },
     });
 
@@ -123,6 +133,7 @@ export class SourceRegistry {
         return {
           status: a.status === 'implemented' ? 'implemented' as const : 'blocked' as const,
           remediation: a.remediation,
+          ...(a.remediationCode ? { remediation_code: a.remediationCode, remediation_params: a.remediationParams } : {}),
         };
       },
     });
@@ -180,7 +191,7 @@ export class SourceRegistry {
   }
 
   /** Status as it is right now, credentials included. */
-  public async describe(id: string): Promise<{ status: string; remediation: string }> {
+  public async describe(id: string): Promise<{ status: string; remediation: string; remediation_code?: string; remediation_params?: Record<string, string> }> {
     const entry = this.sources.get(id);
     if (!entry) throw new Error(`Source adapter not found: ${id}`);
     if (entry.liveStatus) return entry.liveStatus();
