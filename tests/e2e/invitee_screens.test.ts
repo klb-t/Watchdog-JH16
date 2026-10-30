@@ -9,6 +9,7 @@ import { chromium, Browser, Page } from 'playwright';
 import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { resolveChromium } from '../helpers/browser';
+import { freePort, waitForServer } from '../helpers/server';
 import { startFakeSmtp, mailText } from '../helpers/smtp';
 
 /**
@@ -27,19 +28,11 @@ const OWNER = 'owner@lab.example';
 const PHONE = { viewport: { width: 390, height: 844 }, locale: 'en-GB' };
 let runId = '';
 
-async function waitForServer(url: string, timeoutMs = 60_000) {
-  const until = Date.now() + timeoutMs;
-  while (Date.now() < until) {
-    try { if ((await fetch(`${url}/api/auth/config`)).ok) return; } catch { /* not up yet */ }
-    await new Promise(r => setTimeout(r, 250));
-  }
-  throw new Error('server did not start');
-}
 
 before(async () => {
   smtp = await startFakeSmtp();
   dir = fs.mkdtempSync(path.join(os.tmpdir(), 'wd-invitee-e2e-'));
-  const port = 3900 + Math.floor(Math.random() * 400);
+  const port = await freePort();
   base = `http://localhost:${port}`;
   const env = {
     ...process.env, PORT: String(port), NODE_ENV: 'production',
@@ -69,7 +62,7 @@ before(async () => {
   assert.strictEqual(cli.status, 0, cli.stderr);
 
   server = spawn(process.execPath, ['--import', 'tsx', 'server.ts'], { cwd: process.cwd(), env, stdio: 'pipe', detached: true });
-  await waitForServer(base);
+  await waitForServer(server, base);
   browser = await chromium.launch({ executablePath: resolveChromium() });
   fs.mkdirSync('test-artifacts', { recursive: true });
 });

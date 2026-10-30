@@ -7,6 +7,7 @@ import { randomBytes } from 'node:crypto';
 import { spawn, ChildProcess } from 'node:child_process';
 import { chromium, Browser, Page } from 'playwright';
 import { resolveChromium } from '../helpers/browser';
+import { freePort, waitForServer } from '../helpers/server';
 import { startFakeSmtp, mailText } from '../helpers/smtp';
 
 /**
@@ -26,19 +27,11 @@ let smtp: Awaited<ReturnType<typeof startFakeSmtp>>;
 const OWNER = 'owner@lab.example';
 const PHONE = { viewport: { width: 390, height: 844 }, locale: 'pl-PL' };
 
-async function waitForServer(url: string, timeoutMs = 60_000) {
-  const until = Date.now() + timeoutMs;
-  while (Date.now() < until) {
-    try { if ((await fetch(`${url}/api/auth/config`)).ok) return; } catch { /* not up yet */ }
-    await new Promise(r => setTimeout(r, 250));
-  }
-  throw new Error('server did not start');
-}
 
 before(async () => {
   smtp = await startFakeSmtp();
   dir = fs.mkdtempSync(path.join(os.tmpdir(), 'wd-access-e2e-'));
-  const port = 3500 + Math.floor(Math.random() * 400);
+  const port = await freePort();
   // localhost rather than 127.0.0.1: production cookies are Secure, and
   // browsers treat http://localhost as a secure context.
   base = `http://localhost:${port}`;
@@ -55,7 +48,7 @@ before(async () => {
     },
     stdio: 'pipe', detached: true,
   });
-  await waitForServer(base);
+  await waitForServer(server, base);
   browser = await chromium.launch({ executablePath: resolveChromium() });
   fs.mkdirSync('test-artifacts', { recursive: true });
 });
